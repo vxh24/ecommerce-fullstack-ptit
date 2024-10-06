@@ -1,18 +1,30 @@
 require("dotenv").config();
 const express = require("express");
-const connection = require("./config/dbConnect");
-const authRouter = require("./routes/authRoute");
 const bodyParser = require("body-parser");
-const { notFound, errorHandler } = require("./middlewares/errorHandler");
+const connection = require("./src/config/dbConnect");
+const apiRoutes = require("./src/routes/api");
+const { notFound, errorHandler } = require("./src/middlewares/errorHandler");
+const fileUpload = require("express-fileupload");
+const configViewEngine = require("./src/config/viewEngine");
+const cookieParser = require("cookie-parser");
+
 const app = express();
 const port = process.env.PORT || 4000;
 
+app.use(cookieParser());
+
+//config file upload
+app.use(fileUpload());
+
 //config req.body
 app.use(bodyParser.json()); // for json
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true })); // for form data
+
+//config template engine
+configViewEngine(app);
 
 //declare router
-app.use("/api/user", authRouter);
+app.use("/v1/api/", apiRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

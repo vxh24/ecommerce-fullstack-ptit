@@ -4,32 +4,37 @@ const mongoose_delete = require("mongoose-delete");
 
 var userSchema = new mongoose.Schema(
   {
-    firstName: {
-      type: String,
-      require: true,
-    },
-    lastName: {
+    name: {
       type: String,
       require: true,
     },
     email: {
       type: String,
       require: true,
-      unique: true,
     },
-    mobile: {
+    phone: {
       type: String,
-      require: true,
-      unique: true,
+      require: false,
     },
     password: {
       type: String,
       require: true,
     },
+    avatar: {
+      type: String,
+      require: false,
+    },
     role: {
       type: String,
       default: "user",
     },
+    cart: {
+      type: Array,
+      default: [],
+    },
+    address: [{ type: mongoose.Schema.Types.ObjectId, ref: "Address" }],
+    wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
+    refresh_token: { type: String },
   },
   { timestamps: true }
 );
