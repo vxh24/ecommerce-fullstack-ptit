@@ -12,3 +12,6 @@
 * Google Map API
 * Mailer
 * Socket (nếu nhóm em đủ thời gian tìm hiểu)
+## 3. Thực hiện:
++ Thiều Ngọc Tuấn: B20DCCN618
++ Vũ Xuân Hòa: B20DCCN267
