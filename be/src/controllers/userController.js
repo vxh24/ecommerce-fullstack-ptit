@@ -11,11 +11,11 @@ const {
   updateAUser,
   deleteAUser,
   updatePassword,
+  generateResetPasswordToken,
+  resetPassword,
 } = require("../services/userService");
 const User = require("../models/userModel");
 const { generateToken } = require("../config/jwtToken");
-const sendEmail = require("./emailController");
-const crypto = require("crypto");
 
 const createUserController = asyncHandler(async (req, res) => {
   let { name, email, phone, password } = req.body;
@@ -184,22 +184,9 @@ const updatePasswordController = asyncHandler(async (req, res) => {
 
 const forgotPasswordTokenController = asyncHandler(async (req, res) => {
   const { email } = req.user;
-  const user = await User.findOne({ email });
-  if (!user) throw new Error("User not found with this email");
   try {
-    const token = await user.createPasswordResetToken();
-    await user.save();
-    const resetURL = `Hi, Please follow this link to reset your password. This link is valid till 10 minutes from now. <a href="http://localhost:5000/v1/api/users/reset-password/${token}">Click here</a>`;
-    const data = {
-      to: email,
-      text: "Hey user",
-      subject: "Forgot Password Link",
-      html: resetURL,
-    };
-    sendEmail(data);
-    res.json({
-      reset_token: token,
-    });
+    const token = await generateResetPasswordToken(email);
+    res.json({ reset_token: token });
   } catch (error) {
     throw new Error(error);
   }
@@ -208,17 +195,12 @@ const forgotPasswordTokenController = asyncHandler(async (req, res) => {
 const resetPasswordController = asyncHandler(async (req, res) => {
   const { password } = req.body;
   const { token } = req.params;
-  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
-  const user = await User.findOne({
-    passwordResetToken: hashedToken,
-    passwordResetExpires: { $gt: Date.now() },
-  });
-  if (!user) throw new Error("Token expired, Please try again later.");
-  user.password = password;
-  user.passwordResetToken = undefined;
-  user.passwordResetExpires = undefined;
-  await user.save();
-  res.json(user);
+  try {
+    const user = await resetPassword(token, password);
+    res.json(user);
+  } catch (error) {
+    throw new Error(error);
+  }
 });
 
 module.exports = {

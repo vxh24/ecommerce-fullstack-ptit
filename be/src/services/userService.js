@@ -3,6 +3,8 @@ const asyncHandler = require("express-async-handler");
 const { generateToken } = require("../config/jwtToken");
 const { generateRefreshToken } = require("../config/refreshToken");
 const validateMongodbId = require("../utils/validateMongodbId");
+const sendEmail = require("../controllers/emailController");
+const crypto = require("crypto");
 
 const createUser = asyncHandler(async (userData) => {
   const email = userData.email;
@@ -79,7 +81,7 @@ const deleteAUser = asyncHandler(async (id) => {
   return result;
 });
 
-const updatePassword = async (email, newPassword) => {
+const updatePassword = asyncHandler(async (email, newPassword) => {
   const user = await User.findOne({ email });
 
   if (!user) {
@@ -95,7 +97,45 @@ const updatePassword = async (email, newPassword) => {
   const updatedUser = await user.save();
 
   return updatedUser;
-};
+});
+
+const generateResetPasswordToken = asyncHandler(async (email) => {
+  const user = await User.findOne({ email });
+  if (!user) throw new Error("User not found with this email");
+
+  const token = await user.createPasswordResetToken();
+  await user.save();
+
+  const resetURL = `Hi, Please follow this link to reset your password. This link is valid till 10 minutes from now. <a href="http://localhost:5000/v1/api/users/reset-password/${token}">Click here</a>`;
+
+  const data = {
+    to: email,
+    text: "Hey user",
+    subject: "Forgot Password Link",
+    html: resetURL,
+  };
+  await sendEmail(data);
+  return token;
+});
+
+const resetPassword = asyncHandler(async (token, password) => {
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+
+  if (!user) throw new Error("Token expired, Please try again later.");
+
+  //reset password and remove token
+  user.password = password;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+  await user.save();
+
+  return user;
+});
 
 module.exports = {
   createUser,
@@ -105,4 +145,6 @@ module.exports = {
   updateAUser,
   deleteAUser,
   updatePassword,
+  generateResetPasswordToken,
+  resetPassword,
 };
