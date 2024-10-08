@@ -15,6 +15,7 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
       try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = {
+          _id: decoded._id,
           email: decoded.email,
           name: decoded.name,
           createdBy: "andy",
@@ -34,6 +35,16 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
           "You did not pass an access token in the header or The token has expired",
       });
     }
+  }
+});
+
+const isAdmin = asyncHandler(async (req, res, next) => {
+  const { email } = req.user;
+  const adminUser = await User.findOne({ email });
+  if (adminUser.role !== "admin") {
+    throw new Error("You are not an admin!!!");
+  } else {
+    next();
   }
 });
 

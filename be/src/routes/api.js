@@ -20,6 +20,15 @@ const {
   updateProductController,
   deleteProductController,
 } = require("../controllers/productController");
+const {
+  createBlogController,
+  updateBlogController,
+  getABlogController,
+  getAllBlogsController,
+  deleteABlogController,
+  likeBlogController,
+  disLikeBlogController,
+} = require("../controllers/blogController");
 
 const router = express.Router();
 router.all("*", authMiddleware);
@@ -45,5 +54,14 @@ router.get("/products/", getAllProductsController);
 router.get("/products/:id", getProductByIdController);
 router.put("/products/:id", updateProductController);
 router.delete("/products/:id", deleteProductController);
+
+//blog
+router.post("/blogs/", createBlogController);
+router.get("/blogs/", getAllBlogsController);
+router.put("/blogs/likes", likeBlogController);
+router.put("/blogs/dislikes", disLikeBlogController);
+router.put("/blogs/:id", updateBlogController);
+router.get("/blogs/:id", getABlogController);
+router.delete("/blogs/:id", deleteABlogController);
 
 module.exports = router;

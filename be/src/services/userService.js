@@ -27,6 +27,7 @@ const handleLogin = asyncHandler(async (email, password) => {
     if (isMatchPassword) {
       //login/create an access token
       const payload = {
+        _id: user?._id,
         email: user?.email,
         name: user?.name,
       };
