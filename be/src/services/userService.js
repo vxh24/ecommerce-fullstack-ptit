@@ -44,9 +44,9 @@ const handleLogin = asyncHandler(async (email, password) => {
         },
       };
     }
-  } else {
-    throw new Error("Invalid Credentials");
+    return { EC: 1, message: "Password is incorrect" };
   }
+  return { EC: 2, message: "User not found" };
 });
 
 const getAllUsers = asyncHandler(async () => {
@@ -79,6 +79,24 @@ const deleteAUser = asyncHandler(async (id) => {
   return result;
 });
 
+const updatePassword = async (email, newPassword) => {
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  if (!newPassword) {
+    throw new Error("Password not provided");
+  }
+
+  user.password = newPassword;
+  const reset_token = user.createPasswordResetToken();
+  const updatedUser = await user.save();
+
+  return updatedUser;
+};
+
 module.exports = {
   createUser,
   handleLogin,
@@ -86,4 +104,5 @@ module.exports = {
   getUserById,
   updateAUser,
   deleteAUser,
+  updatePassword,
 };

@@ -7,9 +7,12 @@ const { notFound, errorHandler } = require("./src/middlewares/errorHandler");
 const fileUpload = require("express-fileupload");
 const configViewEngine = require("./src/config/viewEngine");
 const cookieParser = require("cookie-parser");
+const morgan = require("morgan");
 
 const app = express();
 const port = process.env.PORT || 4000;
+
+app.use(morgan("dev"));
 
 app.use(cookieParser());
 
