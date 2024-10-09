@@ -1,5 +1,5 @@
 const express = require("express");
-const authMiddleware = require("../middlewares/authMiddleware");
+const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
 const {
   createUserController,
   loginUserController,
@@ -29,6 +29,29 @@ const {
   likeBlogController,
   disLikeBlogController,
 } = require("../controllers/blogController");
+const {
+  createCategoryController,
+  updateCategoryController,
+  deleteCategoryController,
+  getACategoryController,
+  getAllCategoriesController,
+} = require("../controllers/ProductCategoryController");
+
+const {
+  createBlogCategoryController,
+  updateBlogCategoryController,
+  deleteBlogCategoryController,
+  getABlogCategoryController,
+  getAllBlogCategoriesController,
+} = require("../controllers/BlogCategoryController");
+
+const {
+  createBrandController,
+  updateBrandController,
+  deleteBrandController,
+  getABrandController,
+  getAllBrandsController,
+} = require("../controllers/BrandController");
 
 const router = express.Router();
 router.all("*", authMiddleware);
@@ -63,5 +86,26 @@ router.put("/blogs/dislikes", disLikeBlogController);
 router.put("/blogs/:id", updateBlogController);
 router.get("/blogs/:id", getABlogController);
 router.delete("/blogs/:id", deleteABlogController);
+
+//product category
+router.post("/product-categories/", createCategoryController);
+router.get("/product-categories/", getAllCategoriesController);
+router.put("/product-categories/:id", updateCategoryController);
+router.get("/product-categories/:id", getACategoryController);
+router.delete("/product-categories/:id", deleteCategoryController);
+
+//blog category
+router.post("/blog-categories/", createBlogCategoryController);
+router.get("/blog-categories/", getAllBlogCategoriesController);
+router.put("/blog-categories/:id", updateBlogCategoryController);
+router.get("/blog-categories/:id", getABlogCategoryController);
+router.delete("/blog-categories/:id", deleteBlogCategoryController);
+
+//brand
+router.post("/brands/", createBrandController);
+router.get("/brands/", getAllBrandsController);
+router.put("/brands/:id", updateBrandController);
+router.get("/brands/:id", getABrandController);
+router.delete("/brands/:id", deleteBrandController);
 
 module.exports = router;
