@@ -19,6 +19,8 @@ const {
   getAllProductsController,
   updateProductController,
   deleteProductController,
+  addToWishlistController,
+  ratingController,
 } = require("../controllers/productController");
 const {
   createBlogController,
@@ -74,6 +76,8 @@ router.put("/users/:id", updateAUserController);
 //product
 router.post("/products/", createProductController);
 router.get("/products/", getAllProductsController);
+router.put("/products/wishlist", addToWishlistController);
+router.put("/products/rating", ratingController);
 router.get("/products/:id", getProductByIdController);
 router.put("/products/:id", updateProductController);
 router.delete("/products/:id", deleteProductController);

@@ -6,6 +6,8 @@ const {
   getAllProducts,
   updateProduct,
   deleteProduct,
+  addToWishlist,
+  rating,
 } = require("../services/productService");
 
 const createProductController = asyncHandler(async (req, res) => {
@@ -82,10 +84,43 @@ const deleteProductController = asyncHandler(async (req, res) => {
   });
 });
 
+const addToWishlistController = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  // console.log(_id);
+  const { productId } = req.body;
+  // console.log(productId);
+  try {
+    const result = await addToWishlist(productId, _id);
+    res.status(200).json({
+      EC: 0,
+      data: result,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+const ratingController = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  // console.log(_id);
+  const { star, comment, productId } = req.body;
+  try {
+    const result = await rating(star, comment, productId, _id);
+    res.status(200).json({
+      EC: 0,
+      data: result,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 module.exports = {
   createProductController,
   getProductByIdController,
   getAllProductsController,
   updateProductController,
   deleteProductController,
+  addToWishlistController,
+  ratingController,
 };
