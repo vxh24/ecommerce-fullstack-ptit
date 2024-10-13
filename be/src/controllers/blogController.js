@@ -8,6 +8,9 @@ const {
   likeBlog,
   dislikeBlog,
 } = require("../services/blogService");
+const Blog = require("../models/blogModel");
+const cloudinaryUploadImage = require("../utils/cloudinary");
+const { uploadMultipleFiles } = require("../services/fileService");
 
 const createBlogController = asyncHandler(async (req, res) => {
   try {
@@ -104,6 +107,52 @@ const disLikeBlogController = asyncHandler(async (req, res) => {
   }
 });
 
+const uploadImagesBlogController = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  try {
+    const files = req.files.images;
+    if (!files) {
+      return res.status(400).json({
+        EC: 1,
+        message: "No files uploaded",
+      });
+    }
+
+    const filesArr = Array.isArray(files) ? files : [files];
+    console.log(filesArr);
+
+    // Gọi hàm upload để upload lên cả local và Cloudinary
+    const uploadResults = await uploadMultipleFiles(filesArr, "blogs");
+
+    if (uploadResults.countSuccess === 0) {
+      return res.status(500).json({
+        EC: 1,
+        message: "Failed to upload files",
+      });
+    }
+
+    // Lấy cả đường dẫn local và Cloudinary URL
+    const images = uploadResults.detail.map((file) => ({
+      localPath: file.path,
+      cloudinaryUrl: file.cloudinaryUrl,
+    }));
+
+    const currentBlog = await getABlog(id);
+    const updatedImages = [...(currentBlog.images || []), ...images];
+
+    const updatedBlog = await updateBlog(
+      id,
+      {
+        images: updatedImages,
+      },
+      { new: true }
+    );
+    res.json(updatedBlog);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 module.exports = {
   createBlogController,
   updateBlogController,
@@ -112,4 +161,5 @@ module.exports = {
   deleteABlogController,
   likeBlogController,
   disLikeBlogController,
+  uploadImagesBlogController,
 };

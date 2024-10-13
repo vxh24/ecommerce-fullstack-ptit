@@ -5,7 +5,7 @@ const {
   deleteBrand,
   getABrand,
   getAllBrands,
-} = require("../services/BrandService");
+} = require("../services/brandService");
 
 const createBrandController = asyncHandler(async (req, res) => {
   try {

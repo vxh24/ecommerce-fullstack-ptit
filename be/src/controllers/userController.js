@@ -32,24 +32,13 @@ const createUserController = asyncHandler(async (req, res) => {
 
   const { error } = schema.validate(req.body);
   if (error) {
-    return res.status(200).json({
-      msg: error,
-    });
+    throw new Error(error);
   } else {
-    let imageUrl = "";
-    if (!req.files || Object.keys(req.files).length === 0) {
-      //do nothing
-    } else {
-      let result = await uploadSingleFile(req.files.avatar);
-      imageUrl = result.path;
-    }
-
     let userData = {
       name,
       email,
       phone,
       password,
-      avatar: imageUrl,
     };
 
     // console.log(userData);
@@ -150,8 +139,27 @@ const getUserByIdController = asyncHandler(async (req, res) => {
 });
 
 const updateAUserController = asyncHandler(async (req, res) => {
+  let { name, phone } = req.body;
   const id = req.params.id;
-  const result = await updateAUser(id, req.body);
+
+  let imageUrl = "";
+  if (!req.files || Object.keys(req.files).length === 0) {
+    res.status(400).json({
+      msg: "No files were uploaded. Try uploading an image",
+    });
+    return;
+  } else {
+    let result = await uploadSingleFile(req.files.avatar);
+    imageUrl = result.path;
+  }
+
+  let userData = {
+    name,
+    phone,
+    avatar: imageUrl,
+  };
+
+  const result = await updateAUser(id, userData);
   res.status(200).json({
     EC: 0,
     data: result,

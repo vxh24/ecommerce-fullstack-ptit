@@ -10,7 +10,7 @@ const createBlog = asyncHandler(async (blogData) => {
 
 const updateBlog = asyncHandler(async (id, blogData) => {
   validateMongodbId(id);
-  const result = await Blog.updateOne({ _id: id }, blogData);
+  const result = await Blog.findByIdAndUpdate(id, blogData);
   return result;
 });
 

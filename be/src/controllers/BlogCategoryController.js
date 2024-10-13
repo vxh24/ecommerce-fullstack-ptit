@@ -5,7 +5,7 @@ const {
   deleteCategory,
   getACategory,
   getAllCategories,
-} = require("../services/BlogCategoryService");
+} = require("../services/blogCategoryService");
 
 const createBlogCategoryController = asyncHandler(async (req, res) => {
   try {

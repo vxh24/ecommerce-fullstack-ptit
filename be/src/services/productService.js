@@ -48,7 +48,9 @@ const getAllProducts = asyncHandler(
 
 const updateProduct = asyncHandler(async (id, productData) => {
   validateMongodbId(id);
-  const result = await Product.updateOne({ _id: id }, productData);
+  const result = await Product.findByIdAndUpdate(id, productData, {
+    new: true,
+  });
   return result;
 });
 

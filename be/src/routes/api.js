@@ -21,6 +21,7 @@ const {
   deleteProductController,
   addToWishlistController,
   ratingController,
+  uploadImagesController,
 } = require("../controllers/productController");
 const {
   createBlogController,
@@ -30,6 +31,7 @@ const {
   deleteABlogController,
   likeBlogController,
   disLikeBlogController,
+  uploadImagesBlogController,
 } = require("../controllers/blogController");
 const {
   createCategoryController,
@@ -37,7 +39,7 @@ const {
   deleteCategoryController,
   getACategoryController,
   getAllCategoriesController,
-} = require("../controllers/ProductCategoryController");
+} = require("../controllers/productCategoryController");
 
 const {
   createBlogCategoryController,
@@ -45,7 +47,7 @@ const {
   deleteBlogCategoryController,
   getABlogCategoryController,
   getAllBlogCategoriesController,
-} = require("../controllers/BlogCategoryController");
+} = require("../controllers/blogCategoryController");
 
 const {
   createBrandController,
@@ -53,7 +55,13 @@ const {
   deleteBrandController,
   getABrandController,
   getAllBrandsController,
-} = require("../controllers/BrandController");
+} = require("../controllers/brandController");
+const {
+  createCouponController,
+  getAllCouponsController,
+  updateCouponController,
+  deleteCouponController,
+} = require("../controllers/couponController");
 
 const router = express.Router();
 router.all("*", authMiddleware);
@@ -78,6 +86,7 @@ router.post("/products/", createProductController);
 router.get("/products/", getAllProductsController);
 router.put("/products/wishlist", addToWishlistController);
 router.put("/products/rating", ratingController);
+router.put("/products/upload/:id", uploadImagesController);
 router.get("/products/:id", getProductByIdController);
 router.put("/products/:id", updateProductController);
 router.delete("/products/:id", deleteProductController);
@@ -87,6 +96,7 @@ router.post("/blogs/", createBlogController);
 router.get("/blogs/", getAllBlogsController);
 router.put("/blogs/likes", likeBlogController);
 router.put("/blogs/dislikes", disLikeBlogController);
+router.put("/blogs/upload/:id", uploadImagesBlogController);
 router.put("/blogs/:id", updateBlogController);
 router.get("/blogs/:id", getABlogController);
 router.delete("/blogs/:id", deleteABlogController);
@@ -101,6 +111,9 @@ router.delete("/product-categories/:id", deleteCategoryController);
 //blog category
 router.post("/blog-categories/", createBlogCategoryController);
 router.get("/blog-categories/", getAllBlogCategoriesController);
+
+router.put("/products/upload/:id", uploadImagesBlogController);
+
 router.put("/blog-categories/:id", updateBlogCategoryController);
 router.get("/blog-categories/:id", getABlogCategoryController);
 router.delete("/blog-categories/:id", deleteBlogCategoryController);
@@ -111,5 +124,11 @@ router.get("/brands/", getAllBrandsController);
 router.put("/brands/:id", updateBrandController);
 router.get("/brands/:id", getABrandController);
 router.delete("/brands/:id", deleteBrandController);
+
+//coupon
+router.post("/coupons/", createCouponController);
+router.get("/coupons/", getAllCouponsController);
+router.put("/coupons/:id", updateCouponController);
+router.delete("/coupons/:id", deleteCouponController);
 
 module.exports = router;

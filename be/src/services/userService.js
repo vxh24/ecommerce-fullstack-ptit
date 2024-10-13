@@ -69,8 +69,8 @@ const updateAUser = asyncHandler(async (id, userData) => {
     { _id: id },
     {
       name: userData.name,
-      email: userData.email,
       phone: userData.phone,
+      avatar: userData.avatar,
     }
   );
   return result;

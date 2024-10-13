@@ -9,6 +9,7 @@ const {
   addToWishlist,
   rating,
 } = require("../services/productService");
+const { uploadMultipleFiles } = require("../services/fileService");
 
 const createProductController = asyncHandler(async (req, res) => {
   // res.send("Create new product");
@@ -115,6 +116,51 @@ const ratingController = asyncHandler(async (req, res) => {
   }
 });
 
+const uploadImagesController = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  try {
+    const files = req.files.images;
+    if (!files) {
+      return res.status(400).json({
+        EC: 1,
+        message: "No files uploaded",
+      });
+    }
+
+    const filesArr = Array.isArray(files) ? files : [files];
+
+    // Gọi hàm upload để upload lên cả local và Cloudinary
+    const uploadResults = await uploadMultipleFiles(filesArr, "products");
+
+    if (uploadResults.countSuccess === 0) {
+      return res.status(500).json({
+        EC: 1,
+        message: "Failed to upload files",
+      });
+    }
+
+    // Lấy cả đường dẫn local và Cloudinary URL
+    const images = uploadResults.detail.map((file) => ({
+      localPath: file.path,
+      cloudinaryUrl: file.cloudinaryUrl,
+    }));
+
+    const currentProduct = await getAProduct(id);
+    const updatedImages = [...(currentProduct.images || []), ...images];
+
+    const updatedProduct = await updateProduct(
+      id,
+      {
+        images: updatedImages,
+      },
+      { new: true }
+    );
+    res.json(updatedProduct);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 module.exports = {
   createProductController,
   getProductByIdController,
@@ -123,4 +169,5 @@ module.exports = {
   deleteProductController,
   addToWishlistController,
   ratingController,
+  uploadImagesController,
 };
