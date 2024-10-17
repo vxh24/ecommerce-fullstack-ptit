@@ -20,6 +20,9 @@ const {
   getCartUser,
   emptyCart,
   applyCoupon,
+  createOrder,
+  getOrder,
+  updateOrderStatus,
 } = require("../services/userService");
 const User = require("../models/userModel");
 const { generateToken } = require("../config/jwtToken");
@@ -321,6 +324,47 @@ const handleCouponController = asyncHandler(async (req, res) => {
   }
 });
 
+const createOrderController = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const { COD, couponApplied } = req.body;
+  try {
+    if (!COD) throw new Error("Create cash order failed");
+    const result = await createOrder(_id, COD, couponApplied);
+    res.json({
+      EC: 0,
+      message: "success",
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+const getOrderController = asyncHandler(async (req, res) => {
+  try {
+    const result = await getOrder();
+    res.json({
+      EC: 0,
+      data: result,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+const updateOrderStatusController = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  try {
+    const result = await updateOrderStatus(id, status);
+    res.json({
+      EC: 0,
+      data: result,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 module.exports = {
   createUserController,
   loginUserController,
@@ -340,4 +384,7 @@ module.exports = {
   getUserCartController,
   removeCartController,
   handleCouponController,
+  createOrderController,
+  getOrderController,
+  updateOrderStatusController,
 };

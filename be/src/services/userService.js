@@ -8,6 +8,8 @@ const crypto = require("crypto");
 const Cart = require("../models/cartModel");
 const Product = require("../models/productModel");
 const Coupon = require("../models/couponModel");
+const Order = require("../models/orderModel");
+const uniqid = require("uniqid");
 
 const createUser = asyncHandler(async (userData) => {
   const email = userData.email;
@@ -257,7 +259,62 @@ const applyCoupon = asyncHandler(async (id, coupon) => {
   return { totalAfterDiscount: totalAfterDiscount };
 });
 
-//8:22:54
+const createOrder = asyncHandler(async (id, COD, couponApplied) => {
+  validateMongodbId(id);
+  const user = await User.findById(id);
+  let userCart = await Cart.findOne({ orderBy: user._id });
+  let finalAmount = 0;
+  if (couponApplied && userCart.totalAfterDiscount) {
+    finalAmount = userCart.totalAfterDiscount;
+  } else {
+    finalAmount = userCart.cartTotal;
+  }
+
+  let newOrder = await new Order({
+    products: userCart.products,
+    paymentIndent: {
+      id: uniqid(),
+      method: "COD",
+      amount: finalAmount,
+      status: "Cash on delivery",
+      created: Date.now(),
+      currency: "usd",
+    },
+    orderBy: user._id,
+    orderStatus: "Cash on delivery",
+  }).save();
+  let update = userCart.products.map((item) => {
+    return {
+      updateOne: {
+        filter: { _id: item.product._id },
+        update: { $inc: { quantity: -item.count, sold: +item.count } },
+      },
+    };
+  });
+
+  const updated = await Product.bulkWrite(update, {});
+  return updated;
+});
+
+const getOrder = asyncHandler(async () => {
+  const orderUser = await Order.find({}).populate("products.product");
+  return orderUser;
+});
+
+const updateOrderStatus = asyncHandler(async (id, status) => {
+  validateMongodbId(id);
+  const updateOrderStatus = await Order.findByIdAndUpdate(
+    id,
+    {
+      orderStatus: status,
+      paymentIndent: {
+        status: status,
+      },
+    },
+    { new: true }
+  );
+  return updateOrderStatus;
+});
 
 module.exports = {
   createUser,
@@ -276,4 +333,7 @@ module.exports = {
   getCartUser,
   emptyCart,
   applyCoupon,
+  createOrder,
+  getOrder,
+  updateOrderStatus,
 };

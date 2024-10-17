@@ -21,6 +21,9 @@ const {
   getUserCartController,
   removeCartController,
   handleCouponController,
+  createOrderController,
+  getOrderController,
+  updateOrderStatusController,
 } = require("../controllers/userController");
 
 const {
@@ -94,12 +97,15 @@ router.post("/users/cart", addtoCartController);
 router.get("/users/cart", getUserCartController);
 router.delete("/users/empty-cart", removeCartController);
 router.post("/users/apply-coupon", handleCouponController);
+router.post("/users/cart/cash-order", createOrderController);
+router.get("/users/orders", getOrderController);
 router.put("/users/update-password", updatePasswordController);
 router.post("/users/forgot-password", forgotPasswordTokenController);
 router.put("/users/reset-password/:token", resetPasswordController);
 router.get("/users/:id", getUserByIdController);
 router.delete("/users/:id", deleteAUserController);
 router.put("/users/:id", updateAUserController);
+router.put("/users/order/update-order/:id", updateOrderStatusController);
 
 //product
 router.post("/products/", createProductController);
