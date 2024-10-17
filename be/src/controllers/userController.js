@@ -13,6 +13,13 @@ const {
   updatePassword,
   generateResetPasswordToken,
   resetPassword,
+  handleAdminLogin,
+  getWishlist,
+  saveAddress,
+  addToCart,
+  getCartUser,
+  emptyCart,
+  applyCoupon,
 } = require("../services/userService");
 const User = require("../models/userModel");
 const { generateToken } = require("../config/jwtToken");
@@ -54,6 +61,25 @@ const createUserController = asyncHandler(async (req, res) => {
 const loginUserController = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const result = await handleLogin(email, password);
+
+  if (result.EC === 0) {
+    res.cookie("refresh_token", result.refresh_token, {
+      httpOnly: true,
+      maxAge: 72 * 60 * 60 * 1000, // 3day
+    });
+
+    res.status(200).json({
+      access_token: result.access_token,
+      user: result.user,
+    });
+  } else {
+    throw new Error("Invalid Credentials");
+  }
+});
+
+const loginAdminController = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  const result = await handleAdminLogin(email, password);
 
   if (result.EC === 0) {
     res.cookie("refresh_token", result.refresh_token, {
@@ -211,6 +237,90 @@ const resetPasswordController = asyncHandler(async (req, res) => {
   }
 });
 
+const getWishlistController = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  try {
+    const result = await getWishlist(_id);
+    res.status(200).json({
+      EC: 0,
+      data: result,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+const saveAddressController = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const address = req.body.address;
+  try {
+    const result = await saveAddress(_id, address);
+    res.status(200).json({
+      EC: 0,
+      data: result,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+const addtoCartController = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const { cart } = req.body;
+
+  try {
+    const result = await addToCart(_id, cart);
+
+    res.status(200).json({
+      EC: 0,
+      data: result,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+const getUserCartController = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  try {
+    const result = await getCartUser(_id);
+    res.status(200).json({
+      EC: 0,
+      data: result,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+const removeCartController = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  try {
+    const result = await emptyCart(_id);
+
+    res.status(200).json({
+      EC: 0,
+      data: result,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+const handleCouponController = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const { coupon } = req.body;
+  try {
+    const result = await applyCoupon(_id, coupon);
+    res.status(200).json({
+      EC: 0,
+      data: result,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 module.exports = {
   createUserController,
   loginUserController,
@@ -223,4 +333,11 @@ module.exports = {
   updatePasswordController,
   forgotPasswordTokenController,
   resetPasswordController,
+  loginAdminController,
+  getWishlistController,
+  saveAddressController,
+  addtoCartController,
+  getUserCartController,
+  removeCartController,
+  handleCouponController,
 };

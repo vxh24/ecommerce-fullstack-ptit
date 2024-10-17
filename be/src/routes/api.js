@@ -1,5 +1,7 @@
 const express = require("express");
+
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
+
 const {
   createUserController,
   loginUserController,
@@ -12,7 +14,15 @@ const {
   updatePasswordController,
   forgotPasswordTokenController,
   resetPasswordController,
+  loginAdminController,
+  getWishlistController,
+  saveAddressController,
+  addtoCartController,
+  getUserCartController,
+  removeCartController,
+  handleCouponController,
 } = require("../controllers/userController");
+
 const {
   createProductController,
   getProductByIdController,
@@ -23,6 +33,7 @@ const {
   ratingController,
   uploadImagesController,
 } = require("../controllers/productController");
+
 const {
   createBlogController,
   updateBlogController,
@@ -33,6 +44,7 @@ const {
   disLikeBlogController,
   uploadImagesBlogController,
 } = require("../controllers/blogController");
+
 const {
   createCategoryController,
   updateCategoryController,
@@ -56,6 +68,7 @@ const {
   getABrandController,
   getAllBrandsController,
 } = require("../controllers/brandController");
+
 const {
   createCouponController,
   getAllCouponsController,
@@ -69,11 +82,18 @@ router.all("*", authMiddleware);
 //auth
 router.post("/register", createUserController);
 router.post("/login", loginUserController);
+router.post("/admin-login", loginAdminController);
 router.get("/refresh", handleRefreshToken);
 router.get("/logout", logoutController);
 
 //user
 router.get("/users/all-users", getAllUsersController);
+router.get("/users/wishlist", getWishlistController);
+router.put("/users/save-address", saveAddressController);
+router.post("/users/cart", addtoCartController);
+router.get("/users/cart", getUserCartController);
+router.delete("/users/empty-cart", removeCartController);
+router.post("/users/apply-coupon", handleCouponController);
 router.put("/users/update-password", updatePasswordController);
 router.post("/users/forgot-password", forgotPasswordTokenController);
 router.put("/users/reset-password/:token", resetPasswordController);

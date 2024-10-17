@@ -5,6 +5,9 @@ const { generateRefreshToken } = require("../config/refreshToken");
 const validateMongodbId = require("../utils/validateMongodbId");
 const sendEmail = require("../controllers/emailController");
 const crypto = require("crypto");
+const Cart = require("../models/cartModel");
+const Product = require("../models/productModel");
+const Coupon = require("../models/couponModel");
 
 const createUser = asyncHandler(async (userData) => {
   const email = userData.email;
@@ -21,6 +24,40 @@ const createUser = asyncHandler(async (userData) => {
 
 const handleLogin = asyncHandler(async (email, password) => {
   const user = await User.findOne({ email: email });
+  if (user) {
+    //compare password
+    const isMatchPassword = await user.isPasswordMatched(password);
+    if (isMatchPassword) {
+      //login/create an access token
+      const payload = {
+        _id: user?._id,
+        email: user?.email,
+        name: user?.name,
+      };
+      const refresh_token = await generateRefreshToken(payload);
+      const updateUser = await User.updateOne(
+        { _id: user.id },
+        { refresh_token: refresh_token }
+      );
+      const access_token = generateToken(payload);
+      return {
+        EC: 0,
+        access_token,
+        refresh_token,
+        user: {
+          email: user.email,
+          name: user.name,
+        },
+      };
+    }
+    return { EC: 1, message: "Password is incorrect" };
+  }
+  return { EC: 2, message: "User not found" };
+});
+
+const handleAdminLogin = asyncHandler(async (email, password) => {
+  const user = await User.findOne({ email: email });
+  if (user.role !== "admin") throw new Error("Not Authorized!!!");
   if (user) {
     //compare password
     const isMatchPassword = await user.isPasswordMatched(password);
@@ -138,6 +175,90 @@ const resetPassword = asyncHandler(async (token, password) => {
   return user;
 });
 
+const getWishlist = asyncHandler(async (id) => {
+  const user = await User.findById(id).populate("wishlist");
+  return user;
+});
+
+const saveAddress = asyncHandler(async (id, address) => {
+  validateMongodbId(id);
+
+  const updatedUser = await User.findByIdAndUpdate(
+    id,
+    {
+      address: address,
+    },
+    {
+      new: true,
+    }
+  );
+  return updatedUser;
+});
+
+const addToCart = asyncHandler(async (id, cart) => {
+  validateMongodbId(id);
+  let products = [];
+  const user = await User.findById(id);
+
+  const alreadyExistCart = await Cart.findOne({ orderBy: user._id });
+  if (alreadyExistCart) alreadyExistCart.remove();
+  for (let i = 0; i < cart.length; i++) {
+    let obj = {};
+    obj.product = cart[i]._id;
+    obj.count = cart[i].count;
+    obj.color = cart[i].color;
+    let getPrice = await Product.findById(cart[i]._id).select("price").exec();
+    obj.price = getPrice.price;
+    products.push(obj);
+  }
+  let cartTotal = 0;
+  for (let i = 0; i < products.length; i++) {
+    cartTotal += products[i].price * products[i].count;
+  }
+  let newCart = await new Cart({
+    products,
+    cartTotal,
+    orderBy: user?._id,
+  }).save();
+  return newCart;
+});
+
+const getCartUser = asyncHandler(async (id) => {
+  validateMongodbId(id);
+  const cart = await Cart.findOne({ orderBy: id }).populate("products.product");
+  return cart;
+});
+
+const emptyCart = asyncHandler(async (id) => {
+  validateMongodbId(id);
+  const cart = await Cart.deleteOne({ orderBy: id });
+  return cart;
+});
+
+const applyCoupon = asyncHandler(async (id, coupon) => {
+  validateMongodbId(id);
+  const validCoupon = await Coupon.findOne({ name: coupon });
+  if (validCoupon === null) {
+    throw new Error("Invalid Coupon");
+  }
+  let { products, cartTotal } = await Cart.findOne({ orderBy: id }).populate(
+    "products.product"
+  );
+  let totalAfterDiscount = (
+    cartTotal -
+    (cartTotal * validCoupon.discount) / 100
+  ).toFixed(2);
+  await Cart.findOneAndUpdate(
+    { orderBy: id },
+    { totalAfterDiscount },
+    { new: true }
+  );
+
+  return { totalAfterDiscount: totalAfterDiscount };
+});
+
+//8:22:54
+
 module.exports = {
   createUser,
   handleLogin,
@@ -148,4 +269,11 @@ module.exports = {
   updatePassword,
   generateResetPasswordToken,
   resetPassword,
+  handleAdminLogin,
+  getWishlist,
+  saveAddress,
+  addToCart,
+  getCartUser,
+  emptyCart,
+  applyCoupon,
 };
