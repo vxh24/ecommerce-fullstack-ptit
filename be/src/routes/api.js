@@ -78,6 +78,13 @@ const {
   updateCouponController,
   deleteCouponController,
 } = require("../controllers/couponController");
+const {
+  createColorController,
+  getAllColorsController,
+  updateColorController,
+  getAColorController,
+  deleteColorController,
+} = require("../controllers/colorController");
 
 const router = express.Router();
 router.all("*", authMiddleware);
@@ -150,6 +157,13 @@ router.get("/brands/", getAllBrandsController);
 router.put("/brands/:id", updateBrandController);
 router.get("/brands/:id", getABrandController);
 router.delete("/brands/:id", deleteBrandController);
+
+//color
+router.post("/color/", createColorController);
+router.get("/color/", getAllColorsController);
+router.put("/color/:id", updateColorController);
+router.get("/color/:id", getAColorController);
+router.delete("/color/:id", deleteColorController);
 
 //coupon
 router.post("/coupons/", createCouponController);

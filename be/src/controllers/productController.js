@@ -129,7 +129,6 @@ const uploadImagesController = asyncHandler(async (req, res) => {
 
     const filesArr = Array.isArray(files) ? files : [files];
 
-    // Gọi hàm upload để upload lên cả local và Cloudinary
     const uploadResults = await uploadMultipleFiles(filesArr, "products");
 
     if (uploadResults.countSuccess === 0) {
@@ -139,7 +138,6 @@ const uploadImagesController = asyncHandler(async (req, res) => {
       });
     }
 
-    // Lấy cả đường dẫn local và Cloudinary URL
     const images = uploadResults.detail.map((file) => ({
       localPath: file.path,
       cloudinaryUrl: file.cloudinaryUrl,
