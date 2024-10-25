@@ -3,9 +3,12 @@ import { RxCross1 } from "react-icons/rx";
 import { BsCartPlus } from "react-icons/bs";
 import styles from "../../styles/styles";
 import { AiOutlineHeart } from "react-icons/ai";
-import { cartData } from "../../static/data";
+import { useDispatch, useSelector } from "react-redux";
+// import { cartData } from "../../static/data";
 
 const Wishlist = ({ setOpenWishlist }) => {
+  const { wishlist } = useSelector((state) => state.wishlist);
+  const dispatch = useDispatch();
   return (
     <div className="fixed top-0 left-0 w-full bg-[#0000004b] h-screen z-10">
       <div className="fixed top-0 right-0 h-full w-[80%] overflow-y-scroll 800px:w-[25%] bg-white flex flex-col justify-between shadow-sm">
@@ -21,15 +24,15 @@ const Wishlist = ({ setOpenWishlist }) => {
           <div className={`${styles.noramlFlex} p-4`}>
             <AiOutlineHeart size={25} />
             <h5 className="pl-2 text-[20px] font-[500]">
-              {cartData && cartData.length} items
+              {wishlist && wishlist.length} items
             </h5>
           </div>
 
           {/* cart Single Items */}
           <br />
           <div className="w-full border-t">
-            {cartData &&
-              cartData.map((i, index) => (
+            {wishlist &&
+              wishlist.map((i, index) => (
                 <CartSingle key={index} data={i} />
               ))}
           </div>
@@ -50,7 +53,7 @@ const CartSingle = ({ data }) => {
         // onClick={() => removeFromWishlistHandler(data)}
         />
         <img
-          src="https://cdn.shopify.com/s/files/1/1706/9177/products/NEWAppleMacbookProwithM1ProChip14InchLaptop2021ModelMKGQ3LL_A_16GB_1TBSSD_custommacbd.jpg?v=1659592838"
+          src={`${data?.image_Url[0].url}`}
           alt=""
           className="w-[130px] h-min ml-2 mr-2 rounded-[5px]"
         />

@@ -19,7 +19,7 @@ const ProfileContent = ({ active }) => {
     e.preventDefault();
   };
   return (
-    <div className="w-full">
+    <div className="w-full bg-slate-50">
       {/* profile */}
       {active === 1 && (
         <>
