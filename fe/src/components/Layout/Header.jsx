@@ -48,7 +48,31 @@ const Header = ({ activeHeading }) => {
   });
   return (
     <>
+      <div className="bg-gray-900 text-white px-6 py-2 flex justify-between items-center">
+        {/* Left Side - Free Shipping Info */}
+        <div className="text-sm">
+          Free Shipping Over $100 & Free Returns
+        </div>
+
+        {/* Right Side - Hotline, Language, and Currency */}
+        <div className="flex items-center space-x-6 text-sm">
+          {/* Hotline */}
+          <div className="hidden sm:block">
+            Hotline: 4564563343545
+          </div>
+
+          {/* Language Dropdown */}
+          <div className="relative">
+            <select className="bg-gray-900 text-white border-none outline-none">
+              <option>English</option>
+              <option>Vietnamses</option>
+            </select>
+          </div>
+
+        </div>
+      </div>
       <div className={`${styles.section}`}>
+
         <div className="hidden 800px:h-[50px] 800px:my-[20px] 800px:flex items-center justify-between">
           <div>
             <Link to="/">
