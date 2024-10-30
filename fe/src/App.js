@@ -3,11 +3,14 @@ import "./App.css"
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import {
   LoginPage, SignupPage, HomePage, ProductsPage, BestSellinngPage, EventsPgae, FaqPage, ProductDetailsPage, ProfilePage,
-  CheckoutPage,
+  CheckoutPage, ShopCreatePage, ShopLoginPage, ShopHomePage,
+
 } from "./routes/Routes.js"
 import {
   AdminDashboardPage, AdminDashboardUsers, AdminDashboardSellers, AdminDashboardOrders, AdminDashboardProducts, AdminDashboardEvents, AdminDashboardWithdraw
 } from "./routes/AdminRoutes.js"
+import { ShopDashboardPage, } from "./routes/ShopRoutes.js";
+
 const App = () => {
   return (
     <BrowserRouter>
@@ -22,6 +25,21 @@ const App = () => {
         <Route path="/product/:name" element={<ProductDetailsPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
+        {/*shop Routers */}
+        <Route path="/shop-create" element={<ShopCreatePage />} />
+        <Route path="/shop-login" element={<ShopLoginPage />} />
+        <Route
+          path="/shop/:id"
+          element={
+            <ShopHomePage />
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <ShopDashboardPage />
+          }
+        />
         {/* Admin Routes */}
         <Route
           path="/admin/dashboard"
