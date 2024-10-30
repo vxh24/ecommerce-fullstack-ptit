@@ -3,6 +3,13 @@ const asyncHandler = require("express-async-handler");
 const { generateToken } = require("../config/jwtToken");
 const { generateRefreshToken } = require("../config/refreshToken");
 const validateMongodbId = require("../utils/validateMongodbId");
+const sendEmail = require("../controllers/emailController");
+const crypto = require("crypto");
+const Cart = require("../models/cartModel");
+const Product = require("../models/productModel");
+const Coupon = require("../models/couponModel");
+const Order = require("../models/orderModel");
+const uniqid = require("uniqid");
 
 const createUser = asyncHandler(async (userData) => {
   const email = userData.email;
@@ -25,6 +32,7 @@ const handleLogin = asyncHandler(async (email, password) => {
     if (isMatchPassword) {
       //login/create an access token
       const payload = {
+        _id: user?._id,
         email: user?.email,
         name: user?.name,
       };
@@ -44,9 +52,43 @@ const handleLogin = asyncHandler(async (email, password) => {
         },
       };
     }
-  } else {
-    throw new Error("Invalid Credentials");
+    return { EC: 1, message: "Password is incorrect" };
   }
+  return { EC: 2, message: "User not found" };
+});
+
+const handleAdminLogin = asyncHandler(async (email, password) => {
+  const user = await User.findOne({ email: email });
+  if (user.role !== "admin") throw new Error("Not Authorized!!!");
+  if (user) {
+    //compare password
+    const isMatchPassword = await user.isPasswordMatched(password);
+    if (isMatchPassword) {
+      //login/create an access token
+      const payload = {
+        _id: user?._id,
+        email: user?.email,
+        name: user?.name,
+      };
+      const refresh_token = await generateRefreshToken(payload);
+      const updateUser = await User.updateOne(
+        { _id: user.id },
+        { refresh_token: refresh_token }
+      );
+      const access_token = generateToken(payload);
+      return {
+        EC: 0,
+        access_token,
+        refresh_token,
+        user: {
+          email: user.email,
+          name: user.name,
+        },
+      };
+    }
+    return { EC: 1, message: "Password is incorrect" };
+  }
+  return { EC: 2, message: "User not found" };
 });
 
 const getAllUsers = asyncHandler(async () => {
@@ -66,8 +108,8 @@ const updateAUser = asyncHandler(async (id, userData) => {
     { _id: id },
     {
       name: userData.name,
-      email: userData.email,
       phone: userData.phone,
+      avatar: userData.avatar,
     }
   );
   return result;
@@ -79,6 +121,201 @@ const deleteAUser = asyncHandler(async (id) => {
   return result;
 });
 
+const updatePassword = asyncHandler(async (email, newPassword) => {
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  if (!newPassword) {
+    throw new Error("Password not provided");
+  }
+
+  user.password = newPassword;
+  const reset_token = user.createPasswordResetToken();
+  const updatedUser = await user.save();
+
+  return updatedUser;
+});
+
+const generateResetPasswordToken = asyncHandler(async (email) => {
+  const user = await User.findOne({ email });
+  if (!user) throw new Error("User not found with this email");
+
+  const token = await user.createPasswordResetToken();
+  await user.save();
+
+  const resetURL = `Hi, Please follow this link to reset your password. This link is valid till 10 minutes from now. <a href="http://localhost:5000/v1/api/users/reset-password/${token}">Click here</a>`;
+
+  const data = {
+    to: email,
+    text: "Hey user",
+    subject: "Forgot Password Link",
+    html: resetURL,
+  };
+  await sendEmail(data);
+  return token;
+});
+
+const resetPassword = asyncHandler(async (token, password) => {
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+
+  if (!user) throw new Error("Token expired, Please try again later.");
+
+  //reset password and remove token
+  user.password = password;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+  await user.save();
+
+  return user;
+});
+
+const getWishlist = asyncHandler(async (id) => {
+  const user = await User.findById(id).populate("wishlist");
+  return user;
+});
+
+const saveAddress = asyncHandler(async (id, address) => {
+  validateMongodbId(id);
+
+  const updatedUser = await User.findByIdAndUpdate(
+    id,
+    {
+      address: address,
+    },
+    {
+      new: true,
+    }
+  );
+  return updatedUser;
+});
+
+const addToCart = asyncHandler(async (id, cart) => {
+  validateMongodbId(id);
+  let products = [];
+  const user = await User.findById(id);
+
+  const alreadyExistCart = await Cart.findOne({ orderBy: user._id });
+  if (alreadyExistCart) alreadyExistCart.remove();
+  for (let i = 0; i < cart.length; i++) {
+    let obj = {};
+    obj.product = cart[i]._id;
+    obj.count = cart[i].count;
+    obj.color = cart[i].color;
+    let getPrice = await Product.findById(cart[i]._id).select("price").exec();
+    obj.price = getPrice.price;
+    products.push(obj);
+  }
+  let cartTotal = 0;
+  for (let i = 0; i < products.length; i++) {
+    cartTotal += products[i].price * products[i].count;
+  }
+  let newCart = await new Cart({
+    products,
+    cartTotal,
+    orderBy: user?._id,
+  }).save();
+  return newCart;
+});
+
+const getCartUser = asyncHandler(async (id) => {
+  validateMongodbId(id);
+  const cart = await Cart.findOne({ orderBy: id }).populate("products.product");
+  return cart;
+});
+
+const emptyCart = asyncHandler(async (id) => {
+  validateMongodbId(id);
+  const cart = await Cart.deleteOne({ orderBy: id });
+  return cart;
+});
+
+const applyCoupon = asyncHandler(async (id, coupon) => {
+  validateMongodbId(id);
+  const validCoupon = await Coupon.findOne({ name: coupon });
+  if (validCoupon === null) {
+    throw new Error("Invalid Coupon");
+  }
+  let { products, cartTotal } = await Cart.findOne({ orderBy: id }).populate(
+    "products.product"
+  );
+  let totalAfterDiscount = (
+    cartTotal -
+    (cartTotal * validCoupon.discount) / 100
+  ).toFixed(2);
+  await Cart.findOneAndUpdate(
+    { orderBy: id },
+    { totalAfterDiscount },
+    { new: true }
+  );
+
+  return { totalAfterDiscount: totalAfterDiscount };
+});
+
+const createOrder = asyncHandler(async (id, COD, couponApplied) => {
+  validateMongodbId(id);
+  const user = await User.findById(id);
+  let userCart = await Cart.findOne({ orderBy: user._id });
+  let finalAmount = 0;
+  if (couponApplied && userCart.totalAfterDiscount) {
+    finalAmount = userCart.totalAfterDiscount;
+  } else {
+    finalAmount = userCart.cartTotal;
+  }
+
+  let newOrder = await new Order({
+    products: userCart.products,
+    paymentIndent: {
+      id: uniqid(),
+      method: "COD",
+      amount: finalAmount,
+      status: "Cash on delivery",
+      created: Date.now(),
+      currency: "usd",
+    },
+    orderBy: user._id,
+    orderStatus: "Cash on delivery",
+  }).save();
+  let update = userCart.products.map((item) => {
+    return {
+      updateOne: {
+        filter: { _id: item.product._id },
+        update: { $inc: { quantity: -item.count, sold: +item.count } },
+      },
+    };
+  });
+
+  const updated = await Product.bulkWrite(update, {});
+  return updated;
+});
+
+const getOrder = asyncHandler(async () => {
+  const orderUser = await Order.find({}).populate("products.product");
+  return orderUser;
+});
+
+const updateOrderStatus = asyncHandler(async (id, status) => {
+  validateMongodbId(id);
+  const updateOrderStatus = await Order.findByIdAndUpdate(
+    id,
+    {
+      orderStatus: status,
+      paymentIndent: {
+        status: status,
+      },
+    },
+    { new: true }
+  );
+  return updateOrderStatus;
+});
+
 module.exports = {
   createUser,
   handleLogin,
@@ -86,4 +323,17 @@ module.exports = {
   getUserById,
   updateAUser,
   deleteAUser,
+  updatePassword,
+  generateResetPasswordToken,
+  resetPassword,
+  handleAdminLogin,
+  getWishlist,
+  saveAddress,
+  addToCart,
+  getCartUser,
+  emptyCart,
+  applyCoupon,
+  createOrder,
+  getOrder,
+  updateOrderStatus,
 };

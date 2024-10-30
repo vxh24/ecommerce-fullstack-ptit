@@ -1,10 +1,9 @@
 const path = require("path");
+const { uploadToCloudinary } = require("../utils/cloudinary");
 
 const uploadSingleFile = async (fileObject) => {
   // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
   let uploadPath = path.resolve(__dirname, "../public/images/upload");
-
-  // console.log(">>> uploadPath: ", uploadPath);
 
   //get image extension
   let extName = path.extname(fileObject.name);
@@ -25,7 +24,7 @@ const uploadSingleFile = async (fileObject) => {
       error: null,
     };
   } catch (error) {
-    console.log("check error: ", error);
+    // console.log("check error: ", error);
     return {
       status: "failed",
       path: null,
@@ -34,9 +33,10 @@ const uploadSingleFile = async (fileObject) => {
   }
 };
 
-const uploadMultipleFiles = async (filesArr) => {
+const uploadMultipleFiles = async (filesArr, filename) => {
   try {
-    let uploadPath = path.resolve(__dirname, "../public/images/upload");
+    let uploadPath = path.resolve(__dirname, `../public/images/${filename}`);
+
     let resultArr = [];
     let countSuccess = 0;
     for (let i = 0; i < filesArr.length; i++) {
@@ -53,17 +53,24 @@ const uploadMultipleFiles = async (filesArr) => {
       // Use the mv() method to place the file somewhere on your server
       try {
         await filesArr[i].mv(finalPath);
+
+        // Upload lên Cloudinary
+        const cloudinaryResult = await uploadToCloudinary(finalPath, filename);
+
         resultArr.push({
           status: "success",
           path: finalName,
+          cloudinaryUrl: cloudinaryResult.secure_url,
           fileName: filesArr[i].name,
           error: null,
         });
         countSuccess++;
       } catch (error) {
+        // console.log(error);
         resultArr.push({
           status: "failed",
           path: null,
+          cloudinaryUrl: null,
           fileName: filesArr[i].name,
           error: JSON.stringify(error),
         });
@@ -74,7 +81,7 @@ const uploadMultipleFiles = async (filesArr) => {
       detail: resultArr,
     };
   } catch (error) {
-    console.log(error);
+    throw new Error("File upload failed");
   }
 };
 
