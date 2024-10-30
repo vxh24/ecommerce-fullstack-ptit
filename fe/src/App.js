@@ -3,7 +3,7 @@ import "./App.css"
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import {
   LoginPage, SignupPage, HomePage, ProductsPage, BestSellinngPage, EventsPgae, FaqPage, ProductDetailsPage, ProfilePage,
-  CheckoutPage, ShopCreatePage, ShopLoginPage, ShopHomePage,
+  CheckoutPage, ShopCreatePage, ShopLoginPage, ShopHomePage, BlogPage,
 
 } from "./routes/Routes.js"
 import {
@@ -22,6 +22,7 @@ const App = () => {
         <Route path="/best-selling" element={<BestSellinngPage />} />
         <Route path="/events" element={<EventsPgae />} />
         <Route path="/faq" element={<FaqPage />} />
+        <Route path="/blog" element={<BlogPage />} />
         <Route path="/product/:name" element={<ProductDetailsPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
