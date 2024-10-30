@@ -8,9 +8,12 @@ const fileUpload = require("express-fileupload");
 const configViewEngine = require("./src/config/viewEngine");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
+const cors = require("cors");
 
 const app = express();
 const port = process.env.PORT || 4000;
+
+app.use(cors());
 
 app.use(morgan("dev"));
 
