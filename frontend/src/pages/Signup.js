@@ -2,7 +2,34 @@ import React from 'react'
 import Meta from '../components/Meta';
 import BreadCrumb from '../components/BreadCrumb'
 import { Link } from "react-router-dom";
+import { useFormik } from 'formik';
+import * as yup from 'yup';
+import { useDispatch } from 'react-redux';
+import { createUser } from '../features/user/userSlice';
+
+const signupSchema = yup.object({
+  name: yup.string().required("First name is Require"),
+  email: yup.string().nullable().email("Email should be valid"),
+  phone: yup.string().required("Mobie no is Required"),
+  password: yup.string().required("Password is Required")
+});
+
+
 const Signup = () => {
+  const dispatch = useDispatch();
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      // lastname: "",
+      email: "",
+      phone: "",
+      password: "",
+    },
+    validationSchema: signupSchema,
+    onSubmit: (values) => {
+      dispatch(createUser(values));
+    },
+  });
   return (
     <>
       <Meta title={"Sign Up"} />
@@ -13,19 +40,57 @@ const Signup = () => {
             <div className="col-12">
               <div className="auth-card">
                 <h3 className='text-center mb-3'>Create Account</h3>
-                <form action="" className='d-flex flex-column gap-15'>
+                <form action="" onSubmit={formik.handleSubmit} className='d-flex flex-column gap-15'>
                   <div>
-                    <input type="text" name="name" className="form-control" placeholder='First Name' />
+                    <input type="text" name="name" className="form-control" placeholder='First Name'
+                      value={formik.values.name} onChange={formik.handleChange("name")}
+                      onBlur={formik.handleBlur("name")} />
 
                   </div>
+                  <div className="error">
+                    {
+                      formik.touched.name && formik.errors.name
+                    }
+                  </div>
+                  {/* <div>
+                    <input type="text" name='lastname' className="form-control mt-1" placeholder='Last Name'
+                      value={formik.values.lastname} onChange={formik.handleChange("lastname")}
+                      onBlur={formik.handleBlur("lastname")} />
+                  </div>
+                  <div className="error">
+                    {
+                      formik.touched.lastname && formik.errors.lastname
+                    }
+                  </div> */}
                   <div>
-                    <input type="text" name='name' className="form-control mt-1" placeholder='Last Name' />
+                    <input type="email" name='email' className="form-control mt-1" placeholder='Email'
+                      value={formik.values.email} onChange={formik.handleChange("email")}
+                      onBlur={formik.handleBlur("email")} />
+                  </div>
+                  <div className="error">
+                    {
+                      formik.touched.email && formik.errors.email
+                    }
                   </div>
                   <div>
-                    <input type="email" name='email' className="form-control mt-1" placeholder='Email' />
+                    <input type="mobile" name='phone' className="form-control mt-1" placeholder='Mobile'
+                      value={formik.values.phone} onChange={formik.handleChange("phone")}
+                      onBlur={formik.handleBlur("phone")} />
+                  </div>
+                  <div className="error">
+                    {
+                      formik.touched.phone && formik.errors.phone
+                    }
                   </div>
                   <div>
-                    <input type="password" name='password' className="form-control mt-1" placeholder='Password' />
+                    <input type="password" name='password' className="form-control mt-1" placeholder='Password'
+                      value={formik.values.password} onChange={formik.handleChange("password")}
+                      onBlur={formik.handleBlur("password")} />
+                  </div>
+                  <div className="error">
+                    {
+                      formik.touched.password && formik.errors.password
+                    }
                   </div>
                   <div>
                     <div className="mt-3 d-flex justify-content-center gap-15 align-items-center">

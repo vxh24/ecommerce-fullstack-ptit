@@ -1,6 +1,6 @@
 const express = require("express");
 
-const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
+// const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
 
 const {
   createUserController,
@@ -87,7 +87,7 @@ const {
 } = require("../controllers/colorController");
 
 const router = express.Router();
-router.all("*", authMiddleware);
+// router.all("*", authMiddleware);
 
 //auth
 router.post("/register", createUserController);
