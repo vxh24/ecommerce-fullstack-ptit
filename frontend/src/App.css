@@ -863,3 +863,8 @@ footer .input-group-text {
 }
 
 /* shipping end */
+
+.error {
+  color: red;
+  font-size: 13px;
+}
