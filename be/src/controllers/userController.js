@@ -21,7 +21,7 @@ const {
   emptyCart,
   applyCoupon,
   createOrder,
-  getOrder,
+  getAllOrders,
   updateOrderStatus,
 } = require("../services/userService");
 const User = require("../models/userModel");
@@ -267,7 +267,7 @@ const saveAddressController = asyncHandler(async (req, res) => {
   }
 });
 
-const addtoCartController = asyncHandler(async (req, res) => {
+const addToCartController = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   const { cart } = req.body;
 
@@ -339,9 +339,9 @@ const createOrderController = asyncHandler(async (req, res) => {
   }
 });
 
-const getOrderController = asyncHandler(async (req, res) => {
+const getAllOrdersController = asyncHandler(async (req, res) => {
   try {
-    const result = await getOrder();
+    const result = await getAllOrders();
     res.json({
       EC: 0,
       data: result,
@@ -380,11 +380,11 @@ module.exports = {
   loginAdminController,
   getWishlistController,
   saveAddressController,
-  addtoCartController,
+  addToCartController,
   getUserCartController,
   removeCartController,
   handleCouponController,
   createOrderController,
-  getOrderController,
+  getAllOrdersController,
   updateOrderStatusController,
 };
