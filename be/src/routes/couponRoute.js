@@ -11,9 +11,9 @@ const {
 
 const router = express.Router();
 
-router.post("/coupons/", authMiddleware, isAdmin, createCouponController);
-router.get("/coupons/", authMiddleware, getAllCouponsController);
-router.put("/coupons/:id", authMiddleware, isAdmin, updateCouponController);
-router.delete("/coupons/:id", authMiddleware, isAdmin, deleteCouponController);
+router.post("/", authMiddleware, isAdmin, createCouponController);
+router.get("/", authMiddleware, isAdmin, getAllCouponsController);
+router.put("/:id", authMiddleware, isAdmin, updateCouponController);
+router.delete("/:id", authMiddleware, isAdmin, deleteCouponController);
 
 module.exports = router;
