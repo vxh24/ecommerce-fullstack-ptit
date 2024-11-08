@@ -20,7 +20,7 @@ const handleLogin = async (userData) => {
   }
 }
 const getWishlist = async () => {
-  const response = await axios.get(`${base_url}users/wishlist`, config);
+  const response = await axios.get(`${base_url}user/wishlist`, config);
   if (response.data) {
     return response.data
   }

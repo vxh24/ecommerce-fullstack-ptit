@@ -1,7 +1,8 @@
 import React from 'react'
 import ReactStars from "react-rating-stars-component";
 import { Link } from "react-router-dom";
-const SpecialProduct = () => {
+const SpecialProduct = (props) => {
+  const { title, brand, price, totalRating, sold, quantity, id } = props;
   return (
     <div className='col-6 mb-3'>
       <div className="special-product-card">
@@ -10,16 +11,16 @@ const SpecialProduct = () => {
             <img src="images/watch.jpg" className='img-fluid' alt="watch" />
           </div>
           <div className='sepcial-product-content'>
-            <h5 className='brand'>Havels</h5>
-            <h6 className="title">Tai nghe không dây Tai nghe bluetooth....</h6>
+            <h5 className='brand'>{brand}</h5>
+            <h6 className="title">{title}</h6>
             <ReactStars
               count={5}
               size={24}
-              value="3"
+              value={totalRating}
               edit={false}
               activeColor="#ffd700"
             />
-            <p className="price"><span className="red-p">$100.00</span> &nbsp; <strike>$200</strike></p>
+            <p className="price"><span className="red-p">$100.00</span> &nbsp; <strike>${price}</strike></p>
             <div className="disconut-till d-flex align-items-center gap-10">
               <p className='mb-0'><b> 5 </b>days</p>
               <div className="d-flex gap-10 align-items-center">
@@ -30,12 +31,13 @@ const SpecialProduct = () => {
 
             </div>
             <div className="prod-count my-3">
-              <p>Product: 5</p>
+              <p>Product: {quantity}</p>
               <div className="progress">
-                <div className="progress-bar" role="progressbar" style={{ "width": "25%" }} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                <div className="progress-bar" role="progressbar" style={{ width: `${(sold / (sold + quantity)) * 100}%` }}
+                  aria-valuenow={sold} aria-valuemin={quantity} aria-valuemax={sold + quantity}></div>
               </div>
             </div>
-            <Link className='button'>Add To Card</Link>
+            <Link className='button' to={"/product/" + id}>View</Link>
           </div>
         </div>
       </div>

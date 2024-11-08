@@ -4,7 +4,7 @@ import BreadCrumb from '../components/BreadCrumb'
 import ProductCard from "../components/ProductCard"
 import ReactStars from "react-rating-stars-component";
 import Color from "../components/Color"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import { FaRegHeart } from "react-icons/fa";
 import { IoGitCompareSharp } from "react-icons/io5";
 const SingleProduct = () => {
@@ -18,6 +18,8 @@ const SingleProduct = () => {
     document.execCommand('copy')
     textField.remove()
   }
+  const location = useLocation();
+  const getProductId = location.pathname.split("/")[2];
   return (
     <>
       <Meta title={"Product Name"} />

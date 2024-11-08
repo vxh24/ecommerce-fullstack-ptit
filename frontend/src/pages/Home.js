@@ -1,10 +1,31 @@
-import React from 'react'
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from 'react'
+import { Link, useNavigate } from "react-router-dom";
 import Marquee from "react-fast-marquee";
 import BlogCard from '../components/BlogCard';
 import ProductCard from "../components/ProductCard";
 import SpecialProduct from '../components/SpecialProduct';
+import PopularProduct from "../components/PopularProduct";
+import FeaturedProduct from "../components/FeaturedProduct";
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllBlog } from '../features/blogs/blogSlice';
+import moment from "moment";
+import { getAllProducts } from '../features/products/productSlice';
 const Home = () => {
+  const blogState = useSelector((state) => state?.blog?.blogs?.data);
+  const productState = useSelector((state) => state?.product?.products?.data);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  // console.log(productState[0].tags);
+  useEffect(() => {
+    getBlogs();
+    getProducts();
+  }, []);
+  const getBlogs = () => {
+    dispatch(getAllBlog());
+  }
+  const getProducts = () => {
+    dispatch(getAllProducts());
+  }
   return (
     <>
       <section className="home-wraper-1 py-5">
@@ -183,10 +204,22 @@ const Home = () => {
                 Feature Collection
               </h3>
             </div>
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
+            <div className="row">
+              {
+                productState && productState?.map((item, index) => {
+                  if (item?.tags[0] === "featured") {
+                    return (
+                      < FeaturedProduct key={index} title={item?.title} brand={item?.brand}
+                        price={item?.price} totalRating={item?.totalRatings.toString()}
+                        sold={item?.sold} quantity={item?.quantity} description={item?.description}
+                        id={item?._id}
+                      />
+                    )
+                  }
+
+                })
+              }
+            </div>
           </div>
         </div>
       </section>
@@ -246,10 +279,19 @@ const Home = () => {
             </div>
           </div>
           <div className="row">
-            <SpecialProduct />
-            <SpecialProduct />
-            <SpecialProduct />
-            <SpecialProduct />
+            {
+              productState && productState?.map((item, index) => {
+                if (item?.tags[0] === "special") {
+                  return (
+                    < SpecialProduct key={index} title={item?.title} brand={item?.brand}
+                      price={item?.price} totalRating={item?.totalRatings.toString()}
+                      sold={item?.sold} quantity={item?.quantity} id={item?._id}
+                    />
+                  )
+                }
+
+              })
+            }
           </div>
         </div>
       </section>
@@ -262,10 +304,20 @@ const Home = () => {
               </h3>
             </div>
             <div className="row">
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
+              {
+                productState && productState?.map((item, index) => {
+                  if (item?.tags[0] === "popular") {
+                    return (
+                      < PopularProduct key={index} title={item?.title} brand={item?.brand}
+                        price={item?.price} totalRating={item?.totalRatings.toString()}
+                        sold={item?.sold} quantity={item?.quantity} description={item?.description}
+                        id={item?._id}
+                      />
+                    )
+                  }
+
+                })
+              }
             </div>
           </div>
         </div>
@@ -316,18 +368,19 @@ const Home = () => {
             </div>
           </div>
           <div className="row">
-            <div className="col-3">
-              <BlogCard />
-            </div>
-            <div className="col-3">
-              <BlogCard />
-            </div>
-            <div className="col-3">
-              <BlogCard />
-            </div>
-            <div className="col-3">
-              <BlogCard />
-            </div>
+            {
+              blogState?.map((item, index) => {
+                return (
+                  <div className="col-3 " key={index}>
+
+                    <BlogCard id={item?._id} title={item?.title} description={item?.description}
+                      image={item?.image}
+                      date={moment(item?.created_at).format('MMMM Do YYYY, h:mm:ss a')}
+                    />
+                  </div>
+                )
+              })
+            }
           </div>
         </div>
       </section>

@@ -4,7 +4,32 @@ import BreadCrumb from '../components/BreadCrumb'
 import { IoHomeOutline } from "react-icons/io5";
 import { IoMdCall, IoMdInformationCircleOutline, IoIosMail } from "react-icons/io";
 import { Link } from 'react-router-dom';
+import * as yup from "yup";
+import { useFormik } from "formik";
+import { useDispatch } from 'react-redux';
+import { createQuery } from "../features/contact/contactSlice"
+const contactSchema = yup.object({
+  name: yup.string().required("Name is Require"),
+  email: yup.string().nullable().email("Email should be valid"),
+  phone: yup.string().required("Mobie no is Required"),
+  comment: yup.string().required("Comment is Required")
+});
+
 const Contact = () => {
+  const dispatch = useDispatch();
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      email: "",
+      phone: "",
+      comment: "",
+    },
+    validationSchema: contactSchema,
+    onSubmit: (values) => {
+      dispatch(createQuery(values));
+      // alert(JSON.stringify(values, null, 2));
+    },
+  });
   return (
     <>
       <Meta title={"Contact"} />
@@ -19,18 +44,54 @@ const Contact = () => {
               <div className="contact-inner-wrapper d-flex justify-content-between">
                 <div>
                   <h3 className="contact-title mb-4">Contact</h3>
-                  <form action="" className="d-flex flex-column gap-15">
+                  <form action="" onSubmit={formik.handleSubmit} className="d-flex flex-column gap-15">
                     <div>
-                      <input type="text" className="form-control" placeholder="Name" />
+                      <input type="text" className="form-control" placeholder="Name"
+                        name="name" onChange={formik.handleChange("name")}
+                        onBlur={formik.handleBlur("name")}
+                        value={formik.values.name}
+                      />
+                    </div>
+                    <div className="error">
+                      {
+                        formik.touched.name && formik.errors.name
+                      }
                     </div>
                     <div>
-                      <input type="email" className="form-control" placeholder="email" />
+                      <input type="email" className="form-control" placeholder="email"
+                        name="email" onChange={formik.handleChange("email")}
+                        onBlur={formik.handleBlur("email")}
+                        value={formik.values.email}
+                      />
+                    </div>
+                    <div className="error">
+                      {
+                        formik.touched.email && formik.errors.email
+                      }
                     </div>
                     <div>
-                      <input type="tel" className="form-control" placeholder="Moblie Number" />
+                      <input type="tel" className="form-control" placeholder="Moblie Number"
+                        name="phone" onChange={formik.handleChange("phone")}
+                        onBlur={formik.handleBlur("phone")}
+                        value={formik.values.phone}
+                      />
+                    </div>
+                    <div className="error">
+                      {
+                        formik.touched.phone && formik.errors.phone
+                      }
                     </div>
                     <div>
-                      <textarea name="" id="" className="w-100 form-control" cols="30" rows="4" placeholder='Comments'></textarea>
+                      <textarea name="comment" id="" className="w-100 form-control" cols="30" rows="4" placeholder='Comments'
+                        onChange={formik.handleChange("comment")}
+                        onBlur={formik.handleBlur("comment")}
+                        value={formik.values.comment}
+                      ></textarea>
+                      <div className="error">
+                        {
+                          formik.touched.comment && formik.errors.comment
+                        }
+                      </div>
                     </div>
                     <div>
                       <button className='button border-0'> Submit</button>
