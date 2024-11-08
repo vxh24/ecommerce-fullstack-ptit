@@ -5,13 +5,12 @@ import { Link } from "react-router-dom";
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useDispatch } from 'react-redux';
-import { registerUser } from '../features/user/userSlice';
+import { createUser } from '../features/user/userSlice';
 
 const signupSchema = yup.object({
-  firstname: yup.string().required("First name is Require"),
-  lastname: yup.string().required("Last name is Require"),
+  name: yup.string().required("First name is Require"),
   email: yup.string().nullable().email("Email should be valid"),
-  mobile: yup.string().required("Mobie no is Required"),
+  phone: yup.string().required("Mobie no is Required"),
   password: yup.string().required("Password is Required")
 });
 
@@ -20,15 +19,15 @@ const Signup = () => {
   const dispatch = useDispatch();
   const formik = useFormik({
     initialValues: {
-      firstname: "",
-      lastname: "",
+      name: "",
+      // lastname: "",
       email: "",
-      mobile: "",
+      phone: "",
       password: "",
     },
     validationSchema: signupSchema,
     onSubmit: (values) => {
-      dispatch(registerUser(values));
+      dispatch(createUser(values));
     },
   });
   return (
@@ -43,24 +42,14 @@ const Signup = () => {
                 <h3 className='text-center mb-3'>Create Account</h3>
                 <form action="" onSubmit={formik.handleSubmit} className='d-flex flex-column gap-15'>
                   <div>
-                    <input type="text" name="firstName" className="form-control" placeholder='First Name'
-                      value={formik.values.firstname} onChange={formik.handleChange("firstname")}
-                      onBlur={formik.handleBlur("firstname")} />
+                    <input type="text" name="name" className="form-control" placeholder='First Name'
+                      value={formik.values.name} onChange={formik.handleChange("name")}
+                      onBlur={formik.handleBlur("name")} />
 
                   </div>
                   <div className="error">
                     {
-                      formik.touched.firstname && formik.errors.firstname
-                    }
-                  </div>
-                  <div>
-                    <input type="text" name='lastname' className="form-control mt-1" placeholder='Last Name'
-                      value={formik.values.lastname} onChange={formik.handleChange("lastname")}
-                      onBlur={formik.handleBlur("lastname")} />
-                  </div>
-                  <div className="error">
-                    {
-                      formik.touched.lastname && formik.errors.lastname
+                      formik.touched.name && formik.errors.name
                     }
                   </div>
                   <div>
@@ -74,13 +63,13 @@ const Signup = () => {
                     }
                   </div>
                   <div>
-                    <input type="mobile" name='mobile' className="form-control mt-1" placeholder='Mobile'
-                      value={formik.values.mobile} onChange={formik.handleChange("mobile")}
-                      onBlur={formik.handleBlur("mobile")} />
+                    <input type="mobile" name='phone' className="form-control mt-1" placeholder='Mobile'
+                      value={formik.values.phone} onChange={formik.handleChange("phone")}
+                      onBlur={formik.handleBlur("phone")} />
                   </div>
                   <div className="error">
                     {
-                      formik.touched.mobile && formik.errors.mobile
+                      formik.touched.phone && formik.errors.phone
                     }
                   </div>
                   <div>

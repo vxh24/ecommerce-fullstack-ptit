@@ -1,13 +1,23 @@
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import BreadCrumb from '../components/BreadCrumb'
 import { Helmet } from "react-helmet";
 import Meta from '../components/Meta';
 import ReactStars from "react-rating-stars-component";
 import ProductCard from '../components/ProductCard';
 import Color from '../components/Color';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllProducts } from '../features/products/productSlice';
 const OurStore = () => {
   const [grid, setGrid] = useState(4);
+  const productState = useSelector((state) => state.product.products.data);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    getProducts();
+  }, []);
+  const getProducts = () => {
+    dispatch(getAllProducts());
+  }
   return (
     <>
       <Meta title={"Our Store"} />
@@ -64,11 +74,11 @@ const OurStore = () => {
                   </h5>
                   <div className='d-flex align-items-center gap-10'>
                     <div className="form-floating">
-                      <input type="email" class="form-control" id="floatingInput" placeholder="from" />
+                      <input type="email" className="form-control" id="floatingInput" placeholder="from" />
                       <label htmlFor="floatingInput">From</label>
                     </div>
                     <div className="form-floating">
-                      <input type="email" class="form-control" id="floatingInput1" placeholder="to" />
+                      <input type="email" className="form-control" id="floatingInput1" placeholder="to" />
                       <label htmlFor="floatingInput1">To</label>
                     </div>
                   </div>
@@ -191,7 +201,7 @@ const OurStore = () => {
               </div>
               <div className="products-list pb-5">
                 <div className="d-flex gap-10 flex-wrap">
-                  <ProductCard grid={grid} />
+                  <ProductCard data={productState ? productState : []} grid={grid} />
                 </div>
               </div>
             </div>

@@ -1,15 +1,26 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { authService } from "./userService";
 import { toast } from "react-toastify"
-export const registerUser = createAsyncThunk("auth/register", async (userData, thunkAPI) => {
+export const createUser = createAsyncThunk("auth/register", async (userData, thunkAPI) => {
   try {
-    return await authService.register(userData)
+
+    return await authService.createUser(userData)
   } catch (error) {
     return thunkAPI.rejectWithValue(error)
   }
 })
+export const handleLogin = createAsyncThunk("auth/login", async (userData, thunkAPI) => {
+  try {
+    return await authService.handleLogin(userData)
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error)
+  }
+})
+const getCustomerfromLocalStorage = localStorage.getItem("customer")
+  ? JSON.parse(localStorage.getItem("customer"))
+  : null;
 const initialState = {
-  user: "",
+  user: getCustomerfromLocalStorage,
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -20,9 +31,9 @@ export const authSlice = createSlice({
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(registerUser.pending, (state) => {
+    builder.addCase(createUser.pending, (state) => {
       state.isLoading = true;
-    }).addCase(registerUser.fulfilled, (state, action) => {
+    }).addCase(createUser.fulfilled, (state, action) => {
       state.isLoading = false;
       state.isError = false;
       state.isSuccess = true;
@@ -31,7 +42,28 @@ export const authSlice = createSlice({
         toast.info("User Create Successfully");
         console.log("User Create Successfullyaaaa")
       }
-    }).addCase(registerUser.rejected, (state, action) => {
+    }).addCase(createUser.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
+      state.message = action.error;
+      if (state.isError === true) {
+        toast.error(action.error)
+      }
+    }).addCase(handleLogin.pending, (state) => {
+      state.isLoading = true;
+    }).addCase(handleLogin.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isError = false;
+      state.isSuccess = true;
+      state.user = action.payload;
+
+      if (state.isSuccess === true) {
+        localStorage.setItem("token", action.payload.access_token)
+        toast.info("Login Successfully");
+        console.log("Login Successfullyaaaa")
+      }
+    }).addCase(handleLogin.rejected, (state, action) => {
       state.isLoading = false;
       state.isError = true;
       state.isSuccess = false;
