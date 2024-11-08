@@ -38,6 +38,7 @@ router.put("/reset-password/:token", authMiddleware, resetPasswordController);
 router.put(
   "/order/update-order/:id",
   authMiddleware,
+  isAdmin,
   updateOrderStatusController
 );
 router.get("/:id", authMiddleware, isAdmin, getUserByIdController);
