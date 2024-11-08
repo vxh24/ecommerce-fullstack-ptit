@@ -12,6 +12,7 @@ const bCategoryRoute = require("./src/routes/bCategoryRoute");
 const brandRoute = require("./src/routes/brandRoute");
 const colorRoute = require("./src/routes/colorRoute");
 const couponRoute = require("./src/routes/couponRoute");
+const enquiryRoute = require("./src/routes/enquiryRoute");
 
 const { notFound, errorHandler } = require("./src/middlewares/errorHandler");
 const fileUpload = require("express-fileupload");
@@ -41,14 +42,15 @@ configViewEngine(app);
 
 //declare router
 app.use("/v1/api/", authRoute);
-app.use("/v1/api/users", userRoute);
-app.use("/v1/api/products", productRoute);
-app.use("/v1/api/blogs", blogRoute);
-app.use("/v1/api/categories", categoryRoute);
-app.use("/v1/api/blog-categories", bCategoryRoute);
-app.use("/v1/api/brands", brandRoute);
+app.use("/v1/api/user", userRoute);
+app.use("/v1/api/product", productRoute);
+app.use("/v1/api/blog", blogRoute);
+app.use("/v1/api/category", categoryRoute);
+app.use("/v1/api/blog-category", bCategoryRoute);
+app.use("/v1/api/brand", brandRoute);
 app.use("/v1/api/color", colorRoute);
-app.use("/v1/api/coupons", couponRoute);
+app.use("/v1/api/coupon", couponRoute);
+app.use("/v1/api/enquiry", enquiryRoute);
 
 app.use(notFound);
 app.use(errorHandler);
