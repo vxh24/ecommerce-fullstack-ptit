@@ -5,22 +5,12 @@ import { Link } from "react-router-dom";
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useDispatch } from 'react-redux';
-<<<<<<< HEAD
 import { createUser } from '../features/user/userSlice';
 
 const signupSchema = yup.object({
   name: yup.string().required("First name is Require"),
   email: yup.string().nullable().email("Email should be valid"),
   phone: yup.string().required("Mobie no is Required"),
-=======
-import { registerUser } from '../features/user/userSlice';
-
-const signupSchema = yup.object({
-  firstname: yup.string().required("First name is Require"),
-  lastname: yup.string().required("Last name is Require"),
-  email: yup.string().nullable().email("Email should be valid"),
-  mobile: yup.string().required("Mobie no is Required"),
->>>>>>> 252030fac666786ed9459a57f357ff2005782f30
   password: yup.string().required("Password is Required")
 });
 
