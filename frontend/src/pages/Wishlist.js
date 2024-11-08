@@ -1,7 +1,17 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import BreadCrumb from '../components/BreadCrumb'
 import Meta from '../components/Meta';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUserProductWishlist } from '../features/user/userSlice';
 const Wishlist = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    getWishlist();
+  }, []);
+  const getWishlist = () => {
+    dispatch(getUserProductWishlist());
+  }
+  const wishlisState = useSelector((state) => state.auth)
   return (
     <>
       <Meta title={"Wishlist"} />
