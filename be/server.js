@@ -2,7 +2,17 @@ require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const connection = require("./src/config/dbConnect");
-const apiRoutes = require("./src/routes/api");
+
+const authRoute = require("./src/routes/authRoute");
+const userRoute = require("./src/routes/authRoute");
+const productRoute = require("./src/routes/productRoute");
+const blogRoute = require("./src/routes/blogRoute");
+const categoryRoute = require("./src/routes/pCategoryRoute");
+const bCategoryRoute = require("./src/routes/bCategoryRoute");
+const brandRoute = require("./src/routes/brandRoute");
+const colorRoute = require("./src/routes/colorRoute");
+const couponRoute = require("./src/routes/couponRoute");
+
 const { notFound, errorHandler } = require("./src/middlewares/errorHandler");
 const fileUpload = require("express-fileupload");
 const configViewEngine = require("./src/config/viewEngine");
@@ -30,7 +40,15 @@ app.use(bodyParser.urlencoded({ extended: true })); // for form data
 configViewEngine(app);
 
 //declare router
-app.use("/v1/api/", apiRoutes);
+app.use("/v1/api/", authRoute);
+app.use("/v1/api/users", userRoute);
+app.use("/v1/api/products", productRoute);
+app.use("/v1/api/blogs", blogRoute);
+app.use("/v1/api/categories", categoryRoute);
+app.use("/v1/api/blog-categories", bCategoryRoute);
+app.use("/v1/api/brands", brandRoute);
+app.use("/v1/api/color", colorRoute);
+app.use("/v1/api/coupons", couponRoute);
 
 app.use(notFound);
 app.use(errorHandler);

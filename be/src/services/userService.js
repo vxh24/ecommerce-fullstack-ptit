@@ -296,8 +296,11 @@ const createOrder = asyncHandler(async (id, COD, couponApplied) => {
   return updated;
 });
 
-const getOrder = asyncHandler(async () => {
-  const orderUser = await Order.find({}).populate("products.product");
+const getAllOrders = asyncHandler(async () => {
+  const orderUser = await Order.find({})
+    .populate("products.product")
+    .populate("orderby")
+    .exec();
   return orderUser;
 });
 
@@ -334,6 +337,6 @@ module.exports = {
   emptyCart,
   applyCoupon,
   createOrder,
-  getOrder,
+  getAllOrders,
   updateOrderStatus,
 };
