@@ -60,7 +60,7 @@ const Enquiries = () => {
     dispatch(getEnquiries());
   }, []);
 
-  const enqState = useSelector((state) => state.enquiry.enquiries);
+  const enqState = useSelector((state) => state.enquiry.enquiries.data);
 
   const data1 = [];
 

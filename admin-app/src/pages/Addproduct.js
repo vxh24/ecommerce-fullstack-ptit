@@ -14,6 +14,7 @@ import { Select } from "antd";
 import Dropzone from "react-dropzone";
 import { delImg, uploadImg } from "../features/upload/uploadSlice";
 import { createProducts, resetState } from "../features/product/productSlice";
+
 let schema = yup.object().shape({
   title: yup.string().required("Title is Required"),
   description: yup.string().required("Description is Required"),
@@ -28,24 +29,27 @@ let schema = yup.object().shape({
   quantity: yup.number().required("Quantity is Required"),
 });
 
-const Addproduct = () => {
+const AddProduct = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [color, setColor] = useState([]);
   const [images, setImages] = useState([]);
+
   console.log(color);
+
   useEffect(() => {
     dispatch(getBrands());
     dispatch(getCategories());
     dispatch(getColors());
   }, []);
 
-  const brandState = useSelector((state) => state.brand.brands);
-  const catState = useSelector((state) => state.pCategory.pCategories);
-  const colorState = useSelector((state) => state.color.colors);
+  const brandState = useSelector((state) => state.brand.brands.data);
+  const catState = useSelector((state) => state.pCategory.pCategories.data);
+  const colorState = useSelector((state) => state.color.colors.data);
   const imgState = useSelector((state) => state.upload.images);
   const newProduct = useSelector((state) => state.product);
   const { isSuccess, isError, isLoading, createdProduct } = newProduct;
+
   useEffect(() => {
     if (isSuccess && createdProduct) {
       toast.success("Product Added Successfullly!");
@@ -54,13 +58,17 @@ const Addproduct = () => {
       toast.error("Something Went Wrong!");
     }
   }, [isSuccess, isError, isLoading]);
+
   const coloropt = [];
-  colorState.forEach((i) => {
-    coloropt.push({
-      label: i.title,
-      value: i._id,
+  if (Array.isArray(colorState)) {
+    colorState.forEach((i) => {
+      coloropt.push({
+        label: i.title,
+        value: i._id,
+      });
     });
-  });
+  }
+
   const img = [];
   imgState.forEach((i) => {
     img.push({
@@ -73,6 +81,7 @@ const Addproduct = () => {
     formik.values.color = color ? color : " ";
     formik.values.images = img;
   }, [color, img]);
+
   const formik = useFormik({
     initialValues: {
       title: "",
@@ -95,10 +104,12 @@ const Addproduct = () => {
       }, 3000);
     },
   });
+
   const handleColors = (e) => {
     setColor(e);
     console.log(color);
   };
+
   return (
     <div>
       <h3 className="mb-4 title">Add Product</h3>
@@ -149,13 +160,14 @@ const Addproduct = () => {
             id=""
           >
             <option value="">Select Brand</option>
-            {brandState.map((i, j) => {
-              return (
-                <option key={j} value={i.title}>
-                  {i.title}
-                </option>
-              );
-            })}
+            {Array.isArray(brandState) &&
+              brandState.map((i, j) => {
+                return (
+                  <option key={j} value={i.title}>
+                    {i.title}
+                  </option>
+                );
+              })}
           </select>
           <div className="error">
             {formik.touched.brand && formik.errors.brand}
@@ -169,13 +181,14 @@ const Addproduct = () => {
             id=""
           >
             <option value="">Select Category</option>
-            {catState.map((i, j) => {
-              return (
-                <option key={j} value={i.title}>
-                  {i.title}
-                </option>
-              );
-            })}
+            {Array.isArray(catState) &&
+              catState.map((i, j) => {
+                return (
+                  <option key={j} value={i.title}>
+                    {i.title}
+                  </option>
+                );
+              })}
           </select>
           <div className="error">
             {formik.touched.category && formik.errors.category}
@@ -265,4 +278,4 @@ const Addproduct = () => {
   );
 };
 
-export default Addproduct;
+export default AddProduct;

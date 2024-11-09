@@ -22,6 +22,7 @@ const {
   applyCoupon,
   createOrder,
   getAllOrders,
+  getOrderByUID,
   updateOrderStatus,
 } = require("../services/userService");
 const User = require("../models/userModel");
@@ -351,6 +352,19 @@ const getAllOrdersController = asyncHandler(async (req, res) => {
   }
 });
 
+const getOrderByUIDController = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  try {
+    const result = await getOrderByUID(_id);
+    res.json({
+      EC: 0,
+      data: result,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 const updateOrderStatusController = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
@@ -387,4 +401,5 @@ module.exports = {
   createOrderController,
   getAllOrdersController,
   updateOrderStatusController,
+  getOrderByUIDController,
 };

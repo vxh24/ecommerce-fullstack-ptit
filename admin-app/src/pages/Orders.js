@@ -41,7 +41,7 @@ const Orders = () => {
     dispatch(getOrders());
   }, []);
 
-  const orderState = useSelector((state) => state.auth.orders);
+  const orderState = useSelector((state) => state.auth.orders.data);
 
   console.log(orderState);
 
@@ -57,7 +57,7 @@ const Orders = () => {
             View Orders
           </Link>
         ),
-        amount: orderState[i].paymentIntent.amount,
+        amount: orderState[i].paymentIndent.amount,
         date: new Date(orderState[i].createdAt).toLocaleString(),
         action: (
           <>

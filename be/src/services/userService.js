@@ -202,27 +202,34 @@ const addToCart = asyncHandler(async (id, cart) => {
   let products = [];
   const user = await User.findById(id);
 
-  const alreadyExistCart = await Cart.findOne({ orderBy: user._id });
-  if (alreadyExistCart) alreadyExistCart.remove();
+  let existingCart = await Cart.findOne({ orderBy: user._id });
+  if (!existingCart) {
+    existingCart = new Cart({ products: [], cartTotal: 0, orderBy: user._id });
+  }
   for (let i = 0; i < cart.length; i++) {
-    let obj = {};
-    obj.product = cart[i]._id;
-    obj.count = cart[i].count;
-    obj.color = cart[i].color;
-    let getPrice = await Product.findById(cart[i]._id).select("price").exec();
-    obj.price = getPrice.price;
-    products.push(obj);
+    const { _id, count, color } = cart[i];
+    const productIndex = existingCart.products.findIndex(
+      (item) => item.product.toString() === _id && item.color === color
+    );
+    if (productIndex >= 0) {
+      existingCart.products[productIndex].count += count;
+    } else {
+      const getPrice = await Product.findById(_id).select("price").exec();
+      existingCart.products.push({
+        product: _id,
+        count,
+        color,
+        price: getPrice.price,
+      });
+    }
   }
-  let cartTotal = 0;
-  for (let i = 0; i < products.length; i++) {
-    cartTotal += products[i].price * products[i].count;
-  }
-  let newCart = await new Cart({
-    products,
-    cartTotal,
-    orderBy: user?._id,
-  }).save();
-  return newCart;
+  existingCart.cartTotal = existingCart.products.reduce(
+    (total, item) => total + item.price * item.count,
+    0
+  );
+
+  await existingCart.save();
+  return existingCart;
 });
 
 const getCartUser = asyncHandler(async (id) => {
@@ -263,6 +270,7 @@ const createOrder = asyncHandler(async (id, COD, couponApplied) => {
   validateMongodbId(id);
   const user = await User.findById(id);
   let userCart = await Cart.findOne({ orderBy: user._id });
+
   let finalAmount = 0;
   if (couponApplied && userCart.totalAfterDiscount) {
     finalAmount = userCart.totalAfterDiscount;
@@ -293,7 +301,18 @@ const createOrder = asyncHandler(async (id, COD, couponApplied) => {
   });
 
   const updated = await Product.bulkWrite(update, {});
-  return updated;
+
+  await Cart.findByIdAndDelete(userCart._id);
+
+  return newOrder;
+});
+
+const getOrderByUID = asyncHandler(async (userID) => {
+  const orderUser = await Order.find({ orderBy: userID })
+    .populate("products.product")
+    .populate("orderBy")
+    .exec();
+  return orderUser;
 });
 
 const getAllOrders = asyncHandler(async () => {
@@ -338,5 +357,6 @@ module.exports = {
   applyCoupon,
   createOrder,
   getAllOrders,
+  getOrderByUID,
   updateOrderStatus,
 };
