@@ -1,5 +1,5 @@
 import axios from "axios";
-import { config } from "../../utils/axiosConfig";
+import { getConfig } from "../../utils/axiosConfig";
 import { base_url } from "../../utils/baseUrl";
 
 const login = async (user) => {
@@ -11,13 +11,17 @@ const login = async (user) => {
 };
 
 const getOrders = async () => {
-  const response = await axios.get(`${base_url}users/orders`, config);
+  const response = await axios.get(`${base_url}user/get-all-orders`, getConfig);
 
   return response.data;
 };
 
-const getOrder = async (id) => {
-  const response = await axios.post(`${base_url}users/order/${id}`, "", config);
+const getOrderByUID = async (id) => {
+  const response = await axios.post(
+    `${base_url}user/order/${id}`,
+    "",
+    getConfig
+  );
 
   return response.data;
 };
@@ -25,7 +29,7 @@ const getOrder = async (id) => {
 const authService = {
   login,
   getOrders,
-  getOrder,
+  getOrderByUID,
 };
 
 export default authService;

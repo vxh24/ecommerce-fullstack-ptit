@@ -1,32 +1,37 @@
 import axios from "axios";
-import { config } from "../../utils/axiosConfig";
+import { getConfig } from "../../utils/axiosConfig";
 import { base_url } from "../../utils/baseUrl";
+
 const getEnquiries = async () => {
-  const response = await axios.get(`${base_url}enquiry/`);
+  const response = await axios.get(`${base_url}enquiry/`, getConfig);
 
   return response.data;
 };
+
 const deleteEnquiry = async (id) => {
-  const response = await axios.delete(`${base_url}enquiry/${id}`, config);
+  const response = await axios.delete(`${base_url}enquiry/${id}`, getConfig);
   return response.data;
 };
+
 const getEnquiry = async (id) => {
   const response = await axios.get(`${base_url}enquiry/${id}`);
   return response.data;
 };
-const udpateEnquiry = async (enq) => {
+
+const updateEnquiry = async (enq) => {
   const response = await axios.put(
     `${base_url}enquiry/${enq.id}`,
     { status: enq.enqData },
-    config
+    getConfig
   );
   return response.data;
 };
+
 const enquiryService = {
   getEnquiries,
   deleteEnquiry,
   getEnquiry,
-  udpateEnquiry,
+  updateEnquiry,
 };
 
 export default enquiryService;

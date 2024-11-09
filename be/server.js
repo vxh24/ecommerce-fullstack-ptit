@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const connection = require("./src/config/dbConnect");
 
 const authRoute = require("./src/routes/authRoute");
-const userRoute = require("./src/routes/authRoute");
+const userRoute = require("./src/routes/userRoute");
 const productRoute = require("./src/routes/productRoute");
 const blogRoute = require("./src/routes/blogRoute");
 const categoryRoute = require("./src/routes/pCategoryRoute");

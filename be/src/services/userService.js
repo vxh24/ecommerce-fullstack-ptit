@@ -297,11 +297,11 @@ const createOrder = asyncHandler(async (id, COD, couponApplied) => {
 });
 
 const getAllOrders = asyncHandler(async () => {
-  const orderUser = await Order.find({})
+  const allOrderUser = await Order.find({})
     .populate("products.product")
-    .populate("orderby")
+    .populate("orderBy")
     .exec();
-  return orderUser;
+  return allOrderUser;
 });
 
 const updateOrderStatus = asyncHandler(async (id, status) => {
