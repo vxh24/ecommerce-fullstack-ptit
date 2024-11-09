@@ -146,7 +146,7 @@ const generateResetPasswordToken = asyncHandler(async (email) => {
   const token = await user.createPasswordResetToken();
   await user.save();
 
-  const resetURL = `Hi, Please follow this link to reset your password. This link is valid till 10 minutes from now. <a href="http://localhost:5000/v1/api/users/reset-password/${token}">Click here</a>`;
+  const resetURL = `Hi, Please follow this link to reset your password. This link is valid till 10 minutes from now. <a href="http://localhost:3000/reset-password/${token}">Click here</a>`;
 
   const data = {
     to: email,
@@ -297,11 +297,11 @@ const createOrder = asyncHandler(async (id, COD, couponApplied) => {
 });
 
 const getAllOrders = asyncHandler(async () => {
-  const orderUser = await Order.find({})
+  const allOrderUser = await Order.find({})
     .populate("products.product")
-    .populate("orderby")
+    .populate("orderBy")
     .exec();
-  return orderUser;
+  return allOrderUser;
 });
 
 const updateOrderStatus = asyncHandler(async (id, status) => {

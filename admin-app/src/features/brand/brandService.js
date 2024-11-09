@@ -1,34 +1,34 @@
 import axios from "axios";
-import { config } from "../../utils/axiosConfig";
+import { getConfig } from "../../utils/axiosConfig";
 import { base_url } from "../../utils/baseUrl";
 const getBrands = async () => {
-  const response = await axios.get(`${base_url}brands/`);
+  const response = await axios.get(`${base_url}brand/`);
 
   return response.data;
 };
 
 const createBrand = async (brand) => {
-  const response = await axios.post(`${base_url}brands/`, brand, config);
+  const response = await axios.post(`${base_url}brand/`, brand, getConfig);
 
   return response.data;
 };
 const updateBrand = async (brand) => {
   const response = await axios.put(
-    `${base_url}brands/${brand.id}`,
+    `${base_url}brand/${brand.id}`,
     { title: brand.brandData.title },
-    config
+    getConfig
   );
 
   return response.data;
 };
 const getBrand = async (id) => {
-  const response = await axios.get(`${base_url}brands/${id}`, config);
+  const response = await axios.get(`${base_url}brand/${id}`, getConfig);
 
   return response.data;
 };
 
 const deleteBrand = async (id) => {
-  const response = await axios.delete(`${base_url}brands/${id}`, config);
+  const response = await axios.delete(`${base_url}brand/${id}`, getConfig);
 
   return response.data;
 };

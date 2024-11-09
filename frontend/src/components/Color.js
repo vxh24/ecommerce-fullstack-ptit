@@ -1,12 +1,26 @@
-import React from 'react'
-
-const Color = () => {
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllColors } from '../features/color/colorSlice';
+const Color = (props) => {
+  // const dispatch = useDispatch();
+  // useEffect(() => {
+  //   getColors();
+  // }, []);
+  // const getColors = () => {
+  //   dispatch(getAllColors);
+  // }
+  const { colorData, setColor } = props;
   return (
     <>
       <ul className='colors ps-0'>
-        <li></li>
-        <li></li>
-        <li></li>
+        {
+          colorData && colorData?.map((item, index) => {
+            return (
+              <li onClick={() => setColor(item?.title)} style={{ backgroundColor: item?.title }} key={index}></li>
+
+            )
+          })
+        }
       </ul></>
   )
 }

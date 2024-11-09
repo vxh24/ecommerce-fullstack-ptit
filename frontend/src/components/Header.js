@@ -1,7 +1,30 @@
-import React from 'react'
-import { NavLink, Link } from "react-router-dom";
+import React, { useEffect, useState } from 'react'
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import { BsSearch } from "react-icons/bs";
+import { useDispatch, useSelector } from 'react-redux';
+import { Typeahead } from 'react-bootstrap-typeahead';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
+import { getAProducts } from '../features/products/productSlice';
 const Header = () => {
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.reload();
+  }
+  const authState = useSelector(state => state?.auth);
+  const [paginate, setPaginate] = useState(true);
+  const dispatch = useDispatch();
+  const productState = useSelector(state => state?.product?.products?.data);
+  const [productOpt, setProductOpt] = useState([]);
+  const navigate = useNavigate();
+  useEffect(() => {
+    let data = []
+    for (let index = 0; index < productState?.length; index++) {
+      const element = productState[index];
+      data.push({ id: index, prod: element?._id, name: element?.title });
+
+    }
+    setProductOpt(data);
+  }, [productState]);
   return (
     <>
       <header className="header-top-strip py-3">
@@ -25,7 +48,18 @@ const Header = () => {
             </div>
             <div className="col-5">
               <div className="input-group">
-                <input type="text" className="form-control" placeholder="Search Product Here..." aria-label="Search Product Here..." aria-describedby="basic-addon2" />
+                <Typeahead
+                  id="pagination-example"
+                  onPaginate={() => console.log('Results paginated')}
+                  options={productOpt}
+                  onChange={(selected) => {
+                    navigate(`product/${selected[0]?.prod}`)
+                    dispatch(getAProducts(selected[0]?.prod))
+                  }}
+                  paginate={paginate}
+                  labelKey={"name"}
+                  placeholder="Search for Product here..."
+                />
                 <span className="input-group-text p-3" id="basic-addon2"><BsSearch className="fs-6" /></span>
               </div>
 
@@ -49,11 +83,16 @@ const Header = () => {
                   </Link>
                 </div>
                 <div>
-                  <Link to="/login" className="d-flex align-items-center gap-10 text-white">
+                  <Link to={authState?.user === null ? "/login" : "/profile"} className="d-flex align-items-center gap-10 text-white">
                     <img src="images/user.svg" alt="" />
-                    <p className="mb-0">
-                      Log in <br /> My account
-                    </p>
+                    {
+                      authState?.user === null ? <p className="mb-0">
+                        Log in
+                      </p> :
+                        <p className="mb-0">
+                          {authState?.user?.user?.name.toUpperCase()}
+                        </p>
+                    }
                   </Link>
                 </div>
                 <div>
@@ -94,6 +133,8 @@ const Header = () => {
                     <NavLink to="/product">Our Store</NavLink>
                     <NavLink to="/blog">Blogs</NavLink>
                     <NavLink to="/contact">Contact</NavLink>
+                    <NavLink to="/my-orders">My Orders</NavLink>
+                    <button onClick={handleLogout} className="border border-0 bg-transparent text-white text-uppercase" type="button">Logout</button>
                   </div>
                 </div>
               </div>

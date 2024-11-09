@@ -25,8 +25,36 @@ const getWishlist = async () => {
     return response.data
   }
 }
+const AddToCart = async (product) => {
+  const response = await axios.post(`${base_url}user/cart`, { cart: [product] }, config);
+  if (response.data) {
+    return response.data
+  }
+}
+const getCart = async () => {
+  const response = await axios.get(`${base_url}user/cart`, config);
+  if (response.data) {
+    return response.data
+  }
+}
+const forgotPassword = async (data) => {
+  const response = await axios.post(`${base_url}user/forgot-password`, { data }, config);
+  if (response.data) {
+    return response.data
+  }
+}
+const resetPass = async (data) => {
+  const response = await axios.put(`${base_url}user/reset-password/${data.token}`, { password: data?.password }, config);
+  if (response.data) {
+    return response.data
+  }
+}
 export const authService = {
   createUser,
   handleLogin,
   getWishlist,
+  AddToCart,
+  getCart,
+  forgotPassword,
+  resetPass
 }

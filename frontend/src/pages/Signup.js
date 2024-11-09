@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 import { createUser } from '../features/user/userSlice';
 
 const signupSchema = yup.object({
-  name: yup.string().required("First name is Require"),
+  name: yup.string().required("Name is Require"),
   email: yup.string().nullable().email("Email should be valid"),
   phone: yup.string().required("Mobie no is Required"),
   password: yup.string().required("Password is Required")

@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 import { productService } from "./productService";
 
 export const getAllProducts = createAsyncThunk("product/get", async (_, thunkAPI) => {
@@ -8,10 +9,24 @@ export const getAllProducts = createAsyncThunk("product/get", async (_, thunkAPI
     return thunkAPI.rejectWithValue(error)
   }
 })
+export const getAProducts = createAsyncThunk("product/getAproduct", async (id, thunkAPI) => {
+  try {
+    return await productService.getAProducts(id);
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error)
+  }
+})
 
 export const addToWishlist = createAsyncThunk("products/wishlist", async (productId, thunkAPI) => {
   try {
     return await productService.addToWishlist(productId);
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error)
+  }
+})
+export const RatingProduct = createAsyncThunk("products/rate", async (data, thunkAPI) => {
+  try {
+    return await productService.rateProduct(data);
   } catch (error) {
     return thunkAPI.rejectWithValue(error)
   }
@@ -54,6 +69,39 @@ export const productSlice = createSlice({
       state.isSuccess = false;
       state.message = action.error;
     })
+      .addCase(getAProducts.pending, (state) => {
+        state.isLoading = true;
+      }).addCase(getAProducts.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.product = action.payload;
+        // state.message = "Product added to wishlist"
+      }).addCase(getAProducts.rejected, (state, action) => {
+        state.isError = true;
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.message = action.error;
+      })
+      .addCase(RatingProduct.pending, (state) => {
+        state.isLoading = true;
+      }).addCase(RatingProduct.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.product = action.payload;
+        if (state.isSuccess === true) {
+          toast.success("Rating Added SuccessFully");
+        }
+      }).addCase(RatingProduct.rejected, (state, action) => {
+        state.isError = true;
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.message = action.error;
+        if (state.isError === true) {
+          toast.success("Lỗi ở đâu r");
+        }
+      })
   }
 })
 export default productSlice.reducer;

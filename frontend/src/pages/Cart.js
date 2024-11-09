@@ -1,9 +1,16 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Meta from '../components/Meta';
 import BreadCrumb from '../components/BreadCrumb'
 import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
+import { getUserCart } from '../features/user/userSlice';
 const Cart = () => {
+  const dispatch = useDispatch();
+  const userCartState = useSelector(state => state?.auth?.cartUser?.data);
+  useEffect(() => {
+    dispatch(getUserCart());
+  }, [])
   return (
     <>
       <Meta title={"Cart"} />
@@ -18,7 +25,45 @@ const Cart = () => {
                 <h4 className='cart-col-3'>Quantity</h4>
                 <h4 className='cart-col-4'>Total</h4>
               </div>
-              <div className="cart-data py-3 d-flex justify-content-between align-items-center">
+              {
+                userCartState?.products && userCartState?.products?.map((item, index) => {
+                  return (
+                    <div key={index} className="cart-data py-3 d-flex justify-content-between align-items-center">
+                      <div className='cart-col-1 gap-15 d-flex justify-content-between align-items-center'>
+                        <div className='w-25'>
+                          <img src="images/watch.jpg" className='img-fluid' alt="" />
+                        </div>
+                        <div className='w-75'>
+                          <p>{item?.product?.title}</p>
+                          <p className="d-flex gap-15">Color:
+                            <ul className='colors ps-0'>
+                              <li style={{ backgroundColor: item?.color }}></li>
+                            </ul>
+                          </p>
+                          <p >Size: M</p>
+
+                        </div>
+                      </div>
+                      <div className='cart-col-2'>
+                        <h5 className="price">$ {item?.price}</h5>
+                      </div>
+                      <div className='cart-col-3 d-flex align-items-center gap-15'>
+                        <div className="">
+                          <input type="number" name="" min={1} max={10} className="form-control" style={{ width: "70px" }} id=""
+                            value={item?.count} />
+                        </div>
+                        <div>
+                          <MdDelete className='text-danger fs-4' />
+                        </div>
+                      </div>
+                      <div className='cart-col-4'>
+                        <h5 className="price">$ {item?.price * item?.count}</h5>
+                      </div>
+                    </div>
+                  )
+                })
+              }
+              {/* <div className="cart-data py-3 d-flex justify-content-between align-items-center">
                 <div className='cart-col-1 gap-15 d-flex justify-content-between align-items-center'>
                   <div className='w-25'>
                     <img src="images/watch.jpg" className='img-fluid' alt="" />
@@ -44,7 +89,7 @@ const Cart = () => {
                 <div className='cart-col-4'>
                   <h5 className="price">$ 100</h5>
                 </div>
-              </div>
+              </div> */}
             </div>
             <div className="col-12 py-2 mt-4">
               <div className="d-flex justify-content-between">
@@ -52,7 +97,7 @@ const Cart = () => {
                   <Link to="/product" className="button">Continue Shopping</Link>
                 </div>
                 <div>
-                  <h4>SubTotal: $ 100</h4>
+                  <h4>SubTotal: $ {userCartState?.cartTotal}</h4>
                   <p>s a valid value to be accessible. Provide a valid, </p>
                   <Link to="/checkout" className='button'>Checkout</Link>
                 </div>

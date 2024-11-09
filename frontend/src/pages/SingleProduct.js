@@ -4,11 +4,24 @@ import BreadCrumb from '../components/BreadCrumb'
 import ProductCard from "../components/ProductCard"
 import ReactStars from "react-rating-stars-component";
 import Color from "../components/Color"
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { FaRegHeart } from "react-icons/fa";
 import { IoGitCompareSharp } from "react-icons/io5";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from 'react';
+import { getAProducts, RatingProduct } from '../features/products/productSlice';
+import { addToWishlist } from '../features/products/productSlice';
+import { getAllColors } from '../features/color/colorSlice';
+import { toast } from "react-toastify"
+import { AddProdToCart, getUserCart } from '../features/user/userSlice';
+import { getAllProducts } from '../features/products/productSlice';
+import PopularProduct from "../components/PopularProduct";
 const SingleProduct = () => {
+  const [color, setColor] = useState(null);
+  const [count, setCount] = useState(1);
   const [orderProduct, setorderProduct] = useState(true);
+  const [alreadyAdded, setAlreadyAdded] = useState(false);
+  const navigate = useNavigate();
   const copyToClipboard = (text) => {
     console.log('text', text)
     var textField = document.createElement('textarea')
@@ -20,10 +33,70 @@ const SingleProduct = () => {
   }
   const location = useLocation();
   const getProductId = location.pathname.split("/")[2];
+  const dispatch = useDispatch();
+  const productState = useSelector(state => state?.product?.product?.data);
+  const colorIds = useSelector(state => state?.product?.product?.data?.color);
+  const colors = useSelector(state => state?.color?.colors?.data);
+  const matchedColors = colors?.filter((color) => colorIds?.includes(color?._id)) || [];
+  const cartState = useSelector(state => state?.auth?.cartUser?.data?.products);
+  const popularproductState = useSelector((state) => state?.product?.products?.data);
+  useEffect(() => {
+    dispatch(getAProducts(getProductId));
+    getColors();
+    dispatch(getUserCart())
+    getProducts();
+  }, [])
+  useEffect(() => {
+    for (let index = 0; index < cartState?.length; index++) {
+      if (getProductId === cartState[index]?.product?._id) {
+        setAlreadyAdded(true);
+      }
+
+    }
+  })
+  const addToWish = (id) => {
+    console.log(id);
+    dispatch(addToWishlist(id));
+  }
+  const uploadCart = () => {
+    if (color === null) {
+      toast.error("Please choose Color")
+      return false;
+    }
+    else {
+      dispatch(AddProdToCart({ _id: productState?._id, count, color }))
+    }
+  }
+
+  const getColors = () => {
+    dispatch(getAllColors());
+  }
+  const getProducts = () => {
+    dispatch(getAllProducts());
+  }
+  const [star, setStar] = useState(null);
+  const [comment, SetComment] = useState(null);
+  const addToRatingProduct = () => {
+    if (star === null) {
+      toast.info("Mấy sao?");
+      return false;
+    }
+    else if (comment === null) {
+      toast.info("No comment?");
+      return false;
+    }
+    else {
+      dispatch(RatingProduct({ star: star, comment: comment, productId: getProductId }))
+      setTimeout(() => {
+        dispatch(getAProducts(getProductId));
+      }, 100)
+    }
+    return false;
+  }
   return (
     <>
       <Meta title={"Product Name"} />
-      <BreadCrumb title="Product Name" />
+      <BreadCrumb title={productState?.title} />
       <div className="main-product-wrapper py-5 home-wrapper-2">
         <div className="container-xxl">
           <div className="row">
@@ -44,15 +117,15 @@ const SingleProduct = () => {
             <div className="col-6">
               <div className="main-product-details">
                 <div className="border-bottom">
-                  <h3 className='title'>iPhone 16 Pro Max 512GB Chính hãng VN/A</h3>
+                  <h3 className='title'>{productState?.title}</h3>
                 </div>
                 <div className="border-bottom py-3">
-                  <p className='price'> $ 100 </p>
+                  <p className='price'> $ {productState?.price} </p>
                   <div className="d-flex align-items-center gap-10">
                     <ReactStars
                       count={5}
                       size={24}
-                      value="3"
+                      value={productState?.totalRatings}
                       edit={false}
                       activeColor="#ffd700"
                     />
@@ -67,15 +140,15 @@ const SingleProduct = () => {
                   </div>
                   <div className="d-flex align-items-center gap-10 my-2">
                     <h3 className='product-heading'>Branch:</h3>
-                    <p className='product-data'>Apple</p>
+                    <p className='product-data'>{productState?.brand}</p>
                   </div>
                   <div className="d-flex align-items-center gap-10 my-2">
                     <h3 className='product-heading'>Category:</h3>
-                    <p className='product-data'>Smart Phone</p>
+                    <p className='product-data'>{productState?.category}</p>
                   </div>
                   <div className="d-flex align-items-center gap-10 my-2">
                     <h3 className='product-heading'>Tags:</h3>
-                    <p className='product-data'>Moblie</p>
+                    <p className='product-data'>{productState?.tags}</p>
                   </div>
                   <div className="d-flex flex-column gap-10 mt-2 mb-3">
                     <h3 className='product-heading'>Size:</h3>
@@ -86,18 +159,31 @@ const SingleProduct = () => {
                       <span className="badge border text-dark border-1 bg-white border-secondary">XXL</span>
                     </div>
                   </div>
-                  <div className="d-flex flex-column gap-10 mt-2 mb-3">
-                    <h3 className='product-heading'>Color:</h3>
-                    <Color />
-                  </div>
+                  {
+                    alreadyAdded === false && <>
+                      <div className="d-flex flex-column gap-10 mt-2 mb-3">
+                        <h3 className='product-heading'>Color:</h3>
+                        <Color setColor={setColor} colorData={matchedColors} />
+                      </div>
+                    </>
+                  }
                   <div className="d-flex flex-row gap-10 mt-2 mb-3 align-items-center">
-                    <h3 className='product-heading'>Quantity:</h3>
-                    <div className="">
-                      <input type="number" name="" min={1} max={10} className="form-control" style={{ width: "70px" }} id="" />
-                    </div>
-                    <div className="d-flex align-items-center gap-30 ms-5">
-                      <button className="button border-0">Add to Cart</button>
-                      <button className='button signup' >By it now</button>
+                    {
+                      alreadyAdded === false && <>
+                        <h3 className='product-heading'>Quantity:</h3>
+                        <div className="">
+                          <input type="number" name="" min={1} max={productState?.quantity} className="form-control" style={{ width: "70px" }} id=""
+                            onChange={(e) => setCount(e.target.value)}
+                            value={count}
+                          />
+                        </div>
+                      </>
+                    }
+                    <div className={alreadyAdded ? "d-flex align-items-center gap-30 ms-0" : "d-flex align-items-center gap-30 ms-5"}>
+                      <button className="button border-0" onClick={() => { alreadyAdded ? navigate("/cart") : uploadCart() }}>
+                        {alreadyAdded ? "Go To Cart" : "Add To Cart"}
+                      </button>
+                      <button className='button signup'  >By it now</button>
                     </div>
                   </div>
                   <div className='d-flex align-items-center gap-15'>
@@ -106,9 +192,9 @@ const SingleProduct = () => {
                       <a href=''>Add to compare</a>
 
                     </div>
-                    <div>
-                      <FaRegHeart className='fs-5 me-2' />
-                      <a href=''>Add to wishlis</a>
+                    <div >
+                      <FaRegHeart onClick={() => { addToWish(productState?._id) }} className='fs-5 me-2' />
+                      <Link >Add to wishlis</Link>
                     </div>
                   </div>
                   <div className="d-flex flex-column gap-10 my-3">
@@ -117,7 +203,7 @@ const SingleProduct = () => {
                   </div>
                   <div className="d-flex align-items-center gap-10 my-3">
                     <h3 className='product-heading'>Copy Product Link:</h3>
-                    <a href='javascrip:void(0);' onClick={() => { copyToClipboard("https://uscom.vn/wp-content/uploads/2024/09/iPhone-16-Pro-Max-Trang-2.webp"); }}>Click here to copy</a>
+                    <a href='javascrip:void(0);' onClick={() => { copyToClipboard(window.location.href); }}>Click here to copy</a>
                   </div>
                 </div>
               </div>
@@ -133,7 +219,7 @@ const SingleProduct = () => {
               <div className='bg-white p-3'>
 
                 <p  >
-                  Mua hàng trên Shopee luôn là một trải nghiệm ấn tượng. Dù bạn đang có nhu cầu mua bất kỳ mặt hàng Mua hàng trên Shopee luôn là một trải nghiệm ấn tượng. Dù bạn đang có nhu cầu mua bất kỳ mặt hàng Mua hàng trên Shopee luôn là một trải nghiệm ấn tượng. Dù bạn đang có nhu cầu mua bất kỳ mặt hàng
+                  {productState?.description}
                 </p>
               </div>
             </div>
@@ -168,38 +254,51 @@ const SingleProduct = () => {
                 </div>
                 <div className="review-form py-4">
                   <h4>Write a review</h4>
-                  <form action="" className="d-flex flex-column gap-15">
-                    <div>
-                      <ReactStars
-                        count={5}
-                        size={24}
-                        value="3"
-                        edit={true}
-                        activeColor="#ffd700"
-                      />
-                    </div>
-                    <div>
-                      <textarea name="" id="" className="w-100 form-control" cols="30" rows="4" placeholder='Comments'></textarea>
-                    </div>
-                    <div className='d-flex justify-content-end'>
-                      <button className='button border-0'> Submit Review</button>
-                    </div>
-                  </form>
+
+                  <div>
+                    <ReactStars
+                      count={5}
+                      size={24}
+                      value={3}
+                      edit={true}
+                      activeColor="#ffd700"
+                      onChange={(e) => {
+                        setStar(e);
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <textarea name="" id="" className="w-100 form-control" cols="30" rows="4" placeholder='Comments'
+                      onChange={(e) => {
+                        SetComment(e.target.value);
+                      }}
+                    ></textarea>
+                  </div>
+                  <div className='d-flex justify-content-end mt-3'>
+                    <button onClick={addToRatingProduct} className='button border-0' type='button'> Submit Review</button>
+                  </div>
+
                 </div>
                 <div className='reviews mt-4'>
-                  <div className="review ">
-                    <div className='d-flex gap-10 align-items-center'>
-                      <h6 className='mb-0'>abc</h6>
-                      <ReactStars
-                        count={5}
-                        size={24}
-                        value="3"
-                        edit={false}
-                        activeColor="#ffd700"
-                      />
-                    </div>
-                    <p className='mt-3'>Mua hàng trên Shopee luôn là một trải nghiệm ấn tượng. Dù bạn đang có nhu cầu mua bất kỳ mặt hàng Mua hàng trên Shopee luôn là một trải nghiệm ấn tượng. Dù bạn đang có nhu cầu mua bất kỳ mặt hàng Mua hàng trên Shopee luôn là một trải nghiệm ấn tượng. Dù bạn đang có nhu cầu mua bất kỳ mặt hàng</p>
-                  </div>
+                  {
+                    productState && productState?.ratings?.map((item, index) => {
+                      return (
+                        <div key={index} className="review ">
+                          <div className='d-flex gap-10 align-items-center'>
+
+                            <ReactStars
+                              count={5}
+                              size={24}
+                              value={item?.star}
+                              edit={false}
+                              activeColor="#ffd700"
+                            />
+                          </div>
+                          <p className='mt-3'>{item?.comment}</p>
+                        </div>
+                      )
+                    })
+                  }
                 </div>
               </div>
             </div>
@@ -215,10 +314,20 @@ const SingleProduct = () => {
               </h3>
             </div>
             <div className="row">
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
+              {
+                popularproductState && popularproductState?.map((item, index) => {
+                  if (item?.tags[0] === "popular") {
+                    return (
+                      < PopularProduct key={index} title={item?.title} brand={item?.brand}
+                        price={item?.price} totalRating={item?.totalRatings.toString()}
+                        sold={item?.sold} quantity={item?.quantity} description={item?.description}
+                        id={item?._id}
+                      />
+                    )
+                  }
+
+                })
+              }
             </div>
           </div>
         </div>

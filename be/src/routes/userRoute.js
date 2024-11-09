@@ -31,7 +31,7 @@ router.get("/cart", authMiddleware, getUserCartController);
 router.delete("/empty-cart", authMiddleware, removeCartController);
 router.post("/apply-coupon", authMiddleware, handleCouponController);
 router.post("/cart/cash-order", authMiddleware, createOrderController);
-router.get("/orders", authMiddleware, getAllOrdersController);
+router.get("/get-all-orders", authMiddleware, isAdmin, getAllOrdersController);
 router.put("/update-password", authMiddleware, updatePasswordController);
 router.post("/forgot-password", authMiddleware, forgotPasswordTokenController);
 router.put("/reset-password/:token", authMiddleware, resetPasswordController);

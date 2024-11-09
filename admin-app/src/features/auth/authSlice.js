@@ -40,7 +40,7 @@ export const getOrderByUser = createAsyncThunk(
   "order/get-order",
   async (id, thunkAPI) => {
     try {
-      return await authService.getOrder(id);
+      return await authService.getOrderByUID(id);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }

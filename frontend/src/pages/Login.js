@@ -1,9 +1,9 @@
 import React from 'react'
 import Meta from '../components/Meta';
 import BreadCrumb from '../components/BreadCrumb'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import * as yup from 'yup';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import { handleLogin } from '../features/user/userSlice';
 const LoginSchema = yup.object({
@@ -11,6 +11,8 @@ const LoginSchema = yup.object({
   password: yup.string().required("Password is Required")
 });
 const Login = () => {
+  const authState = useSelector(state => state?.auth);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const formik = useFormik({
     initialValues: {
@@ -20,7 +22,7 @@ const Login = () => {
     validationSchema: LoginSchema,
     onSubmit: (values) => {
       dispatch(handleLogin(values));
-      // alert(JSON.stringify(values));
+      navigate("/");
     },
   });
   return (
