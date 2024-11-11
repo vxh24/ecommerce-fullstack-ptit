@@ -16,6 +16,13 @@ export const handleLogin = createAsyncThunk("auth/login", async (userData, thunk
     return thunkAPI.rejectWithValue(error)
   }
 })
+export const googlelogin = createAsyncThunk("auth/google", async (userData, thunkAPI) => {
+  try {
+    return await authService.gglogin(userData)
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error)
+  }
+})
 export const forgotPass = createAsyncThunk("auth/forgot", async (data, thunkAPI) => {
   try {
     return await authService.forgotPassword(data)
@@ -105,23 +112,45 @@ export const authSlice = createSlice({
       if (state.isError === true) {
         toast.error(action.error)
       }
-    }).addCase(getUserProductWishlist.pending, (state) => {
-      state.isLoading = true;
-
-    }).addCase(getUserProductWishlist.fulfilled, (state, action) => {
-      state.isLoading = false;
-      state.isError = false;
-      state.isSuccess = true;
-      state.wishlist = action.payload;
-    }).addCase(getUserProductWishlist.rejected, (state, action) => {
-      state.isLoading = false;
-      state.isError = true;
-      state.isSuccess = false;
-      state.message = action.error;
-      if (state.isError === true) {
-        toast.error(action.error)
-      }
     })
+      .addCase(googlelogin.pending, (state) => {
+        state.isLoading = true;
+      }).addCase(googlelogin.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.user = action.payload;
+
+        if (state.isSuccess === true) {
+          localStorage.setItem("token", action.payload.access_token)
+          toast.success("Login With Google Successfully");
+        }
+      }).addCase(googlelogin.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+        if (state.isError === true) {
+          toast.error(action.error)
+        }
+      })
+      .addCase(getUserProductWishlist.pending, (state) => {
+        state.isLoading = true;
+
+      }).addCase(getUserProductWishlist.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.wishlist = action.payload;
+      }).addCase(getUserProductWishlist.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+        if (state.isError === true) {
+          toast.error(action.error)
+        }
+      })
       .addCase(AddProdToCart.pending, (state) => {
         state.isLoading = true;
 

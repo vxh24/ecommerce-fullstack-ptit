@@ -1,8 +1,10 @@
 require("dotenv").config();
 const asyncHandler = require("express-async-handler");
 const { uploadSingleFile } = require("../services/fileService");
+const { OAuth2Client } = require('google-auth-library');
 const Joi = require("joi");
 const jwt = require("jsonwebtoken");
+const client = new OAuth2Client(process.env.GG_CLIENT_ID);
 const {
   createUser,
   handleLogin,
@@ -22,6 +24,7 @@ const {
   applyCoupon,
   createOrder,
   getAllOrders,
+  getOrderByUID,
   updateOrderStatus,
 } = require("../services/userService");
 const User = require("../models/userModel");
@@ -60,7 +63,33 @@ const createUserController = asyncHandler(async (req, res) => {
     });
   }
 });
+const googleLogin = async (req, res) => {
+  const { token } = req.body;
 
+  const ticket = await client.verifyIdToken({
+    idToken: token,
+    audience: process.env.GG_CLIENT_ID,
+  });
+
+  const { name, email, sub } = ticket.getPayload();
+  const password = token;
+  const phone = "";
+  let user = await User.findOne({ email });
+  if (!user) {
+    let userData = {
+      name,
+      email,
+      password,
+      phone,
+    };
+    const result = await createUser(userData);
+    const access_token = generateToken(userData);
+    res.status(200).json({
+      access_token,
+      data: result,
+    });
+  }
+}
 const loginUserController = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const result = await handleLogin(email, password);
@@ -351,6 +380,19 @@ const getAllOrdersController = asyncHandler(async (req, res) => {
   }
 });
 
+const getOrderByUIDController = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  try {
+    const result = await getOrderByUID(_id);
+    res.json({
+      EC: 0,
+      data: result,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 const updateOrderStatusController = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
@@ -387,4 +429,6 @@ module.exports = {
   createOrderController,
   getAllOrdersController,
   updateOrderStatusController,
+  getOrderByUIDController,
+  googleLogin,
 };

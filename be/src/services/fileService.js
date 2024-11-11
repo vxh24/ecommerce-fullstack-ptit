@@ -3,7 +3,7 @@ const { uploadToCloudinary } = require("../utils/cloudinary");
 
 const uploadSingleFile = async (fileObject) => {
   // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-  let uploadPath = path.resolve(__dirname, "../public/images/upload");
+  let uploadPath = path.resolve(__dirname, "../public/images/avatar");
 
   //get image extension
   let extName = path.extname(fileObject.name);
@@ -61,12 +61,13 @@ const uploadMultipleFiles = async (filesArr, filename) => {
           status: "success",
           path: finalName,
           cloudinaryUrl: cloudinaryResult.secure_url,
+          asset_id: cloudinaryResult.asset_id,
+          public_id: cloudinaryResult.public_id.split("/")[1],
           fileName: filesArr[i].name,
           error: null,
         });
         countSuccess++;
       } catch (error) {
-        // console.log(error);
         resultArr.push({
           status: "failed",
           path: null,

@@ -16,11 +16,13 @@ import { toast } from "react-toastify"
 import { AddProdToCart, getUserCart } from '../features/user/userSlice';
 import { getAllProducts } from '../features/products/productSlice';
 import PopularProduct from "../components/PopularProduct";
+import { AiOutlineHeart } from "react-icons/ai";
 const SingleProduct = () => {
   const [color, setColor] = useState(null);
   const [count, setCount] = useState(1);
   const [orderProduct, setorderProduct] = useState(true);
   const [alreadyAdded, setAlreadyAdded] = useState(false);
+  const [click, setClick] = useState(false);
   const navigate = useNavigate();
   const copyToClipboard = (text) => {
     console.log('text', text)
@@ -55,8 +57,8 @@ const SingleProduct = () => {
     }
   })
   const addToWish = (id) => {
-    console.log(id);
     dispatch(addToWishlist(id));
+    setClick(true);
   }
   const uploadCart = () => {
     if (color === null) {
@@ -65,6 +67,7 @@ const SingleProduct = () => {
     }
     else {
       dispatch(AddProdToCart({ _id: productState?._id, count, color }))
+      navigate("/cart");
     }
   }
 
@@ -193,7 +196,7 @@ const SingleProduct = () => {
 
                     </div>
                     <div >
-                      <FaRegHeart onClick={() => { addToWish(productState?._id) }} className='fs-5 me-2' />
+                      <AiOutlineHeart onClick={() => { addToWish(productState?._id) }} className='fs-5 me-2' color={click ? "red" : "#333"} />
                       <Link >Add to wishlis</Link>
                     </div>
                   </div>

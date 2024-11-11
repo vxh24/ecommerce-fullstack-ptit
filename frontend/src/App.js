@@ -23,6 +23,8 @@ import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Order from './pages/Order';
 import Profile from './pages/Profile';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+const clientId = process.env.GG_CLIENT_ID;
 function App() {
   return (
     <>
@@ -41,7 +43,9 @@ function App() {
             <Route path="checkout" element={<Checkout />} />
             <Route path="compare-product" element={<CompareProduct />} />
             <Route path="wishlist" element={<Wishlist />} />
+            {/* <GoogleOAuthProvider clientId={clientId}> */}
             <Route path="login" element={<Login />} />
+            {/* </GoogleOAuthProvider> */}
             <Route path="forgot-password" element={<ForgotPassword />} />
             <Route path="sign-up" element={<Signup />} />
             <Route path="reset-password/:token" element={<ResetPassword />} />

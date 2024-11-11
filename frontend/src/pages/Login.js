@@ -5,7 +5,9 @@ import { Link, useNavigate } from "react-router-dom";
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
-import { handleLogin } from '../features/user/userSlice';
+import { googlelogin, handleLogin } from '../features/user/userSlice';
+import { GoogleLogin } from '@react-oauth/google';
+import axios from "axios";
 const LoginSchema = yup.object({
   email: yup.string().nullable().email("Email should be valid").required("Email Address is Required"),
   password: yup.string().required("Password is Required")
@@ -25,6 +27,20 @@ const Login = () => {
       navigate("/");
     },
   });
+  const handleSuccess = async (credentialResponse) => {
+    try {
+      // Gửi mã thông báo đến backend để xử lý
+      // const res = await axios.post('http://localhost:5000/v1/api/google', {
+      // const token = credentialResponse.credential;
+      // });
+      dispatch(googlelogin({ token: credentialResponse.credential }));
+    } catch (error) {
+      console.error('Google login failed:', error);
+    }
+  }
+  const handleError = () => {
+    alert("Login Failled")
+  }
   return (
     <>
       <Meta title={"Login"} />
@@ -59,12 +75,16 @@ const Login = () => {
                   </div>
                   <div>
                     <Link to="/forgot-password">Forgot Password</Link>
-                    <div className="mt-3 d-flex justify-content-center gap-15 align-items-center">
+                    <div className="mt-3 d-flex justify-content-center gap-15 align-items-center mb-3">
                       <button className="button border-0">Login</button>
                       <Link className='button signup' to="/sign-up" >Sign Up</Link>
                     </div>
                   </div>
                 </form>
+                <GoogleLogin
+                  onSuccess={handleSuccess}
+                  onError={handleError}
+                />
               </div>
             </div>
           </div>

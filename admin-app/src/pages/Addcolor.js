@@ -14,7 +14,8 @@ import {
 let schema = yup.object().shape({
   title: yup.string().required("Color is Required"),
 });
-const Addcolor = () => {
+
+const AddColor = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -28,6 +29,7 @@ const Addcolor = () => {
     updatedColor,
     colorName,
   } = newColor;
+
   useEffect(() => {
     if (getColorId !== undefined) {
       dispatch(getAColor(getColorId));
@@ -35,6 +37,7 @@ const Addcolor = () => {
       dispatch(resetState());
     }
   }, [getColorId]);
+
   useEffect(() => {
     if (isSuccess && createdColor) {
       toast.success("Color Added Successfullly!");
@@ -47,6 +50,7 @@ const Addcolor = () => {
       toast.error("Something Went Wrong!");
     }
   }, [isSuccess, isError, isLoading, createdColor]);
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -67,6 +71,7 @@ const Addcolor = () => {
       }
     },
   });
+
   return (
     <div>
       <h3 className="mb-4 title">
@@ -97,4 +102,4 @@ const Addcolor = () => {
   );
 };
 
-export default Addcolor;
+export default AddColor;

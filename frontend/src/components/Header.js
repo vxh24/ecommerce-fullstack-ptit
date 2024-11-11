@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { getAProducts } from '../features/products/productSlice';
+// import { getUserCart } from '../features/user/userSlice';
 const Header = () => {
   const handleLogout = () => {
     localStorage.clear();
@@ -15,16 +16,36 @@ const Header = () => {
   const dispatch = useDispatch();
   const productState = useSelector(state => state?.product?.products?.data);
   const [productOpt, setProductOpt] = useState([]);
+  const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
     let data = []
+    let category = new Set();
     for (let index = 0; index < productState?.length; index++) {
       const element = productState[index];
       data.push({ id: index, prod: element?._id, name: element?.title });
+      category.add(element?.category);
 
     }
     setProductOpt(data);
+    setCategories([...category]);
   }, [productState]);
+  // useEffect(() => {
+  //   dispatch(getUserCart());
+  // }, [])
+  const userCartState = useSelector(state => state?.auth?.cartUser?.data);
+  const [total, setTotal] = useState(null);
+  useEffect(() => {
+    let sum = 0;
+    for (let index = 0; index < userCartState?.products?.length; index++) {
+      sum = sum + (Number(userCartState.products[index].count) * Number(userCartState.products[index].price));
+      setTotal(sum);
+    }
+    // setTimeout(() => {
+    //   dispatch(getUserCart());
+    // }, 200)
+  }, [userCartState]);
+  // console.log(userCartState);
   return (
     <>
       <header className="header-top-strip py-3">
@@ -99,8 +120,8 @@ const Header = () => {
                   <Link to="/cart" className="d-flex align-items-center gap-10 text-white">
                     <img src="images/cart.svg" alt="" />
                     <div className="d-flex flex-column gap-10">
-                      <span className="badge bg-white text-dark">0</span>
-                      <p className="mb-0">$ 5000</p>
+                      <span className="badge bg-white text-dark">{userCartState?.products?.length ? userCartState?.products?.length : 0}</span>
+                      <p className="mb-0">$ {total ? total : 0}</p>
                     </div>
                   </Link>
                 </div>
@@ -121,9 +142,13 @@ const Header = () => {
                       <span className='me-5 d-inline-block'> Shop Categories </span>
                     </button>
                     <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                      <li><Link className="dropdown-item text-white" to="">Action</Link></li>
-                      <li><Link className="dropdown-item text-white" to="">Another action</Link></li>
-                      <li><Link className="dropdown-item text-white" to="">Something else here</Link></li>
+                      {
+                        categories && categories?.map((item, index) => {
+                          return (
+                            <li key={index}><Link className="dropdown-item text-white" to="">{item}</Link></li>
+                          )
+                        })
+                      }
                     </ul>
                   </div>
                 </div>

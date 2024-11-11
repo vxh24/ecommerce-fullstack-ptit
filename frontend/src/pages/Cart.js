@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Meta from '../components/Meta';
 import BreadCrumb from '../components/BreadCrumb'
 import { MdDelete } from "react-icons/md";
@@ -8,9 +8,18 @@ import { getUserCart } from '../features/user/userSlice';
 const Cart = () => {
   const dispatch = useDispatch();
   const userCartState = useSelector(state => state?.auth?.cartUser?.data);
+  const [totalAmount, setTotalAmount] = useState(null);
+
   useEffect(() => {
     dispatch(getUserCart());
   }, [])
+  useEffect(() => {
+    let sum = 0;
+    for (let index = 0; index < userCartState?.products?.length; index++) {
+      sum = sum + (Number(userCartState.products[index].count) * userCartState.products[index].price)
+      setTotalAmount(sum);
+    }
+  }, [userCartState])
   return (
     <>
       <Meta title={"Cart"} />
@@ -92,16 +101,20 @@ const Cart = () => {
               </div> */}
             </div>
             <div className="col-12 py-2 mt-4">
-              <div className="d-flex justify-content-between">
-                <div>
-                  <Link to="/product" className="button">Continue Shopping</Link>
+              {
+                (totalAmount !== null || totalAmount !== 0) &&
+
+                <div className="d-flex justify-content-between">
+                  <div>
+                    <Link to="/product" className="button">Continue Shopping</Link>
+                  </div>
+                  <div>
+                    <h4>SubTotal: $ {totalAmount}</h4>
+                    <p>s a valid value to be accessible. Provide a valid, </p>
+                    <Link to="/checkout" className='button'>Checkout</Link>
+                  </div>
                 </div>
-                <div>
-                  <h4>SubTotal: $ {userCartState?.cartTotal}</h4>
-                  <p>s a valid value to be accessible. Provide a valid, </p>
-                  <Link to="/checkout" className='button'>Checkout</Link>
-                </div>
-              </div>
+              }
             </div>
           </div>
         </div>

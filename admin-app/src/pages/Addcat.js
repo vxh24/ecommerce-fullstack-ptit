@@ -14,12 +14,13 @@ import {
 let schema = yup.object().shape({
   title: yup.string().required("Category Name is Required"),
 });
-const Addcat = () => {
+const AddCat = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const getPCatId = location.pathname.split("/")[3];
   const navigate = useNavigate();
   const newCategory = useSelector((state) => state.pCategory);
+
   const {
     isSuccess,
     isError,
@@ -28,6 +29,7 @@ const Addcat = () => {
     categoryName,
     updatedCategory,
   } = newCategory;
+
   useEffect(() => {
     if (getPCatId !== undefined) {
       dispatch(getAProductCategory(getPCatId));
@@ -35,6 +37,7 @@ const Addcat = () => {
       dispatch(resetState());
     }
   }, [getPCatId]);
+
   useEffect(() => {
     if (isSuccess && createdCategory) {
       toast.success("Category Added Successfullly!");
@@ -47,6 +50,7 @@ const Addcat = () => {
       toast.error("Something Went Wrong!");
     }
   }, [isSuccess, isError, isLoading]);
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -67,6 +71,7 @@ const Addcat = () => {
       }
     },
   });
+
   return (
     <div>
       <h3 className="mb-4  title">
@@ -97,4 +102,4 @@ const Addcat = () => {
   );
 };
 
-export default Addcat;
+export default AddCat;
