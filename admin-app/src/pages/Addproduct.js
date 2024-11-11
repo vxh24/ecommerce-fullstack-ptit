@@ -1,7 +1,6 @@
 import { React, useEffect, useState } from "react";
 import CustomInput from "../components/CustomInput";
 import ReactQuill from "react-quill";
-import { useNavigate } from "react-router-dom";
 import "react-quill/dist/quill.snow.css";
 import { toast } from "react-toastify";
 import * as yup from "yup";
@@ -31,9 +30,7 @@ let schema = yup.object().shape({
 
 const AddProduct = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [color, setColor] = useState([]);
-  const [images, setImages] = useState([]);
 
   console.log(color);
 
@@ -46,7 +43,7 @@ const AddProduct = () => {
   const brandState = useSelector((state) => state.brand.brands.data);
   const catState = useSelector((state) => state.pCategory.pCategories.data);
   const colorState = useSelector((state) => state.color.colors.data);
-  const imgState = useSelector((state) => state.upload.images);
+  const imgState = useSelector((state) => state.upload.images.images);
   const newProduct = useSelector((state) => state.product);
   const { isSuccess, isError, isLoading, createdProduct } = newProduct;
 
@@ -70,12 +67,14 @@ const AddProduct = () => {
   }
 
   const img = [];
-  imgState.forEach((i) => {
-    img.push({
-      public_id: i.public_id,
-      url: i.url,
+  if (Array.isArray(imgState)) {
+    imgState.forEach((i) => {
+      img.push({
+        public_id: i.public_id,
+        url: i.url,
+      });
     });
-  });
+  }
 
   useEffect(() => {
     formik.values.color = color ? color : " ";
@@ -96,6 +95,7 @@ const AddProduct = () => {
     },
     validationSchema: schema,
     onSubmit: (values) => {
+      // alert(JSON.stringify(values));
       dispatch(createProducts(values));
       formik.resetForm();
       setColor(null);
@@ -235,7 +235,10 @@ const AddProduct = () => {
           <div className="error">
             {formik.touched.quantity && formik.errors.quantity}
           </div>
-          <div className="bg-white border-1 p-5 text-center">
+          <div
+            className="bg-white border-1 p-5 text-center"
+            style={{ cursor: "pointer" }}
+          >
             <Dropzone
               onDrop={(acceptedFiles) => dispatch(uploadImg(acceptedFiles))}
             >

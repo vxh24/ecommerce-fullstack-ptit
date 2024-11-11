@@ -15,12 +15,14 @@ import {
 let schema = yup.object().shape({
   title: yup.string().required("Brand Name is Required"),
 });
-const Addbrand = () => {
+
+const AddBrand = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
   const getBrandId = location.pathname.split("/")[3];
   const newBrand = useSelector((state) => state.brand);
+
   const {
     isSuccess,
     isError,
@@ -29,6 +31,7 @@ const Addbrand = () => {
     brandName,
     updatedBrand,
   } = newBrand;
+
   useEffect(() => {
     if (getBrandId !== undefined) {
       dispatch(getABrand(getBrandId));
@@ -50,6 +53,7 @@ const Addbrand = () => {
       toast.error("Something Went Wrong!");
     }
   }, [isSuccess, isError, isLoading]);
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -102,4 +106,4 @@ const Addbrand = () => {
   );
 };
 
-export default Addbrand;
+export default AddBrand;

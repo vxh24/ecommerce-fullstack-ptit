@@ -9,6 +9,7 @@ import pCategoryReducer from "../features/pcategory/pCategorySlice";
 import brandReducer from "../features/brand/brandSlice";
 import productReducer from "../features/product/productSlice";
 import uploadReducer from "../features/upload/uploadSlice";
+import couponReducer from "../features/coupon/couponSlice";
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -16,6 +17,7 @@ export const store = configureStore({
     blogs: blogReducer,
     brand: brandReducer,
     color: colorReducer,
+    coupon: couponReducer,
     customer: customerReducer,
     enquiry: enquiryReducer,
     pCategory: pCategoryReducer,

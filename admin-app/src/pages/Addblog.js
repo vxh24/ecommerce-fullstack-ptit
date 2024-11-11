@@ -22,14 +22,16 @@ let schema = yup.object().shape({
   description: yup.string().required("Description is Required"),
   category: yup.string().required("Category is Required"),
 });
-const Addblog = () => {
+const AddBlog = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const getBlogId = location.pathname.split("/")[3];
-  const imgState = useSelector((state) => state.upload.images);
-  const bCatState = useSelector((state) => state.bCategory.bCategories);
+
+  const imgState = useSelector((state) => state.upload.images.images);
+  const bCatState = useSelector((state) => state.bCategory.bCategories.data);
   const blogState = useSelector((state) => state.blogs);
+
   const {
     isSuccess,
     isError,
@@ -41,6 +43,7 @@ const Addblog = () => {
     blogImages,
     updatedBlog,
   } = blogState;
+
   useEffect(() => {
     if (getBlogId !== undefined) {
       dispatch(getABlog(getBlogId));
@@ -69,13 +72,17 @@ const Addblog = () => {
   }, [isSuccess, isError, isLoading]);
 
   const img = [];
-  imgState.forEach((i) => {
-    img.push({
-      public_id: i.public_id,
-      url: i.url,
+  if (Array.isArray(imgState)) {
+    imgState.forEach((i) => {
+      img.push({
+        public_id: i.public_id,
+        url: i.url,
+      });
     });
-  });
-  console.log(img);
+  }
+
+  // console.log(img);
+
   useEffect(() => {
     formik.values.images = img;
   }, [blogImages]);
@@ -134,13 +141,14 @@ const Addblog = () => {
             id=""
           >
             <option value="">Select Blog Category</option>
-            {bCatState.map((i, j) => {
-              return (
-                <option key={j} value={i.title}>
-                  {i.title}
-                </option>
-              );
-            })}
+            {Array.isArray(bCatState) &&
+              bCatState.map((i, j) => {
+                return (
+                  <option key={j} value={i.title}>
+                    {i.title}
+                  </option>
+                );
+              })}
           </select>
           <div className="error">
             {formik.touched.category && formik.errors.category}
@@ -155,37 +163,6 @@ const Addblog = () => {
           <div className="error">
             {formik.touched.description && formik.errors.description}
           </div>
-          <div className="bg-white border-1 p-5 text-center mt-3">
-            <Dropzone
-              onDrop={(acceptedFiles) => dispatch(uploadImg(acceptedFiles))}
-            >
-              {({ getRootProps, getInputProps }) => (
-                <section>
-                  <div {...getRootProps()}>
-                    <input {...getInputProps()} />
-                    <p>
-                      Drag 'n' drop some files here, or click to select files
-                    </p>
-                  </div>
-                </section>
-              )}
-            </Dropzone>
-          </div>
-          <div className="showimages d-flex flex-wrap mt-3 gap-3">
-            {imgState?.map((i, j) => {
-              return (
-                <div className=" position-relative" key={j}>
-                  <button
-                    type="button"
-                    onClick={() => dispatch(delImg(i.public_id))}
-                    className="btn-close position-absolute"
-                    style={{ top: "10px", right: "10px" }}
-                  ></button>
-                  <img src={i.url} alt="" width={200} height={200} />
-                </div>
-              );
-            })}
-          </div>
 
           <button
             className="btn btn-success border-0 rounded-3 my-5"
@@ -199,4 +176,4 @@ const Addblog = () => {
   );
 };
 
-export default Addblog;
+export default AddBlog;

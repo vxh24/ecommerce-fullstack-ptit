@@ -62,7 +62,7 @@ const uploadMultipleFiles = async (filesArr, filename) => {
           path: finalName,
           cloudinaryUrl: cloudinaryResult.secure_url,
           asset_id: cloudinaryResult.asset_id,
-          public_id: cloudinaryResult.public_id,
+          public_id: cloudinaryResult.public_id.split("/")[1],
           fileName: filesArr[i].name,
           error: null,
         });

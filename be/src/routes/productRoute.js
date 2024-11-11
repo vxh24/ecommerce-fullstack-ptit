@@ -20,9 +20,9 @@ router.post("/", authMiddleware, isAdmin, createProductController);
 router.get("/", getAllProductsController);
 router.put("/wishlist", authMiddleware, addToWishlistController);
 router.put("/rating", authMiddleware, ratingController);
-router.put("/upload", authMiddleware, isAdmin, uploadImagesController);
+router.post("/upload", authMiddleware, isAdmin, uploadImagesController);
 router.delete(
-  "/delete-img/:id",
+  "/upload/delete-img/:id",
   authMiddleware,
   isAdmin,
   deleteImagesController

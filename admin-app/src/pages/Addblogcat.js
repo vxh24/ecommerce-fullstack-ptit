@@ -11,10 +11,12 @@ import {
   resetState,
   updateABlogCat,
 } from "../features/bcategory/bcategorySlice";
+
 let schema = yup.object().shape({
   title: yup.string().required("Category Name is Required"),
 });
-const Addblogcat = () => {
+
+const AddBlogCat = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -28,6 +30,7 @@ const Addblogcat = () => {
     blogCatName,
     updatedBlogCategory,
   } = newBlogCategory;
+
   useEffect(() => {
     if (getBlogCatId !== undefined) {
       dispatch(getABlogCat(getBlogCatId));
@@ -35,6 +38,7 @@ const Addblogcat = () => {
       dispatch(resetState());
     }
   }, [getBlogCatId]);
+
   useEffect(() => {
     if (isSuccess && createBlogCategory) {
       toast.success("Blog Category Added Successfullly!");
@@ -47,6 +51,7 @@ const Addblogcat = () => {
       toast.error("Something Went Wrong!");
     }
   }, [isSuccess, isError, isLoading]);
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -67,6 +72,7 @@ const Addblogcat = () => {
       }
     },
   });
+
   return (
     <div>
       <h3 className="mb-4  title">
@@ -98,4 +104,4 @@ const Addblogcat = () => {
   );
 };
 
-export default Addblogcat;
+export default AddBlogCat;
