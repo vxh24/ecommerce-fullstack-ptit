@@ -10,6 +10,7 @@ const {
   rating,
 } = require("../services/productService");
 const { uploadMultipleFiles } = require("../services/fileService");
+const { deleteToCloudinary } = require("../utils/cloudinary");
 
 const createProductController = asyncHandler(async (req, res) => {
   // res.send("Create new product");
@@ -40,7 +41,6 @@ const getAllProductsController = asyncHandler(async (req, res) => {
   excludeFields.forEach((el) => delete queryObj[el]);
   let queryStr = JSON.stringify(queryObj);
   queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-  // console.log(JSON.parse(queryStr));
 
   //sorting
   const sortBy = req.query.sort ? req.query.sort.split(",").join(" ") : "";
@@ -117,7 +117,6 @@ const ratingController = asyncHandler(async (req, res) => {
 });
 
 const uploadImagesController = asyncHandler(async (req, res) => {
-  const { id } = req.params;
   try {
     const files = req.files.images;
     if (!files) {
@@ -139,21 +138,31 @@ const uploadImagesController = asyncHandler(async (req, res) => {
     }
 
     const images = uploadResults.detail.map((file) => ({
-      localPath: file.path,
-      cloudinaryUrl: file.cloudinaryUrl,
+      url: file.cloudinaryUrl,
+      asset_id: file.asset_id,
+      public_id: file.public_id,
     }));
 
-    const currentProduct = await getAProduct(id);
-    const updatedImages = [...(currentProduct.images || []), ...images];
+    res.status(200).json({
+      EC: 0,
+      message: "Files uploaded successfully",
+      images,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
 
-    const updatedProduct = await updateProduct(
-      id,
-      {
-        images: updatedImages,
-      },
-      { new: true }
-    );
-    res.json(updatedProduct);
+const deleteImagesController = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const public_id = "products" + "/" + id;
+  console.log(public_id);
+  try {
+    const imageDeleted = deleteToCloudinary(public_id);
+    res.status(200).json({
+      EC: 0,
+      message: "Deleted successful",
+    });
   } catch (error) {
     throw new Error(error);
   }
@@ -168,4 +177,5 @@ module.exports = {
   addToWishlistController,
   ratingController,
   uploadImagesController,
+  deleteImagesController,
 };
