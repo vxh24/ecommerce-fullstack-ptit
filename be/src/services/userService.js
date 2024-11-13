@@ -315,6 +315,14 @@ const getOrderByUID = asyncHandler(async (userID) => {
   return orderUser;
 });
 
+const getOrderUserById = asyncHandler(async (id) => {
+  const orderUser = await Order.findById(id)
+    .populate("products.product")
+    .populate("orderBy")
+    .exec();
+  return orderUser;
+});
+
 const getAllOrders = asyncHandler(async () => {
   const allOrderUser = await Order.find({})
     .populate("products.product")
@@ -359,4 +367,5 @@ module.exports = {
   getAllOrders,
   getOrderByUID,
   updateOrderStatus,
+  getOrderUserById,
 };

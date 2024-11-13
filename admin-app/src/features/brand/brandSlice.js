@@ -11,6 +11,7 @@ export const getBrands = createAsyncThunk(
     }
   }
 );
+
 export const getABrand = createAsyncThunk(
   "brand/get-brand",
   async (id, thunkAPI) => {
@@ -21,6 +22,7 @@ export const getABrand = createAsyncThunk(
     }
   }
 );
+
 export const createBrand = createAsyncThunk(
   "brand/create-brand",
   async (brandData, thunkAPI) => {
@@ -31,6 +33,7 @@ export const createBrand = createAsyncThunk(
     }
   }
 );
+
 export const updateABrand = createAsyncThunk(
   "brand/update-brand",
   async (brand, thunkAPI) => {
@@ -62,6 +65,7 @@ const initialState = {
   isSuccess: false,
   message: "",
 };
+
 export const brandSlice = createSlice({
   name: "brands",
   initialState,
@@ -105,7 +109,7 @@ export const brandSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.brandName = action.payload.title;
+        state.brandName = action.payload.data.title;
       })
       .addCase(getABrand.rejected, (state, action) => {
         state.isLoading = false;

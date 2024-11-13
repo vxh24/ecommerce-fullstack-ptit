@@ -18,6 +18,7 @@ const {
   getAllOrdersController,
   updateOrderStatusController,
   getOrderByUIDController,
+  getOrderByIdController,
 } = require("../controllers/userController");
 
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
@@ -37,6 +38,7 @@ router.get("/get-all-orders", authMiddleware, isAdmin, getAllOrdersController);
 router.put("/update-password", authMiddleware, updatePasswordController);
 router.post("/forgot-password", authMiddleware, forgotPasswordTokenController);
 router.put("/reset-password/:token", authMiddleware, resetPasswordController);
+router.get("/order/:id", authMiddleware, isAdmin, getOrderByIdController);
 router.put(
   "/order/update-order/:id",
   authMiddleware,

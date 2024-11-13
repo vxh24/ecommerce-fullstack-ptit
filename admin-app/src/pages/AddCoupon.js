@@ -31,8 +31,16 @@ const AddCoupon = () => {
     isLoading,
     createdCoupon,
     couponName,
+    couponDiscount,
+    couponExpiry,
     updatedCoupon,
   } = newCoupon;
+
+  const changeDateFormat = (date) => {
+    const newDate = new Date(date).toLocaleDateString();
+    const [month, day, year] = newDate.split("/");
+    return [year, month, day].join("-");
+  };
 
   useEffect(() => {
     if (getCouponId !== undefined) {
@@ -48,7 +56,7 @@ const AddCoupon = () => {
     }
     if (isSuccess && updatedCoupon) {
       toast.success("Coupon Updated Successfullly!");
-      navigate("/admin/list-coupon");
+      navigate("/admin/coupon-list");
     }
 
     if (isError) {
@@ -60,8 +68,8 @@ const AddCoupon = () => {
     enableReinitialize: true,
     initialValues: {
       name: couponName || "",
-      expiry: "",
-      discount: "",
+      expiry: changeDateFormat(couponExpiry) || "",
+      discount: couponDiscount || "",
     },
     validationSchema: schema,
     onSubmit: (values) => {

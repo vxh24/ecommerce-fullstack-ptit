@@ -4,6 +4,7 @@ const {
   getAllCoupons,
   updateCoupon,
   deleteCoupon,
+  getACoupon,
 } = require("../services/couponService");
 
 const createCouponController = asyncHandler(async (req, res) => {
@@ -21,6 +22,19 @@ const createCouponController = asyncHandler(async (req, res) => {
 const getAllCouponsController = asyncHandler(async (req, res) => {
   try {
     const result = await getAllCoupons();
+    res.status(200).json({
+      EC: 0,
+      data: result,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+const getACouponController = asyncHandler(async (req, res) => {
+  const id = req.params.id;
+  try {
+    const result = await getACoupon(id);
     res.status(200).json({
       EC: 0,
       data: result,
@@ -61,4 +75,5 @@ module.exports = {
   getAllCouponsController,
   updateCouponController,
   deleteCouponController,
+  getACouponController,
 };

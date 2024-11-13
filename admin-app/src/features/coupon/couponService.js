@@ -3,7 +3,7 @@ import { getConfig } from "../../utils/axiosConfig";
 import { base_url } from "../../utils/baseUrl";
 
 const getCoupons = async () => {
-  const response = await axios.get(`${base_url}coupon`);
+  const response = await axios.get(`${base_url}coupon`, getConfig);
 
   return response.data;
 };
@@ -17,7 +17,11 @@ const createCoupon = async (coupon) => {
 const updateCoupon = async (coupon) => {
   const response = await axios.put(
     `${base_url}coupon/${coupon.id}`,
-    { title: coupon.couponData.title },
+    {
+      name: coupon.couponData.name,
+      expiry: coupon.couponData.expiry,
+      discount: coupon.couponData.discount,
+    },
     getConfig
   );
 
