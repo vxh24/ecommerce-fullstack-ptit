@@ -7,6 +7,7 @@ const getColors = async () => {
 
   return response.data;
 };
+
 const createColor = async (color) => {
   const response = await axios.post(`${base_url}color/`, color, getConfig);
 
@@ -22,8 +23,9 @@ const updateColor = async (color) => {
 
   return response.data;
 };
+
 const getColor = async (id) => {
-  const response = await axios.get(`${base_url}color/${id}`, getConfig);
+  const response = await axios.get(`${base_url}color/${id}`);
 
   return response.data;
 };
@@ -33,6 +35,7 @@ const deleteColor = async (id) => {
 
   return response.data;
 };
+
 const colorService = {
   getColors,
   createColor,

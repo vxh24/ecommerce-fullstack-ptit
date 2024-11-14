@@ -29,7 +29,7 @@ const updateBlogCategory = async (blogCat) => {
 };
 
 const getBlogCategory = async (id) => {
-  const response = await axios.get(`${base_url}blog-category/${id}`, getConfig);
+  const response = await axios.get(`${base_url}blog-category/${id}`);
 
   return response.data;
 };

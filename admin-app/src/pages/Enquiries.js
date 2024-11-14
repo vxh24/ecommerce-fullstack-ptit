@@ -70,7 +70,7 @@ const Enquiries = () => {
         key: i + 1,
         name: enqState[i].name,
         email: enqState[i].email,
-        mobile: enqState[i].phone,
+        phone: enqState[i].phone,
         status: (
           <>
             <select
@@ -113,7 +113,6 @@ const Enquiries = () => {
   }
 
   const setEnquiryStatus = (e, i) => {
-    console.log(e, i);
     const data = { id: i, enqData: e };
     dispatch(updateAEnquiry(data));
   };

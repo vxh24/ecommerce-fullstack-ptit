@@ -11,6 +11,7 @@ export const getCategories = createAsyncThunk(
     }
   }
 );
+
 export const createCategory = createAsyncThunk(
   "productCategory/create-category",
   async (categoryData, thunkAPI) => {
@@ -21,6 +22,7 @@ export const createCategory = createAsyncThunk(
     }
   }
 );
+
 export const updateAProductCategory = createAsyncThunk(
   "productCategory/update-category",
   async (category, thunkAPI) => {
@@ -42,6 +44,7 @@ export const deleteAProductCategory = createAsyncThunk(
     }
   }
 );
+
 export const getAProductCategory = createAsyncThunk(
   "productCategory/get-product-category",
   async (id, thunkAPI) => {
@@ -52,6 +55,7 @@ export const getAProductCategory = createAsyncThunk(
     }
   }
 );
+
 export const resetState = createAction("RevertAll");
 
 const initialState = {
@@ -61,6 +65,7 @@ const initialState = {
   isSuccess: false,
   message: "",
 };
+
 export const pCategorySlice = createSlice({
   name: "pCategories",
   initialState,
@@ -134,7 +139,7 @@ export const pCategorySlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.categoryName = action.payload.title;
+        state.categoryName = action.payload.data.title;
       })
       .addCase(getAProductCategory.rejected, (state, action) => {
         state.isLoading = false;
@@ -145,4 +150,5 @@ export const pCategorySlice = createSlice({
       .addCase(resetState, () => initialState);
   },
 });
+
 export default pCategorySlice.reducer;

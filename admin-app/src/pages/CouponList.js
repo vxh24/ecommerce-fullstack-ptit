@@ -57,7 +57,7 @@ const Couponlist = () => {
   }, []);
 
   const couponState = useSelector((state) => state.coupon.coupons.data);
-  console.log(couponState);
+  // console.log(couponState);
 
   const data1 = [];
 
@@ -67,7 +67,7 @@ const Couponlist = () => {
         key: i + 1,
         name: couponState[i].name,
         discount: couponState[i].discount,
-        expiry: couponState[i].expiry,
+        expiry: new Date(couponState[i].expiry).toLocaleDateString(),
         action: (
           <>
             <Link
@@ -87,6 +87,7 @@ const Couponlist = () => {
       });
     }
   }
+
   const deleteCoupon = (e) => {
     dispatch(deleteACoupon(e));
 
@@ -95,6 +96,7 @@ const Couponlist = () => {
       dispatch(getCoupons());
     }, 100);
   };
+
   return (
     <div>
       <h3 className="mb-4 title">Coupons</h3>

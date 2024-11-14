@@ -40,14 +40,12 @@ const AddBlog = () => {
     blogName,
     blogDesc,
     blogCategory,
-    blogImages,
     updatedBlog,
   } = blogState;
 
   useEffect(() => {
     if (getBlogId !== undefined) {
       dispatch(getABlog(getBlogId));
-      img.push(blogImages);
     } else {
       dispatch(resetState());
     }
@@ -80,12 +78,6 @@ const AddBlog = () => {
       });
     });
   }
-
-  // console.log(img);
-
-  useEffect(() => {
-    formik.values.images = img;
-  }, [blogImages]);
 
   const formik = useFormik({
     enableReinitialize: true,

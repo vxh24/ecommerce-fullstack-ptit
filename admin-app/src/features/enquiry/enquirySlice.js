@@ -22,6 +22,7 @@ export const deleteAEnquiry = createAsyncThunk(
     }
   }
 );
+
 export const getAEnquiry = createAsyncThunk(
   "enquiry/get-enquiry",
   async (id, thunkAPI) => {
@@ -43,6 +44,7 @@ export const updateAEnquiry = createAsyncThunk(
     }
   }
 );
+
 export const resetState = createAction("Reset_all");
 
 const initialState = {
@@ -52,6 +54,7 @@ const initialState = {
   isSuccess: false,
   message: "",
 };
+
 export const enquirySlice = createSlice({
   name: "enquiries",
   initialState,
@@ -95,11 +98,11 @@ export const enquirySlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.enqName = action.payload.name;
-        state.enqMobile = action.payload.mobile;
-        state.enqEmail = action.payload.email;
-        state.enqComment = action.payload.comment;
-        state.enqStatus = action.payload.status;
+        state.enqName = action.payload.data.name;
+        state.enqPhone = action.payload.data.phone;
+        state.enqEmail = action.payload.data.email;
+        state.enqComment = action.payload.data.comment;
+        state.enqStatus = action.payload.data.status;
       })
       .addCase(getAEnquiry.rejected, (state, action) => {
         state.isLoading = false;
@@ -125,4 +128,5 @@ export const enquirySlice = createSlice({
       .addCase(resetState, () => initialState);
   },
 });
+
 export default enquirySlice.reducer;

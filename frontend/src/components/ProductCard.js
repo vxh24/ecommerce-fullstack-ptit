@@ -3,24 +3,40 @@ import ReactStars from "react-rating-stars-component";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { addToWishlist } from '../features/products/productSlice';
+import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
+import { getUserProductWishlist } from '../features/user/userSlice';
 const ProductCard = (props) => {
   const { grid, data } = props;
   const dispatch = useDispatch();
   let location = useLocation();
+  const wishlist = useSelector(state => state?.auth?.wishlist?.data?.wishlist);
+  useEffect(() => {
+    getWishlist();
+  }, []);
+  const getWishlist = () => {
+    dispatch(getUserProductWishlist());
+  }
   const addToWish = (id) => {
-    console.log(id);
     dispatch(addToWishlist(id));
+    setTimeout(() => {
+      dispatch(getUserProductWishlist());
+    }, 100)
   }
   return (
     <>
       {data?.map((item, index) => {
+        const isWishlisted = wishlist?.some(wishlistItem => wishlistItem._id === item._id);
         return (
           <div key={index}
             className={`${location.pathname == "/product" ? `gr-${grid}` : "col-3"}`}>
             <Link className="product-card position-relative">
               <div className="wishlis-icon position-absolute">
-                <button className='border-0 bg-transparent' onClick={() => { addToWish(item?._id) }}>
-                  <img src="images/wish.svg" alt="wish" />
+                <button className='border-0 bg-transparent'>
+                  {isWishlisted ? (
+                    <AiFillHeart onClick={() => { addToWish(item?._id) }} color="red" />
+                  ) : (
+                    <AiOutlineHeart onClick={() => { addToWish(item?._id) }} color="#333" />
+                  )}
                 </button>
               </div>
               <div className="product-image">
