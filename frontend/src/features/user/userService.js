@@ -58,6 +58,18 @@ const resetPass = async (data) => {
     return response.data
   }
 }
+const cashOrder = async (data) => {
+  const response = await axios.post(`${base_url}user/cart/cash-order`, data, config);
+  if (response.data) {
+    return response.data
+  }
+}
+const getOrder = async () => {
+  const response = await axios.get(`${base_url}user/orders`, config);
+  if (response.data) {
+    return response.data
+  }
+}
 
 export const authService = {
   createUser,
@@ -67,5 +79,7 @@ export const authService = {
   getCart,
   forgotPassword,
   resetPass,
-  gglogin
+  gglogin,
+  cashOrder,
+  getOrder
 }

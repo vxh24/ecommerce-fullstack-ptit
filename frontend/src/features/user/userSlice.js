@@ -58,6 +58,20 @@ export const getUserCart = createAsyncThunk("user/cart/get", async (thunkAPI) =>
     return thunkAPI.rejectWithValue(error)
   }
 })
+export const cashOrderUser = createAsyncThunk("user/cart/order", async (data, thunkAPI) => {
+  try {
+    return await authService.cashOrder(data);
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error)
+  }
+})
+export const getOrderUser = createAsyncThunk("user/orders", async (thunkAPI) => {
+  try {
+    return await authService.getOrder();
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error)
+  }
+})
 const getCustomerfromLocalStorage = localStorage.getItem("customer")
   ? JSON.parse(localStorage.getItem("customer"))
   : null;
@@ -226,6 +240,43 @@ export const authSlice = createSlice({
         state.message = action.error;
         if (state.isError === true) {
           toast.error("ko đc")
+        }
+      })
+      .addCase(cashOrderUser.pending, (state) => {
+        state.isLoading = true;
+
+      }).addCase(cashOrderUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.order = action.payload;
+        if (state.isSuccess === true) {
+          toast.success("Order Created Successfully!")
+        }
+      }).addCase(cashOrderUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+        if (state.isError === true) {
+          toast.error("ko đc")
+        }
+      })
+      .addCase(getOrderUser.pending, (state) => {
+        state.isLoading = true;
+
+      }).addCase(getOrderUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.orders = action.payload;
+      }).addCase(getOrderUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+        if (state.isError === true) {
+          toast.error("Fail")
         }
       })
   }

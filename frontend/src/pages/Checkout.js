@@ -1,9 +1,34 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Meta from '../components/Meta';
 import BreadCrumb from '../components/BreadCrumb';
 import { Link } from "react-router-dom";
 import { MdOutlineKeyboardReturn } from "react-icons/md";
+import { useDispatch, useSelector } from 'react-redux';
+import { cashOrderUser, getUserCart } from '../features/user/userSlice';
 const Checkout = () => {
+  const dispatch = useDispatch();
+  const userCartState = useSelector(state => state?.auth?.cartUser?.data);
+  const [totalAmount, setTotalAmount] = useState(null);
+
+  useEffect(() => {
+    setTimeout(() => {
+      dispatch(getUserCart())
+    }, 100)
+    dispatch(getUserCart());
+  }, [])
+  useEffect(() => {
+    let sum = 0;
+    for (let index = 0; index < userCartState?.products?.length; index++) {
+      sum = sum + (Number(userCartState.products[index].count) * userCartState.products[index].price)
+      setTotalAmount(sum);
+    }
+  }, [userCartState])
+  const createOrder = () => {
+    dispatch(cashOrderUser({ COD: true, couponApplied: false }))
+    setTimeout(() => {
+      dispatch(getUserCart())
+    }, 100)
+  }
   return (
     <>
       <Meta title={"Checkout"} />
@@ -59,7 +84,7 @@ const Checkout = () => {
                   <div className="w-100">
                     <div className="d-flex justify-content-between align-items-center">
                       <Link to="/cart" className='text-dark'><MdOutlineKeyboardReturn className='me-2' />Return To Cart</Link>
-                      <Link to="/cart" className='button'>Continue to Shipping </Link>
+                      <Link onClick={createOrder} className='button'>Continue to Shipping </Link>
                     </div>
                   </div>
                 </form>
@@ -67,26 +92,33 @@ const Checkout = () => {
             </div>
             <div className="col-5">
               <div className='border-bottom py-4'>
-                <div className='d-flex mb-2 gap-15 align-items-center justify-content-between'>
-                  <div className='w-75 d-flex gap-10' >
-                    <div className='w-25 position-relative'>
-                      <span style={{ top: "-15px", right: "-4px" }} className='badge bg-secondary text-white rounded-circle p-2 position-absolute'>1</span>
-                      <img src="images/watch.jpg" className='img-fluid' alt="" />
-                    </div>
-                    <div>
-                      <h5 className="total">sdsdsdsssd</h5>
-                      <p className='total-price'>s/ #fsdsdf</p>
-                    </div>
-                  </div>
-                  <div>
-                    <h5 className='total-price'>$ 100</h5>
-                  </div>
-                </div>
+                {
+                  userCartState?.products && userCartState?.products?.map((item, index) => {
+                    return (
+                      <div key={index} className='d-flex mb-2 gap-15 align-items-center justify-content-between'>
+                        <div className='w-75 d-flex gap-10' >
+                          <div className='w-25 position-relative'>
+                            <span style={{ top: "-15px", right: "-4px" }} className='badge bg-secondary text-white rounded-circle p-2 position-absolute'>{item?.count}</span>
+                            <img src="images/watch.jpg" className='img-fluid' alt="" />
+                          </div>
+                          <div>
+                            <h5 className="total">{item?.product?.title}</h5>
+                            <p className='total-price' style={{ backgroundColor: item?.color }} ></p>
+                          </div>
+                        </div>
+                        <div>
+                          <h5 className='total-price'>$ {item?.price * item?.count}</h5>
+                        </div>
+                      </div>
+                    )
+                  })
+                }
+
               </div>
               <div className='border-bottom py-4'>
                 <div className='d-flex align-items-center justify-content-between'>
                   <p className='total'>SubTotal:</p>
-                  <p className='total-price'>$ 100</p>
+                  <p className='total-price'>$ {totalAmount}</p>
                 </div>
                 <div className='d-flex align-items-center justify-content-between'>
                   <p className='mb-0 total'>Shipping:</p>

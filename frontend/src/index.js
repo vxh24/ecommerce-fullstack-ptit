@@ -8,11 +8,13 @@ const container = document.getElementById('root');
 const root = createRoot(container);
 const clientId = process.env.GG_CLIENT_ID;
 root.render(
-  <Provider store={store}>
-    <GoogleOAuthProvider clientId={clientId}>
+  <GoogleOAuthProvider clientId={clientId}>
+    <Provider store={store}>
+
       <App />
-    </GoogleOAuthProvider>
-  </Provider>
+
+    </Provider>
+  </GoogleOAuthProvider>
 
 );
 

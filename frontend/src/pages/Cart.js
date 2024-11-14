@@ -11,6 +11,9 @@ const Cart = () => {
   const [totalAmount, setTotalAmount] = useState(null);
 
   useEffect(() => {
+    setTimeout(() => {
+      dispatch(getUserCart())
+    }, 100)
     dispatch(getUserCart());
   }, [])
   useEffect(() => {
