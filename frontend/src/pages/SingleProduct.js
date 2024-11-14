@@ -16,7 +16,8 @@ import { toast } from "react-toastify"
 import { AddProdToCart, getUserCart } from '../features/user/userSlice';
 import { getAllProducts } from '../features/products/productSlice';
 import PopularProduct from "../components/PopularProduct";
-import { AiOutlineHeart } from "react-icons/ai";
+import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
+import { getUserProductWishlist } from '../features/user/userSlice';
 const SingleProduct = () => {
   const [color, setColor] = useState(null);
   const [count, setCount] = useState(1);
@@ -42,12 +43,17 @@ const SingleProduct = () => {
   const matchedColors = colors?.filter((color) => colorIds?.includes(color?._id)) || [];
   const cartState = useSelector(state => state?.auth?.cartUser?.data?.products);
   const popularproductState = useSelector((state) => state?.product?.products?.data);
+  const wishlist = useSelector(state => state?.auth?.wishlist?.data?.wishlist);
   useEffect(() => {
     dispatch(getAProducts(getProductId));
     getColors();
     dispatch(getUserCart())
     getProducts();
+    getWishlist();
   }, [])
+  const getWishlist = () => {
+    dispatch(getUserProductWishlist());
+  }
   useEffect(() => {
     for (let index = 0; index < cartState?.length; index++) {
       if (getProductId === cartState[index]?.product?._id) {
@@ -56,9 +62,22 @@ const SingleProduct = () => {
 
     }
   })
+  useEffect(() => {
+    for (let index = 0; index < wishlist?.length; index++) {
+      if (wishlist[index]?._id === getProductId) {
+        setClick(true);
+      }
+      else {
+        setClick(false);
+      }
+
+    }
+  }, [wishlist])
   const addToWish = (id) => {
     dispatch(addToWishlist(id));
-    setClick(true);
+    setTimeout(() => {
+      dispatch(getUserProductWishlist());
+    }, 100)
   }
   const uploadCart = () => {
     if (color === null) {
@@ -196,7 +215,14 @@ const SingleProduct = () => {
 
                     </div>
                     <div >
-                      <AiOutlineHeart onClick={() => { addToWish(productState?._id) }} className='fs-5 me-2' color={click ? "red" : "#333"} />
+                      {
+                        click ? (
+                          <AiFillHeart onClick={() => { addToWish(productState?._id) }} className='fs-5 me-2' color={click ? "red" : "#333"} />
+                        ) :
+                          (
+                            <AiOutlineHeart onClick={() => { addToWish(productState?._id) }} className='fs-5 me-2' color={click ? "red" : "#333"} />
+                          )
+                      }
                       <Link >Add to wishlis</Link>
                     </div>
                   </div>

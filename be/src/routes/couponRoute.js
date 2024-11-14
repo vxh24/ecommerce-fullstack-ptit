@@ -7,12 +7,14 @@ const {
   getAllCouponsController,
   updateCouponController,
   deleteCouponController,
+  getACouponController,
 } = require("../controllers/couponController");
 
 const router = express.Router();
 
 router.post("/", authMiddleware, isAdmin, createCouponController);
 router.get("/", authMiddleware, isAdmin, getAllCouponsController);
+router.get("/:id", authMiddleware, isAdmin, getACouponController);
 router.put("/:id", authMiddleware, isAdmin, updateCouponController);
 router.delete("/:id", authMiddleware, isAdmin, deleteCouponController);
 

@@ -26,6 +26,7 @@ const {
   getAllOrders,
   getOrderByUID,
   updateOrderStatus,
+  getOrderUserById,
 } = require("../services/userService");
 const User = require("../models/userModel");
 const { generateToken } = require("../config/jwtToken");
@@ -380,6 +381,19 @@ const getAllOrdersController = asyncHandler(async (req, res) => {
   }
 });
 
+const getOrderByIdController = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await getOrderUserById(id);
+    res.json({
+      EC: 0,
+      data: result,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 const getOrderByUIDController = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   try {
@@ -431,4 +445,5 @@ module.exports = {
   updateOrderStatusController,
   getOrderByUIDController,
   googleLogin,
+  getOrderByIdController,
 };

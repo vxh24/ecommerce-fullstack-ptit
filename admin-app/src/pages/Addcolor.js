@@ -11,6 +11,7 @@ import {
   resetState,
   updateAColor,
 } from "../features/color/colorSlice";
+
 let schema = yup.object().shape({
   title: yup.string().required("Color is Required"),
 });
@@ -49,7 +50,7 @@ const AddColor = () => {
     if (isError) {
       toast.error("Something Went Wrong!");
     }
-  }, [isSuccess, isError, isLoading, createdColor]);
+  }, [isSuccess, isError, isLoading]);
 
   const formik = useFormik({
     enableReinitialize: true,

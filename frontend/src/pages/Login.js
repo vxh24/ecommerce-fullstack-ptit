@@ -1,5 +1,6 @@
 import React from 'react'
 import Meta from '../components/Meta';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import BreadCrumb from '../components/BreadCrumb'
 import { Link, useNavigate } from "react-router-dom";
 import * as yup from 'yup';
@@ -7,7 +8,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import { googlelogin, handleLogin } from '../features/user/userSlice';
 import { GoogleLogin } from '@react-oauth/google';
-import axios from "axios";
+const clientId = '354282151928-io0qjv0qkn919lnf89efelaja0fp0njn.apps.googleusercontent.com';
+// import axios from "axios";
 const LoginSchema = yup.object({
   email: yup.string().nullable().email("Email should be valid").required("Email Address is Required"),
   password: yup.string().required("Password is Required")
@@ -29,10 +31,6 @@ const Login = () => {
   });
   const handleSuccess = async (credentialResponse) => {
     try {
-      // Gửi mã thông báo đến backend để xử lý
-      // const res = await axios.post('http://localhost:5000/v1/api/google', {
-      // const token = credentialResponse.credential;
-      // });
       dispatch(googlelogin({ token: credentialResponse.credential }));
     } catch (error) {
       console.error('Google login failed:', error);
@@ -81,10 +79,12 @@ const Login = () => {
                     </div>
                   </div>
                 </form>
+                {/* <GoogleOAuthProvider clientId={clientId}> */}
                 <GoogleLogin
                   onSuccess={handleSuccess}
                   onError={handleError}
                 />
+                {/* </GoogleOAuthProvider> */}
               </div>
             </div>
           </div>

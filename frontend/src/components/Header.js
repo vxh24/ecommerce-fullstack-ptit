@@ -6,6 +6,10 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { getAProducts } from '../features/products/productSlice';
 // import { getUserCart } from '../features/user/userSlice';
+import { AiOutlineHeart } from "react-icons/ai";
+import { CgProfile } from "react-icons/cg";
+import { GiShoppingCart } from "react-icons/gi";
+import { BiCategory } from "react-icons/bi";
 const Header = () => {
   const handleLogout = () => {
     localStorage.clear();
@@ -97,7 +101,7 @@ const Header = () => {
                 </div>
                 <div>
                   <Link to="wishlist" className="d-flex align-items-center gap-10 text-white">
-                    <img src="images/wishlist.svg" alt="" />
+                    <AiOutlineHeart className='fs-2' />
                     <p className="mb-0">
                       Favourite <br /> Wishlist
                     </p>
@@ -105,7 +109,7 @@ const Header = () => {
                 </div>
                 <div>
                   <Link to={authState?.user === null ? "/login" : "/profile"} className="d-flex align-items-center gap-10 text-white">
-                    <img src="images/user.svg" alt="" />
+                    <CgProfile className='fs-2' />
                     {
                       authState?.user === null ? <p className="mb-0">
                         Log in
@@ -118,7 +122,7 @@ const Header = () => {
                 </div>
                 <div>
                   <Link to="/cart" className="d-flex align-items-center gap-10 text-white">
-                    <img src="images/cart.svg" alt="" />
+                    <GiShoppingCart className='fs-2' />
                     <div className="d-flex flex-column gap-10">
                       <span className="badge bg-white text-dark">{userCartState?.products?.length ? userCartState?.products?.length : 0}</span>
                       <p className="mb-0">$ {total ? total : 0}</p>
@@ -138,7 +142,7 @@ const Header = () => {
                 <div className="">
                   <div className="dropdown">
                     <button className="btn btn-secondary dropdown-toggle bg-transparent border-0 gap-15 d-flex align-items-center" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                      <img src="images/menu.svg" />
+                      <BiCategory className='fs-3' />
                       <span className='me-5 d-inline-block'> Shop Categories </span>
                     </button>
                     <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
