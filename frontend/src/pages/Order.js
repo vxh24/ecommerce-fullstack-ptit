@@ -26,7 +26,19 @@ const Order = () => {
     setOpen(false);
     setSelectedOrder(null);
   };
-
+  const [activeTab, setActiveTab] = useState(0);
+  const status = ["Tất cả", "Chờ thanh thoán", "Vận chuyển", "Chờ giao hàng", "Hoàn thành", "Đã hủy"];
+  const [filterstatus, setStatus] = useState([]);
+  const handleTabChange = (index) => {
+    setActiveTab(index);
+    if (status[index] === "Tất cả") {
+      setStatus(orderState);
+    } else {
+      setStatus(
+        orderState.filter((order) => order.orderStatus === status[index])
+      );
+    }
+  };
   return (
     <>
       <Meta title={"Order"} />
@@ -34,6 +46,21 @@ const Order = () => {
       <div className="order-wrapper home-wrapper-2 py-5">
         <div className="container-xxl">
           <div className="row">
+            <div className="col-12">
+              <div style={{ "margin-left": "0" }} className='tabs d-flex justify-content-center'>
+                {
+                  status.map((item, index) => (
+                    <button
+                      key={index}
+                      className={activeTab === index ? "tab active" : "tab"}
+                      onClick={() => handleTabChange(index)}
+                    >
+                      {item}
+                    </button>
+                  ))
+                }
+              </div>
+            </div>
             <div className="col-12 mt-3">
               <table class="table caption-top">
                 <thead>
@@ -47,7 +74,7 @@ const Order = () => {
                 </thead>
                 <tbody>
                   {
-                    orderState && orderState?.map((item, index) => {
+                    filterstatus && filterstatus?.map((item, index) => {
                       return (
                         <tr key={index}>
                           <th scope="row">{item?._id}</th>
@@ -74,14 +101,16 @@ const Order = () => {
           </div>
         </div>
       </div>
-      {open && selectedOrder && (
-        <div className="modal-container">
-          <div className="modal-content">
-            <button className="close-modal" onClick={handleCloseOrderDetail}>✖</button>
-            <OrderDetailCard order={selectedOrder} />
+      {
+        open && selectedOrder && (
+          <div className="modal-container">
+            <div className="modal-content">
+              <button className="close-modal" onClick={handleCloseOrderDetail}>✖</button>
+              <OrderDetailCard order={selectedOrder} />
+            </div>
           </div>
-        </div>
-      )}
+        )
+      }
     </>
   )
 }

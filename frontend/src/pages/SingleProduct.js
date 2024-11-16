@@ -62,22 +62,20 @@ const SingleProduct = () => {
 
     }
   })
-  useEffect(() => {
-    for (let index = 0; index < wishlist?.length; index++) {
-      if (wishlist[index]?._id === getProductId) {
-        setClick(true);
-      }
-      else {
-        setClick(false);
-      }
-
-    }
-  }, [wishlist])
+  // useEffect(() => {
+  //   for (let index = 0; index < wishlist?.length; index++) {
+  //     if (wishlist[index]?._id === getProductId) {
+  //       setClick(true);
+  //     }
+  //   }
+  // }, [wishlist])
+  const isWishlisted = wishlist?.some(wishlistItem => wishlistItem._id === getProductId);
+  console.log(isWishlisted);
   const addToWish = (id) => {
     dispatch(addToWishlist(id));
     setTimeout(() => {
       dispatch(getUserProductWishlist());
-    }, 100)
+    }, 200)
   }
   const uploadCart = () => {
     if (color === null) {
@@ -220,11 +218,11 @@ const SingleProduct = () => {
                     </div>
                     <div >
                       {
-                        click ? (
-                          <AiFillHeart onClick={() => { addToWish(productState?._id) }} className='fs-5 me-2' color={click ? "red" : "#333"} />
+                        isWishlisted ? (
+                          <AiFillHeart onClick={() => { addToWish(productState?._id) }} className='fs-5 me-2' color={isWishlisted ? "red" : "#333"} />
                         ) :
                           (
-                            <AiOutlineHeart onClick={() => { addToWish(productState?._id) }} className='fs-5 me-2' color={click ? "red" : "#333"} />
+                            <AiOutlineHeart onClick={() => { addToWish(productState?._id) }} className='fs-5 me-2' color={isWishlisted ? "red" : "#333"} />
                           )
                       }
                       <Link >Add to wishlis</Link>

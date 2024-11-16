@@ -136,6 +136,23 @@ a {
   color: var(--color-febd69) !important;
 }
 
+.cart-icon-container {
+  position: relative;
+  display: inline-block;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 50%;
+  min-width: 20px;
+  text-align: center;
+}
+
 /*end header */
 
 /* footer */
@@ -684,6 +701,47 @@ footer .input-group-text {
 }
 
 /* auth card end */
+
+/* changepass */
+
+.change-card {
+  padding: 20px;
+  background-color: white;
+  width: 800px;
+  margin: 30px auto;
+  border-radius: 10px;
+}
+
+.change-card h3 {
+  font-size: 19px;
+  font-weight: 500;
+  color: var(--color-777777);
+}
+
+.change-card p {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-777777);
+}
+
+.change-card .form-control {
+  height: 50px;
+  background-color: var(--color-f5f5f7);
+  color: var(--color-131921);
+  font-size: 14px;
+  border-radius: 10px;
+  border-color: transparent;
+}
+
+.change-card a {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-1c1c1b);
+}
+
+/* changepass end*/
+
+
 /* detail product */
 .main-product-image {
   background-color: white;
@@ -936,3 +994,267 @@ footer .input-group-text {
 
 
 /* Profile end*/
+
+/* address */
+.address-container {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-family: Arial, sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header h2 {
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.add-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.add-button:hover {
+  background-color: #d32f2f;
+}
+
+.address-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.address-details {
+  flex: 1;
+}
+
+.address-name {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.address-phone {
+  margin-left: 10px;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.address {
+  margin: 5px 0;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.address-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.update-button,
+.delete-button,
+.default-button {
+  border: none;
+  padding: 8px 10px;
+  font-size: 0.85rem;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.update-button {
+  color: #1976d2;
+  background: transparent;
+}
+
+.update-button:hover {
+  background-color: rgba(25, 118, 210, 0.1);
+}
+
+.delete-button {
+  color: #f44336;
+  background: transparent;
+}
+
+.delete-button:hover {
+  background-color: rgba(244, 67, 54, 0.1);
+}
+
+.default-button {
+  color: #333;
+  background: #f5f5f5;
+}
+
+.default-button.active {
+  color: white;
+  background-color: #4caf50;
+}
+
+.default-button:hover {
+  background-color: #e0e0e0;
+}
+
+.default-button.active:hover {
+  background-color: #388e3c;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 600px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+h2 {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+input[type='text'],
+select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+input[type='radio'],
+input[type='checkbox'] {
+  margin-right: 5px;
+}
+
+.cancel-button {
+  background-color: #ddd;
+  color: #333;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cancel-button:hover {
+  background-color: #ccc;
+}
+
+.submit-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background-color: #d32f2f;
+}
+
+/* address end*/
+
+/* voucher */
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  width: 100%;
+  margin-left: 85px;
+}
+
+.tab {
+  margin-top: 25px;
+  padding: 10px 20px;
+  border: 1px solid #ddd;
+  background: #f9f9f9;
+  cursor: pointer;
+}
+
+.tab.active {
+  border-bottom: 2px solid red;
+  font-weight: bold;
+}
+
+.voucher-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: center;
+  margin-left: 85px;
+}
+
+.voucher-card {
+  border: 1px solid #ddd;
+  padding: 15px;
+  width: 300px;
+  border-radius: 5px;
+  background: #fff;
+  gap: 15px;
+}
+
+.voucher-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.voucher-title {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.voucher-discount {
+  font-size: 18px;
+  color: red;
+}
+
+.use-later {
+  background: red;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+}
+
+/* voucher end*/

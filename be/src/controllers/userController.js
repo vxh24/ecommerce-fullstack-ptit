@@ -77,18 +77,41 @@ const googleLogin = async (req, res) => {
   const phone = "";
   let user = await User.findOne({ email });
   if (!user) {
-    let userData = {
-      name,
-      email,
-      password,
-      phone,
-    };
-    const result = await createUser(userData);
-    const access_token = generateToken(userData);
-    res.status(200).json({
-      access_token,
-      data: result,
-    });
+    const NewUser = new User({
+      name: name,
+      email: email,
+      password: password,
+      phone: phone,
+    })
+    NewUser.save();
+    const result1 = await handleLogin(email, token);
+
+    if (result1.EC === 0) {
+      res.cookie("refresh_token", result1.refresh_token, {
+        httpOnly: true,
+        maxAge: 72 * 60 * 60 * 1000, // 3day
+      });
+
+      res.status(200).json({
+        access_token: result1.access_token,
+        user: result1.user,
+      });
+    }
+  }
+  else {
+    const result1 = await handleLogin(email, token);
+
+    if (result1.EC === 0) {
+      res.cookie("refresh_token", result1.refresh_token, {
+        httpOnly: true,
+        maxAge: 72 * 60 * 60 * 1000, // 3day
+      });
+
+      res.status(200).json({
+        access_token: result1.access_token,
+        user: result1.user,
+      });
+    }
   }
 }
 const loginUserController = asyncHandler(async (req, res) => {

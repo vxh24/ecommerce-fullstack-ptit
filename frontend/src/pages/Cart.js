@@ -11,10 +11,10 @@ const Cart = () => {
   const [totalAmount, setTotalAmount] = useState(null);
 
   useEffect(() => {
+    dispatch(getUserCart())
     setTimeout(() => {
       dispatch(getUserCart())
-    }, 100)
-    dispatch(getUserCart());
+    }, 300)
   }, [])
   useEffect(() => {
     let sum = 0;
