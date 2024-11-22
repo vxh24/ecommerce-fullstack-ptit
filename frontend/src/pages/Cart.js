@@ -4,17 +4,19 @@ import BreadCrumb from '../components/BreadCrumb'
 import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
-import { getUserCart } from '../features/user/userSlice';
+import { deleteProductfromCart, getUserCart, updatecountCart } from '../features/user/userSlice';
+import { MdOutlineKeyboardReturn } from "react-icons/md";
+import { getAllProducts } from '../features/products/productSlice';
+import { toast } from 'react-toastify';
 const Cart = () => {
   const dispatch = useDispatch();
-  const userCartState = useSelector(state => state?.auth?.cartUser?.data);
+  const userCartState = useSelector(state => state?.auth?.cartUser?.result);
+  const productState = useSelector((state) => state.product.products.data);
   const [totalAmount, setTotalAmount] = useState(null);
 
   useEffect(() => {
     dispatch(getUserCart())
-    setTimeout(() => {
-      dispatch(getUserCart())
-    }, 300)
+    dispatch(getAllProducts());
   }, [])
   useEffect(() => {
     let sum = 0;
@@ -22,7 +24,22 @@ const Cart = () => {
       sum = sum + (Number(userCartState.products[index].count) * userCartState.products[index].price)
       setTotalAmount(sum);
     }
+    setTimeout(() => {
+      setTotalAmount(sum);
+    }, 200)
   }, [userCartState])
+  const deleteproduct = (id, color) => {
+    dispatch(deleteProductfromCart({ productId: id, color }));
+    setTimeout(() => {
+      dispatch(getUserCart());
+    }, 200)
+  }
+  const updatecount = (id, color, newquantity) => {
+    dispatch(updatecountCart({ productId: id, color, newQuantity: newquantity }));
+    setTimeout(() => {
+      dispatch(getUserCart());
+    }, 200)
+  }
   return (
     <>
       <Meta title={"Cart"} />
@@ -39,6 +56,7 @@ const Cart = () => {
               </div>
               {
                 userCartState?.products && userCartState?.products?.map((item, index) => {
+                  const product = productState?.find(productItem => productItem?._id === item?.product);
                   return (
                     <div key={index} className="cart-data py-3 d-flex justify-content-between align-items-center">
                       <div className='cart-col-1 gap-15 d-flex justify-content-between align-items-center'>
@@ -46,13 +64,12 @@ const Cart = () => {
                           <img src="images/watch.jpg" className='img-fluid' alt="" />
                         </div>
                         <div className='w-75'>
-                          <p>{item?.product?.title}</p>
+                          <p>{product?.title}</p>
                           <p className="d-flex gap-15">Color:
                             <ul className='colors ps-0'>
                               <li style={{ backgroundColor: item?.color }}></li>
                             </ul>
                           </p>
-                          <p >Size: M</p>
 
                         </div>
                       </div>
@@ -61,11 +78,20 @@ const Cart = () => {
                       </div>
                       <div className='cart-col-3 d-flex align-items-center gap-15'>
                         <div className="">
-                          <input type="number" name="" min={1} max={10} className="form-control" style={{ width: "70px" }} id=""
-                            value={item?.count} />
+                          <input type="number" name="" min={1} max="" className="form-control" style={{ width: "70px" }} id=""
+                            value={item?.count}
+                            onChange={(e) => {
+                              const newQuantity = parseInt(e.target.value);
+                              if (newQuantity > product.quantity) {
+                                toast.info("Số lượng vượt quá số lượng hàng có sẵn!");
+                              } else {
+                                updatecount(item.product, item.color, newQuantity);
+                              }
+                            }}
+                          />
                         </div>
                         <div>
-                          <MdDelete className='text-danger fs-4' />
+                          <MdDelete onClick={(e) => { deleteproduct(item?.product, item?.color) }} className='text-danger fs-4' />
                         </div>
                       </div>
                       <div className='cart-col-4'>
@@ -75,48 +101,21 @@ const Cart = () => {
                   )
                 })
               }
-              {/* <div className="cart-data py-3 d-flex justify-content-between align-items-center">
-                <div className='cart-col-1 gap-15 d-flex justify-content-between align-items-center'>
-                  <div className='w-25'>
-                    <img src="images/watch.jpg" className='img-fluid' alt="" />
-                  </div>
-                  <div className='w-75'>
-                    <p>sdhbshd</p>
-                    <p >Color: sdsds</p>
-                    <p >Size: M</p>
-
-                  </div>
-                </div>
-                <div className='cart-col-2'>
-                  <h5 className="price">$ 100</h5>
-                </div>
-                <div className='cart-col-3 d-flex align-items-center gap-15'>
-                  <div className="">
-                    <input type="number" name="" min={1} max={10} className="form-control" style={{ width: "70px" }} id="" />
-                  </div>
-                  <div>
-                    <MdDelete className='text-danger fs-4' />
-                  </div>
-                </div>
-                <div className='cart-col-4'>
-                  <h5 className="price">$ 100</h5>
-                </div>
-              </div> */}
             </div>
             <div className="col-12 py-2 mt-4">
               {
                 (totalAmount !== null || totalAmount !== 0) &&
-
-                <div className="d-flex justify-content-between">
-                  <div>
-                    <Link to="/product" className="button">Continue Shopping</Link>
+                <>
+                  <div className="d-flex justify-content-end mb-3">
+                    <div>
+                      <h4>SubTotal: $ {totalAmount}</h4>
+                    </div>
                   </div>
-                  <div>
-                    <h4>SubTotal: $ {totalAmount}</h4>
-                    <p>s a valid value to be accessible. Provide a valid, </p>
+                  <div className='d-flex justify-content-between align-items-center'>
+                    <Link to="/product" className='text-dark'><MdOutlineKeyboardReturn className='me-2' />Continue Shopping</Link>
                     <Link to="/checkout" className='button'>Checkout</Link>
                   </div>
-                </div>
+                </>
               }
             </div>
           </div>

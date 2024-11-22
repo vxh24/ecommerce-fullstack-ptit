@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useFormik } from 'formik';
-import {
-  AiOutlineArrowRight,
-  AiOutlineCamera,
-  AiOutlineDelete,
-} from "react-icons/ai";
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
+import { getAllCoupon } from '../features/counpons/couponSlice';
+import moment from "moment";
 const profileSchema = yup.object({
   name: yup.string().required("Name is Require"),
   email: yup.string().nullable().email("Email should be valid"),
@@ -121,32 +118,14 @@ const ProfileContent = ({ active }) => {
 }
 
 const VoucherPage = () => {
-  const vouchers = [
-    {
-      id: 1,
-      title: "Siêu Hội Thành Viên",
-      discount: "25%",
-      minOrder: "300k",
-      validity: "19 giờ",
-      category: "Tất cả",
-    },
-    {
-      id: 2,
-      title: "Siêu Hội Thành Viên",
-      discount: "20%",
-      minOrder: "3tr",
-      validity: "42 giờ",
-      category: "Shopee",
-    },
-    {
-      id: 3,
-      title: "Siêu Hội Thành Viên",
-      discount: "15%",
-      minOrder: "500k",
-      validity: "24 giờ",
-      category: "Shop",
-    },
-  ];
+  const couponState = useSelector(state => state?.coupon?.coupons?.data);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getAllCoupon());
+  }, []);
+  // const getCoupons = () => {
+  //   dispatch(getAllCounpon());
+  // }
 
   // Danh sách các danh mục (tabs)
   const categories = ["Tất cả", "Shopee", "Shop", "Nạp thẻ & Dịch vụ"];
@@ -158,10 +137,10 @@ const VoucherPage = () => {
   const handleTabChange = (index) => {
     setActiveTab(index);
     if (categories[index] === "Tất cả") {
-      setFilteredVouchers(vouchers);
+      setFilteredVouchers(couponState);
     } else {
       setFilteredVouchers(
-        vouchers.filter((voucher) => voucher.category === categories[index])
+        couponState.filter((voucher) => voucher.category === categories[index])
       );
     }
   };
@@ -186,11 +165,11 @@ const VoucherPage = () => {
         {filteredVouchers.map((voucher) => (
           <div key={voucher.id} className="voucher-card">
             <div className="voucher-header">
-              <span className="voucher-title">{voucher.title}</span>
-              <span className="voucher-discount">Giảm {voucher.discount}</span>
+              <span className="voucher-title">{voucher.name}</span>
+              <span className="voucher-discount">Giảm {voucher.discount}%</span>
             </div>
-            <p>Đơn Tối Thiểu: {voucher.minOrder}</p>
-            <p>Có hiệu lực sau: {voucher.validity}</p>
+            {/* <p>Đơn Tối Thiểu: {voucher.minOrder}</p> */}
+            <p>Có hiệu lực đến: {moment(voucher.expiry).format('DD/MM/YYYY')}</p>
             <button className="use-later">Dùng Sau</button>
           </div>
         ))}

@@ -10,29 +10,49 @@ const {
   resetPasswordController,
   getWishlistController,
   saveAddressController,
+} = require("../controllers/userController");
+
+const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
+
+const {
   addToCartController,
   getUserCartController,
   removeCartController,
   handleCouponController,
+  removeProductFromCartController,
+  updateProductQuantityController,
+} = require("../controllers/cartController");
+
+const {
   createOrderController,
   getAllOrdersController,
   updateOrderStatusController,
   getOrderByUIDController,
   getOrderByIdController,
-} = require("../controllers/userController");
-
-const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
+} = require("../controllers/orderController");
 
 const router = express.Router();
 
 router.get("/all-users", authMiddleware, isAdmin, getAllUsersController);
 router.get("/wishlist", authMiddleware, getWishlistController);
 router.put("/save-address", authMiddleware, saveAddressController);
+
 router.post("/cart", authMiddleware, addToCartController);
 router.get("/cart", authMiddleware, getUserCartController);
+router.delete(
+  "/cart/remove-product",
+  authMiddleware,
+  removeProductFromCartController
+);
+router.put(
+  "/cart/update-product",
+  authMiddleware,
+  updateProductQuantityController
+);
 router.delete("/empty-cart", authMiddleware, removeCartController);
 router.post("/apply-coupon", authMiddleware, handleCouponController);
 router.post("/cart/cash-order", authMiddleware, createOrderController);
+
 router.get("/orders", authMiddleware, getOrderByUIDController);
 router.get("/get-all-orders", authMiddleware, isAdmin, getAllOrdersController);
 router.put("/update-password", authMiddleware, updatePasswordController);

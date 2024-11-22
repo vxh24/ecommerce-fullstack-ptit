@@ -73,12 +73,10 @@ const Login = () => {
                   </div>
                   <div>
                     <Link to="/forgot-password" className='mb-3'>Forgot Password?</Link>
-                    <GoogleOAuthProvider clientId={clientId}>
-                      <GoogleLogin
-                        onSuccess={handleSuccess}
-                        onError={handleError}
-                      />
-                    </GoogleOAuthProvider>
+                    <GoogleLogin
+                      onSuccess={handleSuccess}
+                      onError={handleError}
+                    />
                     <div className="mt-3 d-flex justify-content-center gap-15 align-items-center mb-3">
                       <button className="button border-0">Login</button>
                       <Link className='button signup' to="/sign-up" >Sign Up</Link>

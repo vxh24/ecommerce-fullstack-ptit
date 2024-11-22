@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { addToWishlist } from '../features/products/productSlice';
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
+// import viewsvg from "../../public/images/view.svg";
 const PopularProduct = (props) => {
   const { grid, title, brand, price, totalRating, id, description } = props;
   const dispatch = useDispatch();
@@ -44,8 +45,6 @@ const PopularProduct = (props) => {
             <div className="d-flex flex-column gap-15">
               {/* <Link><img src="images/prodcompare.svg" alt="compare" /></Link> */}
               <Link to={"/product/" + id}><img src="images/view.svg" alt="view" /></Link>
-              <Link><img src="images/add-cart.svg" alt="add cart" /></Link>
-
             </div>
           </div>
         </Link>

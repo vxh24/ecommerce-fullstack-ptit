@@ -10,8 +10,14 @@ import { AiOutlineHeart } from "react-icons/ai";
 import { CgProfile } from "react-icons/cg";
 import { GiShoppingCart } from "react-icons/gi";
 import { BiCategory } from "react-icons/bi";
+import { googleLogout } from '@react-oauth/google';
 const Header = () => {
   const handleLogout = () => {
+    // Logout Google
+    googleLogout();
+
+    // Xóa cookie (nếu có)
+    document.cookie = 'auth_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     localStorage.clear();
     window.location.reload();
   }
@@ -37,7 +43,7 @@ const Header = () => {
   // useEffect(() => {
   //   dispatch(getUserCart());
   // }, [])
-  const userCartState = useSelector(state => state?.auth?.cartUser?.data);
+  const userCartState = useSelector(state => state?.auth?.cartUser?.result);
   const [total, setTotal] = useState(null);
   useEffect(() => {
     let sum = 0;
@@ -121,7 +127,7 @@ const Header = () => {
                     }
                   </Link>
                 </div>
-                <div class="cart-icon-container">
+                <div className="cart-icon-container">
                   <Link to="/cart" className="d-flex align-items-center gap-10 text-white">
                     <GiShoppingCart className='fs-1' />
                     {/* <div className="d-flex flex-column gap-10"> */}

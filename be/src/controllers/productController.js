@@ -8,6 +8,7 @@ const {
   deleteProduct,
   addToWishlist,
   rating,
+  recommendProducts,
 } = require("../services/productService");
 const { uploadMultipleFiles } = require("../services/fileService");
 const { deleteToCloudinary } = require("../utils/cloudinary");
@@ -28,9 +29,11 @@ const getProductByIdController = asyncHandler(async (req, res) => {
   // res.send("get product by id");
   const id = req.params.id;
   const findProduct = await getAProduct(id);
+  const recommendedP = await recommendProducts(id);
   res.status(200).json({
     EC: 0,
     data: findProduct,
+    recommend: recommendedP,
   });
 });
 

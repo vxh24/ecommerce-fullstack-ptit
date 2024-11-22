@@ -50,7 +50,7 @@ const ProductCard = (props) => {
                   count={5}
                   size={24}
                   value={item?.totalRatings.toString()}
-                  edit={true}
+                  edit={false}
                   activeColor="#ffd700"
                 />
                 <p className={`description ${grid == 12 ? "d-block" : "d-none"}`}>{item?.description}
