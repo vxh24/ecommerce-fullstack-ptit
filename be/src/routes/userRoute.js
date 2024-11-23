@@ -45,7 +45,7 @@ router.delete(
 );
 router.delete("/empty-cart", authMiddleware, removeCartController);
 router.post("/apply-coupon", authMiddleware, handleCouponController);
-router.post("/cart/cash-order", authMiddleware, createOrderController);
+router.post("/cart/cash-order", authMiddleware, createOrderController); //COD
 
 router.get("/orders", authMiddleware, getOrderByUIDController);
 router.get("/get-all-orders", authMiddleware, isAdmin, getAllOrdersController);

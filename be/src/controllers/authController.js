@@ -8,7 +8,7 @@ const {
   createUser,
   handleLogin,
   handleAdminLogin,
-} = require("../services/userService");
+} = require("../services/authService");
 const User = require("../models/userModel");
 const { generateToken } = require("../config/jwtToken");
 
