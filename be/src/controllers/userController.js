@@ -11,6 +11,7 @@ const {
   resetPassword,
   getWishlist,
   saveAddress,
+  removeAddress,
 } = require("../services/userService");
 
 const getAllUsersController = asyncHandler(async (req, res) => {
@@ -116,14 +117,51 @@ const getWishlistController = asyncHandler(async (req, res) => {
   }
 });
 
-const saveAddressController = asyncHandler(async (req, res) => {
+const getProfileUserController = asyncHandler(async (req, res) => {
   const { _id } = req.user;
-  const address = req.body.address;
+
   try {
-    const result = await saveAddress(_id, address);
+    const result = await getUserById(_id);
     res.status(200).json({
       EC: 0,
       data: result,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+const saveAddressController = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const { city, district, commune, specificAddress, isDefault } = req.body;
+
+  try {
+    const result = await saveAddress(
+      _id,
+      city,
+      district,
+      commune,
+      specificAddress,
+      isDefault
+    );
+    res.status(200).json({
+      EC: 0,
+      message: "Create address successfull!!!",
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+const removeAddressController = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const addressId = req.params.id;
+
+  try {
+    const result = await removeAddress(_id, addressId);
+    res.status(200).json({
+      EC: 0,
+      message: "Remove address successfull!!!",
     });
   } catch (error) {
     throw new Error(error);
@@ -140,4 +178,6 @@ module.exports = {
   resetPasswordController,
   getWishlistController,
   saveAddressController,
+  getProfileUserController,
+  removeAddressController,
 };

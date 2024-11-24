@@ -2,13 +2,15 @@ const axios = require("axios");
 const express = require("express");
 const crypto = require("crypto");
 
+const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
+
 const router = express.Router();
 
 var accessKey = "F8BBA842ECF85";
 var secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
 var partnerCode = "MOMO";
 
-router.post("/payment", async (req, res) => {
+router.post("/payment", authMiddleware, async (req, res) => {
   //https://developers.momo.vn/#/docs/en/aiov2/?id=payment-method
   //parameters
 
@@ -100,7 +102,7 @@ router.post("/payment", async (req, res) => {
   }
 });
 
-router.post("/callback", async (req, res) => {
+router.post("/callback", authMiddleware, async (req, res) => {
   console.log("callback: ");
   console.log(req.body);
   //update order
@@ -108,7 +110,7 @@ router.post("/callback", async (req, res) => {
   return res.status(200).json(req.body);
 });
 
-router.post("/transaction-status", async (req, res) => {
+router.post("/transaction-status", authMiddleware, async (req, res) => {
   const { orderId } = req.body;
 
   const rawSignature = `accessKey=${accessKey}&orderId=${orderId}&partnerCode=${partnerCode}&requestId=${orderId}`;

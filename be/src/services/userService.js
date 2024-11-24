@@ -3,6 +3,7 @@ const asyncHandler = require("express-async-handler");
 const validateMongodbId = require("../utils/validateMongodbId");
 const sendEmail = require("../controllers/emailController");
 const crypto = require("crypto");
+const Address = require("../models/addressModel");
 
 const getAllUsers = asyncHandler(async () => {
   const result = await User.find({}).select("-password");
@@ -11,7 +12,9 @@ const getAllUsers = asyncHandler(async () => {
 
 const getUserById = asyncHandler(async (id) => {
   validateMongodbId(id);
-  const result = await User.findById(id).select("-password");
+  const result = await User.findById(id)
+    .select("-password")
+    .populate("address");
   return result;
 });
 
@@ -95,18 +98,59 @@ const getWishlist = asyncHandler(async (id) => {
   return user;
 });
 
-const saveAddress = asyncHandler(async (id, address) => {
-  validateMongodbId(id);
+const saveAddress = asyncHandler(
+  async (userId, city, district, commune, specificAddress, isDefault) => {
+    validateMongodbId(userId);
 
-  const updatedUser = await User.findByIdAndUpdate(
-    id,
+    if (!city || !district || !commune || !specificAddress) {
+      throw new Error("Please provide all required fields");
+    }
+
+    const newAddress = new Address({
+      city,
+      district,
+      commune,
+      specificAddress,
+      isDefault: isDefault || false,
+    });
+
+    const savedAddress = await newAddress.save();
+
+    const updatedUser = await User.updateOne(
+      { _id: userId },
+      {
+        $push: { address: savedAddress._id },
+      }
+    );
+    return updatedUser;
+  }
+);
+
+const removeAddress = asyncHandler(async (userId, addressId) => {
+  validateMongodbId(userId);
+  validateMongodbId(addressId);
+
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  if (!user.address.includes(addressId)) {
+    throw new Error("Address not found in user");
+  }
+
+  const updatedUser = await User.updateOne(
     {
-      address: address,
+      _id: userId,
     },
     {
-      new: true,
+      $pull: { address: addressId },
     }
   );
+
+  await Address.deleteOne({ _id: addressId });
+
   return updatedUser;
 });
 
@@ -120,4 +164,5 @@ module.exports = {
   resetPassword,
   getWishlist,
   saveAddress,
+  removeAddress,
 };

@@ -31,6 +31,7 @@ const createOrder = asyncHandler(async (id, COD, couponApplied) => {
     orderBy: user._id,
     orderStatus: "Cash on delivery",
   }).save();
+
   let update = userCart.products.map((item) => {
     return {
       updateOne: {

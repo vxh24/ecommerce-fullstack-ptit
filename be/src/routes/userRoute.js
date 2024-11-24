@@ -10,6 +10,8 @@ const {
   resetPasswordController,
   getWishlistController,
   saveAddressController,
+  getProfileUserController,
+  removeAddressController,
 } = require("../controllers/userController");
 
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
@@ -34,6 +36,7 @@ const router = express.Router();
 
 router.get("/all-users", authMiddleware, isAdmin, getAllUsersController);
 router.get("/wishlist", authMiddleware, getWishlistController);
+router.get("/profile", authMiddleware, getProfileUserController);
 router.put("/save-address", authMiddleware, saveAddressController);
 
 router.post("/cart", authMiddleware, addToCartController);
@@ -51,6 +54,7 @@ router.get("/orders", authMiddleware, getOrderByUIDController);
 router.get("/get-all-orders", authMiddleware, isAdmin, getAllOrdersController);
 router.put("/update-password", authMiddleware, updatePasswordController);
 router.post("/forgot-password", authMiddleware, forgotPasswordTokenController);
+router.delete("/address/:id", authMiddleware, removeAddressController);
 router.put("/reset-password/:token", authMiddleware, resetPasswordController);
 router.get("/order/:id", authMiddleware, isAdmin, getOrderByIdController);
 router.put(
