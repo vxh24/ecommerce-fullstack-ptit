@@ -13,6 +13,7 @@ const brandRoute = require("./src/routes/brandRoute");
 const colorRoute = require("./src/routes/colorRoute");
 const couponRoute = require("./src/routes/couponRoute");
 const enquiryRoute = require("./src/routes/enquiryRoute");
+const paymentRoute = require("./src/routes/paymentRoute");
 
 const { notFound, errorHandler } = require("./src/middlewares/errorHandler");
 const fileUpload = require("express-fileupload");
@@ -51,6 +52,7 @@ app.use("/v1/api/brand", brandRoute);
 app.use("/v1/api/color", colorRoute);
 app.use("/v1/api/coupon", couponRoute);
 app.use("/v1/api/enquiry", enquiryRoute);
+app.use("/", paymentRoute);
 
 app.use(notFound);
 app.use(errorHandler);

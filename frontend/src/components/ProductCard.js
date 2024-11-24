@@ -28,7 +28,7 @@ const ProductCard = (props) => {
         const isWishlisted = wishlist?.some(wishlistItem => wishlistItem._id === item._id);
         return (
           <div key={index}
-            className={`${location.pathname == "/product" ? `gr-${grid}` : "col-3"}`}>
+            className={`${location.pathname === "/product" ? `gr-${grid}` : "col-3"}`}>
             <Link className="product-card position-relative">
               <div className="wishlis-icon position-absolute">
                 <button className='border-0 bg-transparent'>
@@ -44,18 +44,18 @@ const ProductCard = (props) => {
                 <img src="images/watch1.jpg" className='img-fluid' alt="product image" />
               </div>
               <div className="product-details">
-                <h6 className='brand'>{item?.brand}</h6>
+                <h6 className='brand'>{item.brand}</h6>
                 <h5 className="product-title">{item.title}</h5>
                 <ReactStars
                   count={5}
                   size={24}
-                  value={item?.totalRatings.toString()}
+                  value={item.totalRatings}
                   edit={false}
                   activeColor="#ffd700"
                 />
-                <p className={`description ${grid == 12 ? "d-block" : "d-none"}`}>{item?.description}
+                <p className={`description ${grid === 12 ? "d-block" : "d-none"}`}>{item?.description}
                 </p>
-                <p className='price'>${item?.price}</p>
+                <p className='price'>${item.price}</p>
               </div>
               <div className="action-bar position-absolute">
                 <div className="d-flex flex-column gap-15">
