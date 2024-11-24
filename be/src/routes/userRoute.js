@@ -22,6 +22,7 @@ const {
   removeCartController,
   handleCouponController,
   removeProductFromCartController,
+  updateProductQuantityController,
 } = require("../controllers/cartController");
 
 const {
@@ -45,6 +46,11 @@ router.delete(
   "/cart/remove-product",
   authMiddleware,
   removeProductFromCartController
+);
+router.put(
+  "/cart/update-product",
+  authMiddleware,
+  updateProductQuantityController
 );
 router.delete("/empty-cart", authMiddleware, removeCartController);
 router.post("/apply-coupon", authMiddleware, handleCouponController);

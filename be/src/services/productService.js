@@ -2,7 +2,10 @@ const Product = require("../models/productModel");
 const asyncHandler = require("express-async-handler");
 const validateMongodbId = require("../utils/validateMongodbId");
 const User = require("../models/userModel");
-
+const natural = require("natural");
+const tfidf = new natural.TfIdf();
+// var TfIdf = require('node-tfidf');
+// var tfidf = new TfIdf();
 const createProduct = asyncHandler(async (productData) => {
   const result = await Product.create(productData);
   return result;
@@ -139,6 +142,82 @@ const rating = asyncHandler(async (star, comment, productId, userId) => {
   );
   return findProduct;
 });
+// Tính toán độ tương đồng giữa các mô tả sử dụng TF-IDF
+const calculateDescriptionSimilarity = (descriptionA, descriptionB) => {
+  const TfIdf = require('natural').TfIdf;
+  const tfidf = new TfIdf();
+
+  tfidf.addDocument(descriptionA);
+  tfidf.addDocument(descriptionB);
+  // return tfidf.cosineSimilarity(0, 1); // Tính độ tương đồng giữa hai văn bản
+  // Lấy các vector của cả hai văn bản
+  const vectorA = tfidf.listTerms(0); // Vector của document 0 (descriptionA)
+  const vectorB = tfidf.listTerms(1); // Vector của document 1 (descriptionB)
+
+  // Tính cosine similarity
+  const cosineSimilarity = (vecA, vecB) => {
+    const dotProduct = vecA.reduce((sum, termA) => {
+      const termB = vecB.find(term => term.term === termA.term);
+      if (termB) {
+        return sum + termA.tf * termB.tf;
+      }
+      return sum;
+    }, 0);
+
+    const magnitudeA = Math.sqrt(vecA.reduce((sum, term) => sum + Math.pow(term.tf, 2), 0));
+    const magnitudeB = Math.sqrt(vecB.reduce((sum, term) => sum + Math.pow(term.tf, 2), 0));
+
+    return dotProduct / (magnitudeA * magnitudeB);
+  };
+  return cosineSimilarity(vectorA, vectorB);
+
+};
+
+// Tính độ tương đồng dựa trên các tags
+const calculateTagsSimilarity = (tagsA, tagsB) => {
+  const commonTags = tagsA.filter(tag => tagsB.includes(tag)).length;
+  return commonTags / Math.max(tagsA.length, tagsB.length); // Độ tương đồng theo số lượng tags chung
+};
+
+// Tính độ tương đồng giữa giá sản phẩm (đơn giản: tỉ lệ chênh lệch giá)
+const calculatePriceSimilarity = (priceA, priceB) => {
+  const maxPrice = Math.max(priceA, priceB);
+  const minPrice = Math.min(priceA, priceB);
+  return 1 - (maxPrice - minPrice) / maxPrice; // Độ tương đồng ngược lại với sự khác biệt về giá
+};
+
+// Tính độ tương đồng giữa sản phẩm
+const calculateProductSimilarity = (productA, productB) => {
+  // Tính độ tương đồng theo từng đặc tính
+  const descriptionSimilarity = calculateDescriptionSimilarity(productA.description, productB.description);
+  const tagsSimilarity = calculateTagsSimilarity(productA.tags, productB.tags);
+  const priceSimilarity = calculatePriceSimilarity(productA.price, productB.price);
+  const categorySimilarity = productA.category === productB.category ? 1 : 0; // Độ tương đồng dựa trên category (giống nhau là 1, khác nhau là 0)
+
+  // Kết hợp các độ tương đồng thành một giá trị tổng hợp
+  const totalSimilarity = 0.4 * descriptionSimilarity + 0.3 * tagsSimilarity + 0.2 * priceSimilarity + 0.1 * categorySimilarity;
+  return totalSimilarity;
+};
+
+// API để gợi ý sản phẩm dựa trên độ tương đồng
+const recommendProducts = async (productId) => {
+  validateMongodbId(productId);
+  const product = await Product.findById(productId);
+  const allProducts = await Product.find();
+
+  // Tính toán độ tương đồng cho tất cả các sản phẩm và sắp xếp theo độ tương đồng
+  const recommendedProducts = allProducts
+    .filter(p => p.id !== productId) // Lọc ra sản phẩm không phải là sản phẩm đang xem
+    .map((p) => {
+      return {
+        product: p,
+        similarity: calculateProductSimilarity(product, p),
+      };
+    })
+    .sort((a, b) => b.similarity - a.similarity); // Sắp xếp theo độ tương đồng giảm dần
+
+  return recommendedProducts.slice(0, 4); // Trả về top 5 sản phẩm gợi ý
+};
 
 module.exports = {
   createProduct,
@@ -148,4 +227,5 @@ module.exports = {
   deleteProduct,
   addToWishlist,
   rating,
+  recommendProducts,
 };

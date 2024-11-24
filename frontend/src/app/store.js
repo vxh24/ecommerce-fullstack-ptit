@@ -5,6 +5,7 @@ import productReducer from "../features/products/productSlice";
 import blogReducer from "../features/blogs/blogSlice"
 import contactReducer from "../features/contact/contactSlice"
 import colorReducer from "../features/color/colorSlice";
+import couponReducer from "../features/counpons/couponSlice";
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
@@ -13,5 +14,6 @@ export const store = configureStore({
     blog: blogReducer,
     contact: contactReducer,
     color: colorReducer,
+    coupon: couponReducer,
   },
 });

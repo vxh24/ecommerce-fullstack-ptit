@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Link, useNavigate } from "react-router-dom";
 import Marquee from "react-fast-marquee";
 import BlogCard from '../components/BlogCard';
@@ -11,11 +11,50 @@ import { getAllBlog } from '../features/blogs/blogSlice';
 import moment from "moment";
 import { getAllProducts } from '../features/products/productSlice';
 const Home = () => {
+  // const banners = [
+  //   "https://via.placeholder.com/800x400/FF0000/FFFFFF?text=Banner+1",
+  //   "https://via.placeholder.com/800x400/00FF00/FFFFFF?text=Banner+2",
+  //   "https://via.placeholder.com/800x400/0000FF/FFFFFF?text=Banner+3",
+  // ]; // Mảng ảnh banner
+  const banners = [
+    { id: 1, image: "/images/main-banner-1.jpg" },
+    { id: 2, image: "/images/main-banner.jpg" },
+    { id: 3, image: "/images/catbanner-01.jpg" },
+    { id: 3, image: "/images/catbanner-02.jpg" },
+    { id: 3, image: "/images/catbanner-03.jpg" },
+  ];
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [direction, setDirection] = useState('next'); // Hướng trượt (next hoặc prev)
+
+  // Thay đổi slide mỗi 3 giây
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (direction === 'next') {
+        setCurrentIndex((prevIndex) => {
+          if (prevIndex === banners.length - 1) {
+            setDirection('prev'); // Đổi hướng khi đến slide cuối
+            return prevIndex - 1;
+          }
+          return prevIndex + 1;
+        });
+      } else {
+        setCurrentIndex((prevIndex) => {
+          if (prevIndex === 0) {
+            setDirection('next'); // Đổi hướng khi đến slide đầu
+            return prevIndex + 1;
+          }
+          return prevIndex - 1;
+        });
+      }
+    }, 3000); // 3000ms = 3s
+
+    return () => clearInterval(interval); // Cleanup khi component unmount
+  }, [direction]);
   const blogState = useSelector((state) => state?.blog?.blogs?.data);
   const productState = useSelector((state) => state?.product?.products?.data);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // console.log(productState[0].tags);
   useEffect(() => {
     getBlogs();
     getProducts();
@@ -31,7 +70,38 @@ const Home = () => {
       <section className="home-wraper-1 py-5">
         <div className="container-xxl">
           <div className="row">
-            <div className="col-6">
+            <div className='col-8'>
+              <div className="banner">
+                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                  <div className="carousel-indicators">
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                  </div>
+                  <div className="carousel-inner">
+                    <div class="carousel-item active">
+                      <img src="https://cf.shopee.vn/file/vn-11134258-7ras8-m2tcah6wix8ab5_xxhdpi" class="d-block w-100" alt="..." />
+                    </div>
+                    <div className="carousel-item">
+                      <img src="https://cf.shopee.vn/file/vn-11134258-7ras8-m2t746tuh4aud8_xxhdpi" class="d-block w-100" alt="..." />
+                    </div>
+                    <div className="carousel-item">
+                      <img src="https://cf.shopee.vn/file/vn-11134258-7ras8-m2t71qmtks6yfb_xxhdpi" class="d-block w-100" alt="..." />
+                    </div>
+                  </div>
+                  <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                    <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span className="visually-hidden">Previous</span>
+                  </button>
+                  <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                    <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span className="visually-hidden">Next</span>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+            {/* <div className="col-3">
               <div className="main-banner position-relative">
                 <img src="/images/main-banner-1.jpg" className="img-fluid rounded-3" alt="main banner" />
                 <div className="main-banner-content position-absolute">
@@ -41,10 +111,10 @@ const Home = () => {
                   <Link className='button'>BUY NOW</Link>
                 </div>
               </div>
-            </div>
-            <div className="col-6">
-              <div className="div d-flex flex-wrap gap-10 justify-content-between align-items-center">
-                <div className="small-banner position-relative">
+            </div> */}
+            <div className="col-4">
+              <div className="d-flex flex-wrap gap-10">
+                {/* <div className="small-banner position-relative">
                   <img src="/images/catbanner-01.jpg" className="img-fluid rounded-3" alt="main banner" />
                   <div className="small-banner-content position-absolute">
                     <h4>SUPERCHARGED FOR PROS</h4>
@@ -61,25 +131,14 @@ const Home = () => {
                     <p>From $999.0 <br /> or $41.0</p>
 
                   </div>
+                </div> */}
+                <div className='small-banner-slide'>
+                  <img className="img-fluid rounded-3 " src="https://cf.shopee.vn/file/vn-11134258-7ras8-m2t79b0ey2t69b_xhdpi" alt="" />
                 </div>
-                <div className="small-banner position-relative">
-                  <img src="/images/catbanner-03.jpg" className="img-fluid rounded-3" alt="main banner" />
-                  <div className="small-banner-content position-absolute">
-                    <h4>SUPERCHARGED FOR PROS</h4>
-                    <h5>iPad S13+ Pro.</h5>
-                    <p>From $999.0 <br /> or $41.0</p>
+                <div className='small-banner-slide'>
+                  <img className="img-fluid rounded-3" src="https://cf.shopee.vn/file/vn-11134258-7ras8-m2t7b9inro5i8e_xhdpi" alt="" />
+                </div>
 
-                  </div>
-                </div>
-                <div className="small-banner position-relative">
-                  <img src="/images/catbanner-04.jpg" className="img-fluid rounded-3" alt="main banner" />
-                  <div className="small-banner-content position-absolute">
-                    <h4>SUPERCHARGED FOR PROS</h4>
-                    <h5>iPad S13+ Pro.</h5>
-                    <p>From $999.0 <br /> or $41.0</p>
-
-                  </div>
-                </div>
               </div>
             </div>
           </div>
