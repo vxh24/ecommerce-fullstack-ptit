@@ -59,6 +59,32 @@ const removeProductFromCart = asyncHandler(async (userId, productId, color) => {
   return cart;
 });
 
+const updateProductQuantityInCart = asyncHandler(async (userId, productId, color, newQuantity) => {
+  validateMongodbId(userId);
+  validateMongodbId(productId);
+
+  const user = await User.findById(userId);
+  const cart = await Cart.findOne({ orderBy: user._id });
+
+  const productIndex = cart.products.findIndex(
+    (item) => item.product.toString() === productId && item.color === color
+  );
+
+  if (productIndex === -1) {
+    throw new Error("Product not found in cart");
+  }
+
+  cart.products[productIndex].count = newQuantity;
+
+  cart.cartTotal = cart.products.reduce(
+    (total, item) => total + item.price * item.count,
+    0
+  );
+
+  await cart.save();
+  return cart;
+});
+
 const getCartUser = asyncHandler(async (id) => {
   validateMongodbId(id);
   const cart = await Cart.findOne({ orderBy: id });
@@ -99,4 +125,5 @@ module.exports = {
   emptyCart,
   applyCoupon,
   removeProductFromCart,
+  updateProductQuantityInCart,
 };

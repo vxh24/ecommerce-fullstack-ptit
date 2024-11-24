@@ -70,7 +70,18 @@ const getOrder = async () => {
     return response.data
   }
 }
-
+const removePfromCart = async ({ productId, color }) => {
+  const response = await axios.delete(`${base_url}user/cart/remove-product`, { data: { productId, color }, ...config });
+  if (response.data) {
+    return response.data;
+  }
+}
+const updateCountProduct = async ({ productId, color, newQuantity }) => {
+  const response = await axios.put(`${base_url}user/cart/update-product`, { productId, color, newQuantity }, config);
+  if (response.data) {
+    return response.data;
+  }
+}
 export const authService = {
   createUser,
   handleLogin,
@@ -81,5 +92,7 @@ export const authService = {
   resetPass,
   gglogin,
   cashOrder,
-  getOrder
+  getOrder,
+  removePfromCart,
+  updateCountProduct
 }

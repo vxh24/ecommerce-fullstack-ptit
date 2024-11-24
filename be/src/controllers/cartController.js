@@ -6,6 +6,7 @@ const {
   emptyCart,
   applyCoupon,
   removeProductFromCart,
+  updateProductQuantityInCart,
 } = require("../services/cartService");
 
 const addToCartController = asyncHandler(async (req, res) => {
@@ -38,7 +39,20 @@ const removeProductFromCartController = asyncHandler(async (req, res) => {
     throw new Error(error);
   }
 });
+const updateProductQuantityController = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const { productId, color, newQuantity } = req.body;
 
+  try {
+    const result = await updateProductQuantityInCart(_id, productId, color, newQuantity);
+    res.status(200).json({
+      EC: 0,
+      message: "Product quantity updated successfully!",
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
 const getUserCartController = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   try {
@@ -86,4 +100,5 @@ module.exports = {
   removeCartController,
   handleCouponController,
   removeProductFromCartController,
+  updateProductQuantityController,
 };

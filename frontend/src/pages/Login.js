@@ -49,7 +49,7 @@ const Login = () => {
             <div className="col-12">
               <div className="auth-card">
                 <h3 className='text-center mb-3'>Login</h3>
-                <form action="" onSubmit={formik.handleSubmit} className='d-flex flex-column gap-30'>
+                <form action="" onSubmit={formik.handleSubmit} className='d-flex flex-column gap-15'>
                   <div>
                     <input type="email" name="email" className="form-control" placeholder='Email'
                       value={formik.values.email} onChange={formik.handleChange("email")}
@@ -72,24 +72,31 @@ const Login = () => {
                     }
                   </div>
                   <div>
-                    <Link to="/forgot-password">Forgot Password</Link>
+                    <Link to="/forgot-password" className='mb-3'>Forgot Password?</Link>
                     <div className="mt-3 d-flex justify-content-center gap-15 align-items-center mb-3">
                       <button className="button border-0">Login</button>
-                      <Link className='button signup' to="/sign-up" >Sign Up</Link>
+
+                    </div>
+                    <div className='d-flex justify-content-center gap-10 align-items-center'>
+                      <h3 className=''>Bạn chưa có tài khoản?</h3>
+                      <Link className='signup' to="/sign-up" ><h4>Sign Up</h4></Link>
+                    </div>
+                    <div className=' '>
+                      <h3 className='d-flex justify-content-center align-items-center gap-10'><hr className='login-1' />Or<hr className='login-1' /></h3>
+                    </div>
+                    <div>
+                      <GoogleLogin
+                        onSuccess={handleSuccess}
+                        onError={handleError}
+                      />
                     </div>
                   </div>
                 </form>
-                {/* <GoogleOAuthProvider clientId={clientId}> */}
-                <GoogleLogin
-                  onSuccess={handleSuccess}
-                  onError={handleError}
-                />
-                {/* </GoogleOAuthProvider> */}
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </div >
     </>
   )
 }

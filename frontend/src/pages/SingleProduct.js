@@ -1,11 +1,9 @@
 import React, { useState } from 'react'
 import Meta from '../components/Meta';
 import BreadCrumb from '../components/BreadCrumb'
-import ProductCard from "../components/ProductCard"
 import ReactStars from "react-rating-stars-component";
 import Color from "../components/Color"
 import { Link, useLocation, useNavigate } from "react-router-dom"
-import { FaRegHeart } from "react-icons/fa";
 import { IoGitCompareSharp } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from 'react';
@@ -15,9 +13,10 @@ import { getAllColors } from '../features/color/colorSlice';
 import { toast } from "react-toastify"
 import { AddProdToCart, getUserCart } from '../features/user/userSlice';
 import { getAllProducts } from '../features/products/productSlice';
-import PopularProduct from "../components/PopularProduct";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { getUserProductWishlist } from '../features/user/userSlice';
+import { FaFacebookSquare } from "react-icons/fa";
+import { MdOutlineRemoveRedEye } from "react-icons/md";
 const SingleProduct = () => {
   const [color, setColor] = useState(null);
   const [count, setCount] = useState(1);
@@ -33,17 +32,19 @@ const SingleProduct = () => {
     textField.select()
     document.execCommand('copy')
     textField.remove()
+    toast.success("Copied")
   }
   const location = useLocation();
   const getProductId = location.pathname.split("/")[2];
   const dispatch = useDispatch();
   const productState = useSelector(state => state?.product?.product?.data);
+  console.log(productState);
   const colorIds = useSelector(state => state?.product?.product?.data?.color);
   const colors = useSelector(state => state?.color?.colors?.data);
   const matchedColors = colors?.filter((color) => colorIds?.includes(color?._id)) || [];
   const cartState = useSelector(state => state?.auth?.cartUser?.data?.products);
-  const popularproductState = useSelector((state) => state?.product?.products?.data);
   const wishlist = useSelector(state => state?.auth?.wishlist?.data?.wishlist);
+  const recommendProduct = useSelector(state => state?.product?.product?.recommend);
   useEffect(() => {
     dispatch(getAProducts(getProductId));
     getColors();
@@ -61,23 +62,13 @@ const SingleProduct = () => {
       }
 
     }
-  })
-  useEffect(() => {
-    for (let index = 0; index < wishlist?.length; index++) {
-      if (wishlist[index]?._id === getProductId) {
-        setClick(true);
-      }
-      else {
-        setClick(false);
-      }
-
-    }
-  }, [wishlist])
+  }, [cartState])
+  const isWishlisted = wishlist?.some(wishlistItem => wishlistItem._id === getProductId);
   const addToWish = (id) => {
     dispatch(addToWishlist(id));
     setTimeout(() => {
       dispatch(getUserProductWishlist());
-    }, 100)
+    }, 200)
   }
   const uploadCart = () => {
     if (color === null) {
@@ -88,8 +79,8 @@ const SingleProduct = () => {
       dispatch(AddProdToCart({ _id: productState?._id, count, color }))
       setTimeout(() => {
         dispatch(getUserCart())
-      }, 100)
-      navigate("/cart");
+        navigate("/cart");
+      }, 200)
 
     }
   }
@@ -119,6 +110,11 @@ const SingleProduct = () => {
     }
     return false;
   }
+
+  const shareOnFacebook = (productUrl) => {
+    const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productUrl)}`;
+    window.open(facebookShareUrl, '_blank', 'width=600,height=400');
+  };
   return (
     <>
       <Meta title={"Product Name"} />
@@ -128,7 +124,7 @@ const SingleProduct = () => {
           <div className="row">
             <div className="col-6">
               <div className="main-product-image">
-                <div>
+                <div >
                   <img src="https://uscom.vn/wp-content/uploads/2024/09/iPhone-16-Pro-Max-Trang-2.webp" alt="" />
                 </div>
               </div>
@@ -220,11 +216,11 @@ const SingleProduct = () => {
                     </div>
                     <div >
                       {
-                        click ? (
-                          <AiFillHeart onClick={() => { addToWish(productState?._id) }} className='fs-5 me-2' color={click ? "red" : "#333"} />
+                        isWishlisted ? (
+                          <AiFillHeart onClick={() => { addToWish(productState?._id) }} className='fs-5 me-2' color={isWishlisted ? "red" : "#333"} />
                         ) :
                           (
-                            <AiOutlineHeart onClick={() => { addToWish(productState?._id) }} className='fs-5 me-2' color={click ? "red" : "#333"} />
+                            <AiOutlineHeart onClick={() => { addToWish(productState?._id) }} className='fs-5 me-2' color={isWishlisted ? "red" : "#333"} />
                           )
                       }
                       <Link >Add to wishlis</Link>
@@ -236,7 +232,12 @@ const SingleProduct = () => {
                   </div>
                   <div className="d-flex align-items-center gap-10 my-3">
                     <h3 className='product-heading'>Copy Product Link:</h3>
-                    <a href='javascrip:void(0);' onClick={() => { copyToClipboard(window.location.href); }}>Click here to copy</a>
+                    <Link to='javascrip:void(0);' onClick={() => {
+                      copyToClipboard(window.location.href);
+                    }}>Click here to copy</Link>
+
+                    <h3 className='product-heading ms-4'>Chia sẻ</h3>
+                    <Link onClick={() => shareOnFacebook(``)}><FaFacebookSquare className='fs-4 text-dark' /></Link>
                   </div>
                 </div>
               </div>
@@ -343,21 +344,62 @@ const SingleProduct = () => {
           <div className="row">
             <div className="col-12">
               <h3 className="section-heading">
-                Our Popular Products
+                Sản phẩm tương tự
               </h3>
             </div>
             <div className="row">
               {
-                popularproductState && popularproductState?.map((item, index) => {
-                  if (item?.tags[0] === "popular") {
-                    return (
-                      < PopularProduct key={index} title={item?.title} brand={item?.brand}
-                        price={item?.price} totalRating={item?.totalRatings.toString()}
-                        sold={item?.sold} quantity={item?.quantity} description={item?.description}
-                        id={item?._id}
-                      />
-                    )
-                  }
+                recommendProduct && recommendProduct?.map((item, index) => {
+                  const isWishlisted1 = wishlist?.some(wishlistItem => wishlistItem._id === item.product._id);
+                  return (
+                    <div
+                      className="col-3" key={index}>
+                      <Link className="product-card position-relative">
+                        <div className="wishlis-icon position-absolute">
+                          <button className='border-0 bg-transparent'>
+                            {isWishlisted1 ? (
+                              <AiFillHeart className='fs-4' onClick={() => { addToWish(item.product._id) }} color="red" />
+                            ) : (
+                              <AiOutlineHeart className='fs-4' onClick={() => { addToWish(item.product._id) }} color="#333" />
+                            )}
+                          </button>
+                        </div>
+                        <div className="product-image">
+                          <img src="images/watch.jpg" className='img-fluid mx-auto' alt="product image" />
+                          <img src="images/watch1.jpg" className='img-fluid' alt="product image" />
+                        </div>
+                        <div className="product-details">
+                          <h6 className='brand'>{item.product.brand}</h6>
+                          <h5 className="product-title">{item.product.title}</h5>
+                          <ReactStars
+                            count={5}
+                            size={24}
+                            value={item.product.totalRating}
+                            edit={true}
+                            activeColor="#ffd700"
+                          />
+                          <p className="description d-block">{item.product.description}
+                          </p>
+                          <p className='price'>${item.product.price}</p>
+                        </div>
+                        <div className="action-bar position-absolute">
+                          <div className="d-flex flex-column gap-15">
+                            <Link onClick={() => {
+                              dispatch(getAProducts(item.product._id));
+                              window.scrollTo({
+                                top: 0,
+                                behavior: "smooth"
+                              });
+                            }}
+                            >
+                              {/* <img src="images/view.svg" alt="view" /> */}
+                              <MdOutlineRemoveRedEye className='text-dark fs-4' />
+                            </Link>
+                          </div>
+                        </div>
+                      </Link>
+                    </div>
+                  )
 
                 })
               }

@@ -1,7 +1,6 @@
 
 import React, { useEffect, useState } from 'react'
 import BreadCrumb from '../components/BreadCrumb'
-import { Helmet } from "react-helmet";
 import Meta from '../components/Meta';
 import ReactStars from "react-rating-stars-component";
 import ProductCard from '../components/ProductCard';
@@ -9,13 +8,17 @@ import Color from '../components/Color';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllProducts } from '../features/products/productSlice';
 import { getAllColors } from '../features/color/colorSlice';
+import { toast } from 'react-toastify';
 const OurStore = () => {
   const [grid, setGrid] = useState(4);
-  const productState = useSelector((state) => state.product.products.data);
+  const productState = useSelector((state) => state?.product?.products?.data);
   const dispatch = useDispatch();
   const [brands, setBrand] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [tags, setTags] = useState([]);
+  const [tags, setTags] = useState(new Set());
+  const [sortedProducts, setSortedProducts] = useState([]);
+  const [filterProducts, setFilterProducts] = useState([]);
+  // console.log(sortedProducts);
   const [filertags, setFilerTags] = useState([]);
   const [filerbrands, setFilerBrands] = useState([]);
   const [minPrice, setMinPrice] = useState([]);
@@ -31,21 +34,58 @@ const OurStore = () => {
   useEffect(() => {
     let newbrands = [];
     let category = [];
-    let newtags = [];
+    let newtags = new Set();
     for (let index = 0; index < productState?.length; index++) {
       const element = productState[index];
       newbrands.push(element.brand);
       category.push(element.category);
-      newtags.push(element.tags);
+      element.tags.forEach((tag) => newtags.add(tag))
     }
     setBrand(newbrands);
     setCategories(category);
     setTags(newtags);
   }, [productState])
-  console.log([...new Set(brands)], [...new Set(categories)], [...new Set(tags)]);
   const getProducts = () => {
     dispatch(getAllProducts());
   }
+  const handleSortChange = (e) => {
+    const sortValue = e.target.value;
+    let sorted = [...productState];
+
+    if (sortValue === "price-ascending") {
+      sorted = sorted.sort((a, b) => a.price - b.price);
+    }
+    else if (sortValue === "price-descending") {
+      sorted = sorted.sort((a, b) => b.price - a.price);
+    }
+    else if (sortValue === "created-ascending") {
+      sorted = sorted.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    }
+    else if (sortValue === "created-descending") {
+      sorted = sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    }
+    else if (sortValue === "title-ascending") {
+      sorted = sorted.sort((a, b) => a.title - b.title);
+    }
+    else if (sortValue === "title-descending") {
+      sorted = sorted.sort((a, b) => b.title - a.title);
+    }
+    setSortedProducts(sorted);
+  };
+  const handlePriceFilter = () => {
+    if (minPrice === "" && maxPrice === "") {
+      toast.info("Vui lòng điền khoảng giá phù hợp")
+    }
+    else {
+      const min = parseFloat(minPrice) || 0;
+      const max = parseFloat(maxPrice) || Infinity;
+
+      const filteredProducts = productState?.filter((product) => {
+        return product.price >= min && product.price <= max;
+      });
+      setFilterProducts(filteredProducts);
+    }
+  };
   return (
     <>
       <Meta title={"Our Store"} />
@@ -93,12 +133,52 @@ const OurStore = () => {
                       <label htmlFor="floatingInput1">To</label>
                     </div>
                   </div>
+                  <div className='d-flex align-items-center mt-3 justify-content-center'>
+                    <button className='button-filter form-control' onClick={handlePriceFilter}>
+                      ÁP DỤNG
+                    </button>
+                  </div>
+
                   <h5 className="sub-title">
-                    Color
+                    Đánh giá
                   </h5>
 
                   <div>
-                    <Color colorData={colors} />
+                    <ReactStars
+                      count={5}
+                      size={24}
+                      value={5}
+                      edit={false}
+                      activeColor="#ffd700"
+                    />
+                    <ReactStars
+                      count={5}
+                      size={24}
+                      value={4}
+                      edit={false}
+                      activeColor="#ffd700"
+                    />
+                    <ReactStars
+                      count={5}
+                      size={24}
+                      value={3}
+                      edit={false}
+                      activeColor="#ffd700"
+                    />
+                    <ReactStars
+                      count={5}
+                      size={24}
+                      value={2}
+                      edit={false}
+                      activeColor="#ffd700"
+                    />
+                    <ReactStars
+                      count={5}
+                      size={24}
+                      value={1}
+                      edit={false}
+                      activeColor="#ffd700"
+                    />
                   </div>
                 </div>
               </div>
@@ -149,7 +229,7 @@ const OurStore = () => {
                       <ReactStars
                         count={5}
                         size={24}
-                        value="3"
+                        value={3}
                         edit={false}
                         activeColor="#ffd700"
                       />
@@ -180,17 +260,19 @@ const OurStore = () => {
                 <div className="d-flex justify-content-between align-items-center">
                   <div className="d-flex align-items-center gap-10">
                     <p className='mb-0 d-block' style={{ "width": "100px" }}>Sort By:</p>
-                    <select name="" id="" className="form-control form-select">
-                      <option value="manual">Featured</option>
-                      <option value="best-selilng" selected="selected">
+                    <select name="manual" id="" className="form-control form-select"
+                      onChange={handleSortChange}
+                    >
+                      <option value="manual">Tất cả</option>
+                      <option value="best-selilng">
                         Best Selling
                       </option>
                       <option value="title-ascending">Alphabetically, A-Z</option>
                       <option value="title-descending">Alphabetically, Z-A</option>
                       <option value="price-ascending">Price, low to hight</option>
-                      <option value="price-ascending">Price, hight to low</option>
+                      <option value="price-descending">Price, hight to low</option>
                       <option value="created-ascending">Date, old to new</option>
-                      <option value="created-ascending">Date, new to old</option>
+                      <option value="created-descending" >Date, new to old</option>
                     </select>
                   </div>
                   <div className='d-flex align-items-center gap-10'>
@@ -206,7 +288,22 @@ const OurStore = () => {
               </div>
               <div className="products-list pb-5">
                 <div className="d-flex gap-10 flex-wrap">
-                  <ProductCard data={productState ? productState : []} grid={grid} />
+                  {/* {!sortedProducts &&
+                    <ProductCard data={productState} grid={grid} />
+                  }
+                  <ProductCard data={sortedProducts ? sortedProducts : productState} grid={grid} /> */}
+                  {
+                    sortedProducts && sortedProducts.length > 0 ? (
+                      <ProductCard data={sortedProducts} grid={grid} />
+                    ) : filterProducts && filterProducts.length > 0 ? (
+                      <ProductCard data={filterProducts} grid={grid} />
+                    ) : productState && productState.length > 0 ? (
+                      <ProductCard data={productState} grid={grid} />
+                    ) : (
+                      <p>No products found</p>
+                    )
+                  }
+
                 </div>
               </div>
             </div>

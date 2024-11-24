@@ -10,8 +10,14 @@ import { AiOutlineHeart } from "react-icons/ai";
 import { CgProfile } from "react-icons/cg";
 import { GiShoppingCart } from "react-icons/gi";
 import { BiCategory } from "react-icons/bi";
+import { googleLogout } from '@react-oauth/google';
 const Header = () => {
   const handleLogout = () => {
+    // Logout Google
+    googleLogout();
+
+    // Xóa cookie (nếu có)
+    document.cookie = 'auth_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     localStorage.clear();
     window.location.reload();
   }
@@ -37,7 +43,7 @@ const Header = () => {
   // useEffect(() => {
   //   dispatch(getUserCart());
   // }, [])
-  const userCartState = useSelector(state => state?.auth?.cartUser?.data);
+  const userCartState = useSelector(state => state?.auth?.cartUser?.result);
   const [total, setTotal] = useState(null);
   useEffect(() => {
     let sum = 0;
@@ -90,15 +96,7 @@ const Header = () => {
 
             </div>
             <div className="col-5">
-              <div className="header-upper-links d-flex align-items-center justify-content-between">
-                <div>
-                  <Link to="/compare-product" className="d-flex align-items-center gap-10 text-white">
-                    <img src="images/compare.svg" alt="" />
-                    <p className="mb-0">
-                      Compare <br /> Products
-                    </p>
-                  </Link>
-                </div>
+              <div className="header-upper-links d-flex align-items-center gap-30 justify-content-end">
                 <div>
                   <Link to="wishlist" className="d-flex align-items-center gap-10 text-white">
                     <AiOutlineHeart className='fs-2' />
@@ -108,25 +106,33 @@ const Header = () => {
                   </Link>
                 </div>
                 <div>
-                  <Link to={authState?.user === null ? "/login" : "/profile"} className="d-flex align-items-center gap-10 text-white">
+                  <Link to={authState?.user === null ? "/login" : ""} className="d-flex align-items-center gap-10 text-white">
                     <CgProfile className='fs-2' />
                     {
                       authState?.user === null ? <p className="mb-0">
                         Log in
                       </p> :
-                        <p className="mb-0">
-                          {authState?.user?.user?.name.toUpperCase()}
-                        </p>
+                        <>
+                          <div className="dropdown">
+                            <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+                              {authState?.user?.user?.name.toUpperCase()}
+                            </button>
+                            <ul className="dropdown-menu" aria-labelledby="dropdownMenu2">
+                              <li><Link className="dropdown-item" type="button" to="/profile">Profile</Link></li>
+                              <li><Link className="dropdown-item" type="button" to="/my-orders">My Orders</Link></li>
+                              <li><button onClick={handleLogout} className=" dropdown-item" type="button">Logout</button></li>
+                            </ul>
+                          </div>
+                        </>
                     }
                   </Link>
                 </div>
-                <div>
+                <div className="cart-icon-container">
                   <Link to="/cart" className="d-flex align-items-center gap-10 text-white">
-                    <GiShoppingCart className='fs-2' />
-                    <div className="d-flex flex-column gap-10">
-                      <span className="badge bg-white text-dark">{userCartState?.products?.length ? userCartState?.products?.length : 0}</span>
-                      <p className="mb-0">$ {total ? total : 0}</p>
-                    </div>
+                    <GiShoppingCart className='fs-1' />
+                    {/* <div className="d-flex flex-column gap-10"> */}
+                    <span className="cart-badge bg-white text-dark">{userCartState?.products?.length ? userCartState?.products?.length : 0}</span>
+                    {/* </div> */}
                   </Link>
                 </div>
               </div>
@@ -162,8 +168,7 @@ const Header = () => {
                     <NavLink to="/product">Our Store</NavLink>
                     <NavLink to="/blog">Blogs</NavLink>
                     <NavLink to="/contact">Contact</NavLink>
-                    <NavLink to="/my-orders">My Orders</NavLink>
-                    <button onClick={handleLogout} className="border border-0 bg-transparent text-white text-uppercase" type="button">Logout</button>
+
                   </div>
                 </div>
               </div>

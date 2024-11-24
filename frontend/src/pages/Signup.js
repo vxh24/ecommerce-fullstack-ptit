@@ -86,6 +86,10 @@ const Signup = () => {
                     <div className="mt-3 d-flex justify-content-center gap-15 align-items-center">
                       <button className="button border-0">Create</button>
                     </div>
+                    <div className='d-flex justify-content-center gap-10 align-items-center mt-3'>
+                      <h3 className=''>Bạn đã có tài khoản?</h3>
+                      <Link className='signup' to="/login" ><h4>Login</h4></Link>
+                    </div>
                   </div>
                 </form>
               </div>

@@ -53,6 +53,10 @@ a {
 }
 
 /* header */
+/* .banner {
+  width: 90%;
+  height: 100px;
+} */
 
 .header-top-strip {
   border-bottom: 1px solid var(--color-3b4149);
@@ -136,6 +140,23 @@ a {
   color: var(--color-febd69) !important;
 }
 
+.cart-icon-container {
+  position: relative;
+  display: inline-block;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 50%;
+  min-width: 20px;
+  text-align: center;
+}
+
 /*end header */
 
 /* footer */
@@ -157,6 +178,9 @@ footer .input-group-text {
 /* end footer */
 
 /* homepage */
+/* .main-banner {
+  height: 200px;
+} */
 
 .main-banner-content {
   top: 25%;
@@ -189,10 +213,10 @@ footer .input-group-text {
   color: var(--color-#131921);
 }
 
-.small-banner-content {
+/* .small-banner-content {
   top: 15%;
   left: 5%;
-}
+} */
 
 .small-banner-content h4 {
   font-size: 14px;
@@ -555,6 +579,12 @@ footer .input-group-text {
   top: 15%;
 }
 
+.button-filter {
+  background-color: rgb(238, 77, 45) !important;
+  font-size: 17px !important;
+  color: white !important;
+}
+
 /* our store end */
 
 /* contact */
@@ -672,18 +702,65 @@ footer .input-group-text {
   color: var(--color-1c1c1b);
 }
 
-.signup {
-  background-color: var(--color-febd69);
-  color: var(--color-131921);
-  border: none;
+.signup h4 {
+  /* background-color: var(--color-febd69); */
+  color: #1976d2 !important;
+  /* border: none; */
+  font-size: 20px;
+  margin-top: 0;
 }
 
-.signup:hover {
+.login-1 {
+  width: 40%;
+}
+
+/* .signup:hover {
   background-color: var(--color-131921);
   color: white;
-}
+} */
 
 /* auth card end */
+
+/* changepass */
+
+.change-card {
+  padding: 20px;
+  background-color: white;
+  width: 800px;
+  margin: 30px auto;
+  border-radius: 10px;
+}
+
+.change-card h3 {
+  font-size: 19px;
+  font-weight: 500;
+  color: var(--color-777777);
+}
+
+.change-card p {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-777777);
+}
+
+.change-card .form-control {
+  height: 50px;
+  background-color: var(--color-f5f5f7);
+  color: var(--color-131921);
+  font-size: 14px;
+  border-radius: 10px;
+  border-color: transparent;
+}
+
+.change-card a {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-1c1c1b);
+}
+
+/* changepass end*/
+
+
 /* detail product */
 .main-product-image {
   background-color: white;
@@ -826,7 +903,7 @@ footer .input-group-text {
 }
 
 .cart-col-1 {
-  width: 40%;
+  width: 30%;
 }
 
 .cart-col-1 p {
@@ -843,7 +920,11 @@ footer .input-group-text {
 }
 
 .cart-col-4 {
-  width: 15%;
+  width: 20%;
+}
+
+.cart-col-5 {
+  width: 10%;
 }
 
 .cart-data h5.price {
@@ -878,7 +959,7 @@ footer .input-group-text {
 }
 
 /* orderdetai */
-.modal-container {
+.model-container {
   position: fixed;
   top: 0;
   left: 0;
@@ -891,7 +972,7 @@ footer .input-group-text {
   z-index: 1000;
 }
 
-.modal-content {
+.model-content {
   background: #fff;
   padding: 20px;
   border-radius: 8px;
@@ -901,7 +982,7 @@ footer .input-group-text {
   position: relative;
 }
 
-.close-modal {
+.close-model {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -911,7 +992,26 @@ footer .input-group-text {
   cursor: pointer;
 }
 
-/* orderDetail */
+.tab-container {
+  position: relative;
+  display: inline-block;
+}
+
+.statusCount {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: bold;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+}
+
+/* orderDetail end*/
 
 /* Profile */
 .text-red {
@@ -936,3 +1036,417 @@ footer .input-group-text {
 
 
 /* Profile end*/
+
+/* address */
+.address-container {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-family: Arial, sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header h2 {
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.add-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.add-button:hover {
+  background-color: #d32f2f;
+}
+
+.address-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.address-details {
+  flex: 1;
+}
+
+.address-name {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.address-phone {
+  margin-left: 10px;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.address {
+  margin: 5px 0;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.address-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.update-button,
+.delete-button,
+.default-button {
+  border: none;
+  padding: 8px 10px;
+  font-size: 0.85rem;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.update-button {
+  color: #1976d2;
+  background: transparent;
+}
+
+.update-button:hover {
+  background-color: rgba(25, 118, 210, 0.1);
+}
+
+.delete-button {
+  color: #f44336;
+  background: transparent;
+}
+
+.delete-button:hover {
+  background-color: rgba(244, 67, 54, 0.1);
+}
+
+.default-button {
+  color: #333;
+  background: #f5f5f5;
+}
+
+.default-button.active {
+  color: white;
+  background-color: #4caf50;
+}
+
+.default-button:hover {
+  background-color: #e0e0e0;
+}
+
+.default-button.active:hover {
+  background-color: #388e3c;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 600px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+h2 {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+input[type='text'],
+select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+input[type='radio'],
+input[type='checkbox'] {
+  margin-right: 5px;
+}
+
+.cancel-button {
+  background-color: #ddd;
+  color: #333;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cancel-button:hover {
+  background-color: #ccc;
+}
+
+.submit-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background-color: #d32f2f;
+}
+
+/* address end*/
+
+/* voucher */
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  width: 100%;
+  margin-left: 85px;
+}
+
+.tab {
+  position: relative;
+  margin-top: 25px;
+  padding: 10px 20px;
+  border: 1px solid #ddd;
+  background: #f9f9f9;
+  cursor: pointer;
+}
+
+.tab.active {
+  border-bottom: 2px solid red;
+  font-weight: bold;
+}
+
+.voucher-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: center;
+  margin-left: 85px;
+}
+
+.voucher-card {
+  border: 1px solid #ddd;
+  padding: 15px;
+  width: 300px;
+  border-radius: 5px;
+  background: #fff;
+  gap: 15px;
+}
+
+.voucher-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.voucher-title {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.voucher-discount {
+  font-size: 18px;
+  color: red;
+}
+
+.use-later {
+  background: red;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+}
+
+/* voucher end*/
+/* banner slide */
+
+/* Điều khiển (Controls) */
+.carousel-control {
+  color: white;
+  /* Màu điều khiển */
+  width: 15%;
+  /* Chiều rộng điều khiển */
+  opacity: 0.5;
+  /* Độ mờ mặc định */
+  transition: opacity 0.15s ease;
+  /* Hiệu ứng hover */
+}
+
+.carousel-control:hover {
+  opacity: 0.9;
+  /* Độ mờ khi hover */
+}
+
+/* Icon điều khiển (Mũi tên trái/phải) */
+.carousel-control-prev-icon {
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='white'><path d='M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z'/></svg>");
+  width: 2rem;
+}
+
+.carousel-control-next-icon {
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='white'><path d='M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z'/></svg>");
+  width: 2rem;
+}
+
+/* Transition */
+.carousel {
+  transition: transform 0.6s ease-in-out;
+}
+
+/* Indicator */
+.carousel-indicator {
+  width: 30px;
+  /* Chiều rộng */
+  height: 3px;
+  /* Chiều cao */
+  background-color: rgba(255, 255, 255, 0.5);
+  /* Độ mờ */
+  transition: opacity 0.6s ease;
+  margin: 3px;
+  /* Khoảng cách giữa các indicators */
+}
+
+.carousel-indicator.active {
+  background-color: white;
+  /* Màu khi active */
+  opacity: 1;
+}
+
+/* Caption */
+.carousel-caption {
+  width: 70%;
+  color: white;
+  /* Màu chữ của caption */
+  padding: 1.25rem 0;
+  /* Padding theo chiều dọc */
+}
+
+/* Phiên bản tối (Dark Mode) */
+.carousel-dark-indicator-active-bg {
+  background-color: black;
+  /* Màu nền khi active ở dark mode */
+}
+
+.carousel-dark-caption {
+  color: black;
+  /* Màu caption trong dark mode */
+}
+
+.carousel-dark-control-icon {
+  filter: invert(1) grayscale(100);
+  /* Biến icon thành màu tối */
+}
+
+.carousel {
+  height: 350px;
+  /* Thay 500px bằng chiều cao mong muốn */
+}
+
+.carousel-inner {
+  height: 100%;
+  /* Đảm bảo chiều cao của các item con */
+}
+
+.carousel-inner img {
+  height: 350px;
+}
+
+.small-banner-slide img {
+  height: 170px;
+}
+
+/* banner slide end*/
+
+
+/* Product Review */
+.review-modal {
+  width: 100%;
+  margin: 0 auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.product-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.product-image-review {
+  width: 100px;
+  height: 100px;
+  margin-right: 15px;
+}
+
+.rating-section {
+  margin-bottom: 20px;
+}
+
+
+.review-input textarea {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.upload-data {
+  position: relative;
+  overflow: hidden;
+}
+
+.upload-data input {
+  position: absolute;
+  font-size: 50px;
+  opacity: 0;
+  right: 0;
+  top: 0;
+}
+
+
+/* Product Review end*/
