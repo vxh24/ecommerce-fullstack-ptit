@@ -13,7 +13,7 @@ const User = require("../models/userModel");
 const { generateToken } = require("../config/jwtToken");
 
 const createUserController = asyncHandler(async (req, res) => {
-  let { name, email, phone, password } = req.body;
+  let { name, email, password } = req.body;
 
   const schema = Joi.object({
     name: Joi.string().min(3).max(30).required(),
@@ -21,7 +21,6 @@ const createUserController = asyncHandler(async (req, res) => {
       minDomainSegments: 2,
       tlds: { allow: ["com", "net"] },
     }),
-    phone: Joi.string().allow("").pattern(new RegExp("^[0-9]{8,11}$")),
     password: Joi.string(),
   });
 
@@ -32,11 +31,8 @@ const createUserController = asyncHandler(async (req, res) => {
     let userData = {
       name,
       email,
-      phone,
       password,
     };
-
-    // console.log(userData);
 
     const result = await createUser(userData);
     res.status(200).json({
@@ -56,15 +52,15 @@ const googleLogin = async (req, res) => {
 
   const { name, email, sub } = ticket.getPayload();
   const password = token;
-  const phone = "";
+  // const phone = "";
   let user = await User.findOne({ email });
   if (!user) {
     const NewUser = new User({
       name: name,
       email: email,
       password: password,
-      phone: phone,
-    })
+      // phone: phone,
+    });
     NewUser.save();
     const result1 = await handleLogin(email, token);
 
@@ -79,8 +75,7 @@ const googleLogin = async (req, res) => {
         user: result1.user,
       });
     }
-  }
-  else {
+  } else {
     const result1 = await handleLogin(email, token);
 
     if (result1.EC === 0) {
@@ -95,7 +90,7 @@ const googleLogin = async (req, res) => {
       });
     }
   }
-}
+};
 
 const loginUserController = asyncHandler(async (req, res) => {
   const { email, password } = req.body;

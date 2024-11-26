@@ -13,10 +13,6 @@ var userSchema = new mongoose.Schema(
       type: String,
       require: true,
     },
-    phone: {
-      type: String,
-      require: false,
-    },
     password: {
       type: String,
       require: true,
@@ -79,7 +75,6 @@ userSchema.methods.isPasswordMatched = async function (enteredPassword) {
 
 userSchema.methods.createPasswordResetToken = async function () {
   const reset_token = crypto.randomBytes(32).toString("hex");
-  console.log(reset_token);
   this.passwordResetToken = crypto
     .createHash("sha256")
     .update(reset_token)

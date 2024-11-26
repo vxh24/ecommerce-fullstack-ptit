@@ -16,7 +16,7 @@ router.post("/payment", authMiddleware, async (req, res) => {
 
   var orderInfo = "Thanh toán qua ví Momo";
   var redirectUrl = "https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b";
-  var ipnUrl = "https://2a7e-42-114-161-139.ngrok-free.app/callback";
+  var ipnUrl = "https://45e0-42-114-161-139.ngrok-free.app/callback";
   var requestType = "payWithMethod";
   var amount = "50000";
   var orderId = partnerCode + new Date().getTime();
@@ -102,7 +102,7 @@ router.post("/payment", authMiddleware, async (req, res) => {
   }
 });
 
-router.post("/callback", authMiddleware, async (req, res) => {
+router.post("/callback", async (req, res) => {
   console.log("callback: ");
   console.log(req.body);
   //update order

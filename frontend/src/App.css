@@ -1101,8 +1101,7 @@ footer .input-group-text {
 
 .address {
   margin: 5px 0;
-  color: #555;
-  font-size: 0.9rem;
+  font-size: 16px;
 }
 
 .address-actions {
@@ -1138,6 +1137,13 @@ footer .input-group-text {
 
 .delete-button:hover {
   background-color: rgba(244, 67, 54, 0.1);
+}
+
+.isdefault {
+  border: 1px solid red;
+  color: red;
+  padding: 3px;
+  width: 15%;
 }
 
 .default-button {
@@ -1300,6 +1306,12 @@ input[type='checkbox'] {
   text-align: center;
 }
 
+.voucher {
+  color: #1976d2;
+  font-weight: bold;
+  cursor: pointer;
+}
+
 /* voucher end*/
 /* banner slide */
 
@@ -1450,3 +1462,39 @@ input[type='checkbox'] {
 
 
 /* Product Review end*/
+
+/* checkout */
+.button-checkout {
+  padding: 8px;
+  border: none;
+  background-color: white;
+}
+
+.button-checkout1 {
+  padding: 10px;
+  border: none;
+  background-color: white;
+  color: #1976d2;
+  font-weight: 40px;
+}
+
+.bold-text {
+  font-weight: bold;
+}
+
+.checkout-pay button {
+  padding: 10px;
+  background-color: white;
+}
+
+.click1 {
+  color: green;
+  border: 2px solid greenyellow;
+}
+
+.click2 {
+  color: orangered;
+  border: 2px solid orange;
+}
+
+/* checkout end */

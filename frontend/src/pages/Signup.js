@@ -10,7 +10,6 @@ import { createUser } from '../features/user/userSlice';
 const signupSchema = yup.object({
   name: yup.string().required("Name is Require"),
   email: yup.string().nullable().email("Email should be valid"),
-  phone: yup.string().required("Mobie no is Required"),
   password: yup.string().required("Password is Required")
 });
 
@@ -20,9 +19,7 @@ const Signup = () => {
   const formik = useFormik({
     initialValues: {
       name: "",
-      // lastname: "",
       email: "",
-      phone: "",
       password: "",
     },
     validationSchema: signupSchema,
@@ -60,16 +57,6 @@ const Signup = () => {
                   <div className="error">
                     {
                       formik.touched.email && formik.errors.email
-                    }
-                  </div>
-                  <div>
-                    <input type="mobile" name='phone' className="form-control mt-1" placeholder='Mobile'
-                      value={formik.values.phone} onChange={formik.handleChange("phone")}
-                      onBlur={formik.handleBlur("phone")} />
-                  </div>
-                  <div className="error">
-                    {
-                      formik.touched.phone && formik.errors.phone
                     }
                   </div>
                   <div>

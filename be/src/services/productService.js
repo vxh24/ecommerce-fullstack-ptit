@@ -134,7 +134,6 @@ const rating = asyncHandler(async (star, comment, productId, userId) => {
     .map((item) => item.star)
     .reduce((prev, cur) => prev + cur, 0);
   let actualRating = Math.round(ratingSum / totalRating);
-  console.log(actualRating);
   let findProduct = await Product.findByIdAndUpdate(
     productId,
     { totalRatings: actualRating },
@@ -142,9 +141,10 @@ const rating = asyncHandler(async (star, comment, productId, userId) => {
   );
   return findProduct;
 });
+
 // Tính toán độ tương đồng giữa các mô tả sử dụng TF-IDF
 const calculateDescriptionSimilarity = (descriptionA, descriptionB) => {
-  const TfIdf = require('natural').TfIdf;
+  const TfIdf = require("natural").TfIdf;
   const tfidf = new TfIdf();
 
   tfidf.addDocument(descriptionA);
@@ -157,25 +157,28 @@ const calculateDescriptionSimilarity = (descriptionA, descriptionB) => {
   // Tính cosine similarity
   const cosineSimilarity = (vecA, vecB) => {
     const dotProduct = vecA.reduce((sum, termA) => {
-      const termB = vecB.find(term => term.term === termA.term);
+      const termB = vecB.find((term) => term.term === termA.term);
       if (termB) {
         return sum + termA.tf * termB.tf;
       }
       return sum;
     }, 0);
 
-    const magnitudeA = Math.sqrt(vecA.reduce((sum, term) => sum + Math.pow(term.tf, 2), 0));
-    const magnitudeB = Math.sqrt(vecB.reduce((sum, term) => sum + Math.pow(term.tf, 2), 0));
+    const magnitudeA = Math.sqrt(
+      vecA.reduce((sum, term) => sum + Math.pow(term.tf, 2), 0)
+    );
+    const magnitudeB = Math.sqrt(
+      vecB.reduce((sum, term) => sum + Math.pow(term.tf, 2), 0)
+    );
 
     return dotProduct / (magnitudeA * magnitudeB);
   };
   return cosineSimilarity(vectorA, vectorB);
-
 };
 
 // Tính độ tương đồng dựa trên các tags
 const calculateTagsSimilarity = (tagsA, tagsB) => {
-  const commonTags = tagsA.filter(tag => tagsB.includes(tag)).length;
+  const commonTags = tagsA.filter((tag) => tagsB.includes(tag)).length;
   return commonTags / Math.max(tagsA.length, tagsB.length); // Độ tương đồng theo số lượng tags chung
 };
 
@@ -189,13 +192,23 @@ const calculatePriceSimilarity = (priceA, priceB) => {
 // Tính độ tương đồng giữa sản phẩm
 const calculateProductSimilarity = (productA, productB) => {
   // Tính độ tương đồng theo từng đặc tính
-  const descriptionSimilarity = calculateDescriptionSimilarity(productA.description, productB.description);
+  const descriptionSimilarity = calculateDescriptionSimilarity(
+    productA.description,
+    productB.description
+  );
   const tagsSimilarity = calculateTagsSimilarity(productA.tags, productB.tags);
-  const priceSimilarity = calculatePriceSimilarity(productA.price, productB.price);
+  const priceSimilarity = calculatePriceSimilarity(
+    productA.price,
+    productB.price
+  );
   const categorySimilarity = productA.category === productB.category ? 1 : 0; // Độ tương đồng dựa trên category (giống nhau là 1, khác nhau là 0)
 
   // Kết hợp các độ tương đồng thành một giá trị tổng hợp
-  const totalSimilarity = 0.4 * descriptionSimilarity + 0.3 * tagsSimilarity + 0.2 * priceSimilarity + 0.1 * categorySimilarity;
+  const totalSimilarity =
+    0.4 * descriptionSimilarity +
+    0.3 * tagsSimilarity +
+    0.2 * priceSimilarity +
+    0.1 * categorySimilarity;
   return totalSimilarity;
 };
 
@@ -207,7 +220,7 @@ const recommendProducts = async (productId) => {
 
   // Tính toán độ tương đồng cho tất cả các sản phẩm và sắp xếp theo độ tương đồng
   const recommendedProducts = allProducts
-    .filter(p => p.id !== productId) // Lọc ra sản phẩm không phải là sản phẩm đang xem
+    .filter((p) => p.id !== productId) // Lọc ra sản phẩm không phải là sản phẩm đang xem
     .map((p) => {
       return {
         product: p,

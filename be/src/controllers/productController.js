@@ -90,9 +90,7 @@ const deleteProductController = asyncHandler(async (req, res) => {
 
 const addToWishlistController = asyncHandler(async (req, res) => {
   const { _id } = req.user;
-  // console.log(_id);
   const { productId } = req.body;
-  // console.log(productId);
   try {
     const result = await addToWishlist(productId, _id);
     res.status(200).json({
@@ -106,7 +104,6 @@ const addToWishlistController = asyncHandler(async (req, res) => {
 
 const ratingController = asyncHandler(async (req, res) => {
   const { _id } = req.user;
-  // console.log(_id);
   const { star, comment, productId } = req.body;
   try {
     const result = await rating(star, comment, productId, _id);
@@ -159,7 +156,6 @@ const uploadImagesController = asyncHandler(async (req, res) => {
 const deleteImagesController = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const public_id = "products" + "/" + id;
-  console.log(public_id);
   try {
     const imageDeleted = deleteToCloudinary(public_id);
     res.status(200).json({
