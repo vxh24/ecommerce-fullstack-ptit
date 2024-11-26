@@ -10,8 +10,9 @@ const {
   generateResetPasswordToken,
   resetPassword,
   getWishlist,
-  saveAddress,
+  createAddress,
   removeAddress,
+  updateAddress,
 } = require("../services/userService");
 
 const getAllUsersController = asyncHandler(async (req, res) => {
@@ -32,7 +33,7 @@ const getUserByIdController = asyncHandler(async (req, res) => {
 });
 
 const updateAUserController = asyncHandler(async (req, res) => {
-  let { name, phone } = req.body;
+  let { name } = req.body;
   const id = req.params.id;
 
   let imageUrl = "";
@@ -48,7 +49,6 @@ const updateAUserController = asyncHandler(async (req, res) => {
 
   let userData = {
     name,
-    phone,
     avatar: imageUrl,
   };
 
@@ -133,11 +133,14 @@ const getProfileUserController = asyncHandler(async (req, res) => {
 
 const saveAddressController = asyncHandler(async (req, res) => {
   const { _id } = req.user;
-  const { city, district, commune, specificAddress, isDefault } = req.body;
+  const { name, phone, city, district, commune, specificAddress, isDefault } =
+    req.body;
 
   try {
-    const result = await saveAddress(
+    const result = await createAddress(
       _id,
+      name,
+      phone,
       city,
       district,
       commune,
@@ -147,6 +150,23 @@ const saveAddressController = asyncHandler(async (req, res) => {
     res.status(200).json({
       EC: 0,
       message: "Create address successfull!!!",
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+const updateAddressController = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const addressId = req.params.id;
+  const addressData = req.body;
+
+  try {
+    const result = await updateAddress(_id, addressId, addressData);
+    res.status(200).json({
+      EC: 0,
+      message: "Update address successfull!!!",
+      data: result,
     });
   } catch (error) {
     throw new Error(error);
@@ -180,4 +200,5 @@ module.exports = {
   saveAddressController,
   getProfileUserController,
   removeAddressController,
+  updateAddressController,
 };

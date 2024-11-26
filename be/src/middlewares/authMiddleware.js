@@ -4,7 +4,14 @@ const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 
 const authMiddleware = asyncHandler(async (req, res, next) => {
-  const white_lists = ["/", "/register", "/login", "/refresh", "/logout", "/google"];
+  const white_lists = [
+    "/",
+    "/register",
+    "/login",
+    "/refresh",
+    "/logout",
+    "/google",
+  ];
   if (white_lists.find((item) => "/v1/api" + item === req.originalUrl)) {
     next();
   } else {
@@ -20,7 +27,6 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
           name: decoded.name,
           createdBy: "andy",
         };
-        // console.log(">>> check token: ", decoded);
         next();
       } catch (error) {
         return res.status(401).json({

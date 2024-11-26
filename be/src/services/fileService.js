@@ -24,7 +24,6 @@ const uploadSingleFile = async (fileObject) => {
       error: null,
     };
   } catch (error) {
-    // console.log("check error: ", error);
     return {
       status: "failed",
       path: null,

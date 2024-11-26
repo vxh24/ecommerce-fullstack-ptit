@@ -24,7 +24,6 @@ const updateAUser = asyncHandler(async (id, userData) => {
     { _id: id },
     {
       name: userData.name,
-      phone: userData.phone,
       avatar: userData.avatar,
     }
   );
@@ -98,15 +97,26 @@ const getWishlist = asyncHandler(async (id) => {
   return user;
 });
 
-const saveAddress = asyncHandler(
-  async (userId, city, district, commune, specificAddress, isDefault) => {
+const createAddress = asyncHandler(
+  async (
+    userId,
+    name,
+    phone,
+    city,
+    district,
+    commune,
+    specificAddress,
+    isDefault
+  ) => {
     validateMongodbId(userId);
 
-    if (!city || !district || !commune || !specificAddress) {
+    if (!name || !phone || !city || !district || !commune || !specificAddress) {
       throw new Error("Please provide all required fields");
     }
 
     const newAddress = new Address({
+      name,
+      phone,
       city,
       district,
       commune,
@@ -125,6 +135,36 @@ const saveAddress = asyncHandler(
     return updatedUser;
   }
 );
+
+const updateAddress = asyncHandler(async (userId, addressId, addressData) => {
+  validateMongodbId(userId);
+  validateMongodbId(addressId);
+
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  if (!user.address.includes(addressId)) {
+    throw new Error("Address not found in user");
+  }
+
+  if (addressData.isDefault) {
+    await Address.updateMany(
+      { _id: { $ne: addressId }, _id: { $in: user.address }, isDefault: true },
+      { $set: { isDefault: false } }
+    );
+  }
+
+  const updatedAddress = await Address.findByIdAndUpdate(
+    addressId,
+    addressData,
+    {
+      new: true,
+    }
+  );
+  return updatedAddress;
+});
 
 const removeAddress = asyncHandler(async (userId, addressId) => {
   validateMongodbId(userId);
@@ -163,6 +203,7 @@ module.exports = {
   generateResetPasswordToken,
   resetPassword,
   getWishlist,
-  saveAddress,
+  createAddress,
   removeAddress,
+  updateAddress,
 };

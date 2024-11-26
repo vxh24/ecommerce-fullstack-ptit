@@ -2,6 +2,14 @@ const mongoose = require("mongoose");
 
 const addressSchema = new mongoose.Schema(
   {
+    name: {
+      type: String,
+      require: true,
+    },
+    phone: {
+      type: String,
+      require: true,
+    },
     city: {
       type: String,
       required: true,

@@ -77,9 +77,7 @@ const deleteABlogController = asyncHandler(async (req, res) => {
 
 const likeBlogController = asyncHandler(async (req, res) => {
   const { blogId } = req.body;
-  // console.log(blogId);
   const loginUserId = req?.user?._id;
-  // console.log(loginUserId);
   try {
     const result = await likeBlog(blogId, loginUserId);
     res.status(200).json({
@@ -93,9 +91,7 @@ const likeBlogController = asyncHandler(async (req, res) => {
 
 const disLikeBlogController = asyncHandler(async (req, res) => {
   const { blogId } = req.body;
-  // console.log(blogId);
   const loginUserId = req?.user?._id;
-  // console.log(loginUserId);
   try {
     const result = await dislikeBlog(blogId, loginUserId);
     res.status(200).json({
