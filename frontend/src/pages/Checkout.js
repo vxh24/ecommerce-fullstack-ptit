@@ -17,9 +17,12 @@ const Checkout = () => {
   const [click1, setClick1] = useState(false);
   const [click2, setClick2] = useState(false);
   const [payment, setpayment] = useState(false);
+  const [shipping, setShipping] = useState(50000);
+  const [totalpayment, setTotalpayment] = useState(false);
   const [address, setAddress] = useState([]);
   const [addressSelect, setAddressSelect] = useState(null);
   const addressState = useSelector(state => state?.auth?.address?.data?.address);
+  // console.log(shipping);
   useEffect(() => {
     dispatch(getAddressSlice());
   }, [])
@@ -48,6 +51,10 @@ const Checkout = () => {
   }
   const handleAddressChange = (address) => {
     setAddressSelect(address);
+  };
+  const handleChangeshipping = (e) => {
+    let sum = Number(totalAmount) + Number(e);
+    setTotalpayment(sum);
   };
   return (
     <>
@@ -187,19 +194,19 @@ const Checkout = () => {
                   </div>
                   <div className='mb-3'>
                     <div className="form-check">
-                      <input className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
+                      <input value="50000" onChange={(e) => { setShipping(e.target.value); handleChangeshipping(e.target.value) }} className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
                       <label className="form-check-label" for="flexRadioDefault2">
                         Hỏa tốc - đ50.000
                       </label>
                     </div>
                     <div className="form-check">
-                      <input className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
+                      <input value="30000" onChange={(e) => { setShipping(e.target.value); handleChangeshipping(e.target.value) }} className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
                       <label className="form-check-label" for="flexRadioDefault2">
                         Giao hàng nhanh - đ30.000
                       </label>
                     </div>
                     <div className="form-check">
-                      <input className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
+                      <input value="20000" onChange={(e) => { setShipping(e.target.value); handleChangeshipping(e.target.value) }} className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
                       <label className="form-check-label" for="flexRadioDefault2">
                         Giao hàng tiết kiệm - đ20.000
                       </label>
@@ -289,11 +296,11 @@ const Checkout = () => {
               </div>
               <div className='d-flex justify-content-end py-3'>
 
-                <div>
-                  <p className='bold-text'>Tổng tiền hàng : đ 2322233</p>
-                  <p className='bold-text'>Tổng giảm giá</p>
-                  <p className='bold-text'>Tổng phí vận chuyển</p>
-                  <p className='bold-text'>Tổng thanh toán</p>
+                <div className='ps-3'>
+                  <p className=''><strong>Tổng tiền hàng:</strong> đ{totalAmount}</p>
+                  <p className=''><strong>Tổng giảm giá</strong></p>
+                  <p className=''> <strong>Tổng phí vận chuyển:</strong> đ{shipping}</p>
+                  <p className=''><strong>Tổng thanh toán:</strong>đ{totalpayment}</p>
                 </div>
               </div>
               <div className='d-flex justify-content-between py-3'>

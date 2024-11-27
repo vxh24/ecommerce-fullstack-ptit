@@ -239,12 +239,19 @@ const Address = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalUpdate, setIsModalUpdate] = useState(false);
   const [address, setAddress] = useState(null);
+  const [formData, setFormData] = useState({
+    isDefault: true,
+    id: '',
+  });
   const handleSetDefault = (id) => {
-    // setAddresses((prev) =>
-    //   prev.map((addr) =>
-    //     addr.id === id ? { ...addr, isDefault: true } : { ...addr, isDefault: false }
-    //   )
-    // );
+    dispatch(updateAddressSlice(
+
+      formData
+
+    ));
+    setTimeout(() => {
+      dispatch(getAddressSlice());
+    }, 200)
   };
 
   const handleDelete = (id) => {
@@ -292,8 +299,15 @@ const Address = () => {
                 }
 
                 <button
+                  value={address._id}
                   className={`default-button ${address.isDefault ? 'active' : ''}`}
-                  onClick={() => handleSetDefault(address.id)}
+                  onClick={(e) => {
+                    setFormData((prevFormData) => ({
+                      ...prevFormData,
+                      id: e.target.value,
+                    }));
+                    handleSetDefault(address._id)
+                  }}
                 >
                   Thiết lập mặc định
                 </button>
@@ -492,23 +506,16 @@ const UpdateAddressForm = ({ onClose, data }) => {
   const [selectedDistrict, setSelectedDistrict] = useState(address.district);
   const [selectedWard, setSelectedWard] = useState(address.commune);
   const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
+    name: address.name,
+    phone: address.phone,
     city: '',
     district: '',
     commune: '',
     specificAddress: '',
     isDefault: address.isDefault,
     id: address._id,
-    // name: address.name,
-    // phone: address.phone,
-    // city: address.city,
-    // district: address.district,
-    // commune: address.commune,
-    // specificAddress: address.specificAddress,
-    // isDefault: address.isDefault,
   });
-  console.log(formData);
+
   useEffect(() => {
     axios.get("https://esgoo.net/api-tinhthanh/1/0.htm")
       .then((response) => setProvinces(response.data))

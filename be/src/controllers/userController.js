@@ -5,7 +5,7 @@ const {
   getAllUsers,
   getUserById,
   updateAUser,
-  deleteAUser,
+  blockAUser,
   updatePassword,
   generateResetPasswordToken,
   resetPassword,
@@ -14,6 +14,7 @@ const {
   removeAddress,
   updateAddress,
   getAddress,
+  unBlockAUser,
 } = require("../services/userService");
 
 const getAllUsersController = asyncHandler(async (req, res) => {
@@ -60,9 +61,18 @@ const updateAUserController = asyncHandler(async (req, res) => {
   });
 });
 
-const deleteAUserController = asyncHandler(async (req, res) => {
+const blockAUserController = asyncHandler(async (req, res) => {
   const id = req.params.id;
-  const result = await deleteAUser(id);
+  const result = await blockAUser(id);
+  res.status(200).json({
+    EC: 0,
+    data: result,
+  });
+});
+
+const unBlockAUserController = asyncHandler(async (req, res) => {
+  const id = req.params.id;
+  const result = await unBlockAUser(id);
   res.status(200).json({
     EC: 0,
     data: result,
@@ -206,7 +216,8 @@ module.exports = {
   getAllUsersController,
   getUserByIdController,
   updateAUserController,
-  deleteAUserController,
+  blockAUserController,
+  unBlockAUserController,
   updatePasswordController,
   forgotPasswordTokenController,
   resetPasswordController,

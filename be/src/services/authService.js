@@ -6,7 +6,7 @@ const { generateRefreshToken } = require("../config/refreshToken");
 const createUser = asyncHandler(async (userData) => {
   const email = userData.email;
 
-  const isCheckExistUser = await User.findOne({ email: email });
+  const isCheckExistUser = await User.findOne({ email });
 
   if (!isCheckExistUser) {
     const newUser = await User.create(userData);
@@ -18,7 +18,7 @@ const createUser = asyncHandler(async (userData) => {
 
 const handleLogin = asyncHandler(async (email, password) => {
   const user = await User.findOne({ email: email });
-  if (user) {
+  if (user && user.deleted === false) {
     //compare password
     const isMatchPassword = await user.isPasswordMatched(password);
     if (isMatchPassword) {

@@ -8,8 +8,40 @@ const getUsers = async () => {
   return response.data;
 };
 
+const blockAUser = async (userId) => {
+  try {
+    const response = await axios.delete(`${base_url}user/${userId}`, getConfig);
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error("Failed to block the user");
+    }
+  } catch (error) {
+    console.error("Error blocking user:", error);
+    throw error;
+  }
+};
+
+const unBlockAUser = async (userId) => {
+  try {
+    const response = await axios.put(`${base_url}user/${userId}`, { data: {} }, getConfig);
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error("Failed to unblock the user");
+    }
+  } catch (error) {
+    console.error("Error unblocking user:", error);
+    throw error;
+  }
+};
+
 const customerService = {
   getUsers,
+  blockAUser,
+  unBlockAUser,
 };
 
 export default customerService;
