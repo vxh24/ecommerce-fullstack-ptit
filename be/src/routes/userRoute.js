@@ -3,7 +3,7 @@ const express = require("express");
 const {
   getAllUsersController,
   getUserByIdController,
-  deleteAUserController,
+  blockAUserController,
   updateAUserController,
   updatePasswordController,
   forgotPasswordTokenController,
@@ -13,6 +13,7 @@ const {
   getProfileUserController,
   removeAddressController,
   updateAddressController,
+  unBlockAUserController,
 } = require("../controllers/userController");
 
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
@@ -72,7 +73,8 @@ router.put(
   updateOrderStatusController
 );
 router.get("/:id", authMiddleware, isAdmin, getUserByIdController);
-router.delete("/:id", authMiddleware, isAdmin, deleteAUserController);
+router.delete("/:id", authMiddleware, isAdmin, blockAUserController);
+router.put("/:id", authMiddleware, isAdmin, unBlockAUserController);
 router.put("/:id", authMiddleware, updateAUserController);
 
 module.exports = router;

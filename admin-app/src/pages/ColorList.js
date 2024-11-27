@@ -17,6 +17,24 @@ const columns = [
     dataIndex: "name",
   },
   {
+    title: "Color",
+    dataIndex: "color",
+    render: (colorHex) => (
+      <div style={{ display: "flex", alignItems: "center" }}>
+        {/* Hiển thị màu sắc */}
+        <div
+          style={{
+            width: "30px",
+            height: "30px",
+            backgroundColor: colorHex,
+            marginRight: "10px",
+            borderRadius: "50%",
+          }}
+        ></div>
+      </div>
+    ),
+  },
+  {
     title: "Action",
     dataIndex: "action",
   },
@@ -49,6 +67,7 @@ const ColorList = () => {
       data1.push({
         key: i + 1,
         name: colorState[i].title,
+        color: colorState[i].title,
         action: (
           <>
             <Link

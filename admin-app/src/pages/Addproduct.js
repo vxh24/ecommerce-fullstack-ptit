@@ -32,8 +32,6 @@ const AddProduct = () => {
   const dispatch = useDispatch();
   const [color, setColor] = useState([]);
 
-  console.log(color);
-
   useEffect(() => {
     dispatch(getBrands());
     dispatch(getCategories());
@@ -60,7 +58,20 @@ const AddProduct = () => {
   if (Array.isArray(colorState)) {
     colorState.forEach((i) => {
       coloropt.push({
-        label: i.title,
+        label: (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div
+              style={{
+                width: "20px",
+                height: "20px",
+                backgroundColor: i.title,
+                marginRight: "10px",
+                borderRadius: "50%",
+              }}
+            ></div>
+            {i.title}
+          </div>
+        ),
         value: i._id,
       });
     });
@@ -107,7 +118,6 @@ const AddProduct = () => {
 
   const handleColors = (e) => {
     setColor(e);
-    console.log(color);
   };
 
   return (
@@ -202,7 +212,7 @@ const AddProduct = () => {
             id=""
           >
             <option value="" disabled>
-              Select Category
+              Select Tag
             </option>
             <option value="featured">Featured</option>
             <option value="popular">Popular</option>

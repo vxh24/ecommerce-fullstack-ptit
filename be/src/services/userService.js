@@ -30,9 +30,15 @@ const updateAUser = asyncHandler(async (id, userData) => {
   return result;
 });
 
-const deleteAUser = asyncHandler(async (id) => {
+const blockAUser = asyncHandler(async (id) => {
   validateMongodbId(id);
   const result = await User.deleteById(id);
+  return result;
+});
+
+const unBlockAUser = asyncHandler(async (id) => {
+  validateMongodbId(id);
+  const result = await User.updateOne({ _id: id }, { deleted: false });
   return result;
 });
 
@@ -198,7 +204,8 @@ module.exports = {
   getAllUsers,
   getUserById,
   updateAUser,
-  deleteAUser,
+  blockAUser,
+  unBlockAUser,
   updatePassword,
   generateResetPasswordToken,
   resetPassword,

@@ -58,7 +58,7 @@ var userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-userSchema.plugin(mongoose_delete, { overrideMethods: "all" });
+userSchema.plugin(mongoose_delete);
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {

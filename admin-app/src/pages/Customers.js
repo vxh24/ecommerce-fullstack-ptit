@@ -1,7 +1,12 @@
 import React, { useEffect } from "react";
 import { Table } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { getUsers } from "../features/customers/customerSlice";
+import {
+  blockAUser,
+  getUsers,
+  unBlockAUser,
+} from "../features/customers/customerSlice";
+
 const columns = [
   {
     title: "SNo",
@@ -17,20 +22,33 @@ const columns = [
     dataIndex: "email",
   },
   {
-    title: "Phone",
-    dataIndex: "phone",
+    title: "Status",
+    dataIndex: "status",
+  },
+  {
+    title: "Action",
+    dataIndex: "action",
   },
 ];
 
 const Customers = () => {
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(getUsers());
   }, []);
 
+  const handleBlock = (userId) => {
+    dispatch(blockAUser(userId));
+  };
+
+  const handleUnblock = (userId) => {
+    dispatch(unBlockAUser(userId));
+  };
+
   const customerState = useSelector((state) => state.customer.customers?.data);
 
-  // console.log(customerState);
+  console.log(customerState);
 
   const data1 = [];
   if (customerState && customerState.length) {
@@ -40,7 +58,42 @@ const Customers = () => {
           key: i + 1,
           name: customerState[i]?.name,
           email: customerState[i]?.email,
-          phone: customerState[i]?.phone,
+          status:
+            customerState[i]?.deleted === false ? (
+              <>
+                <span style={{ color: "green", fontWeight: "bold" }}>
+                  Active
+                </span>
+              </>
+            ) : (
+              <>
+                <span style={{ color: "red", fontWeight: "bold" }}>Block</span>
+              </>
+            ),
+          action:
+            customerState[i]?.deleted === false ? (
+              <>
+                <button
+                  type="button"
+                  className="btn btn-danger"
+                  style={{ width: "100px" }}
+                  onClick={() => handleBlock(customerState[i]._id)}
+                >
+                  Block
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  className="btn btn-success"
+                  style={{ width: "100px" }}
+                  onClick={() => handleUnblock(customerState[i]._id)}
+                >
+                  Unblock
+                </button>
+              </>
+            ),
         });
       }
     }
