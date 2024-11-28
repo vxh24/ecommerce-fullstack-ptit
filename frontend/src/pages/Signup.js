@@ -36,10 +36,10 @@ const Signup = () => {
           <div className="row">
             <div className="col-12">
               <div className="auth-card">
-                <h3 className='text-center mb-3'>Create Account</h3>
+                <h3 className='text-center mb-3'>Tạo một tài khoản</h3>
                 <form action="" onSubmit={formik.handleSubmit} className='d-flex flex-column gap-15'>
                   <div>
-                    <input type="text" name="name" className="form-control" placeholder='First Name'
+                    <input type="text" name="name" className="form-control" placeholder='Tên'
                       value={formik.values.name} onChange={formik.handleChange("name")}
                       onBlur={formik.handleBlur("name")} />
 
@@ -71,11 +71,11 @@ const Signup = () => {
                   </div>
                   <div>
                     <div className="mt-3 d-flex justify-content-center gap-15 align-items-center">
-                      <button className="button border-0">Create</button>
+                      <button className="button border-0">Tạo</button>
                     </div>
                     <div className='d-flex justify-content-center gap-10 align-items-center mt-3'>
                       <h3 className=''>Bạn đã có tài khoản?</h3>
-                      <Link className='signup' to="/login" ><h4>Login</h4></Link>
+                      <Link className='signup' to="/login" ><h4>Đăng nhập</h4></Link>
                     </div>
                   </div>
                 </form>

@@ -11,11 +11,6 @@ import { getAllBlog } from '../features/blogs/blogSlice';
 import moment from "moment";
 import { getAllProducts } from '../features/products/productSlice';
 const Home = () => {
-  // const banners = [
-  //   "https://via.placeholder.com/800x400/FF0000/FFFFFF?text=Banner+1",
-  //   "https://via.placeholder.com/800x400/00FF00/FFFFFF?text=Banner+2",
-  //   "https://via.placeholder.com/800x400/0000FF/FFFFFF?text=Banner+3",
-  // ]; // Mảng ảnh banner
   const banners = [
     { id: 1, image: "/images/main-banner-1.jpg" },
     { id: 2, image: "/images/main-banner.jpg" },
@@ -25,15 +20,14 @@ const Home = () => {
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [direction, setDirection] = useState('next'); // Hướng trượt (next hoặc prev)
+  const [direction, setDirection] = useState('next');
 
-  // Thay đổi slide mỗi 3 giây
   useEffect(() => {
     const interval = setInterval(() => {
       if (direction === 'next') {
         setCurrentIndex((prevIndex) => {
           if (prevIndex === banners.length - 1) {
-            setDirection('prev'); // Đổi hướng khi đến slide cuối
+            setDirection('prev');
             return prevIndex - 1;
           }
           return prevIndex + 1;
@@ -41,15 +35,15 @@ const Home = () => {
       } else {
         setCurrentIndex((prevIndex) => {
           if (prevIndex === 0) {
-            setDirection('next'); // Đổi hướng khi đến slide đầu
+            setDirection('next');
             return prevIndex + 1;
           }
           return prevIndex - 1;
         });
       }
-    }, 3000); // 3000ms = 3s
+    }, 3000);
 
-    return () => clearInterval(interval); // Cleanup khi component unmount
+    return () => clearInterval(interval);
   }, [direction]);
   const blogState = useSelector((state) => state?.blog?.blogs?.data);
   const productState = useSelector((state) => state?.product?.products?.data);
@@ -101,37 +95,8 @@ const Home = () => {
               </div>
 
             </div>
-            {/* <div className="col-3">
-              <div className="main-banner position-relative">
-                <img src="/images/main-banner-1.jpg" className="img-fluid rounded-3" alt="main banner" />
-                <div className="main-banner-content position-absolute">
-                  <h4>SUPERCHARGED FOR PROS</h4>
-                  <h5>iPad S13+ Pro.</h5>
-                  <p>From $999.0 or $41.0</p>
-                  <Link className='button'>BUY NOW</Link>
-                </div>
-              </div>
-            </div> */}
             <div className="col-4">
               <div className="d-flex flex-wrap gap-10">
-                {/* <div className="small-banner position-relative">
-                  <img src="/images/catbanner-01.jpg" className="img-fluid rounded-3" alt="main banner" />
-                  <div className="small-banner-content position-absolute">
-                    <h4>SUPERCHARGED FOR PROS</h4>
-                    <h5>iPad S13+ Pro.</h5>
-                    <p>From $999.0 <br />or $41.0</p>
-
-                  </div>
-                </div>
-                <div className="small-banner position-relative">
-                  <img src="/images/catbanner-02.jpg" className="img-fluid rounded-3" alt="main banner" />
-                  <div className="small-banner-content position-absolute">
-                    <h4>SUPERCHARGED FOR PROS</h4>
-                    <h5>iPad S13+ Pro.</h5>
-                    <p>From $999.0 <br /> or $41.0</p>
-
-                  </div>
-                </div> */}
                 <div className='small-banner-slide'>
                   <img className="img-fluid rounded-3 " src="https://cf.shopee.vn/file/vn-11134258-7ras8-m2t79b0ey2t69b_xhdpi" alt="" />
                 </div>
@@ -152,36 +117,36 @@ const Home = () => {
                 <div className='d-flex align-items-center gap-15'>
                   <img src="images/service.png" alt="" />
                   <div>
-                    <h6>Free Shiping</h6>
-                    <p className='mb-0'>From all order over $100</p>
+                    <h6>Miễn phí ship</h6>
+                    <p className='mb-0'>Tất cả đơn hàng trên 100k</p>
                   </div>
                 </div>
                 <div className='d-flex align-items-center gap-15'>
                   <img src="images/service-02.png" alt="" />
                   <div>
-                    <h6>Daily Surprise Offer</h6>
-                    <p className='mb-0'>Save up to 25% off</p>
+                    <h6>Ưu đãi bất ngờ hằng ngày</h6>
+                    <p className='mb-0'>Tiết kiệm tới 25%</p>
                   </div>
                 </div>
                 <div className='d-flex align-items-center gap-15'>
                   <img src="images/service-03.png" alt="" />
                   <div>
-                    <h6>Support 24/7</h6>
-                    <p className='mb-0'>Shop with an expert</p>
+                    <h6>Hỗ trợ 24/7</h6>
+                    <p className='mb-0'>Mua sắm thông minh</p>
                   </div>
                 </div>
                 <div className='d-flex align-items-center gap-15'>
                   <img src="images/service-04.png" alt="" />
                   <div>
-                    <h6>Affordable Prices</h6>
-                    <p className='mb-0'>Get factory direct price</p>
+                    <h6>Giá cả phải chăng</h6>
+                    <p className='mb-0'>Nhận giá gốc từ nơi sản xuất </p>
                   </div>
                 </div>
                 <div className='d-flex align-items-center gap-15'>
                   <img src="images/service-05.png" alt="" />
                   <div>
-                    <h6>Secure Payment</h6>
-                    <p className='mb-0'>100% Product Payment</p>
+                    <h6>Thanh toán an toàn</h6>
+                    <p className='mb-0'>Thanh toán 100% giá trị sản phẩm</p>
                   </div>
                 </div>
               </div>
@@ -260,7 +225,7 @@ const Home = () => {
           <div className="row">
             <div className="col-12">
               <h3 className="section-heading">
-                Feature Collection
+                Sản phẩm nổi bật
               </h3>
             </div>
             <div className="row">
@@ -333,7 +298,7 @@ const Home = () => {
           <div className="row">
             <div className="col-12">
               <h3 className="section-heading">
-                Special Products
+                Sản phẩm đặc biệt
               </h3>
             </div>
           </div>
@@ -359,7 +324,7 @@ const Home = () => {
           <div className="row">
             <div className="col-12">
               <h3 className="section-heading">
-                Our Popular Products
+                Sản phẩm phổ biến của chúng tôi
               </h3>
             </div>
             <div className="row">
@@ -422,7 +387,7 @@ const Home = () => {
           <div className="row">
             <div className="col-12">
               <h3 className="section-heading">
-                Our Latest Blog
+                Blog mới nhất
               </h3>
             </div>
           </div>

@@ -41,14 +41,14 @@ const Login = () => {
   }
   return (
     <>
-      <Meta title={"Login"} />
-      <BreadCrumb title="Login" />
+      <Meta title={"Đăng nhập"} />
+      <BreadCrumb title="Đăng nhập" />
       <div className="login-wrapper home-wrapper-2 py-5">
         <div className="container-xxl">
           <div className="row">
             <div className="col-12">
               <div className="auth-card">
-                <h3 className='text-center mb-3'>Login</h3>
+                <h3 className='text-center mb-3'>Đăng nhập</h3>
                 <form action="" onSubmit={formik.handleSubmit} className='d-flex flex-column gap-15'>
                   <div>
                     <input type="email" name="email" className="form-control" placeholder='Email'
@@ -62,7 +62,7 @@ const Login = () => {
                     }
                   </div>
                   <div>
-                    <input type="password" name='password' className="form-control mt-1" placeholder='Password'
+                    <input type="password" name='password' className="form-control mt-1" placeholder='Mật khẩu'
                       value={formik.values.password} onChange={formik.handleChange("password")}
                       onBlur={formik.handleBlur("password")} />
                   </div>
@@ -72,14 +72,14 @@ const Login = () => {
                     }
                   </div>
                   <div>
-                    <Link to="/forgot-password" className='mb-3'>Forgot Password?</Link>
+                    <Link to="/forgot-password" className='mb-3'>Bạn đã quên mật khẩu?</Link>
                     <div className="mt-3 d-flex justify-content-center gap-15 align-items-center mb-3">
-                      <button className="button border-0">Login</button>
+                      <button className="button border-0">Đăng nhập</button>
 
                     </div>
                     <div className='d-flex justify-content-center gap-10 align-items-center'>
                       <h3 className=''>Bạn chưa có tài khoản?</h3>
-                      <Link className='signup' to="/sign-up" ><h4>Sign Up</h4></Link>
+                      <Link className='signup' to="/sign-up" ><h4>Đăng ký</h4></Link>
                     </div>
                     <div className=' '>
                       <h3 className='d-flex justify-content-center align-items-center gap-10'><hr className='login-1' />Or<hr className='login-1' /></h3>

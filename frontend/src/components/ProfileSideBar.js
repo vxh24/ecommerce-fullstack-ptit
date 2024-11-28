@@ -19,7 +19,7 @@ const ProfileSideBar = ({ setActive, active }) => {
             className={` ${active === 1 ? "text-red" : ""
               } 800px:block hidden`}
           >
-            Profile
+            Thông tin tài khoản
           </span>
         </div>
 
@@ -32,7 +32,7 @@ const ProfileSideBar = ({ setActive, active }) => {
             className={`pl-3 ${active === 2 ? "text-red" : ""
               } 800px:block hidden`}
           >
-            Change Password
+            Đổi mật khẩu
           </span>
         </div>
 
@@ -45,7 +45,7 @@ const ProfileSideBar = ({ setActive, active }) => {
             className={`pl-3 ${active === 3 ? "text-red" : ""
               } 800px:block hidden`}
           >
-            Address
+            Địa chỉ
           </span>
         </div>
         <div
@@ -70,7 +70,7 @@ const ProfileSideBar = ({ setActive, active }) => {
             className={`pl-3 ${active === 5 ? "text-red" : ""
               } 800px:block hidden`}
           >
-            Log out
+            Đăng xuất
           </span>
         </div>
       </div>

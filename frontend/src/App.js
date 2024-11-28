@@ -23,6 +23,7 @@ import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Order from './pages/Order';
 import Profile from './pages/Profile';
+import PaymentResult from './pages/PaymentResult';
 function App() {
   return (
     <>
@@ -50,6 +51,7 @@ function App() {
             <Route path="shipping-policy" element={<ShippingPolicy />} />
             <Route path="term-and-contion" element={<TermAndContions />} />
             <Route path="blog/:id" element={<SingleBlog />} />
+            <Route path="payment-result" element={<PaymentResult />} />
           </Route>
         </Routes>
       </BrowserRouter>

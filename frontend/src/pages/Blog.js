@@ -21,7 +21,7 @@ const Blog = () => {
       <div className="blog-wrapper home-wrapper-2 py-5">
         <div className="container-xxl">
           <div className="row">
-            <div className="col-3">
+            {/* <div className="col-3">
               <div className='filter-card mb-3'>
                 <h3 className="filter-title">
                   Find by categories
@@ -35,8 +35,8 @@ const Blog = () => {
                   </ul>
                 </div>
               </div>
-            </div>
-            <div className="col-9">
+            </div> */}
+            <div className="col-12">
               <div className="row">
                 {
                   blogState?.map((item, index) => {
