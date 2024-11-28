@@ -103,6 +103,10 @@ const getWishlist = asyncHandler(async (id) => {
   const user = await User.findById(id).populate("wishlist");
   return user;
 });
+const getAddress = asyncHandler(async (id) => {
+  const user = await User.findById(id).populate("address");
+  return user;
+});
 
 const createAddress = asyncHandler(
   async (
@@ -120,7 +124,11 @@ const createAddress = asyncHandler(
     if (!name || !phone || !city || !district || !commune || !specificAddress) {
       throw new Error("Please provide all required fields");
     }
-
+    if (isDefault) {
+      await Address.updateMany(
+        { $set: { isDefault: false } }
+      );
+    }
     const newAddress = new Address({
       name,
       phone,
@@ -214,4 +222,5 @@ module.exports = {
   createAddress,
   removeAddress,
   updateAddress,
+  getAddress,
 };

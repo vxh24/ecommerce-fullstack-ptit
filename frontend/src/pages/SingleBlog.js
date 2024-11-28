@@ -31,7 +31,7 @@ const SingleBlog = () => {
                 <h3 className="title">{blogState?.title}</h3>
                 <img src={blogState?.image} className='img-fluid w-100 my-4' alt="blog" />
                 <p>{blogState?.description}</p>
-                <Link to="/blog" className='d-flex align-items-center gap-10'><IoMdArrowBack className='fs-5' /> Go Back to Blogs</Link>
+                <Link to="/blog" className='d-flex align-items-center gap-10'><IoMdArrowBack className='fs-5' /> Trở lại blog</Link>
               </div>
             </div>
           </div>

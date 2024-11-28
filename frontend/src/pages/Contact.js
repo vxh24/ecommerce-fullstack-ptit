@@ -32,8 +32,8 @@ const Contact = () => {
   });
   return (
     <>
-      <Meta title={"Contact"} />
-      <BreadCrumb title="Contact Us" />
+      <Meta title={"Liên hệ"} />
+      <BreadCrumb title="Liên hệ chúng tôi" />
       <div className="contact-wrapper py-5 home-wrapper-2">
         <div className="container-xxl">
           <div className="row">
@@ -43,10 +43,10 @@ const Contact = () => {
             <div className="col-12 mt-5">
               <div className="contact-inner-wrapper d-flex justify-content-between">
                 <div>
-                  <h3 className="contact-title mb-4">Contact</h3>
+                  <h3 className="contact-title mb-4">Liên hệ</h3>
                   <form action="" onSubmit={formik.handleSubmit} className="d-flex flex-column gap-15">
                     <div>
-                      <input type="text" className="form-control" placeholder="Name"
+                      <input type="text" className="form-control" placeholder="Tên"
                         name="name" onChange={formik.handleChange("name")}
                         onBlur={formik.handleBlur("name")}
                         value={formik.values.name}
@@ -58,7 +58,7 @@ const Contact = () => {
                       }
                     </div>
                     <div>
-                      <input type="email" className="form-control" placeholder="email"
+                      <input type="email" className="form-control" placeholder="Emai"
                         name="email" onChange={formik.handleChange("email")}
                         onBlur={formik.handleBlur("email")}
                         value={formik.values.email}
@@ -70,7 +70,7 @@ const Contact = () => {
                       }
                     </div>
                     <div>
-                      <input type="tel" className="form-control" placeholder="Moblie Number"
+                      <input type="tel" className="form-control" placeholder="Số điện thoại"
                         name="phone" onChange={formik.handleChange("phone")}
                         onBlur={formik.handleBlur("phone")}
                         value={formik.values.phone}
@@ -82,7 +82,7 @@ const Contact = () => {
                       }
                     </div>
                     <div>
-                      <textarea name="comment" id="" className="w-100 form-control" cols="30" rows="4" placeholder='Comments'
+                      <textarea name="comment" id="" className="w-100 form-control" cols="30" rows="4" placeholder='Bình luận'
                         onChange={formik.handleChange("comment")}
                         onBlur={formik.handleBlur("comment")}
                         value={formik.values.comment}
@@ -94,12 +94,12 @@ const Contact = () => {
                       </div>
                     </div>
                     <div>
-                      <button className='button border-0'> Submit</button>
+                      <button className='button border-0'> Gửi đi</button>
                     </div>
                   </form>
                 </div>
                 <div>
-                  <h3 className="contact-title mb-4">Get in touch with us</h3>
+                  <h3 className="contact-title mb-4">Hãy liên lạc với chúng tôi</h3>
                   <div>
                     <ul className='ps-0'>
                       <li className='mb-2 d-flex gap-15 align-items-center'>
@@ -116,7 +116,7 @@ const Contact = () => {
                       </li>
                       <li className='mb-2 d-flex gap-15 align-items-center'>
                         <IoMdInformationCircleOutline className='fs-5' />
-                        <p className="mb-0">Monday - Friday 10 AM - 8 PM</p>
+                        <p className="mb-0">Thứ hai - Thứ 7 10 AM - 8 PM</p>
                       </li>
                     </ul>
                   </div>

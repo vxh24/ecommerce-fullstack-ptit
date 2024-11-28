@@ -58,6 +58,12 @@ const resetPass = async (data) => {
     return response.data
   }
 }
+const changePass = async (password) => {
+  const response = await axios.put(`${base_url}user/update-password`, password, config);
+  if (response.data) {
+    return response.data
+  }
+}
 const cashOrder = async (data) => {
   const response = await axios.post(`${base_url}user/cart/cash-order`, data, config);
   if (response.data) {
@@ -82,6 +88,31 @@ const updateCountProduct = async ({ productId, color, newQuantity }) => {
     return response.data;
   }
 }
+const createAddress = async (data) => {
+  const response = await axios.put(`${base_url}user/save-address`, data, config);
+  if (response.data) {
+    return response.data;
+  }
+}
+const getAddress = async () => {
+  const response = await axios.get(`${base_url}user/address`, config);
+  if (response.data) {
+    return response.data;
+  }
+}
+const removeAddress = async (id) => {
+  const response = await axios.delete(`${base_url}user/address/${id}`, config);
+  if (response.data) {
+    return response.data;
+  }
+}
+const updateAddress = async (addressData) => {
+  console.log(addressData.id);
+  const response = await axios.put(`${base_url}user/address/${addressData.id}`, addressData, config);
+  if (response.data) {
+    return response.data;
+  }
+}
 export const authService = {
   createUser,
   handleLogin,
@@ -94,5 +125,10 @@ export const authService = {
   cashOrder,
   getOrder,
   removePfromCart,
-  updateCountProduct
+  updateCountProduct,
+  createAddress,
+  getAddress,
+  removeAddress,
+  updateAddress,
+  changePass
 }

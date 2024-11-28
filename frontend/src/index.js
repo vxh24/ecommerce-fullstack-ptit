@@ -9,9 +9,9 @@ const root = createRoot(container);
 const clientId = '354282151928-io0qjv0qkn919lnf89efelaja0fp0njn.apps.googleusercontent.com';
 root.render(
   <Provider store={store}>
-    <GoogleOAuthProvider clientId={clientId} >
-      <App />
-    </GoogleOAuthProvider>
+    {/* <GoogleOAuthProvider clientId={clientId} > */}
+    <App />
+    {/* </GoogleOAuthProvider> */}
   </Provider>
 );
 

@@ -49,10 +49,10 @@ const Cart = () => {
           <div className="row">
             <div className="col-12">
               <div className="cart-header py-3 d-flex justify-content-between align-items-center">
-                <h4 className='cart-col-1'>Product</h4>
-                <h4 className='cart-col-2'>Price</h4>
-                <h4 className='cart-col-3'>Quantity</h4>
-                <h4 className='cart-col-4'>Total</h4>
+                <h4 className='cart-col-1'>Sản phẩm</h4>
+                <h4 className='cart-col-2'>Giá</h4>
+                <h4 className='cart-col-3'>Số lượng</h4>
+                <h4 className='cart-col-4'>Tổng</h4>
               </div>
               {
                 userCartState?.products && userCartState?.products?.map((item, index) => {
@@ -65,7 +65,7 @@ const Cart = () => {
                         </div>
                         <div className='w-75'>
                           <p>{product?.title}</p>
-                          <p className="d-flex gap-15">Color:
+                          <p className="d-flex gap-15">Màu sắc:
                             <ul className='colors ps-0'>
                               <li style={{ backgroundColor: item?.color }}></li>
                             </ul>
@@ -95,7 +95,7 @@ const Cart = () => {
                         </div>
                       </div>
                       <div className='cart-col-4'>
-                        <h5 className="price">$ {item?.price * item?.count}</h5>
+                        <h5 className="price"> đ{item?.price * item?.count}</h5>
                       </div>
                     </div>
                   )
@@ -108,12 +108,12 @@ const Cart = () => {
                 <>
                   <div className="d-flex justify-content-end mb-3">
                     <div>
-                      <h4>SubTotal: $ {totalAmount}</h4>
+                      <h4>Tổng tiền: đ{totalAmount}</h4>
                     </div>
                   </div>
                   <div className='d-flex justify-content-between align-items-center'>
-                    <Link to="/product" className='text-dark'><MdOutlineKeyboardReturn className='me-2' />Continue Shopping</Link>
-                    <Link to="/checkout" className='button'>Checkout</Link>
+                    <Link to="/product" className='text-dark'><MdOutlineKeyboardReturn className='me-2' />Tiếp tục mua sắm</Link>
+                    <Link to="/checkout" className='button'>Thanh toán</Link>
                   </div>
                 </>
               }

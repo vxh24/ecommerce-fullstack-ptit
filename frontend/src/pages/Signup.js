@@ -10,7 +10,6 @@ import { createUser } from '../features/user/userSlice';
 const signupSchema = yup.object({
   name: yup.string().required("Name is Require"),
   email: yup.string().nullable().email("Email should be valid"),
-  phone: yup.string().required("Mobie no is Required"),
   password: yup.string().required("Password is Required")
 });
 
@@ -20,9 +19,7 @@ const Signup = () => {
   const formik = useFormik({
     initialValues: {
       name: "",
-      // lastname: "",
       email: "",
-      phone: "",
       password: "",
     },
     validationSchema: signupSchema,
@@ -39,10 +36,10 @@ const Signup = () => {
           <div className="row">
             <div className="col-12">
               <div className="auth-card">
-                <h3 className='text-center mb-3'>Create Account</h3>
+                <h3 className='text-center mb-3'>Tạo một tài khoản</h3>
                 <form action="" onSubmit={formik.handleSubmit} className='d-flex flex-column gap-15'>
                   <div>
-                    <input type="text" name="name" className="form-control" placeholder='First Name'
+                    <input type="text" name="name" className="form-control" placeholder='Tên'
                       value={formik.values.name} onChange={formik.handleChange("name")}
                       onBlur={formik.handleBlur("name")} />
 
@@ -63,16 +60,6 @@ const Signup = () => {
                     }
                   </div>
                   <div>
-                    <input type="mobile" name='phone' className="form-control mt-1" placeholder='Mobile'
-                      value={formik.values.phone} onChange={formik.handleChange("phone")}
-                      onBlur={formik.handleBlur("phone")} />
-                  </div>
-                  <div className="error">
-                    {
-                      formik.touched.phone && formik.errors.phone
-                    }
-                  </div>
-                  <div>
                     <input type="password" name='password' className="form-control mt-1" placeholder='Password'
                       value={formik.values.password} onChange={formik.handleChange("password")}
                       onBlur={formik.handleBlur("password")} />
@@ -84,7 +71,11 @@ const Signup = () => {
                   </div>
                   <div>
                     <div className="mt-3 d-flex justify-content-center gap-15 align-items-center">
-                      <button className="button border-0">Create</button>
+                      <button className="button border-0">Tạo</button>
+                    </div>
+                    <div className='d-flex justify-content-center gap-10 align-items-center mt-3'>
+                      <h3 className=''>Bạn đã có tài khoản?</h3>
+                      <Link className='signup' to="/login" ><h4>Đăng nhập</h4></Link>
                     </div>
                   </div>
                 </form>

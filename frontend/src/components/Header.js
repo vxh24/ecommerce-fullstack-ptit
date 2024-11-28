@@ -13,10 +13,8 @@ import { BiCategory } from "react-icons/bi";
 import { googleLogout } from '@react-oauth/google';
 const Header = () => {
   const handleLogout = () => {
-    // Logout Google
     googleLogout();
 
-    // Xóa cookie (nếu có)
     document.cookie = 'auth_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     localStorage.clear();
     window.location.reload();
@@ -40,9 +38,6 @@ const Header = () => {
     setProductOpt(data);
     setCategories([...category]);
   }, [productState]);
-  // useEffect(() => {
-  //   dispatch(getUserCart());
-  // }, [])
   const userCartState = useSelector(state => state?.auth?.cartUser?.result);
   const [total, setTotal] = useState(null);
   useEffect(() => {
@@ -51,11 +46,8 @@ const Header = () => {
       sum = sum + (Number(userCartState.products[index].count) * Number(userCartState.products[index].price));
       setTotal(sum);
     }
-    // setTimeout(() => {
-    //   dispatch(getUserCart());
-    // }, 200)
+
   }, [userCartState]);
-  // console.log(userCartState);
   return (
     <>
       <header className="header-top-strip py-3">
@@ -75,7 +67,7 @@ const Header = () => {
         <div className="container-xxl">
           <div className="row align-items-center">
             <div className="col-2">
-              <h1><Link className="text-white">ECommer.</Link></h1>
+              <h1><Link className="text-white">PTIT.</Link></h1>
             </div>
             <div className="col-5">
               <div className="input-group">
@@ -89,7 +81,7 @@ const Header = () => {
                   }}
                   paginate={paginate}
                   labelKey={"name"}
-                  placeholder="Search for Product here..."
+                  placeholder="Tìm kiếm sản phẩm ở đây..."
                 />
                 <span className="input-group-text p-3" id="basic-addon2"><BsSearch className="fs-6" /></span>
               </div>
@@ -101,7 +93,7 @@ const Header = () => {
                   <Link to="wishlist" className="d-flex align-items-center gap-10 text-white">
                     <AiOutlineHeart className='fs-2' />
                     <p className="mb-0">
-                      Favourite <br /> Wishlist
+                      Sản phẩm <br /> Yêu thích
                     </p>
                   </Link>
                 </div>
@@ -118,9 +110,9 @@ const Header = () => {
                               {authState?.user?.user?.name.toUpperCase()}
                             </button>
                             <ul className="dropdown-menu" aria-labelledby="dropdownMenu2">
-                              <li><Link className="dropdown-item" type="button" to="/profile">Profile</Link></li>
-                              <li><Link className="dropdown-item" type="button" to="/my-orders">My Orders</Link></li>
-                              <li><button onClick={handleLogout} className=" dropdown-item" type="button">Logout</button></li>
+                              <li><Link className="dropdown-item" type="button" to="/profile">Thông tin cá nhân</Link></li>
+                              <li><Link className="dropdown-item" type="button" to="/my-orders">Đơn hàng</Link></li>
+                              <li><button onClick={handleLogout} className=" dropdown-item" type="button">Đăng xuất</button></li>
                             </ul>
                           </div>
                         </>
@@ -149,7 +141,7 @@ const Header = () => {
                   <div className="dropdown">
                     <button className="btn btn-secondary dropdown-toggle bg-transparent border-0 gap-15 d-flex align-items-center" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                       <BiCategory className='fs-3' />
-                      <span className='me-5 d-inline-block'> Shop Categories </span>
+                      <span className='me-5 d-inline-block'> Danh mục sản phẩm </span>
                     </button>
                     <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                       {
@@ -164,10 +156,10 @@ const Header = () => {
                 </div>
                 <div className="menu-links">
                   <div className="div d-flex align-items-center gap-15">
-                    <NavLink to="/">Home</NavLink>
-                    <NavLink to="/product">Our Store</NavLink>
-                    <NavLink to="/blog">Blogs</NavLink>
-                    <NavLink to="/contact">Contact</NavLink>
+                    <NavLink to="/">Trang chủ</NavLink>
+                    <NavLink to="/product">Cửa hàng</NavLink>
+                    <NavLink to="/blog">Blog</NavLink>
+                    <NavLink to="/contact">Liên hệ</NavLink>
 
                   </div>
                 </div>

@@ -52,14 +52,14 @@ const googleLogin = async (req, res) => {
 
   const { name, email, sub } = ticket.getPayload();
   const password = token;
-  const phone = "";
+  // const phone = "";
   let user = await User.findOne({ email });
   if (!user) {
     const NewUser = new User({
       name: name,
       email: email,
       password: password,
-      phone: phone,
+      // phone: phone,
     });
     NewUser.save();
     const result1 = await handleLogin(email, token);

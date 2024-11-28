@@ -59,8 +59,8 @@ const Order = () => {
   };
   return (
     <>
-      <Meta title={"Order"} />
-      <BreadCrumb title="Order" />
+      <Meta title={"Đơn hàng"} />
+      <BreadCrumb title="Đơn hàng" />
       <div className="order-wrapper home-wrapper-2 py-5">
         <div className="container-xxl">
           <div className="row">
@@ -87,10 +87,10 @@ const Order = () => {
               <table class="table caption-top">
                 <thead>
                   <tr>
-                    <th scope="col" className='col-3'>OrderID</th>
-                    <th scope="col" className='col-2'>Total Amount</th>
-                    <th scope="col" className='col-3'>Order date </th>
-                    <th scope="col" className='col-3'>Status</th>
+                    <th scope="col" className='col-3'>Mã đơn hàng</th>
+                    <th scope="col" className='col-2'>Tổng tiền</th>
+                    <th scope="col" className='col-3'>Ngày đặt hàng </th>
+                    <th scope="col" className='col-3'>Trạng thái</th>
                     <th scope="col" className='col-1'></th>
                   </tr>
                 </thead>
@@ -101,7 +101,7 @@ const Order = () => {
                         <tr key={index}>
                           <th scope="row">{item?._id}</th>
                           <td className='mb-3'>{item?.paymentIndent?.amount}  </td>
-                          <td>{moment(item?.createdAt).format('MMMM Do YYYY, h:mm a')}</td>
+                          <td>{moment(item?.createdAt).format('h:mm a,DD/MM/YYYY')}</td>
                           <td>{item?.orderStatus}</td>
                           <td>
                             <div className='d-flex align-items-center justify-content-between gap-10'>

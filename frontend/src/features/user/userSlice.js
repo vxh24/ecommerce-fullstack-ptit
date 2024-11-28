@@ -86,6 +86,41 @@ export const updatecountCart = createAsyncThunk("user/updatecart", async ({ prod
     return thunkAPI.rejectWithValue(error)
   }
 })
+export const createAdd = createAsyncThunk("user/address", async (data, thunkAPI) => {
+  try {
+    return await authService.createAddress(data);
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error)
+  }
+})
+export const getAddressSlice = createAsyncThunk("user/get/address", async (thunkAPI) => {
+  try {
+    return await authService.getAddress();
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error)
+  }
+})
+export const removeAddressSlice = createAsyncThunk("user/delete/address", async (id, thunkAPI) => {
+  try {
+    return await authService.removeAddress(id);
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error)
+  }
+})
+export const updateAddressSlice = createAsyncThunk("user/update/address", async (addressData, thunkAPI) => {
+  try {
+    return await authService.updateAddress(addressData);
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error)
+  }
+})
+export const changePassSlice = createAsyncThunk("user/update/pass", async (data, thunkAPI) => {
+  try {
+    return await authService.changePass(data);
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error)
+  }
+})
 const getCustomerfromLocalStorage = localStorage.getItem("customer")
   ? JSON.parse(localStorage.getItem("customer"))
   : null;
@@ -322,6 +357,80 @@ export const authSlice = createSlice({
         state.isSuccess = true;
         state.update = action.payload;
       }).addCase(updatecountCart.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+        if (state.isError === true) {
+          toast.error("Có lỗi xảy ra")
+        }
+      })
+      .addCase(createAdd.pending, (state) => {
+        state.isLoading = true;
+
+      }).addCase(createAdd.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.address = action.payload;
+        if (state.isSuccess === true) {
+          toast.success("Thêm địa chỉ thành công");
+        }
+      }).addCase(createAdd.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+        if (state.isError === true) {
+          toast.error("Có lỗi xảy ra")
+        }
+      })
+      .addCase(getAddressSlice.pending, (state) => {
+        state.isLoading = true;
+
+      }).addCase(getAddressSlice.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.address = action.payload;
+      }).addCase(getAddressSlice.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+        if (state.isError === true) {
+          toast.error("Có lỗi xảy ra")
+        }
+      })
+      .addCase(updateAddressSlice.pending, (state) => {
+        state.isLoading = true;
+
+      }).addCase(updateAddressSlice.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.address = action.payload;
+        if (state.isSuccess === true) {
+          toast.success("Cập nhật thành công");
+        }
+      }).addCase(updateAddressSlice.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+      })
+      .addCase(changePassSlice.pending, (state) => {
+        state.isLoading = true;
+
+      }).addCase(changePassSlice.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.password = action.payload;
+        if (state.isSuccess === true) {
+          toast.success("Đổi mật khẩu thành công");
+        }
+      }).addCase(changePassSlice.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;

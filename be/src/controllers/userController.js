@@ -13,6 +13,7 @@ const {
   createAddress,
   removeAddress,
   updateAddress,
+  getAddress,
   unBlockAUser,
 } = require("../services/userService");
 
@@ -140,6 +141,19 @@ const getProfileUserController = asyncHandler(async (req, res) => {
     throw new Error(error);
   }
 });
+const getAddressController = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  try {
+    const result = await getAddress(_id);
+    res.status(200).json({
+      EC: 0,
+      data: result,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 
 const saveAddressController = asyncHandler(async (req, res) => {
   const { _id } = req.user;
@@ -212,4 +226,5 @@ module.exports = {
   getProfileUserController,
   removeAddressController,
   updateAddressController,
+  getAddressController,
 };

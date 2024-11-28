@@ -13,6 +13,7 @@ const {
   getProfileUserController,
   removeAddressController,
   updateAddressController,
+  getAddressController,
   unBlockAUserController,
 } = require("../controllers/userController");
 
@@ -62,6 +63,7 @@ router.get("/orders", authMiddleware, getOrderByUIDController);
 router.get("/get-all-orders", authMiddleware, isAdmin, getAllOrdersController);
 router.put("/update-password", authMiddleware, updatePasswordController);
 router.post("/forgot-password", authMiddleware, forgotPasswordTokenController);
+router.get("/address", authMiddleware, getAddressController);
 router.put("/address/:id", authMiddleware, updateAddressController);
 router.delete("/address/:id", authMiddleware, removeAddressController);
 router.put("/reset-password/:token", authMiddleware, resetPasswordController);

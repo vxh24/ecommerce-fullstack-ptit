@@ -29,8 +29,8 @@ const ForgotPassword = () => {
           <div className="row">
             <div className="col-12">
               <div className="auth-card">
-                <h3 className='text-center mb-3'>Reset Your Password</h3>
-                <p className='text-center mb-3 fs-13'>We will send you an email to reset password</p>
+                <h3 className='text-center mb-3'>Đặt lại mật khẩu</h3>
+                <p className='text-center mb-3 fs-13'>Chúng tôi sẽ gửi cho bạn một email để đặt lại mật khẩu</p>
                 <form onSubmit={formik.handleSubmit} action="" className='d-flex flex-column gap-30'>
                   <div>
                     <input type="email" name="email" className="form-control" placeholder='Email' value={formik.values.email} onChange={formik.handleChange("email")}
@@ -44,8 +44,8 @@ const ForgotPassword = () => {
                   </div>
                   <div>
                     <div className="mt-1 d-flex justify-content-center gap-15 align-items-center flex-column">
-                      <button className="button border-0" type='submit' >Submit</button>
-                      <Link to="/login">Cancel</Link>
+                      <button className="button border-0" type='submit' >Hoàn thành</button>
+                      <Link to="/login">Quay lại</Link>
                     </div>
                   </div>
                 </form>
