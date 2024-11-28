@@ -418,9 +418,6 @@ export const authSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
-        if (state.isError === true) {
-          toast.error("Có lỗi xảy ra")
-        }
       })
       .addCase(changePassSlice.pending, (state) => {
         state.isLoading = true;

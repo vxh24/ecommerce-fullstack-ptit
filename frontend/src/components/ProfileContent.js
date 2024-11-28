@@ -5,6 +5,7 @@ import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllCoupon } from '../features/counpons/couponSlice';
 import moment from "moment";
+import { CiCamera } from "react-icons/ci";
 import { changePassSlice, createAdd, getAddressSlice, removeAddressSlice, updateAddressSlice } from '../features/user/userSlice';
 const profileSchema = yup.object({
   name: yup.string().required("Name is Require"),
@@ -31,8 +32,6 @@ const ProfileContent = ({ active }) => {
     initialValues: {
       name: userState?.name,
       email: userState?.email,
-      phone: userState?.name,
-      address: userState?.email,
     },
     validationSchema: profileSchema,
     onSubmit: (values) => {
@@ -44,10 +43,19 @@ const ProfileContent = ({ active }) => {
     <>
       {active === 1 && (
         <>
-          <div className="change-card justify-center-between">
+          <div className='profile-img d-flex justify-content-between'>
+            <div className=' position-relative text-center'>
+              <img src="https://png.pngtree.com/png-clipart/20230927/original/pngtree-man-avatar-image-for-profile-png-image_13001882.png" className='imgs' alt="" />
+              <div className="upload-data file gap-10 position-absolute bottom-0 w-100 camera-icon">
+                <CiCamera className="fs-3 " /><p className="mb-0"></p>
+                <input className='cursor-pointer' type="file" name="file" />
+              </div>
+            </div>
+          </div>
+          <div className="change-card justify-center-between mt-0">
             <form onSubmit={formik.handleSubmit} className='d-flex flex-column gap-15'>
               <div className="mb-3">
-                <label for="exampleInputEmail1" className="form-label">Name</label>
+                <label for="exampleInputEmail1" className="form-label">Tên</label>
                 <input name="name" type="name" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
                   value={formik.values.name}
                   onChange={formik.handleChange("name")}
@@ -58,7 +66,7 @@ const ProfileContent = ({ active }) => {
                 </div>
               </div>
               <div className="mb-3">
-                <label for="exampleInputEmail1" className="form-label">Email address</label>
+                <label for="exampleInputEmail1" className="form-label">Địa chỉ email</label>
                 <input name="email" type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
                   value={formik.values.email}
                   onChange={formik.handleChange("email")}
@@ -69,18 +77,7 @@ const ProfileContent = ({ active }) => {
                 </div>
 
               </div>
-              <div className="mb-3">
-                <label for="exampleInputPassword1" className="form-label">Phone</label>
-                <input name="phone" type="phone" className="form-control" id="exampleInputPassword1"
-                  value={formik.values.phone}
-                  onChange={formik.handleChange("phone")}
-                  onBlur={formik.handleBlur("phone")}
-                />
-                <div className="error">
-                  {formik.touched.phone && formik.errors.phone}
-                </div>
-              </div>
-              <button type="submit" className="btn btn-primary">Save</button>
+              <button type="submit" className="btn btn-primary">Lưu thay đổi</button>
             </form>
           </div>
         </>
@@ -186,10 +183,10 @@ const ChangePassword = () => {
     <>
       <div className="">
         <div className="change-card">
-          <h3 className='text-center mb-3'>Change Password</h3>
+          <h3 className='text-center mb-3'>Đổi mật khẩu</h3>
           <form onSubmit={formik.handleSubmit} action="" className='d-flex flex-column gap-15'>
             <div>
-              <input type="password" name='password' className="form-control mt-1" placeholder='Password'
+              <input type="password" name='password' className="form-control mt-1" placeholder='Mật khẩu hiện tại'
                 value={formik.values.password} onChange={formik.handleChange("password")}
                 onBlur={formik.handleBlur("password")} />
             </div>
@@ -199,7 +196,7 @@ const ChangePassword = () => {
               }
             </div>
             <div>
-              <input type="password" name='newpassword' className="form-control mt-1" placeholder='New Password'
+              <input type="password" name='newpassword' className="form-control mt-1" placeholder='Mật khẩu mới'
                 value={formik.values.newpassword} onChange={formik.handleChange("newpassword")}
                 onBlur={formik.handleBlur("newpassword")} />
             </div>
@@ -209,7 +206,7 @@ const ChangePassword = () => {
               }
             </div>
             <div>
-              <input type="password" name='confpassword' className="form-control mt-1" placeholder='Confirm Password'
+              <input type="password" name='confpassword' className="form-control mt-1" placeholder='Xác nhận mật khẩu'
                 value={formik.values.confpassword} onChange={formik.handleChange("confpassword")}
                 onBlur={formik.handleBlur("confpassword")} />
             </div>
@@ -220,7 +217,7 @@ const ChangePassword = () => {
             </div>
             <div>
               <div className="mt-3 d-flex justify-content-center gap-15 align-items-center">
-                <button className="button border-0">Save</button>
+                <button className="button border-0">Đổi mật khẩu</button>
               </div>
             </div>
           </form>

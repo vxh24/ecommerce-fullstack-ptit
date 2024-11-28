@@ -11,7 +11,7 @@ const createUser = async (userData) => {
 }
 
 const handleLogin = async (userData) => {
-  const response = await axios.post(`${base_url}login`, userData);
+  const response = await axios.post(`${base_url}login`, userData, config);
   if (response.data) {
     if (response.data) {
       localStorage.setItem("customer", JSON.stringify(response.data));
@@ -20,7 +20,7 @@ const handleLogin = async (userData) => {
   }
 }
 const gglogin = async (userData) => {
-  const response = await axios.post(`${base_url}google`, userData);
+  const response = await axios.post(`${base_url}google`, userData, config);
   if (response.data) {
     if (response.data) {
       localStorage.setItem("customer", JSON.stringify(response.data));

@@ -18,7 +18,7 @@ const BlogCard = (props) => {
           <p className='date'>{date}</p>
           <h5 className='title'>{title}</h5>
           <p className='desc'>{description?.substr(0, 40) + "..."}</p>
-          <Link to={"/blog/" + id} className='button'>Read More</Link>
+          <Link to={"/blog/" + id} className='button'>Đọc thêm</Link>
         </div>
       </div>
 

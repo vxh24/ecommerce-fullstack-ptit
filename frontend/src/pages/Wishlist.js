@@ -27,7 +27,7 @@ const Wishlist = () => {
         <div className="container-xxl">
           <div className="row">
             {wishlistState?.length === 0 && (
-              <div className='text-center fs-3'> No Data</div>
+              <div className='text-center fs-3'> Không có sản phẩm yêu thích</div>
             )}
             {
               wishlistState?.map((item, index) => {

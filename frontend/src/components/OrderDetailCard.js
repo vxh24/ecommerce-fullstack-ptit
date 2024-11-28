@@ -15,17 +15,17 @@ const OrderDetailCard = ({ order }) => {
   };
   return (
     <div>
-      <h4 className='mb-4'>Order Details</h4>
-      <p><strong>Order ID:</strong> {order._id}</p>
-      <p><strong>Total Amount:</strong> {order.paymentIndent.amount}</p>
-      <p><strong>Date:</strong> {moment(order.created_at).format('MMMM Do YYYY, h:mm a')}</p>
-      <p><strong>Status:</strong> {order.orderStatus}</p>
+      <h4 className='mb-4'>Chi tiết đơn hàng</h4>
+      <p><strong>Mã đơn hàng:</strong> {order._id}</p>
+      <p><strong>Tổng tiền:</strong> {order.paymentIndent.amount}</p>
+      <p><strong>Ngày đặt hàng:</strong> {moment(order.created_at).format('DD-MM-YYYY')}</p>
+      <p><strong>Trạng thái:</strong> {order.orderStatus}</p>
       <div className="col-12">
         <div className="cart-header py-3 d-flex justify-content-between align-items-center">
-          <h4 className='cart-col-1'>Product</h4>
-          <h4 className='cart-col-2'>Price</h4>
-          <h4 className='cart-col-3'>Quantity</h4>
-          <h4 className='cart-col-4'>Total</h4>
+          <h4 className='cart-col-1'>Sản phẩm</h4>
+          <h4 className='cart-col-2'>Giá</h4>
+          <h4 className='cart-col-3'>Số lượng</h4>
+          <h4 className='cart-col-4'>Tổng</h4>
 
           {
             order.orderStatus === "Hoàn thành" && (

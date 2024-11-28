@@ -35,7 +35,7 @@ const ResetPassword = () => {
           <div className="row">
             <div className="col-12">
               <div className="auth-card">
-                <h3 className='text-center mb-3'>Reset Password</h3>
+                <h3 className='text-center mb-3'>Đặt lại mật khẩu</h3>
                 <form onSubmit={formik.handleSubmit} action="" className='d-flex flex-column gap-15'>
                   <div>
                     <input type="password" name='password' className="form-control mt-1" placeholder='Password'
@@ -59,7 +59,7 @@ const ResetPassword = () => {
                   </div>
                   <div>
                     <div className="mt-3 d-flex justify-content-center gap-15 align-items-center">
-                      <button className="button border-0">OK</button>
+                      <button className="button border-0">Đồng ý</button>
                     </div>
                   </div>
                 </form>

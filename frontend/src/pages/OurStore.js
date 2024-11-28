@@ -96,7 +96,7 @@ const OurStore = () => {
             <div className="col-3">
               <div className='filter-card mb-3'>
                 <h3 className="filter-title">
-                  Shop by categories
+                  Danh mục sản phẩm
                 </h3>
                 <div>
                   <ul className='ps-0'>
@@ -112,12 +112,12 @@ const OurStore = () => {
               </div>
               <div className='filter-card mb-3'>
                 <h3 className="filter-title">
-                  Filter By
+                  Lọc theo
                 </h3>
                 <div>
 
                   <h5 className="sub-title">
-                    Price
+                    Giá
                   </h5>
                   <div className='d-flex align-items-center gap-10'>
                     <div className="form-floating">
@@ -184,7 +184,7 @@ const OurStore = () => {
               </div>
               <div className='filter-card mb-3'>
                 <h3 className="filter-title">
-                  Product Tags
+                  Nhãn sản phẩm
                 </h3>
                 <div>
                   <div className="product-tags d-flex align-items-center flex-wrap gap-10">
@@ -201,7 +201,7 @@ const OurStore = () => {
 
               <div className='filter-card mb-3'>
                 <h3 className="filter-title">
-                  Product Brand
+                  Thương hiệu
                 </h3>
                 <div>
                   <div className="product-tags d-flex align-items-center flex-wrap gap-10">
@@ -217,7 +217,7 @@ const OurStore = () => {
               </div>
               <div className='filter-card mb-3'>
                 <h3 className="filter-title">
-                  Random Products
+                  Sản phẩm ngẫu nhiên
                 </h3>
                 <div>
                   <div className="random-products d-flex mb-3">
@@ -265,12 +265,12 @@ const OurStore = () => {
                     >
                       <option value="manual">Tất cả</option>
                       <option value="best-selilng">
-                        Best Selling
+                        Bán chạy
                       </option>
-                      <option value="title-ascending">Alphabetically, A-Z</option>
-                      <option value="title-descending">Alphabetically, Z-A</option>
-                      <option value="price-ascending">Price, low to hight</option>
-                      <option value="price-descending">Price, hight to low</option>
+                      <option value="title-ascending">Theo thứ tự, A-Z</option>
+                      <option value="title-descending">Theo thứ tự, Z-A</option>
+                      <option value="price-ascending">Giá, thấp đến cao</option>
+                      <option value="price-descending">Giá, cao đến thấp</option>
                       <option value="created-ascending">Date, old to new</option>
                       <option value="created-descending" >Date, new to old</option>
                     </select>
