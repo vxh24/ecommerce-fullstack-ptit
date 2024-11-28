@@ -25,7 +25,11 @@ const blockAUser = async (userId) => {
 
 const unBlockAUser = async (userId) => {
   try {
-    const response = await axios.put(`${base_url}user/${userId}`, getConfig);
+    const response = await axios.put(
+      `${base_url}user/${userId}`,
+      { data: {} },
+      getConfig
+    );
 
     if (response.status === 200) {
       return response.data;

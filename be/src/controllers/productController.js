@@ -1,5 +1,4 @@
 const asyncHandler = require("express-async-handler");
-const slugify = require("slugify");
 const {
   createProduct,
   getAProduct,
@@ -10,17 +9,26 @@ const {
   rating,
   recommendProducts,
 } = require("../services/productService");
-const { uploadMultipleFiles } = require("../services/fileService");
 const { deleteToCloudinary } = require("../utils/cloudinary");
 
 const createProductController = asyncHandler(async (req, res) => {
-  // res.send("Create new product");
-  if (req.body.title) {
-    req.body.slug = slugify(req.body.title);
+  const { title, description, price, category, brand, quantity, colors, tags } =
+    req.body;
+
+  const files = req.files.images;
+
+  if (!files || files.length === 0) {
+    throw new Error("No images uploaded");
   }
-  const newProduct = await createProduct(req.body);
+
+  const newProduct = await createProduct(
+    { title, description, price, category, brand, quantity, colors, tags },
+    files
+  );
+
   res.status(200).json({
     EC: 0,
+    message: "Product added successfully",
     data: newProduct,
   });
 });
@@ -69,9 +77,6 @@ const getAllProductsController = asyncHandler(async (req, res) => {
 
 const updateProductController = asyncHandler(async (req, res) => {
   const id = req.params.id;
-  if (req.body.title) {
-    req.body.slug = slugify(req.body.title);
-  }
   const result = await updateProduct(id, req.body);
   res.status(200).json({
     EC: 0,
@@ -116,48 +121,12 @@ const ratingController = asyncHandler(async (req, res) => {
   }
 });
 
-const uploadImagesController = asyncHandler(async (req, res) => {
-  try {
-    const files = req.files.images;
-    if (!files) {
-      return res.status(400).json({
-        EC: 1,
-        message: "No files uploaded",
-      });
-    }
-
-    const filesArr = Array.isArray(files) ? files : [files];
-
-    const uploadResults = await uploadMultipleFiles(filesArr, "products");
-
-    if (uploadResults.countSuccess === 0) {
-      return res.status(500).json({
-        EC: 1,
-        message: "Failed to upload files",
-      });
-    }
-
-    const images = uploadResults.detail.map((file) => ({
-      url: file.cloudinaryUrl,
-      asset_id: file.asset_id,
-      public_id: file.public_id,
-    }));
-
-    res.status(200).json({
-      EC: 0,
-      message: "Files uploaded successfully",
-      images,
-    });
-  } catch (error) {
-    throw new Error(error);
-  }
-});
-
 const deleteImagesController = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const public_id = "products" + "/" + id;
   try {
-    const imageDeleted = deleteToCloudinary(public_id);
+    const imageDeleted = await deleteToCloudinary(public_id);
+
     res.status(200).json({
       EC: 0,
       message: "Deleted successful",
@@ -175,6 +144,5 @@ module.exports = {
   deleteProductController,
   addToWishlistController,
   ratingController,
-  uploadImagesController,
   deleteImagesController,
 };

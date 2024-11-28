@@ -26,7 +26,7 @@ const createOrder = asyncHandler(async (id, COD, couponApplied) => {
       amount: finalAmount,
       status: "Cash on delivery",
       created: Date.now(),
-      currency: "usd",
+      currency: "VNĐ",
     },
     orderBy: user._id,
     orderStatus: "Cash on delivery",

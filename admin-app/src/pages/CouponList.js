@@ -10,6 +10,7 @@ import {
   resetState,
 } from "../features/coupon/couponSlice";
 import CustomModal from "../components/CustomModal";
+import moment from "moment";
 
 const columns = [
   {
@@ -67,7 +68,7 @@ const Couponlist = () => {
         key: i + 1,
         name: couponState[i].name,
         discount: couponState[i].discount,
-        expiry: new Date(couponState[i].expiry).toLocaleDateString(),
+        expiry: moment(couponState[i].expiry).format("DD/MM/YYYY"),
         action: (
           <>
             <Link

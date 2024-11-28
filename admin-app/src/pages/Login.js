@@ -13,6 +13,7 @@ let schema = yup.object().shape({
     .required("Email is Required"),
   password: yup.string().required("Password is Required"),
 });
+
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ const Login = () => {
       dispatch(login(values));
     },
   });
+
   const authState = useSelector((state) => state);
 
   const { user, isError, isSuccess, isLoading, message } = authState.auth;
@@ -37,6 +39,7 @@ const Login = () => {
       navigate("");
     }
   }, [user, isError, isSuccess, isLoading]);
+
   return (
     <div className="py-5" style={{ background: "#ffd333", minHeight: "100vh" }}>
       <br />

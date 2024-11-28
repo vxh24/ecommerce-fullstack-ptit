@@ -3,12 +3,35 @@ const asyncHandler = require("express-async-handler");
 const validateMongodbId = require("../utils/validateMongodbId");
 const User = require("../models/userModel");
 const natural = require("natural");
+const { uploadMultipleFiles } = require("./fileService");
 const tfidf = new natural.TfIdf();
+
 // var TfIdf = require('node-tfidf');
 // var tfidf = new TfIdf();
-const createProduct = asyncHandler(async (productData) => {
-  const result = await Product.create(productData);
-  return result;
+
+const createProduct = asyncHandler(async (productData, files) => {
+  const uploadResults = await uploadMultipleFiles(files, "products");
+
+  const uploadedImages = uploadResults.detail.map((result) => ({
+    public_id: result.public_id,
+    url: result.cloudinaryUrl,
+  }));
+
+  const newProduct = new Product({
+    images: uploadedImages,
+    title: productData.title,
+    description: productData.description,
+    price: productData.price,
+    category: productData.category,
+    brand: productData.brand,
+    quantity: productData.quantity,
+    colors: productData.colors,
+    tags: productData.tags,
+  });
+
+  await newProduct.save();
+
+  return newProduct;
 });
 
 const getAProduct = asyncHandler(async (id) => {

@@ -9,7 +9,7 @@ import {
 import { RiCouponLine } from "react-icons/ri";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import { ImBlog } from "react-icons/im";
 import { IoIosNotifications } from "react-icons/io";
@@ -18,27 +18,31 @@ import { SiBrandfolder } from "react-icons/si";
 import { BiCategoryAlt } from "react-icons/bi";
 import { Layout, Menu, theme } from "antd";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 const { Header, Sider, Content } = Layout;
 const MainLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
 
-  const [user, setUser] = useState(null);
+  const [selectedKey, setSelectedKey] = useState("");
+
+  const location = useLocation();
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    const path = location.pathname.split("/")[2];
+    if (path) {
+      setSelectedKey(path);
     }
-  }, []);
-
-  console.log(user);
+  }, [location]);
 
   const {
     token: { colorBgContainer },
   } = theme.useToken();
 
   const navigate = useNavigate();
+
+  const { user } = useSelector((state) => state.auth.user);
+
+  console.log("user: ", user);
 
   return (
     <Layout /* onContextMenu={(e) => e.preventDefault()} */>
@@ -52,8 +56,9 @@ const MainLayout = () => {
         <Menu
           theme="dark"
           mode="inline"
-          defaultSelectedKeys={[""]}
+          selectedKeys={[selectedKey]}
           onClick={({ key }) => {
+            setSelectedKey(key);
             if (key === "signout") {
             } else {
               navigate(key);
@@ -212,8 +217,8 @@ const MainLayout = () => {
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                <h5 className="mb-0">{user.user.name}</h5>
-                <p className="mb-0">{user.user.email}</p>
+                <h5 className="mb-0">{user.name}</h5>
+                <p className="mb-0">{user.email}</p>
               </div>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
                 <li>
