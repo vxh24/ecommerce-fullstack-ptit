@@ -24,6 +24,7 @@ const updateAUser = asyncHandler(async (id, userData) => {
     { _id: id },
     {
       name: userData.name,
+      phone: userData.phone,
       avatar: userData.avatar,
     }
   );

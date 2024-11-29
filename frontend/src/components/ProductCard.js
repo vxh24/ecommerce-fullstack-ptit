@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import ReactStars from "react-rating-stars-component";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { addToWishlist } from '../features/products/productSlice';
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { getUserProductWishlist } from '../features/user/userSlice';
+import { toast } from 'react-toastify';
 const ProductCard = (props) => {
+  const navigate = useNavigate();
+  const authState = useSelector(state => state?.auth);
   const { grid, data } = props;
   const dispatch = useDispatch();
   let location = useLocation();
@@ -17,6 +20,9 @@ const ProductCard = (props) => {
     dispatch(getUserProductWishlist());
   }
   const addToWish = (id) => {
+    if (authState.user === null && authState.isSuccess !== true) {
+      navigate("/login");
+    }
     dispatch(addToWishlist(id));
     setTimeout(() => {
       dispatch(getUserProductWishlist());

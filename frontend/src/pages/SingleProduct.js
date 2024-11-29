@@ -18,6 +18,7 @@ import { getUserProductWishlist } from '../features/user/userSlice';
 import { FaFacebookSquare } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { FcNext, FcPrevious } from "react-icons/fc";
+import ReactImageZoom from 'react-image-zoom';
 const SingleProduct = () => {
   const images = [
     'https://down-vn.img.susercontent.com/file/969bc42236e44f4fca9ee2ea708e2ea6@resize_w450_nl.webp',
@@ -25,7 +26,6 @@ const SingleProduct = () => {
     'https://down-vn.img.susercontent.com/file/39732acae4f65eeb884464097dc86ff6.webp',
     'https://down-vn.img.susercontent.com/file/7ad85bf6e3b20f1fe934b81445670140@resize_w450_nl.webp',
   ];
-  const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length); // Vòng lại khi đến cuối
@@ -59,7 +59,13 @@ const SingleProduct = () => {
   const colorIds = useSelector(state => state?.product?.product?.data?.colors);
   const colors = useSelector(state => state?.color?.colors?.data);
   const matchedColors = colors?.filter((color) => colorIds?.includes(color?._id));
-  console.log(matchedColors);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const props = {
+    width: 600,
+    height: 600,
+    zoomWidth: 600,
+    img: productState?.images[currentIndex]?.url
+  };
   const cartState = useSelector(state => state?.auth?.cartUser?.data?.products);
   const wishlist = useSelector(state => state?.auth?.wishlist?.data?.wishlist);
   const recommendProduct = useSelector(state => state?.product?.product?.recommend);
@@ -143,18 +149,23 @@ const SingleProduct = () => {
             <div className="col-6">
               <div className="main-product-image">
                 <div >
-                  <img src={images[currentIndex]} alt={`Product ${currentIndex + 1}`} />
+                  {/* <img src={productState?.images[currentIndex]?.url} alt={`Product ${currentIndex + 1}`} /> */}
+                  {productState?.images?.[currentIndex]?.url && (
+                    <ReactImageZoom
+                      {...props}
+                    />
+                  )}
                 </div>
               </div>
               <div className="other-product-images d-flex  gap-15">
                 <button className="nav-button" onClick={handlePrevious}><FcPrevious /></button>
-                {images.map((image, index) => (
+                {productState?.images?.map((image, index) => (
                   <div>
                     <img
                       key={index}
-                      src={image}
+                      src={image.url}
                       alt={`Thumbnail ${index + 1}`}
-                      className={`img-fluid ${currentIndex === image ? 'active' : ''}`}
+                      className={`img-fluid ${currentIndex === image.url ? 'active' : ''}`}
                       onClick={() => setCurrentIndex(index)}
                     />
                   </div>

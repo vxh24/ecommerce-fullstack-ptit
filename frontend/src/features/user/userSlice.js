@@ -44,6 +44,13 @@ export const getUserProductWishlist = createAsyncThunk("user/wishlist", async (t
     return thunkAPI.rejectWithValue(error)
   }
 })
+export const logoutSlice = createAsyncThunk("user/logout", async (thunkAPI) => {
+  try {
+    return await authService.logOut()
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error)
+  }
+})
 export const AddProdToCart = createAsyncThunk("user/cart/add", async (product, thunkAPI) => {
   try {
     return await authService.AddToCart(product);
@@ -121,6 +128,13 @@ export const changePassSlice = createAsyncThunk("user/update/pass", async (data,
     return thunkAPI.rejectWithValue(error)
   }
 })
+export const getProfileSlice = createAsyncThunk("user/profile", async (thunkAPI) => {
+  try {
+    return await authService.getProfile();
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error)
+  }
+})
 const getCustomerfromLocalStorage = localStorage.getItem("customer")
   ? JSON.parse(localStorage.getItem("customer"))
   : null;
@@ -145,7 +159,6 @@ export const authSlice = createSlice({
       state.createUser = action.payload;
       if (state.isSuccess === true) {
         toast.info("User Create Successfully");
-        console.log("User Create Successfullyaaaa")
       }
     }).addCase(createUser.rejected, (state, action) => {
       state.isLoading = false;
@@ -153,7 +166,7 @@ export const authSlice = createSlice({
       state.isSuccess = false;
       state.message = action.error;
       if (state.isError === true) {
-        toast.error(action.error)
+        toast.error(action.payload.response.data.message);
       }
     }).addCase(handleLogin.pending, (state) => {
       state.isLoading = true;
@@ -173,7 +186,7 @@ export const authSlice = createSlice({
       state.isSuccess = false;
       state.message = action.error;
       if (state.isError === true) {
-        toast.error(action.error)
+        toast.error(action.payload.response.data.message)
       }
     })
       .addCase(googlelogin.pending, (state) => {
@@ -230,9 +243,9 @@ export const authSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
-        if (state.isError === true) {
-          toast.error("ko đc")
-        }
+        // if (state.isError === true) {
+        //   toast.error("ko đc")
+        // }
       })
       .addCase(getUserCart.pending, (state) => {
         state.isLoading = true;
@@ -247,9 +260,9 @@ export const authSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
-        if (state.isError === true) {
-          toast.error("ko đc")
-        }
+        // if (state.isError === true) {
+        //   toast.error("ko đc")
+        // }
       })
       .addCase(forgotPass.pending, (state) => {
         state.isLoading = true;
@@ -267,9 +280,9 @@ export const authSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
-        if (state.isError === true) {
-          toast.error("ko đc")
-        }
+        // if (state.isError === true) {
+        //   toast.error("ko đc")
+        // }
       })
       .addCase(ResetPassWord.pending, (state) => {
         state.isLoading = true;
@@ -287,9 +300,9 @@ export const authSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
-        if (state.isError === true) {
-          toast.error("ko đc")
-        }
+        // if (state.isError === true) {
+        //   toast.error("ko đc")
+        // }
       })
       .addCase(cashOrderUser.pending, (state) => {
         state.isLoading = true;
@@ -307,9 +320,9 @@ export const authSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
-        if (state.isError === true) {
-          toast.error("ko đc")
-        }
+        // if (state.isError === true) {
+        //   toast.error("ko đc")
+        // }
       })
       .addCase(getOrderUser.pending, (state) => {
         state.isLoading = true;
@@ -438,6 +451,37 @@ export const authSlice = createSlice({
         if (state.isError === true) {
           toast.error("Có lỗi xảy ra")
         }
+      })
+      .addCase(logoutSlice.pending, (state) => {
+        state.isLoading = true;
+
+      }).addCase(logoutSlice.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.logout = action.payload;
+        if (state.isSuccess === true) {
+          toast.success("Đăng xuất thành công");
+        }
+      }).addCase(logoutSlice.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+      })
+      .addCase(getProfileSlice.pending, (state) => {
+        state.isLoading = true;
+
+      }).addCase(getProfileSlice.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.profile = action.payload;
+      }).addCase(getProfileSlice.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
       })
   }
 })

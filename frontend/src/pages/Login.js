@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Meta from '../components/Meta';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import BreadCrumb from '../components/BreadCrumb'
@@ -26,12 +26,16 @@ const Login = () => {
     validationSchema: LoginSchema,
     onSubmit: (values) => {
       dispatch(handleLogin(values));
+    },
+  });
+  useEffect(() => {
+    if (authState.user !== null && authState.isSuccess === true) {
       navigate("/");
       setTimeout(() => {
         window.location.reload();
       }, 500);
-    },
-  });
+    }
+  }, [authState])
   const handleSuccess = async (credentialResponse) => {
     try {
       dispatch(googlelogin({ token: credentialResponse.credential }));
@@ -79,26 +83,30 @@ const Login = () => {
                     }
                   </div>
                   <div>
-                    <Link to="/forgot-password" className='mb-3'>Bạn đã quên mật khẩu?</Link>
+                    <div >
+                      <Link to="/forgot-password" className='mb-3 text-decoration-underline fs-6 text-primary'>Bạn đã quên mật khẩu?</Link>
+                    </div>
                     <div className="mt-3 d-flex justify-content-center gap-15 align-items-center mb-3">
                       <button className="button border-0">Đăng nhập</button>
 
                     </div>
-                    <div className='d-flex justify-content-center gap-10 align-items-center'>
-                      <h3 className=''>Bạn chưa có tài khoản?</h3>
-                      <Link className='signup' to="/sign-up" ><h4>Đăng ký</h4></Link>
-                    </div>
-                    <div className=' '>
-                      <h3 className='d-flex justify-content-center align-items-center gap-10'><hr className='login-1' />Or<hr className='login-1' /></h3>
-                    </div>
-                    <div>
-                      <GoogleLogin
-                        onSuccess={handleSuccess}
-                        onError={handleError}
-                      />
-                    </div>
                   </div>
                 </form>
+                <div>
+                  <div className='d-flex justify-content-center gap-10 align-items-center'>
+                    <h3 className=''>Bạn chưa có tài khoản?</h3>
+                    <Link className='signup' to="/sign-up" ><h4>Đăng ký</h4></Link>
+                  </div>
+                  <div className=' '>
+                    <h3 className='d-flex justify-content-center align-items-center gap-10'><hr className='login-1' />Or<hr className='login-1' /></h3>
+                  </div>
+                  <div>
+                    <GoogleLogin
+                      onSuccess={handleSuccess}
+                      onError={handleError}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>

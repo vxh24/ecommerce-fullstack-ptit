@@ -10,7 +10,6 @@ const {
   deleteProductController,
   addToWishlistController,
   ratingController,
-  uploadImagesController,
   deleteImagesController,
 } = require("../controllers/productController");
 
@@ -20,7 +19,6 @@ router.post("/", authMiddleware, isAdmin, createProductController);
 router.get("/", getAllProductsController);
 router.put("/wishlist", authMiddleware, addToWishlistController);
 router.put("/rating", authMiddleware, ratingController);
-router.post("/upload", authMiddleware, isAdmin, uploadImagesController);
 router.delete(
   "/upload/delete-img/:id",
   authMiddleware,

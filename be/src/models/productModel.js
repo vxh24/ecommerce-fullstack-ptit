@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const mongoose_delete = require("mongoose-delete");
 
 const productSchema = new mongoose.Schema(
   {
@@ -7,12 +6,6 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-    },
-    slug: {
-      type: String,
-      required: true,
-      unique: true,
-      lowercase: true,
     },
     description: {
       type: String,
@@ -44,7 +37,7 @@ const productSchema = new mongoose.Schema(
         url: String,
       },
     ],
-    color: [],
+    colors: [],
     tags: [],
     ratings: [
       {
@@ -60,8 +53,6 @@ const productSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
-productSchema.plugin(mongoose_delete, { overrideMethods: "all" });
 
 const Product = mongoose.model("Product", productSchema);
 module.exports = Product;

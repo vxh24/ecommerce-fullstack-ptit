@@ -10,9 +10,8 @@ import { getBrands } from "../features/brand/brandSlice";
 import { getCategories } from "../features/pcategory/pCategorySlice";
 import { getColors } from "../features/color/colorSlice";
 import { Select } from "antd";
-import Dropzone from "react-dropzone";
-import { delImg, uploadImg } from "../features/upload/uploadSlice";
 import { createProducts, resetState } from "../features/product/productSlice";
+import "../assets/style.css";
 
 let schema = yup.object().shape({
   title: yup.string().required("Title is Required"),
@@ -21,7 +20,12 @@ let schema = yup.object().shape({
   brand: yup.string().required("Brand is Required"),
   category: yup.string().required("Category is Required"),
   tags: yup.string().required("Tag is Required"),
-  color: yup
+  tags: yup
+    .array()
+    .min(1, "At least one tag is required")
+    .of(yup.string())
+    .required("Tag is Required"),
+  colors: yup
     .array()
     .min(1, "Pick at least one color")
     .required("Color is Required"),
@@ -30,7 +34,7 @@ let schema = yup.object().shape({
 
 const AddProduct = () => {
   const dispatch = useDispatch();
-  const [color, setColor] = useState([]);
+  const [colors, setColors] = useState([]);
 
   useEffect(() => {
     dispatch(getBrands());
@@ -41,7 +45,6 @@ const AddProduct = () => {
   const brandState = useSelector((state) => state.brand.brands.data);
   const catState = useSelector((state) => state.pCategory.pCategories.data);
   const colorState = useSelector((state) => state.color.colors.data);
-  const imgState = useSelector((state) => state.upload.images.images);
   const newProduct = useSelector((state) => state.product);
   const { isSuccess, isError, isLoading, createdProduct } = newProduct;
 
@@ -77,39 +80,39 @@ const AddProduct = () => {
     });
   }
 
-  const img = [];
-  if (Array.isArray(imgState)) {
-    imgState.forEach((i) => {
-      img.push({
-        public_id: i.public_id,
-        url: i.url,
-      });
-    });
-  }
-
-  useEffect(() => {
-    formik.values.color = color ? color : " ";
-    formik.values.images = img;
-  }, [color, img]);
-
   const formik = useFormik({
     initialValues: {
+      images: [],
       title: "",
       description: "",
       price: "",
-      brand: "",
       category: "",
-      tags: "",
-      color: "",
+      brand: "",
+      colors: "",
       quantity: "",
-      images: "",
+      tags: "",
     },
     validationSchema: schema,
-    onSubmit: (values) => {
-      // alert(JSON.stringify(values));
-      dispatch(createProducts(values));
+    onSubmit: () => {
+      const formData = new FormData();
+
+      formData.append("title", formik.values.title);
+      formData.append("description", formik.values.description);
+      formData.append("price", formik.values.price);
+      formData.append("category", formik.values.category);
+      formData.append("brand", formik.values.brand);
+      formData.append("quantity", formik.values.quantity);
+      formData.append("colors", JSON.stringify(formik.values.colors));
+      formData.append("tags", JSON.stringify(formik.values.tags));
+
+      images.forEach((image) => {
+        formData.append("images", image);
+      });
+
+      dispatch(createProducts(formData));
       formik.resetForm();
-      setColor(null);
+      setColors([]);
+      setImages([]);
       setTimeout(() => {
         dispatch(resetState());
       }, 3000);
@@ -117,8 +120,59 @@ const AddProduct = () => {
   });
 
   const handleColors = (e) => {
-    setColor(e);
+    setColors(e);
+    formik.setFieldValue("colors", e);
   };
+
+  const [images, setImages] = useState([]);
+  const [fileInputKey, setFileInputKey] = useState(0);
+
+  const onFileUploadHandler = (e) => {
+    const newImages = [...e.target.files];
+    if (images.length + newImages.length > 5) {
+      toast.error("Bạn chỉ có thể tải tối đa 5 hình ảnh.");
+    } else {
+      setImages((prevImages) => [...prevImages, ...newImages]);
+    }
+  };
+
+  const removeImage = (index) => {
+    setImages((prevImages) => {
+      const updatedImages = [...prevImages];
+      updatedImages.splice(index, 1);
+      return updatedImages;
+    });
+    setFileInputKey((prevKey) => prevKey + 1);
+  };
+
+  const getImages = () =>
+    images.map((image, index) => (
+      <div key={index} className="position-relative">
+        <img
+          alt="Preview"
+          src={URL.createObjectURL(image)}
+          width="200px"
+          height="200px"
+        />
+        <button
+          onClick={() => removeImage(index)}
+          style={{
+            position: "absolute",
+            top: "0",
+            right: "0",
+            background: "red",
+            color: "white",
+            border: "none",
+            borderRadius: "50%",
+            cursor: "pointer",
+            width: "20px",
+            height: "20px",
+          }}
+        >
+          X
+        </button>
+      </div>
+    ));
 
   return (
     <div>
@@ -139,7 +193,8 @@ const AddProduct = () => {
           <div className="error">
             {formik.touched.title && formik.errors.title}
           </div>
-          <div className="">
+
+          <div>
             <ReactQuill
               theme="snow"
               name="description"
@@ -150,6 +205,7 @@ const AddProduct = () => {
           <div className="error">
             {formik.touched.description && formik.errors.description}
           </div>
+
           <CustomInput
             type="number"
             label="Enter Product Price"
@@ -161,13 +217,13 @@ const AddProduct = () => {
           <div className="error">
             {formik.touched.price && formik.errors.price}
           </div>
+
           <select
             name="brand"
             onChange={formik.handleChange("brand")}
             onBlur={formik.handleBlur("brand")}
             value={formik.values.brand}
             className="form-control py-3 mb-3"
-            id=""
           >
             <option value="">Select Brand</option>
             {Array.isArray(brandState) &&
@@ -182,6 +238,7 @@ const AddProduct = () => {
           <div className="error">
             {formik.touched.brand && formik.errors.brand}
           </div>
+
           <select
             name="category"
             onChange={formik.handleChange("category")}
@@ -203,21 +260,20 @@ const AddProduct = () => {
           <div className="error">
             {formik.touched.category && formik.errors.category}
           </div>
-          <select
-            name="tags"
-            onChange={formik.handleChange("tags")}
-            onBlur={formik.handleBlur("tags")}
+
+          <Select
+            mode="multiple"
+            allowClear
+            className="w-100"
+            placeholder="Select Tags"
             value={formik.values.tags}
-            className="form-control py-3 mb-3"
-            id=""
-          >
-            <option value="" disabled>
-              Select Tag
-            </option>
-            <option value="featured">Featured</option>
-            <option value="popular">Popular</option>
-            <option value="special">Special</option>
-          </select>
+            onChange={(value) => formik.setFieldValue("tags", value)}
+            options={[
+              { label: "Featured", value: "featured" },
+              { label: "Popular", value: "popular" },
+              { label: "Special", value: "special" },
+            ]}
+          />
           <div className="error">
             {formik.touched.tags && formik.errors.tags}
           </div>
@@ -227,12 +283,12 @@ const AddProduct = () => {
             allowClear
             className="w-100"
             placeholder="Select colors"
-            defaultValue={color}
-            onChange={(i) => handleColors(i)}
+            value={formik.values.colors}
+            onChange={handleColors}
             options={coloropt}
           />
           <div className="error">
-            {formik.touched.color && formik.errors.color}
+            {formik.touched.colors && formik.errors.colors}
           </div>
           <CustomInput
             type="number"
@@ -245,40 +301,39 @@ const AddProduct = () => {
           <div className="error">
             {formik.touched.quantity && formik.errors.quantity}
           </div>
-          <div
-            className="bg-white border-1 p-5 text-center"
-            style={{ cursor: "pointer" }}
-          >
-            <Dropzone
-              onDrop={(acceptedFiles) => dispatch(uploadImg(acceptedFiles))}
+
+          <div className="d-flex gap-2">
+            Product Images: <p>(Select up to 5 images)</p>
+          </div>
+
+          <div className="custom-file d-flex gap-2">
+            <input
+              key={fileInputKey}
+              id="customFile"
+              className="custom-file-input"
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={onFileUploadHandler}
+              disabled={images.length >= 5}
+            />
+
+            <label htmlFor="customFile" className="custom-file-label">
+              Choose files
+            </label>
+
+            <div
+              className="mt-3"
+              style={{ color: "green", fontWeight: "bold", fontSize: "15px" }}
             >
-              {({ getRootProps, getInputProps }) => (
-                <section>
-                  <div {...getRootProps()}>
-                    <input {...getInputProps()} />
-                    <p>
-                      Drag 'n' drop some files here, or click to select files
-                    </p>
-                  </div>
-                </section>
-              )}
-            </Dropzone>
+              {images.length > 0
+                ? `${images.length} file(s) selected`
+                : "No file chosen"}
+            </div>
           </div>
-          <div className="showimages d-flex flex-wrap gap-3">
-            {imgState?.map((i, j) => {
-              return (
-                <div className=" position-relative" key={j}>
-                  <button
-                    type="button"
-                    onClick={() => dispatch(delImg(i.public_id))}
-                    className="btn-close position-absolute"
-                    style={{ top: "10px", right: "10px" }}
-                  ></button>
-                  <img src={i.url} alt="" width={200} height={200} />
-                </div>
-              );
-            })}
-          </div>
+
+          <div className="d-flex gap-3 mt-2">{getImages()}</div>
+
           <button
             className="btn btn-success border-0 rounded-3 my-5"
             type="submit"
