@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
 import colorService from "./colorService";
-
+import { toast } from "react-toastify"
 export const getColors = createAsyncThunk(
   "color/get-colors",
   async (thunkAPI) => {
@@ -95,6 +95,9 @@ export const colorSlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         state.createdColor = action.payload;
+        if (state.isSuccess === true) {
+          toast.success("Thêm thành công");
+        }
       })
       .addCase(createColor.rejected, (state, action) => {
         state.isLoading = false;
@@ -110,6 +113,9 @@ export const colorSlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         state.updatedColor = action.payload;
+        if (state.isSuccess === true) {
+          toast.success("Cập nhật thành công");
+        }
       })
       .addCase(updateAColor.rejected, (state, action) => {
         state.isLoading = false;

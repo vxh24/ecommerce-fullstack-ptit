@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Meta from '../components/Meta';
 import BreadCrumb from '../components/BreadCrumb';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { RiCoupon3Line } from "react-icons/ri";
 import { FcShipped } from "react-icons/fc";
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,10 +12,12 @@ import VoucherModal from '../components/VoucherModal';
 import { getAllCoupon } from '../features/counpons/couponSlice';
 import AddAddressForm from '../components/AddAddressForm';
 const Checkout = () => {
+  const authState = useSelector(state => state?.auth);
   const [showModal, setShowModal] = useState(false);
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const userCartState = useSelector(state => state?.auth?.cartUser?.result);
   const productState = useSelector((state) => state?.product?.products?.data);
   const [totalAmount, setTotalAmount] = useState(null);
@@ -69,11 +71,19 @@ const Checkout = () => {
     }
   }, [userCartState])
   const createOrder = () => {
-    dispatch(cashOrderUser({ COD: true, couponApplied: false }))
-    setTimeout(() => {
-      dispatch(getUserCart())
-    }, 100)
+    if (payment === 1) {
+      dispatch(cashOrderUser({ COD: true, couponApplied: false }));
+
+      setTimeout(() => {
+        dispatch(getUserCart())
+      }, 100)
+    }
   }
+  useEffect(() => {
+    if (authState.user !== null && authState.order.message === "success") {
+      navigate("/my-orders");
+    }
+  }, [authState])
   const handleAddressChange = (address) => {
     setAddressSelect(address);
   };
@@ -288,7 +298,7 @@ const Checkout = () => {
               </div>
               <div className='d-flex justify-content-between py-3'>
                 <Link to="/product" className='d-flex text-dark align-items-center'><MdOutlineKeyboardReturn className='me-2' />Continue Shopping</Link>
-                <button className='button border-0'>
+                <button className='button border-0' onClick={createOrder}>
                   Đặt hàng
                 </button>
               </div>

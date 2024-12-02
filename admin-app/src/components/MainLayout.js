@@ -80,41 +80,41 @@ const MainLayout = () => {
               icon: <AiOutlineShoppingCart className="fs-4" />,
               label: "Catalog",
               children: [
-                {
-                  key: "product",
-                  icon: <AiOutlineShoppingCart className="fs-4" />,
-                  label: "Add Product",
-                },
+                // {
+                //   key: "product",
+                //   icon: <AiOutlineShoppingCart className="fs-4" />,
+                //   label: "Add Product",
+                // },
                 {
                   key: "list-product",
                   icon: <AiOutlineShoppingCart className="fs-4" />,
                   label: "Product List",
                 },
-                {
-                  key: "brand",
-                  icon: <SiBrandfolder className="fs-4" />,
-                  label: "Brand",
-                },
+                // {
+                //   key: "brand",
+                //   icon: <SiBrandfolder className="fs-4" />,
+                //   label: "Brand",
+                // },
                 {
                   key: "list-brand",
                   icon: <SiBrandfolder className="fs-4" />,
                   label: "Brand List ",
                 },
-                {
-                  key: "category",
-                  icon: <BiCategoryAlt className="fs-4" />,
-                  label: "Category",
-                },
+                // {
+                //   key: "category",
+                //   icon: <BiCategoryAlt className="fs-4" />,
+                //   label: "Category",
+                // },
                 {
                   key: "list-category",
                   icon: <BiCategoryAlt className="fs-4" />,
                   label: "Category List",
                 },
-                {
-                  key: "color",
-                  icon: <AiOutlineBgColors className="fs-4" />,
-                  label: "Color",
-                },
+                // {
+                //   key: "color",
+                //   icon: <AiOutlineBgColors className="fs-4" />,
+                //   label: "Color",
+                // },
                 {
                   key: "list-color",
                   icon: <AiOutlineBgColors className="fs-4" />,

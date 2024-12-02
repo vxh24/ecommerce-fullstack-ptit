@@ -231,7 +231,7 @@ const Home = () => {
             <div className="row">
               {
                 productState && productState?.map((item, index) => {
-                  if (item?.tags[0] === "featured") {
+                  if (item?.tags?.includes("featured")) {
                     return (
                       < FeaturedProduct key={index} title={item?.title} brand={item?.brand}
                         price={item?.price} totalRating={item?.totalRatings.toString()}
@@ -305,7 +305,7 @@ const Home = () => {
           <div className="row">
             {
               productState && productState?.map((item, index) => {
-                if (item?.tags[0] === "special") {
+                if (item?.tags?.includes("special")) {
                   return (
                     < SpecialProduct key={index} title={item?.title} brand={item?.brand}
                       price={item?.price} totalRating={item?.totalRatings.toString()}
@@ -330,7 +330,7 @@ const Home = () => {
             <div className="row">
               {
                 productState && productState?.map((item, index) => {
-                  if (item?.tags[0] === "popular") {
+                  if (item?.tags?.includes("popular")) {
                     return (
                       < PopularProduct key={index} title={item?.title} brand={item?.brand}
                         price={item?.price} totalRating={item?.totalRatings.toString()}

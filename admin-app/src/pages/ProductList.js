@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Table } from "antd";
 import { BiEdit } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { getProducts } from "../features/product/productSlice";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const columns = [
   {
     title: "SNo",
@@ -42,14 +42,20 @@ const columns = [
 
 const ProductList = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   useEffect(() => {
     dispatch(getProducts());
   }, []);
-
+  const [click, setClick] = useState(false);
+  console.log(click);
   const productState = useSelector((state) => state.product.products.data);
   // console.log(productState);
   const data1 = [];
-
+  useEffect(() => {
+    if (click === true) {
+      navigate("/admin/product");
+    }
+  }, [click])
   if (productState && productState.length) {
     for (let i = 0; i < productState.length; i++) {
       data1.push({
@@ -75,7 +81,10 @@ const ProductList = () => {
 
   return (
     <div>
-      <h3 className="mb-4 title">Products</h3>
+      <div className="product-list d-flex justify-content-between align-items-center">
+        <h3 className="mb-4 title">Products</h3>
+        <button onClick={() => setClick(true)}>+Thêm sản phẩm</button>
+      </div>
       <div>
         <Table columns={columns} dataSource={data1} />
       </div>

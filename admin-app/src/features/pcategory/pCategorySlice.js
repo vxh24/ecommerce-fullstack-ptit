@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
 import pCategoryService from "./pCategoryService";
-
+import { toast } from "react-toastify"
 export const getCategories = createAsyncThunk(
   "productCategory/get-categories",
   async (thunkAPI) => {
@@ -95,6 +95,9 @@ export const pCategorySlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         state.createdCategory = action.payload;
+        if (state.isSuccess === true) {
+          toast.success("Thêm thành công");
+        }
       })
       .addCase(createCategory.rejected, (state, action) => {
         state.isLoading = false;
@@ -110,6 +113,9 @@ export const pCategorySlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         state.updatedCategory = action.payload;
+        if (state.isSuccess === true) {
+          toast.success("Cập nhật thành công");
+        }
       })
       .addCase(updateAProductCategory.rejected, (state, action) => {
         state.isLoading = false;
