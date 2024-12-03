@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import moment from "moment";
 import ProductReview from '../components/ProductReview';
+import { useNavigate } from "react-router";
 const OrderDetailCard = ({ order }) => {
   const [open, setOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const navigate = useNavigate();
   const handleOpenReviewProduct = (product) => {
     setSelectedOrder(product);
     setOpen(true);
@@ -39,10 +41,10 @@ const OrderDetailCard = ({ order }) => {
               <div key={index} className="cart-data py-3 d-flex justify-content-between align-items-center">
                 <div className='cart-col-1 gap-15 d-flex justify-content-between align-items-center'>
                   <div className='w-25'>
-                    <img src="images/watch.jpg" className='img-fluid' alt="" />
+                    <img src={item.product.images[0].url} className='img-fluid' alt="" />
                   </div>
                   <div className='w-75'>
-                    <p>{item?.product?.title}</p>
+                    <p>{item?.product?.name}</p>
                     <p className="d-flex gap-15">Color:
                       <ul className='colors ps-0'>
                         <li style={{ backgroundColor: item?.color }}></li>
@@ -52,7 +54,7 @@ const OrderDetailCard = ({ order }) => {
                   </div>
                 </div>
                 <div className='cart-col-2'>
-                  <h5 className="price">$ {item?.product?.price}</h5>
+                  <h5 className="price">đ{item?.product?.price}</h5>
                 </div>
                 <div className='cart-col-3 d-flex align-items-center gap-15'>
                   <div className="">
@@ -60,7 +62,7 @@ const OrderDetailCard = ({ order }) => {
                   </div>
                 </div>
                 <div className='cart-col-4'>
-                  <h5 className="price">$ {item?.product?.price * item?.count}</h5>
+                  <h5 className="price">đ{item?.product?.price * item?.count}</h5>
                 </div>
                 {
                   order.orderStatus === "Hoàn thành" && (

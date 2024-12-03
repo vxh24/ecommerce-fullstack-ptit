@@ -89,7 +89,7 @@ export const productSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.product = action.payload;
+        state.rating = action.payload;
         if (state.isSuccess === true) {
           toast.success("Rating Added SuccessFully");
         }

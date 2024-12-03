@@ -19,7 +19,7 @@ const ProfileSideBar = ({ setActive, active }) => {
     <>
       <div className="w-full bg-white shadow rounded p-4 pt-8 mt-4">
         <div
-          className="d-flex align-items-center cursor-pointer w-100 mb-3 gap-10"
+          className="profile-content-poiner d-flex align-items-center w-100 mb-3 gap-10"
           onClick={() => setActive(1)}
         >
           <RxPerson size={26} color={active === 1 ? "red" : ""} />
@@ -32,7 +32,7 @@ const ProfileSideBar = ({ setActive, active }) => {
         </div>
 
         <div
-          className="d-flex align-items-center cursor-pointer w-100 mb-3 gap-10"
+          className="profile-content-poiner d-flex align-items-center w-100 mb-3 gap-10"
           onClick={() => setActive(2)}
         >
           <RiLockPasswordLine size={20} color={active === 2 ? "red" : ""} />
@@ -45,7 +45,7 @@ const ProfileSideBar = ({ setActive, active }) => {
         </div>
 
         <div
-          className="d-flex align-items-center cursor-pointer w-100 mb-3 gap-10"
+          className="profile-content-poiner d-flex align-items-center w-100 mb-3 gap-10"
           onClick={() => setActive(3)}
         >
           <TbAddressBook size={20} color={active === 3 ? "red" : ""} />
@@ -57,7 +57,7 @@ const ProfileSideBar = ({ setActive, active }) => {
           </span>
         </div>
         <div
-          className="d-flex align-items-center cursor-pointer w-100 mb-3 gap-10"
+          className="profile-content-poiner d-flex align-items-center w-100 mb-3 gap-10"
           onClick={() => setActive(4)}
         >
           <RiCoupon3Line size={20} color={active === 4 ? "red" : ""} />
@@ -68,18 +68,9 @@ const ProfileSideBar = ({ setActive, active }) => {
             Kho Voucher
           </span>
         </div>
-        {
-          profileState?.role === "admin" && (
-            <div className="dashboard d-flex align-items-center cursor-pointer w-100 mb-3 gap-10">
-              <GrConfigure size={20} />
-              <Link to="http://localhost:3001/admin" className='text-dark'> Quản lý</Link>
-            </div>
-          )
-        }
 
         <div
-          className="d-flex align-items-center cursor-pointer w-100 mb-3 gap-10"
-        // onClick={logoutHandler}
+          className="profile-content-poiner d-flex align-items-center w-100 mb-3 gap-10"
         >
           <AiOutlineLogin size={20} color={active === 5 ? "red" : ""} />
           <span

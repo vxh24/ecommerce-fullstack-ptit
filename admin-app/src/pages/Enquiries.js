@@ -11,6 +11,7 @@ import {
 import { AiFillDelete, AiOutlineEye } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import CustomModal from "../components/CustomModal";
+import ViewEnquiry from "./ViewEnquiry";
 
 const columns = [
   {
@@ -45,6 +46,8 @@ const Enquiries = () => {
 
   const [open, setOpen] = useState(false);
   const [enqId, setenqId] = useState("");
+  const [click, setClick] = useState(false);
+  const [enquiry, setEnquiry] = useState(false);
 
   const showModal = (e) => {
     setOpen(true);
@@ -56,7 +59,7 @@ const Enquiries = () => {
   };
 
   useEffect(() => {
-    dispatch(resetState());
+    // dispatch(resetState());
     dispatch(getEnquiries());
   }, []);
 
@@ -74,6 +77,7 @@ const Enquiries = () => {
         status: (
           <>
             <select
+              value={enqState[i].status}
               name=""
               defaultValue={
                 enqState[i].status ? enqState[i].status : "Submitted"
@@ -94,12 +98,13 @@ const Enquiries = () => {
 
         action: (
           <>
-            <Link
-              className="ms-3 fs-3 text-danger"
-              to={`/admin/enquiries/${enqState[i]._id}`}
+            <button
+              className="ms-3 fs-3 text-danger border-0 bg-transparent"
+              // to={`/admin/enquiries/${enqState[i]._id}`}
+              onClick={() => { setClick(true); setEnquiry(enqState[i]) }}
             >
               <AiOutlineEye />
-            </Link>
+            </button>
             <button
               className="ms-3 fs-3 text-danger bg-transparent border-0"
               onClick={() => showModal(enqState[i]._id)}
@@ -115,6 +120,9 @@ const Enquiries = () => {
   const setEnquiryStatus = (e, i) => {
     const data = { id: i, enqData: e };
     dispatch(updateAEnquiry(data));
+    setTimeout(() => {
+      dispatch(getEnquiries());
+    }, 200);
   };
 
   const deleteEnq = (e) => {
@@ -122,24 +130,39 @@ const Enquiries = () => {
     setOpen(false);
     setTimeout(() => {
       dispatch(getEnquiries());
-    }, 100);
+    }, 200);
   };
 
   return (
-    <div>
-      <h3 className="mb-4 title">Enquiries</h3>
+    <>
       <div>
-        <Table columns={columns} dataSource={data1} />
+        <h3 className="mb-4 title">Enquiries</h3>
+        <div>
+          <Table columns={columns} dataSource={data1} />
+        </div>
+        <CustomModal
+          hideModal={hideModal}
+          open={open}
+          performAction={() => {
+            deleteEnq(enqId);
+          }}
+          title="Are you sure you want to delete this enquiry?"
+        />
       </div>
-      <CustomModal
-        hideModal={hideModal}
-        open={open}
-        performAction={() => {
-          deleteEnq(enqId);
-        }}
-        title="Are you sure you want to delete this enquiry?"
-      />
-    </div>
+      {
+        click && (
+          < div className="modal" >
+            <div className="modal-content">
+              <button className="close-model" onClick={() => setClick(false)}>✖</button>
+              <h3 className="mb-3 title">
+                View Enquiry
+              </h3>
+              <ViewEnquiry enquiry={enquiry} />
+            </div>
+          </div>
+        )
+      }
+    </>
   );
 };
 

@@ -10,8 +10,12 @@ import { CgProfile } from "react-icons/cg";
 import { GiShoppingCart } from "react-icons/gi";
 import { BiCategory } from "react-icons/bi";
 import { googleLogout } from '@react-oauth/google';
-import { logoutSlice } from '../features/user/userSlice';
+import { getProfileSlice, logoutSlice } from '../features/user/userSlice';
 const Header = () => {
+  const profileState = useSelector(state => state?.auth?.profile?.data);
+  useEffect(() => {
+    dispatch(getProfileSlice());
+  }, [])
   const handleLogout = () => {
     // dispatch(logoutSlice());
     googleLogout();
@@ -110,6 +114,11 @@ const Header = () => {
                             </button>
                             <ul className="dropdown-menu" aria-labelledby="dropdownMenu2">
                               <li><Link className="dropdown-item" type="button" to="/profile">Thông tin cá nhân</Link></li>
+                              {
+                                profileState?.role === "admin" && (
+                                  <li><Link className="dropdown-item" type="button" to="http://localhost:3001/admin">Quản lý</Link></li>
+                                )
+                              }
                               <li><Link className="dropdown-item" type="button" to="/my-orders">Đơn hàng</Link></li>
                               <li><button onClick={handleLogout} className=" dropdown-item" type="button">Đăng xuất</button></li>
                             </ul>

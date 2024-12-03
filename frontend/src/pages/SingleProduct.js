@@ -4,7 +4,6 @@ import BreadCrumb from '../components/BreadCrumb'
 import ReactStars from "react-rating-stars-component";
 import Color from "../components/Color"
 import { Link, useLocation, useNavigate } from "react-router-dom"
-import { IoGitCompareSharp } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from 'react';
 import { getAProducts, RatingProduct } from '../features/products/productSlice';
@@ -20,27 +19,28 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { FcNext, FcPrevious } from "react-icons/fc";
 import ReactImageZoom from 'react-image-zoom';
 const SingleProduct = () => {
-  const images = [
-    'https://down-vn.img.susercontent.com/file/969bc42236e44f4fca9ee2ea708e2ea6@resize_w450_nl.webp',
-    'https://down-vn.img.susercontent.com/file/b1d8436246725815b11d62f245af0250.webp',
-    'https://down-vn.img.susercontent.com/file/39732acae4f65eeb884464097dc86ff6.webp',
-    'https://down-vn.img.susercontent.com/file/7ad85bf6e3b20f1fe934b81445670140@resize_w450_nl.webp',
-  ];
-
+  const location = useLocation();
+  const productState = useSelector(state => state?.product?.product?.data);
+  const images = productState?.images;
   const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length); // Vòng lại khi đến cuối
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
   };
 
+  useEffect(() => {
+    const targetSection = document.getElementById('target-section');
+    if (targetSection) {
+      targetSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [location]);
   const handlePrevious = () => {
     setCurrentIndex((prevIndex) =>
-      (prevIndex - 1 + images.length) % images.length // Vòng lại khi về đầu
+      (prevIndex - 1 + images.length) % images.length
     );
   };
   const [color, setColor] = useState(null);
   const [count, setCount] = useState(1);
   const [orderProduct, setorderProduct] = useState(true);
   const [alreadyAdded, setAlreadyAdded] = useState(false);
-  const [click, setClick] = useState(false);
   const navigate = useNavigate();
   const copyToClipboard = (text) => {
     console.log('text', text)
@@ -52,10 +52,8 @@ const SingleProduct = () => {
     textField.remove()
     toast.success("Copied")
   }
-  const location = useLocation();
   const getProductId = location.pathname.split("/")[2];
   const dispatch = useDispatch();
-  const productState = useSelector(state => state?.product?.product?.data);
   const colorIds = useSelector(state => state?.product?.product?.data?.colors);
   const colors = useSelector(state => state?.color?.colors?.data);
   const matchedColors = colors?.filter((color) => colorIds?.includes(color?._id));
@@ -66,7 +64,6 @@ const SingleProduct = () => {
     zoomWidth: 600,
     img: productState?.images[currentIndex]?.url
   };
-  const cartState = useSelector(state => state?.auth?.cartUser?.data?.products);
   const wishlist = useSelector(state => state?.auth?.wishlist?.data?.wishlist);
   const recommendProduct = useSelector(state => state?.product?.product?.recommend);
   useEffect(() => {
@@ -76,6 +73,7 @@ const SingleProduct = () => {
     getProducts();
     getWishlist();
   }, [])
+  const cartState = useSelector(state => state?.auth?.cartUser?.data?.products);
   const getWishlist = () => {
     dispatch(getUserProductWishlist());
   }
@@ -96,14 +94,14 @@ const SingleProduct = () => {
   }
   const uploadCart = () => {
     if (color === null) {
-      toast.error("Please choose Color")
+      toast.info("Bạn chưa chọn màu")
       return false;
     }
     else {
       dispatch(AddProdToCart({ _id: productState?._id, count, color }))
       setTimeout(() => {
-        dispatch(getUserCart())
         navigate("/cart");
+        dispatch(getUserCart())
       }, 200)
 
     }
@@ -119,7 +117,7 @@ const SingleProduct = () => {
   const [comment, SetComment] = useState(null);
   const addToRatingProduct = () => {
     if (star === null) {
-      toast.info("Mấy sao?");
+      toast.info("Vui lòng chọn số sao");
       return false;
     }
     else if (comment === null) {
@@ -142,14 +140,13 @@ const SingleProduct = () => {
   return (
     <>
       <Meta title={"Product Name"} />
-      <BreadCrumb title={productState?.title} />
+      <BreadCrumb title={productState?.name} />
       <div className="main-product-wrapper py-5 home-wrapper-2">
         <div className="container-xxl">
           <div className="row">
             <div className="col-6">
               <div className="main-product-image">
                 <div >
-                  {/* <img src={productState?.images[currentIndex]?.url} alt={`Product ${currentIndex + 1}`} /> */}
                   {productState?.images?.[currentIndex]?.url && (
                     <ReactImageZoom
                       {...props}
@@ -177,7 +174,7 @@ const SingleProduct = () => {
             <div className="col-6">
               <div className="main-product-details">
                 <div className="border-bottom">
-                  <h3 className='title'>{productState?.title}</h3>
+                  <h3 className='title'>{productState?.name}</h3>
                 </div>
                 <div className="border-bottom py-3">
                   <p className='price'> $ {productState?.price} </p>
@@ -210,6 +207,10 @@ const SingleProduct = () => {
                     <h3 className='product-heading'>Thẻ:</h3>
                     <p className='product-data'>{productState?.tags}</p>
                   </div>
+                  <div className="d-flex align-items-center gap-10 my-2">
+                    <h3 className='product-heading'>Số lượng:</h3>
+                    <p className='product-data'>{productState?.quantity}</p>
+                  </div>
                   {
                     alreadyAdded === false && <>
                       <div className="d-flex flex-column gap-10 mt-2 mb-3">
@@ -232,7 +233,7 @@ const SingleProduct = () => {
                     }
                     <div className={alreadyAdded ? "d-flex align-items-center gap-30 ms-0" : "d-flex align-items-center gap-30 ms-5"}>
                       <button className="button border-0" onClick={() => { alreadyAdded ? navigate("/cart") : uploadCart() }}>
-                        {alreadyAdded ? "Go To Cart" : "Add To Cart"}
+                        {alreadyAdded ? "Đi đến giỏ hàng" : "Thêm vào giỏ hàng"}
                       </button>
                       <button className='button signup'  >Mua ngay</button>
                     </div>
@@ -325,7 +326,7 @@ const SingleProduct = () => {
                       }}
                     />
                   </div>
-                  <div>
+                  <div id="target-section">
                     <textarea name="" id="" className="w-100 form-control" cols="30" rows="4" placeholder='Viết đánh giá ở đây'
                       onChange={(e) => {
                         SetComment(e.target.value);
