@@ -30,7 +30,7 @@ const removeProductFromCartController = asyncHandler(async (req, res) => {
   const { productId, color } = req.body;
 
   try {
-    const result = await removeProductFromCart(_id, productId, color);
+    await removeProductFromCart(_id, productId, color);
     res.status(200).json({
       EC: 0,
       message: "Remove product from cart successful!!!",
@@ -39,12 +39,18 @@ const removeProductFromCartController = asyncHandler(async (req, res) => {
     throw new Error(error);
   }
 });
+
 const updateProductQuantityController = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   const { productId, color, newQuantity } = req.body;
 
   try {
-    const result = await updateProductQuantityInCart(_id, productId, color, newQuantity);
+    const result = await updateProductQuantityInCart(
+      _id,
+      productId,
+      color,
+      newQuantity
+    );
     res.status(200).json({
       EC: 0,
       message: "Product quantity updated successfully!",
@@ -59,7 +65,7 @@ const getUserCartController = asyncHandler(async (req, res) => {
     const result = await getCartUser(_id);
     res.status(200).json({
       EC: 0,
-      result,
+      cart: result,
     });
   } catch (error) {
     throw new Error(error);
@@ -73,7 +79,7 @@ const removeCartController = asyncHandler(async (req, res) => {
 
     res.status(200).json({
       EC: 0,
-      data: result,
+      message: "Remove cart successfull!!!",
     });
   } catch (error) {
     throw new Error(error);

@@ -14,7 +14,7 @@ import { createProducts, resetState } from "../features/product/productSlice";
 import "../assets/style.css";
 
 let schema = yup.object().shape({
-  title: yup.string().required("Title is Required"),
+  name: yup.string().required("Title is Required"),
   description: yup.string().required("Description is Required"),
   price: yup.number().required("Price is Required"),
   brand: yup.string().required("Brand is Required"),
@@ -83,20 +83,20 @@ const AddProduct = () => {
   const formik = useFormik({
     initialValues: {
       images: [],
-      title: "",
+      name: "",
       description: "",
       price: "",
       category: "",
       brand: "",
-      colors: "",
+      colors: [],
       quantity: "",
-      tags: "",
+      tags: [],
     },
     validationSchema: schema,
     onSubmit: () => {
       const formData = new FormData();
 
-      formData.append("title", formik.values.title);
+      formData.append("name", formik.values.name);
       formData.append("description", formik.values.description);
       formData.append("price", formik.values.price);
       formData.append("category", formik.values.category);
@@ -110,6 +110,7 @@ const AddProduct = () => {
       });
 
       dispatch(createProducts(formData));
+
       formik.resetForm();
       setColors([]);
       setImages([]);
@@ -184,14 +185,14 @@ const AddProduct = () => {
         >
           <CustomInput
             type="text"
-            label="Enter Product Title"
-            name="title"
-            onChng={formik.handleChange("title")}
-            onBlr={formik.handleBlur("title")}
-            val={formik.values.title}
+            label="Enter Product Name"
+            name="name"
+            onChng={formik.handleChange("name")}
+            onBlr={formik.handleBlur("name")}
+            val={formik.values.name}
           />
           <div className="error">
-            {formik.touched.title && formik.errors.title}
+            {formik.touched.name && formik.errors.name}
           </div>
 
           <div>

@@ -29,7 +29,7 @@ const {
 } = require("../controllers/cartController");
 
 const {
-  createOrderController,
+  createOrderByCODController,
   getAllOrdersController,
   updateOrderStatusController,
   getOrderByUIDController,
@@ -57,7 +57,7 @@ router.put(
 );
 router.delete("/empty-cart", authMiddleware, removeCartController);
 router.post("/apply-coupon", authMiddleware, handleCouponController);
-router.post("/cart/cash-order", authMiddleware, createOrderController); //COD
+router.post("/cart/cash-order", authMiddleware, createOrderByCODController); //COD
 
 router.get("/orders", authMiddleware, getOrderByUIDController);
 router.get("/get-all-orders", authMiddleware, isAdmin, getAllOrdersController);
@@ -75,8 +75,8 @@ router.put(
   updateOrderStatusController
 );
 router.get("/:id", authMiddleware, isAdmin, getUserByIdController);
-router.delete("/:id", authMiddleware, isAdmin, blockAUserController);
-router.put("/:id", authMiddleware, isAdmin, unBlockAUserController);
+router.put("/block/:id", authMiddleware, isAdmin, blockAUserController);
+router.put("/unblock/:id", authMiddleware, isAdmin, unBlockAUserController);
 router.put("/:id", authMiddleware, updateAUserController);
 
 module.exports = router;

@@ -12,7 +12,7 @@ const {
 const { deleteToCloudinary } = require("../utils/cloudinary");
 
 const createProductController = asyncHandler(async (req, res) => {
-  const { title, description, price, category, brand, quantity, colors, tags } =
+  const { name, description, price, category, brand, quantity, colors, tags } =
     req.body;
 
   const files = req.files.images;
@@ -22,7 +22,7 @@ const createProductController = asyncHandler(async (req, res) => {
   }
 
   const newProduct = await createProduct(
-    { title, description, price, category, brand, quantity, colors, tags },
+    { name, description, price, category, brand, quantity, colors, tags },
     files
   );
 

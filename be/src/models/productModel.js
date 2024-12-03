@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema(
   {
-    title: {
+    name: {
       type: String,
       required: true,
       trim: true,
@@ -37,13 +37,21 @@ const productSchema = new mongoose.Schema(
         url: String,
       },
     ],
-    colors: [],
+    colors: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Color",
+      },
+    ],
     tags: [],
     ratings: [
       {
         star: Number,
         comment: String,
-        postedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        postedBy: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
       },
     ],
     totalRatings: {

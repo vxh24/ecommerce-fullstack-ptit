@@ -55,19 +55,19 @@ const googleLogin = async (req, res) => {
   // const phone = "";
   let user = await User.findOne({ email });
   if (!user) {
-    const NewUser = new User({
+    const newUser = new User({
       name: name,
       email: email,
       password: password,
       // phone: phone,
     });
-    NewUser.save();
+    newUser.save();
     const result1 = await handleLogin(email, token);
 
     if (result1.EC === 0) {
       res.cookie("refresh_token", result1.refresh_token, {
         httpOnly: true,
-        maxAge: 72 * 60 * 60 * 1000, // 3day
+        maxAge: 24 * 60 * 60 * 1000, // 3day
       });
 
       res.status(200).json({
@@ -81,7 +81,7 @@ const googleLogin = async (req, res) => {
     if (result1.EC === 0) {
       res.cookie("refresh_token", result1.refresh_token, {
         httpOnly: true,
-        maxAge: 72 * 60 * 60 * 1000, // 3day
+        maxAge: 24 * 60 * 60 * 1000, // 3day
       });
 
       res.status(200).json({
@@ -99,7 +99,7 @@ const loginUserController = asyncHandler(async (req, res) => {
   if (result.EC === 0) {
     res.cookie("refresh_token", result.refresh_token, {
       httpOnly: true,
-      maxAge: 72 * 60 * 60 * 1000, // 3day
+      maxAge: 24 * 60 * 60 * 1000, // 3day
     });
 
     res.status(200).json({
@@ -118,7 +118,7 @@ const loginAdminController = asyncHandler(async (req, res) => {
   if (result.EC === 0) {
     res.cookie("refresh_token", result.refresh_token, {
       httpOnly: true,
-      maxAge: 72 * 60 * 60 * 1000, // 3day
+      maxAge: 24 * 60 * 60 * 1000, // 3day
     });
 
     res.status(200).json({

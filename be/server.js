@@ -13,6 +13,7 @@ const brandRoute = require("./src/routes/brandRoute");
 const colorRoute = require("./src/routes/colorRoute");
 const couponRoute = require("./src/routes/couponRoute");
 const enquiryRoute = require("./src/routes/enquiryRoute");
+const orderRoute = require("./src/routes/orderRoute");
 const paymentRoute = require("./src/routes/paymentRoute");
 
 const { notFound, errorHandler } = require("./src/middlewares/errorHandler");
@@ -21,6 +22,7 @@ const configViewEngine = require("./src/config/viewEngine");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const cors = require("cors");
+const { initAdminAccount } = require("./src/services/authService");
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -52,6 +54,7 @@ app.use("/v1/api/brand", brandRoute);
 app.use("/v1/api/color", colorRoute);
 app.use("/v1/api/coupon", couponRoute);
 app.use("/v1/api/enquiry", enquiryRoute);
+app.use("/v1/api/order", orderRoute);
 app.use("/", paymentRoute);
 
 app.use(notFound);
@@ -65,6 +68,7 @@ app.use(errorHandler);
 
     app.listen(port, () => {
       console.log(`Backend Nodejs App listening on port ${port}`);
+      initAdminAccount();
     });
   } catch (error) {
     console.log(">>> Error connect to DB: ", error);
