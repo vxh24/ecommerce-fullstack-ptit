@@ -26,12 +26,12 @@ const SingleProduct = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
   };
 
-  useEffect(() => {
-    const targetSection = document.getElementById('target-section');
-    if (targetSection) {
-      targetSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [location]);
+  // useEffect(() => {
+  //   const targetSection = document.getElementById('target-section');
+  //   if (targetSection) {
+  //     targetSection.scrollIntoView({ behavior: 'smooth' });
+  //   }
+  // }, [location]);
   const handlePrevious = () => {
     setCurrentIndex((prevIndex) =>
       (prevIndex - 1 + images.length) % images.length
@@ -73,7 +73,8 @@ const SingleProduct = () => {
     getProducts();
     getWishlist();
   }, [])
-  const cartState = useSelector(state => state?.auth?.cartUser?.data?.products);
+  const cartState = useSelector(state => state?.auth?.cartUser?.cart?.products);
+  console.log(color);
   const getWishlist = () => {
     dispatch(getUserProductWishlist());
   }

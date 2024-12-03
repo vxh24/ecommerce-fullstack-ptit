@@ -12,7 +12,7 @@ const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const authState = useSelector(state => state?.auth);
-  const userCartState = useSelector(state => state?.auth?.cartUser?.result);
+  const userCartState = useSelector(state => state?.auth?.cartUser?.cart);
   const productState = useSelector((state) => state.product.products.data);
   const [totalAmount, setTotalAmount] = useState(null);
   useEffect(() => {
@@ -67,7 +67,7 @@ const Cart = () => {
                     <div key={index} className="cart-data py-3 d-flex justify-content-between align-items-center">
                       <div className='cart-col-1 gap-15 d-flex justify-content-between align-items-center'>
                         <div className='w-25'>
-                          <img src={product.images[0].url} className='img-fluid' alt="" />
+                          <img src={product?.images[0]?.url} className='img-fluid' alt="" />
                         </div>
                         <div className='w-75'>
                           <p>{product?.name}</p>
