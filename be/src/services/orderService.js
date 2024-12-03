@@ -55,149 +55,130 @@ const createOrderByCOD = asyncHandler(async (id, COD, couponApplied) => {
   }
 });
 
-const createPaymentService = asyncHandler(
-  async (userId, COD, couponApplied) => {
-    validateMongodbId(userId);
-    const user = await User.findById(userId);
-    let userCart = await Cart.findOne({ orderBy: user._id });
+const createPaymentService = asyncHandler(async (totalAmount) => {
+  var orderInfo = "Thanh toán qua ví Momo";
+  var redirectUrl = "http://localhost:3000/payment-result";
+  var ipnUrl = "http://localhost:3000/payment-result";
+  var requestType = "payWithMethod";
+  var amount = totalAmount;
+  var orderId = partnerCode + new Date().getTime();
+  var requestId = orderId;
+  var extraData = "";
+  var orderGroupId = "";
+  var autoCapture = true;
+  var lang = "vi";
 
-    const finalAmount =
-      couponApplied && userCart.totalAfterDiscount
-        ? userCart.totalAfterDiscount
-        : userCart.cartTotal;
+  var rawSignature =
+    "accessKey=" +
+    accessKey +
+    "&amount=" +
+    amount +
+    "&extraData=" +
+    extraData +
+    "&ipnUrl=" +
+    ipnUrl +
+    "&orderId=" +
+    orderId +
+    "&orderInfo=" +
+    orderInfo +
+    "&partnerCode=" +
+    partnerCode +
+    "&redirectUrl=" +
+    redirectUrl +
+    "&requestId=" +
+    requestId +
+    "&requestType=" +
+    requestType;
+  //puts raw signature
+  console.log("--------------------RAW SIGNATURE----------------");
+  console.log(rawSignature);
+  //signature
+  var signature = crypto
+    .createHmac("sha256", secretKey)
+    .update(rawSignature)
+    .digest("hex");
+  console.log("--------------------SIGNATURE----------------");
+  console.log(signature);
 
-    if (!COD) {
-      var orderInfo = "Thanh toán qua ví Momo";
-      var redirectUrl = "http://localhost:3000/payment-result";
-      var ipnUrl = "https://1aaf-42-114-161-139.ngrok-free.app/callback";
-      var requestType = "payWithMethod";
-      var amount = finalAmount;
-      var orderId = partnerCode + new Date().getTime();
-      var requestId = orderId;
-      var extraData = "";
-      var orderGroupId = "";
-      var autoCapture = true;
-      var lang = "vi";
+  //json object send to MoMo endpoint
+  const requestBody = JSON.stringify({
+    partnerCode: partnerCode,
+    partnerName: "Test",
+    storeId: "MomoTestStore",
+    requestId: requestId,
+    amount: amount,
+    orderId: orderId,
+    orderInfo: orderInfo,
+    redirectUrl: redirectUrl,
+    ipnUrl: ipnUrl,
+    lang: lang,
+    requestType: requestType,
+    autoCapture: autoCapture,
+    extraData: extraData,
+    orderGroupId: orderGroupId,
+    signature: signature,
+  });
 
-      var rawSignature =
-        "accessKey=" +
-        accessKey +
-        "&amount=" +
-        amount +
-        "&extraData=" +
-        extraData +
-        "&ipnUrl=" +
-        ipnUrl +
-        "&orderId=" +
-        orderId +
-        "&orderInfo=" +
-        orderInfo +
-        "&partnerCode=" +
-        partnerCode +
-        "&redirectUrl=" +
-        redirectUrl +
-        "&requestId=" +
-        requestId +
-        "&requestType=" +
-        requestType;
-      //puts raw signature
-      console.log("--------------------RAW SIGNATURE----------------");
-      console.log(rawSignature);
-      //signature
-      var signature = crypto
-        .createHmac("sha256", secretKey)
-        .update(rawSignature)
-        .digest("hex");
-      console.log("--------------------SIGNATURE----------------");
-      console.log(signature);
+  //option for axios
+  const options = {
+    method: "POST",
+    url: "https://test-payment.momo.vn/v2/gateway/api/create",
+    headers: {
+      "Content-Type": "application/json",
+      "Content-Length": Buffer.byteLength(requestBody),
+    },
+    data: requestBody,
+  };
 
-      //json object send to MoMo endpoint
-      const requestBody = JSON.stringify({
-        partnerCode: partnerCode,
-        partnerName: "Test",
-        storeId: "MomoTestStore",
-        requestId: requestId,
-        amount: amount,
-        orderId: orderId,
-        orderInfo: orderInfo,
-        redirectUrl: redirectUrl,
-        ipnUrl: ipnUrl,
-        lang: lang,
-        requestType: requestType,
-        autoCapture: autoCapture,
-        extraData: extraData,
-        orderGroupId: orderGroupId,
-        signature: signature,
-      });
-
-      //option for axios
-      const options = {
-        method: "POST",
-        url: "https://test-payment.momo.vn/v2/gateway/api/create",
-        headers: {
-          "Content-Type": "application/json",
-          "Content-Length": Buffer.byteLength(requestBody),
-        },
-        data: requestBody,
-      };
-
-      let result;
-      try {
-        result = await axios(options);
-        return result.data;
-      } catch (error) {
-        throw new Error("Payment request failed");
-      }
-    }
+  let result;
+  try {
+    result = await axios(options);
+    return result.data;
+  } catch (error) {
+    throw new Error("Payment request failed");
   }
-);
+});
 
-const handleMomoCallback = asyncHandler(async (userId, callbackData) => {
+const handlePaymentCallback = asyncHandler(async (userId, callbackData) => {
   validateMongodbId(userId);
   const user = await User.findById(userId);
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
   let userCart = await Cart.findOne({ orderBy: user._id });
+
+  if (!userCart) {
+    throw new Error("Cart not found");
+  }
+
   const {
     orderId,
     amount,
     resultCode,
     message,
-    signature,
-    partnerCode: callbackPartnerCode,
-    requestId,
     transId,
+    partnerCode,
+    responseTime,
   } = callbackData;
 
-  if (callbackPartnerCode !== partnerCode) {
-    throw new Error("Invalid partner code");
-  }
-
-  const rawSignature = `accessKey=${accessKey}&amount=${amount}&orderId=${orderId}&partnerCode=${callbackPartnerCode}&resultCode=${resultCode}&message=${message}&requestId=${requestId}`;
-  const calculatedSignature = crypto
-    .createHmac("sha256", secretKey)
-    .update(rawSignature)
-    .digest("hex");
-
-  if (signature !== calculatedSignature) {
-    throw new Error("Invalid signature");
-  }
-
-  if (resultCode === 0) {
-    //update order
-    let newOrder = await new Order({
+  if (resultCode === "0") {
+    const order = new Order({
       products: userCart.products,
       paymentIndent: {
-        id: orderId,
-        message: "Payment successful",
-        method: "MOMO",
-        amount: amount,
-        status: "Success",
-        created: Date.now(),
-        currency: "VNĐ",
-        transactionId: transId,
+        orderId,
+        amount,
+        transId,
+        partnerCode,
+        message,
+        responseTime,
       },
       orderBy: user._id,
       orderStatus: "Processing",
-    }).save();
+    });
+
+    await order.save();
 
     let update = userCart.products.map((item) => {
       return {
@@ -212,7 +193,9 @@ const handleMomoCallback = asyncHandler(async (userId, callbackData) => {
 
     await Cart.findByIdAndDelete(userCart._id);
 
-    return newOrder;
+    return order;
+  } else {
+    throw new Error(`Payment failed: ${message}`);
   }
 });
 
@@ -262,5 +245,5 @@ module.exports = {
   updateOrderStatus,
   getOrderUserById,
   createPaymentService,
-  handleMomoCallback,
+  handlePaymentCallback,
 };

@@ -7,7 +7,7 @@ const {
   updateOrderStatus,
   getOrderUserById,
   createPaymentService,
-  handleMomoCallback,
+  handlePaymentCallback,
 } = require("../services/orderService");
 
 const createOrderByCODController = asyncHandler(async (req, res) => {
@@ -32,16 +32,36 @@ const createOrderByPaymentOnline = asyncHandler(async (req, res) => {
   });
 });
 
-const handlePaymentController = asyncHandler(async (req, res) => {
-  const { _id } = req.user;
-  const { COD, couponApplied } = req.body;
-  if (COD) throw new Error("Create payment online failed");
-  const result = await createPaymentService(_id, COD, couponApplied);
+const createPaymentController = asyncHandler(async (req, res) => {
+  const { totalAmount } = req.body;
+  const result = await createPaymentService(totalAmount);
   res.json({
     EC: 0,
     data: result,
   });
 });
+
+const paymentCallbackController = async (req, res) => {
+  const { _id } = req.user;
+  const callbackData = req.body;
+
+  try {
+    const order = await handlePaymentCallback(_id, callbackData);
+
+    res.status(200).json({
+      success: true,
+      message: "Payment processed successfully",
+      data: order,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message:
+        error.message || "An error occurred while processing the payment",
+    });
+  }
+};
 
 const checkTransactionStatus = asyncHandler(async (req, res) => {
   const { orderId } = req.body;
@@ -141,7 +161,8 @@ module.exports = {
   updateOrderStatusController,
   getOrderByUIDController,
   getOrderByIdController,
-  handlePaymentController,
+  createPaymentController,
   checkTransactionStatus,
   createOrderByPaymentOnline,
+  paymentCallbackController,
 };
