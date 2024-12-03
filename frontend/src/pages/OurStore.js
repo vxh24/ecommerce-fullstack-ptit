@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getAllProducts } from '../features/products/productSlice';
 import { getAllColors } from '../features/color/colorSlice';
 import { toast } from 'react-toastify';
+import Pagination from '../components/Pagination';
 const OurStore = () => {
   const [grid, setGrid] = useState(4);
   const productState = useSelector((state) => state?.product?.products?.data);
@@ -18,12 +19,17 @@ const OurStore = () => {
   const [tags, setTags] = useState(new Set());
   const [sortedProducts, setSortedProducts] = useState([]);
   const [filterProducts, setFilterProducts] = useState([]);
-  // console.log(sortedProducts);
   const [filertags, setFilerTags] = useState([]);
   const [filerbrands, setFilerBrands] = useState([]);
   const [minPrice, setMinPrice] = useState([]);
   const [maxPrice, setMaxPrice] = useState([]);
   const colors = useSelector(state => state?.color?.colors?.data);
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 10; // Số sản phẩm trên mỗi trang
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = productState?.slice(indexOfFirstProduct, indexOfLastProduct);
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
   useEffect(() => {
     getProducts();
     getColors();
@@ -288,16 +294,12 @@ const OurStore = () => {
               </div>
               <div className="products-list pb-5">
                 <div className="d-flex gap-10 flex-wrap">
-                  {/* {!sortedProducts &&
-                    <ProductCard data={productState} grid={grid} />
-                  }
-                  <ProductCard data={sortedProducts ? sortedProducts : productState} grid={grid} /> */}
                   {
-                    sortedProducts && sortedProducts.length > 0 ? (
+                    sortedProducts && sortedProducts?.length > 0 ? (
                       <ProductCard data={sortedProducts} grid={grid} />
-                    ) : filterProducts && filterProducts.length > 0 ? (
+                    ) : filterProducts && filterProducts?.length > 0 ? (
                       <ProductCard data={filterProducts} grid={grid} />
-                    ) : productState && productState.length > 0 ? (
+                    ) : productState && currentProducts?.length > 0 ? (
                       <ProductCard data={productState} grid={grid} />
                     ) : (
                       <p>No products found</p>
@@ -306,6 +308,15 @@ const OurStore = () => {
 
                 </div>
               </div>
+
+            </div>
+            <div className='d-flex justify-content-end'>
+              <Pagination
+                productsPerPage={productsPerPage}
+                totalProducts={productState?.length}
+                paginate={paginate}
+                currentPage={currentPage}
+              />
             </div>
           </div>
         </div>

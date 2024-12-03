@@ -4,8 +4,11 @@ import Meta from '../components/Meta';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserProductWishlist } from '../features/user/userSlice';
 import { addToWishlist } from '../features/products/productSlice';
+import { useNavigate } from 'react-router-dom';
 const Wishlist = () => {
+  const authState = useSelector(state => state?.auth);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   useEffect(() => {
     getWishlist();
   }, []);
@@ -19,6 +22,11 @@ const Wishlist = () => {
       dispatch(getUserProductWishlist());
     }, 200)
   }
+  useEffect(() => {
+    if (authState.user === null && authState.isSuccess !== true) {
+      navigate("/login");
+    }
+  }, [authState])
   return (
     <>
       <Meta title={"Wishlist"} />

@@ -1,12 +1,20 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { AiOutlineLogin, AiOutlineMessage } from "react-icons/ai";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { RiCoupon3Line } from "react-icons/ri";
 import { TbAddressBook } from "react-icons/tb";
 import { RxPerson } from "react-icons/rx";
 import { useNavigate } from 'react-router-dom';
+import { Link } from "react-router-dom";
+import { GrConfigure } from "react-icons/gr";
+import { useDispatch, useSelector } from 'react-redux';
+import { getProfileSlice } from '../features/user/userSlice';
 const ProfileSideBar = ({ setActive, active }) => {
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const profileState = useSelector(state => state?.auth?.profile?.data);
+  useEffect(() => {
+    dispatch(getProfileSlice());
+  }, [])
   return (
     <>
       <div className="w-full bg-white shadow rounded p-4 pt-8 mt-4">
@@ -60,6 +68,14 @@ const ProfileSideBar = ({ setActive, active }) => {
             Kho Voucher
           </span>
         </div>
+        {
+          profileState?.role === "admin" && (
+            <div className="dashboard d-flex align-items-center cursor-pointer w-100 mb-3 gap-10">
+              <GrConfigure size={20} />
+              <Link to="http://localhost:3001/admin" className='text-dark'> Quản lý</Link>
+            </div>
+          )
+        }
 
         <div
           className="d-flex align-items-center cursor-pointer w-100 mb-3 gap-10"

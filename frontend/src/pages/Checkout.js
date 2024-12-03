@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Meta from '../components/Meta';
 import BreadCrumb from '../components/BreadCrumb';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { RiCoupon3Line } from "react-icons/ri";
 import { FcShipped } from "react-icons/fc";
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,11 +10,14 @@ import { FaMapMarkerAlt } from "react-icons/fa";
 import { MdOutlineKeyboardReturn } from "react-icons/md";
 import VoucherModal from '../components/VoucherModal';
 import { getAllCoupon } from '../features/counpons/couponSlice';
+import AddAddressForm from '../components/AddAddressForm';
 const Checkout = () => {
+  const authState = useSelector(state => state?.auth);
   const [showModal, setShowModal] = useState(false);
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const userCartState = useSelector(state => state?.auth?.cartUser?.result);
   const productState = useSelector((state) => state?.product?.products?.data);
   const [totalAmount, setTotalAmount] = useState(null);
@@ -31,6 +34,7 @@ const Checkout = () => {
   const [addressSelect, setAddressSelect] = useState(null);
   const addressState = useSelector(state => state?.auth?.address?.data?.address);
   const couponState = useSelector(state => state?.coupon?.coupons?.data);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   useEffect(() => {
     let sum = Number(totalAmount) * Number(coupon) / 100;
     setTotalcoupoon(sum);
@@ -67,18 +71,22 @@ const Checkout = () => {
     }
   }, [userCartState])
   const createOrder = () => {
-    dispatch(cashOrderUser({ COD: true, couponApplied: false }))
-    setTimeout(() => {
-      dispatch(getUserCart())
-    }, 100)
+    if (payment === 1) {
+      dispatch(cashOrderUser({ COD: true, couponApplied: false }));
+
+      setTimeout(() => {
+        dispatch(getUserCart())
+      }, 100)
+    }
   }
+  useEffect(() => {
+    if (authState.user !== null && authState.order.message === "success") {
+      navigate("/my-orders");
+    }
+  }, [authState])
   const handleAddressChange = (address) => {
     setAddressSelect(address);
   };
-  // const handleChangeshipping = (e) => {
-  //   let sum = Number(totalAmount) + Number(e);
-  //   setTotalpayment(sum);
-  // };
   return (
     <>
       <Meta title={"Checkout"} />
@@ -94,7 +102,8 @@ const Checkout = () => {
                     <p className='mb-0 bold-text'>Địa chỉ nhận hàng</p>
                   </div>
                   <div className='d-flex gap-10'>
-                    <button className='button-checkout'>+Thêm địa chỉ mới</button>
+                    <button onClick={() => setIsModalOpen(true)} className='button-checkout'>+Thêm địa chỉ mới</button>
+                    {isModalOpen && <AddAddressForm onClose={() => setIsModalOpen(false)} />}
                     <button onClick={() => setClick(true)} className='button-checkout1'>Thay đổi</button>
 
                   </div>
@@ -153,7 +162,7 @@ const Checkout = () => {
 
                 {
                   click && (
-                    <div className="d-flex flex-column gap-15 py-3 ps-3">
+                    <div className="d-flex flex-column gap-15 py-3 ps-3 bg-white mb-4">
                       {addressState?.slice() // Tạo một bản sao
                         .sort((a, b) => b.isDefault - a.isDefault)?.map((address) => (
 
@@ -172,44 +181,6 @@ const Checkout = () => {
                     </div>
                   )
                 }
-                {/* <form action="" className='d-flex flex-wrap gap-15 justify-content-between'>
-                  <div className="w-100">
-                    <select className='form-control form-select' name="" id="">
-                      <option value="" selected disabled>
-                        Select Country
-                      </option>
-                    </select>
-                  </div>
-                  <div className="flex-grow-1">
-                    <input type="text" className="form-control" placeholder='First Name' />
-                  </div>
-                  <div className="flex-grow-1">
-                    <input type="text" className="form-control" placeholder='Last Name' />
-                  </div>
-                  <div className="w-100">
-                    <input type="text" className="form-control" placeholder='Address' />
-                  </div>
-                  <div className="w-100">
-                    <input type="text" className="form-control" placeholder='Apartment' />
-                  </div>
-                  <div className='flex-grow-1'>
-                    <input type="text" className="form-control" placeholder='City' />
-                  </div>
-                  <div className='flex-grow-1'>
-                    <select className='form-control form-select' name="" id="">
-                      <option value="" selected disabled>
-                        Select State
-                      </option>
-                    </select>
-                  </div>
-                  <div className='flex-grow-1'><input type="text" className="form-control" placeholder='Zip Code' /></div>
-                  <div className="w-100">
-                    <div className="d-flex justify-content-between align-items-center">
-                      <Link to="/cart" className='text-dark'><MdOutlineKeyboardReturn className='me-2' />Return To Cart</Link>
-                      <Link onClick={createOrder} className='button'>Continue to Shipping </Link>
-                    </div>
-                  </div>
-                </form> */}
                 <div className='d-flex justify-content-between'>
                   <div className='d-flex gap-10'>
                     <FcShipped className='fs-3' />
@@ -327,7 +298,7 @@ const Checkout = () => {
               </div>
               <div className='d-flex justify-content-between py-3'>
                 <Link to="/product" className='d-flex text-dark align-items-center'><MdOutlineKeyboardReturn className='me-2' />Continue Shopping</Link>
-                <button className='button border-0'>
+                <button className='button border-0' onClick={createOrder}>
                   Đặt hàng
                 </button>
               </div>

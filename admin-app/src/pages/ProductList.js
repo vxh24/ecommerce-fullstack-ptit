@@ -3,11 +3,8 @@ import { Table } from "antd";
 import { BiEdit } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteAProduct, getProducts } from "../features/product/productSlice";
-import { Link } from "react-router-dom";
-import CustomModal from "../components/CustomModal";
-import { toast } from "react-toastify";
-import { getColors } from "../features/color/colorSlice";
+import { getProducts } from "../features/product/productSlice";
+import { Link, useNavigate } from "react-router-dom";
 const columns = [
   {
     title: "SNo",
@@ -79,79 +76,53 @@ const columns = [
 ];
 
 const ProductList = () => {
-  const [open, setOpen] = useState(false);
-  const [productId, setProducId] = useState("");
-
-  const showModal = (e) => {
-    setOpen(true);
-    setProducId(e);
-  };
-
-  const hideModal = () => {
-    setOpen(false);
-  };
-
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   useEffect(() => {
     dispatch(getProducts());
   }, []);
-
+  const [click, setClick] = useState(false);
+  console.log(click);
   const productState = useSelector((state) => state.product.products.data);
+  // console.log(productState);
   const data1 = [];
-
+  useEffect(() => {
+    if (click === true) {
+      navigate("/admin/product");
+    }
+  }, [click]);
   if (productState && productState.length) {
     for (let i = 0; i < productState.length; i++) {
       data1.push({
         key: i + 1,
-        name: productState[i].name,
+        title: productState[i].title,
         brand: productState[i].brand,
         category: productState[i].category,
-        colors: productState[i].colors,
-        quantity: productState[i].quantity,
+        color: productState[i].color,
         price: `${productState[i].price}`,
         action: (
           <>
             <Link to="/" className=" fs-3 text-danger">
               <BiEdit />
             </Link>
-            <button
-              className="ms-3 fs-3 text-danger bg-transparent border-0"
-              onClick={() => showModal(productState[i]._id)}
-            >
+            <Link className="ms-3 fs-3 text-danger" to="/">
               <AiFillDelete />
-            </button>
+            </Link>
           </>
         ),
       });
     }
   }
 
-  const deleteProduct = (e) => {
-    dispatch(deleteAProduct(e));
-
-    setOpen(false);
-    setTimeout(() => {
-      dispatch(getProducts());
-    }, 100);
-
-    toast.success("Product deleted successfully!");
-  };
-
   return (
     <div>
-      <h3 className="mb-4 title">Products</h3>
+      <div className="product-list d-flex justify-content-between align-items-center">
+        <h3 className="mb-4 title">Products</h3>
+        <button onClick={() => setClick(true)}>+Thêm sản phẩm</button>
+      </div>
       <div>
         <Table columns={columns} dataSource={data1} />
       </div>
-      <CustomModal
-        hideModal={hideModal}
-        open={open}
-        performAction={() => {
-          deleteProduct(productId);
-        }}
-        title="Are you sure you want to delete this product?"
-      />
     </div>
   );
 };

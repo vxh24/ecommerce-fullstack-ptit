@@ -12,6 +12,7 @@ import { getColors } from "../features/color/colorSlice";
 import { Select } from "antd";
 import { createProducts, resetState } from "../features/product/productSlice";
 import "../assets/style.css";
+import { useNavigate } from "react-router-dom";
 
 let schema = yup.object().shape({
   name: yup.string().required("Title is Required"),
@@ -35,13 +36,18 @@ let schema = yup.object().shape({
 const AddProduct = () => {
   const dispatch = useDispatch();
   const [colors, setColors] = useState([]);
-
+  const [click, setClick] = useState(false);
+  const navigate = useNavigate();
   useEffect(() => {
     dispatch(getBrands());
     dispatch(getCategories());
     dispatch(getColors());
   }, []);
-
+  useEffect(() => {
+    if (click === true) {
+      navigate("/admin/list-product");
+    }
+  }, [click]);
   const brandState = useSelector((state) => state.brand.brands.data);
   const catState = useSelector((state) => state.pCategory.pCategories.data);
   const colorState = useSelector((state) => state.color.colors.data);
@@ -177,171 +183,178 @@ const AddProduct = () => {
 
   return (
     <div>
-      <h3 className="mb-4 title">Add Product</h3>
-      <div>
-        <form
-          onSubmit={formik.handleSubmit}
-          className="d-flex gap-3 flex-column"
-        >
-          <CustomInput
-            type="text"
-            label="Enter Product Name"
-            name="name"
-            onChng={formik.handleChange("name")}
-            onBlr={formik.handleBlur("name")}
-            val={formik.values.name}
-          />
-          <div className="error">
-            {formik.touched.name && formik.errors.name}
-          </div>
-
-          <div>
-            <ReactQuill
-              theme="snow"
-              name="description"
-              onChange={formik.handleChange("description")}
-              value={formik.values.description}
-            />
-          </div>
-          <div className="error">
-            {formik.touched.description && formik.errors.description}
-          </div>
-
-          <CustomInput
-            type="number"
-            label="Enter Product Price"
-            name="price"
-            onChng={formik.handleChange("price")}
-            onBlr={formik.handleBlur("price")}
-            val={formik.values.price}
-          />
-          <div className="error">
-            {formik.touched.price && formik.errors.price}
-          </div>
-
-          <select
-            name="brand"
-            onChange={formik.handleChange("brand")}
-            onBlur={formik.handleBlur("brand")}
-            value={formik.values.brand}
-            className="form-control py-3 mb-3"
+      <div className="product-list d-flex justify-content-between">
+        <h3 className="mb-2 title">Add Product</h3>
+        <button onClick={() => setClick(true)}>x Hủy</button>
+      </div>
+      <div className="d-flex gap-10">
+        <div className="add-product">
+          <form
+            onSubmit={formik.handleSubmit}
+            className="d-flex gap-2 flex-column"
           >
-            <option value="">Select Brand</option>
-            {Array.isArray(brandState) &&
-              brandState.map((i, j) => {
-                return (
-                  <option key={j} value={i.title}>
-                    {i.title}
-                  </option>
-                );
-              })}
-          </select>
-          <div className="error">
-            {formik.touched.brand && formik.errors.brand}
-          </div>
-
-          <select
-            name="category"
-            onChange={formik.handleChange("category")}
-            onBlur={formik.handleBlur("category")}
-            value={formik.values.category}
-            className="form-control py-3 mb-3"
-            id=""
-          >
-            <option value="">Select Category</option>
-            {Array.isArray(catState) &&
-              catState.map((i, j) => {
-                return (
-                  <option key={j} value={i.title}>
-                    {i.title}
-                  </option>
-                );
-              })}
-          </select>
-          <div className="error">
-            {formik.touched.category && formik.errors.category}
-          </div>
-
-          <Select
-            mode="multiple"
-            allowClear
-            className="w-100"
-            placeholder="Select Tags"
-            value={formik.values.tags}
-            onChange={(value) => formik.setFieldValue("tags", value)}
-            options={[
-              { label: "Featured", value: "featured" },
-              { label: "Popular", value: "popular" },
-              { label: "Special", value: "special" },
-            ]}
-          />
-          <div className="error">
-            {formik.touched.tags && formik.errors.tags}
-          </div>
-
-          <Select
-            mode="multiple"
-            allowClear
-            className="w-100"
-            placeholder="Select colors"
-            value={formik.values.colors}
-            onChange={handleColors}
-            options={coloropt}
-          />
-          <div className="error">
-            {formik.touched.colors && formik.errors.colors}
-          </div>
-          <CustomInput
-            type="number"
-            label="Enter Product Quantity"
-            name="quantity"
-            onChng={formik.handleChange("quantity")}
-            onBlr={formik.handleBlur("quantity")}
-            val={formik.values.quantity}
-          />
-          <div className="error">
-            {formik.touched.quantity && formik.errors.quantity}
-          </div>
-
-          <div className="d-flex gap-2">
-            Product Images: <p>(Select up to 5 images)</p>
-          </div>
-
-          <div className="custom-file d-flex gap-2">
-            <input
-              key={fileInputKey}
-              id="customFile"
-              className="custom-file-input"
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={onFileUploadHandler}
-              disabled={images.length >= 5}
-            />
-
-            <label htmlFor="customFile" className="custom-file-label">
-              Choose files
-            </label>
-
-            <div
-              className="mt-3"
-              style={{ color: "green", fontWeight: "bold", fontSize: "15px" }}
-            >
-              {images.length > 0
-                ? `${images.length} file(s) selected`
-                : "No file chosen"}
+            <div className="d-flex gap-2 mb-0">
+              Product Images: <p>(Select up to 5 images)</p>
             </div>
+
+            <div className="custom-file d-flex align-items-center gap-2">
+              <input
+                key={fileInputKey}
+                id="customFile"
+                className="custom-file-input"
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={onFileUploadHandler}
+                disabled={images.length >= 5}
+              />
+
+              <label htmlFor="customFile" className="custom-file-label">
+                Choose files
+              </label>
+
+              <div
+                className="mt-2"
+                style={{ color: "green", fontWeight: "bold", fontSize: "15px" }}
+              >
+                {images.length > 0
+                  ? `${images.length} file(s) selected`
+                  : "No file chosen"}
+              </div>
+            </div>
+            <CustomInput
+              type="text"
+              label="Enter Product Title"
+              name="title"
+              onChng={formik.handleChange("title")}
+              onBlr={formik.handleBlur("title")}
+              val={formik.values.title}
+            />
+            <div className="error">
+              {formik.touched.title && formik.errors.title}
+            </div>
+
+            <div>
+              <ReactQuill
+                theme="snow"
+                name="description"
+                onChange={formik.handleChange("description")}
+                value={formik.values.description}
+              />
+            </div>
+            <div className="error">
+              {formik.touched.description && formik.errors.description}
+            </div>
+
+            <CustomInput
+              type="number"
+              label="Enter Product Price"
+              name="price"
+              onChng={formik.handleChange("price")}
+              onBlr={formik.handleBlur("price")}
+              val={formik.values.price}
+            />
+            <div className="error">
+              {formik.touched.price && formik.errors.price}
+            </div>
+
+            <select
+              name="brand"
+              onChange={formik.handleChange("brand")}
+              onBlur={formik.handleBlur("brand")}
+              value={formik.values.brand}
+              className="form-control py-3 mb-2"
+            >
+              <option value="">Select Brand</option>
+              {Array.isArray(brandState) &&
+                brandState.map((i, j) => {
+                  return (
+                    <option key={j} value={i.title}>
+                      {i.title}
+                    </option>
+                  );
+                })}
+            </select>
+            <div className="error">
+              {formik.touched.brand && formik.errors.brand}
+            </div>
+
+            <select
+              name="category"
+              onChange={formik.handleChange("category")}
+              onBlur={formik.handleBlur("category")}
+              value={formik.values.category}
+              className="form-control py-3 mb-2"
+              id=""
+            >
+              <option value="">Select Category</option>
+              {Array.isArray(catState) &&
+                catState.map((i, j) => {
+                  return (
+                    <option key={j} value={i.title}>
+                      {i.title}
+                    </option>
+                  );
+                })}
+            </select>
+            <div className="error">
+              {formik.touched.category && formik.errors.category}
+            </div>
+
+            <Select
+              mode="multiple"
+              allowClear
+              className="w-100"
+              placeholder="Select Tags"
+              value={formik.values.tags}
+              onChange={(value) => formik.setFieldValue("tags", value)}
+              options={[
+                { label: "Featured", value: "featured" },
+                { label: "Popular", value: "popular" },
+                { label: "Special", value: "special" },
+              ]}
+            />
+            <div className="error">
+              {formik.touched.tags && formik.errors.tags}
+            </div>
+
+            <Select
+              mode="multiple"
+              allowClear
+              className="w-100"
+              placeholder="Select colors"
+              value={formik.values.colors}
+              onChange={handleColors}
+              options={coloropt}
+            />
+            <div className="error">
+              {formik.touched.colors && formik.errors.colors}
+            </div>
+            <CustomInput
+              type="number"
+              label="Enter Product Quantity"
+              name="quantity"
+              onChng={formik.handleChange("quantity")}
+              onBlr={formik.handleBlur("quantity")}
+              val={formik.values.quantity}
+            />
+            <div className="error">
+              {formik.touched.quantity && formik.errors.quantity}
+            </div>
+
+            <button
+              className="btn btn-success border-0 rounded-3 my-4"
+              type="submit"
+            >
+              Add Product
+            </button>
+          </form>
+        </div>
+        <div className="img-product">
+          <div className=" d-flex flex-wrap justify-content-center gap-3">
+            {getImages()}
           </div>
-
-          <div className="d-flex gap-3 mt-2">{getImages()}</div>
-
-          <button
-            className="btn btn-success border-0 rounded-3 my-5"
-            type="submit"
-          >
-            Add Product
-          </button>
-        </form>
+        </div>
       </div>
     </div>
   );

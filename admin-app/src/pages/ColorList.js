@@ -6,6 +6,19 @@ import { BiEdit } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import CustomModal from "../components/CustomModal";
+import CustomInput from "../components/CustomInput";
+import * as yup from "yup";
+import { useFormik } from "formik";
+import {
+  createColor,
+  getAColor,
+  resetState,
+  updateAColor,
+} from "../features/color/colorSlice";
+
+let schema = yup.object().shape({
+  title: yup.string().required("Color is Required"),
+});
 
 const columns = [
   {
@@ -43,6 +56,9 @@ const columns = [
 const ColorList = () => {
   const [open, setOpen] = useState(false);
   const [colorId, setcolorId] = useState("");
+  const [click, setClick] = useState(false);
+  const [click1, setClick1] = useState(false);
+  const [color, setColor] = useState(false);
 
   const showModal = (e) => {
     setOpen(true);
@@ -71,7 +87,8 @@ const ColorList = () => {
         action: (
           <>
             <Link
-              to={`/admin/color/${colorState[i]._id}`}
+              // to={`/admin/color/${colorState[i]._id}`}
+              onClick={() => { setClick1(true); setColor(colorState[i]) }}
               className=" fs-3 text-danger"
             >
               <BiEdit />
@@ -98,21 +115,130 @@ const ColorList = () => {
   };
 
   return (
-    <div>
-      <h3 className="mb-4 title">Colors</h3>
+    <>
       <div>
-        <Table columns={columns} dataSource={data1} />
+        <div className="product-list d-flex justify-content-between align-items-center">
+          <h3 className="mb-4 title">Colors</h3>
+          <button onClick={() => setClick(true)}>+Add Color</button>
+        </div>
+        <div>
+          <Table columns={columns} dataSource={data1} />
+        </div>
+        <CustomModal
+          hideModal={hideModal}
+          open={open}
+          performAction={() => {
+            deleteColor(colorId);
+          }}
+          title="Are you sure you want to delete this color?"
+        />
       </div>
-      <CustomModal
-        hideModal={hideModal}
-        open={open}
-        performAction={() => {
-          deleteColor(colorId);
-        }}
-        title="Are you sure you want to delete this color?"
-      />
-    </div>
+      {
+        click && (
+          < div className="modal" >
+            <div className="modal-content">
+              <button className="close-model" onClick={() => setClick(false)}>✖</button>
+              <h3 className="mb-3 title">
+                Add Color
+              </h3>
+              <AddColor />
+            </div>
+          </div>
+        )
+      }
+      {
+        click1 && (
+          < div className="modal" >
+            <div className="modal-content">
+              <button className="close-model" onClick={() => setClick1(false)}>✖</button>
+              <h3 className="mb-3 title">
+                Edit Color
+              </h3>
+              <EditColor color={color} />
+            </div>
+          </div>
+        )
+      }
+    </>
   );
 };
 
+
+const AddColor = () => {
+  const dispatch = useDispatch();
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      title: "",
+    },
+    validationSchema: schema,
+    onSubmit: (values) => {
+      dispatch(createColor(values));
+      setTimeout(() => {
+        dispatch(getColors());
+      }, 200);
+    }
+  });
+
+  return (
+    <form action="" onSubmit={formik.handleSubmit}>
+      <CustomInput
+        type="color"
+        label="Enter Product Color"
+        onChng={formik.handleChange("title")}
+        onBlr={formik.handleBlur("title")}
+        val={formik.values.title}
+        id="color"
+      />
+      <div className="error">
+        {formik.touched.title && formik.errors.title}
+      </div>
+      <button
+        className="btn btn-success border-0 rounded-3 my-5"
+        type="submit"
+      >
+        Add Color
+      </button>
+    </form>
+  );
+};
+const EditColor = ({ color }) => {
+  const dispatch = useDispatch();
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      title: color.title,
+    },
+    validationSchema: schema,
+    onSubmit: (values) => {
+      const data = { id: color._id, colorData: values };
+      dispatch(updateAColor(data));
+      setTimeout(() => {
+        dispatch(getColors());
+      }, 200);
+    }
+  });
+
+  return (
+    <form action="" onSubmit={formik.handleSubmit}>
+      <CustomInput
+        type="color"
+        label="Enter Product Color"
+        onChng={formik.handleChange("title")}
+        onBlr={formik.handleBlur("title")}
+        val={formik.values.title}
+        id="color"
+      />
+      <div className="error">
+        {formik.touched.title && formik.errors.title}
+      </div>
+      <button
+        className="btn btn-success border-0 rounded-3 my-5"
+        type="submit"
+      >
+        Edit Color
+      </button>
+    </form>
+  );
+};
 export default ColorList;

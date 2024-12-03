@@ -268,6 +268,7 @@ footer .input-group-text {
 
 .categories>div>div {
   width: 60%;
+  padding-left: 20px;
 }
 
 .categories>div:nth-child(1),
@@ -770,13 +771,27 @@ footer .input-group-text {
 
 .main-product-image img {
   width: 100% !important;
-  height: 500px;
+  height: 600px !important;
   object-fit: cover;
+}
+
+.main-product-image .js-image-zoom__zoomed-image {
+  left: 55px !important;
+  padding: 10px;
+  background-color: white;
+  border-radius: 10px;
+  z-index: 1000;
 }
 
 .other-product-images {
   background-color: white;
   padding: 20px;
+}
+
+.other-product-images img {
+  width: 200px;
+  height: 150px;
+  object-fit: cover;
 }
 
 .other-product-images>div {
@@ -1027,10 +1042,27 @@ footer .input-group-text {
 /* Profile */
 .profile-img {
   margin: 30px;
+  width: 30%;
+}
+
+.profile-card {
+  padding: 20px;
+  background-color: white;
+  width: 800px;
+  margin-left: 60px;
+  border-radius: 10px;
 }
 
 .profile-img img {
-  width: 25%;
+  width: 90%;
+}
+
+.upload-data {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  margin-top: -50px;
 }
 
 .profile-img .imgs {
@@ -1038,9 +1070,10 @@ footer .input-group-text {
 }
 
 .camera-icon {
-  bottom: 0;
-  height: 40px;
-  /* color: white; */
+  bottom: -8px;
+  position: absolute;
+  z-index: 1000;
+  color: red;
 }
 
 .text-red {
@@ -1104,12 +1137,14 @@ footer .input-group-text {
 }
 
 .address-item {
+  margin-top: 3px;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   padding: 15px;
   border: 1px solid #ddd;
   border-radius: 5px;
+  background-color: white;
 }
 
 .address-details {
@@ -1496,15 +1531,19 @@ input[type='checkbox'] {
 .button-checkout {
   padding: 8px;
   border: none;
-  background-color: white;
+  border-radius: 4px;
+  color: white;
+  background-color: #f44336;
 }
 
 .button-checkout1 {
   padding: 10px;
   border: none;
-  background-color: white;
-  color: #1976d2;
-  font-weight: 40px;
+  background-color: greenyellow;
+  /* color: #1976d2; */
+  /* font-weight: 500; */
+  color: black;
+  border-radius: 4px;
 }
 
 .bold-text {
@@ -1652,3 +1691,27 @@ input[type='checkbox'] {
 }
 
 /* payment result end */
+
+/* pagination */
+.pagination {
+  display: flex;
+  list-style: none;
+  gap: 10px;
+}
+
+.pagination li button {
+  font-weight: bold;
+  color: black;
+  width: 40px;
+  padding: 6px 12px;
+}
+
+.pagination li.active button {
+  font-weight: bold;
+  color: white;
+  background-color: blue;
+  width: 40px;
+  padding: 6px 12px;
+}
+
+/* pagination end */

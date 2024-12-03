@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Meta from '../components/Meta';
 import BreadCrumb from '../components/BreadCrumb'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { createUser } from '../features/user/userSlice';
 
 const signupSchema = yup.object({
@@ -15,7 +15,9 @@ const signupSchema = yup.object({
 
 
 const Signup = () => {
+  const authState = useSelector(state => state?.auth);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -27,6 +29,11 @@ const Signup = () => {
       dispatch(createUser(values));
     },
   });
+  useEffect(() => {
+    if (authState.createUser.data !== null && authState.isError === false) {
+      navigate("/login");
+    }
+  }, [authState])
   return (
     <>
       <Meta title={"Sign Up"} />

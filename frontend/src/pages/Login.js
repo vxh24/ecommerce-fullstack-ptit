@@ -8,7 +8,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import { googlelogin, handleLogin } from "../features/user/userSlice";
 import { GoogleLogin } from "@react-oauth/google";
-import { toast } from "react-toastify";
 const clientId =
   "354282151928-io0qjv0qkn919lnf89efelaja0fp0njn.apps.googleusercontent.com";
 // import axios from "axios";
@@ -16,10 +15,11 @@ const LoginSchema = yup.object({
   email: yup
     .string()
     .nullable()
-    .email("Email không hợp lệ")
-    .required("Vui lòng nhập địa chỉ email"),
-  password: yup.string().required("Vui lòng nhập mật khẩu"),
+    .email("Email should be valid")
+    .required("Email Address is Required"),
+  password: yup.string().required("Password is Required"),
 });
+
 const Login = () => {
   const authState = useSelector((state) => state?.auth);
   const navigate = useNavigate();
@@ -32,13 +32,23 @@ const Login = () => {
     validationSchema: LoginSchema,
     onSubmit: (values) => {
       dispatch(handleLogin(values));
-      navigate("/");
-      toast.success("Đăng nhập thành công", { autoClose: 1000 });
     },
   });
+  useEffect(() => {
+    if (authState.user !== null && authState.isSuccess === true) {
+      navigate("/");
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
+    }
+  }, [authState]);
   const handleSuccess = async (credentialResponse) => {
     try {
       dispatch(googlelogin({ token: credentialResponse.credential }));
+      navigate("/");
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     } catch (error) {
       console.error("Google login failed:", error);
     }
@@ -55,12 +65,7 @@ const Login = () => {
           <div className="row">
             <div className="col-12">
               <div className="auth-card">
-                <h3
-                  className="text-center mb-5 mt-3"
-                  style={{ fontSize: "30px" }}
-                >
-                  Đăng nhập
-                </h3>
+                <h3 className="text-center mb-3">Đăng nhập</h3>
                 <form
                   action=""
                   onSubmit={formik.handleSubmit}
@@ -95,41 +100,40 @@ const Login = () => {
                     {formik.touched.password && formik.errors.password}
                   </div>
                   <div>
-                    <Link
-                      to="/forgot-password"
-                      className="mb-3"
-                      style={{ color: "blue", textDecoration: "underline" }}
-                    >
-                      Quên mật khẩu?
-                    </Link>
-                    <div className="mt-3 d-flex justify-content-center gap-15 align-items-center mb-3">
-                      <button className="button border-0 w-100">
-                        Đăng nhập
-                      </button>
-                    </div>
-                    <div className="d-flex justify-content-center gap-10 align-items-center">
-                      <h3 style={{ fontSize: "16px" }}>
-                        Bạn chưa có tài khoản?
-                      </h3>
-                      <Link className="signup" to="/sign-up">
-                        <h4>Đăng ký</h4>
+                    <div>
+                      <Link
+                        to="/forgot-password"
+                        className="mb-3 text-decoration-underline fs-6 text-primary"
+                      >
+                        Bạn đã quên mật khẩu?
                       </Link>
                     </div>
-                    <div className=" ">
-                      <h3 className="d-flex justify-content-center align-items-center gap-10">
-                        <hr className="login-1" />
-                        Or
-                        <hr className="login-1" />
-                      </h3>
-                    </div>
-                    <div>
-                      <GoogleLogin
-                        onSuccess={handleSuccess}
-                        onError={handleError}
-                      />
+                    <div className="mt-3 d-flex justify-content-center gap-15 align-items-center mb-3">
+                      <button className="button border-0">Đăng nhập</button>
                     </div>
                   </div>
                 </form>
+                <div>
+                  <div className="d-flex justify-content-center gap-10 align-items-center">
+                    <h3 className="">Bạn chưa có tài khoản?</h3>
+                    <Link className="signup" to="/sign-up">
+                      <h4>Đăng ký</h4>
+                    </Link>
+                  </div>
+                  <div className=" ">
+                    <h3 className="d-flex justify-content-center align-items-center gap-10">
+                      <hr className="login-1" />
+                      Or
+                      <hr className="login-1" />
+                    </h3>
+                  </div>
+                  <div>
+                    <GoogleLogin
+                      onSuccess={handleSuccess}
+                      onError={handleError}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>

@@ -5,17 +5,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { getAProducts } from '../features/products/productSlice';
-// import { getUserCart } from '../features/user/userSlice';
 import { AiOutlineHeart } from "react-icons/ai";
 import { CgProfile } from "react-icons/cg";
 import { GiShoppingCart } from "react-icons/gi";
 import { BiCategory } from "react-icons/bi";
 import { googleLogout } from '@react-oauth/google';
+import { logoutSlice } from '../features/user/userSlice';
 const Header = () => {
   const handleLogout = () => {
+    // dispatch(logoutSlice());
     googleLogout();
-
-    document.cookie = 'auth_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     localStorage.clear();
     window.location.reload();
   }
@@ -102,7 +101,7 @@ const Header = () => {
                     <CgProfile className='fs-2' />
                     {
                       authState?.user === null ? <p className="mb-0">
-                        Log in
+                        Đăng nhập
                       </p> :
                         <>
                           <div className="dropdown">

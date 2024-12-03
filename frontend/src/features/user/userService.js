@@ -11,7 +11,7 @@ const createUser = async (userData) => {
 }
 
 const handleLogin = async (userData) => {
-  const response = await axios.post(`${base_url}login`, userData);
+  const response = await axios.post(`${base_url}login`, userData, config);
   if (response.data) {
     if (response.data) {
       localStorage.setItem("customer", JSON.stringify(response.data));
@@ -20,7 +20,7 @@ const handleLogin = async (userData) => {
   }
 }
 const gglogin = async (userData) => {
-  const response = await axios.post(`${base_url}google`, userData);
+  const response = await axios.post(`${base_url}google`, userData, config);
   if (response.data) {
     if (response.data) {
       localStorage.setItem("customer", JSON.stringify(response.data));
@@ -107,8 +107,19 @@ const removeAddress = async (id) => {
   }
 }
 const updateAddress = async (addressData) => {
-  console.log(addressData.id);
   const response = await axios.put(`${base_url}user/address/${addressData.id}`, addressData, config);
+  if (response.data) {
+    return response.data;
+  }
+}
+const logOut = async () => {
+  const response = await axios.get(`${base_url}logout`, config);
+  if (response.data) {
+    return response.data;
+  }
+}
+const getProfile = async () => {
+  const response = await axios.get(`${base_url}user/profile`, config);
   if (response.data) {
     return response.data;
   }
@@ -130,5 +141,7 @@ export const authService = {
   getAddress,
   removeAddress,
   updateAddress,
-  changePass
+  changePass,
+  logOut,
+  getProfile
 }

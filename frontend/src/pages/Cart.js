@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Meta from '../components/Meta';
 import BreadCrumb from '../components/BreadCrumb'
 import { MdDelete } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteProductfromCart, getUserCart, updatecountCart } from '../features/user/userSlice';
 import { MdOutlineKeyboardReturn } from "react-icons/md";
@@ -10,6 +10,8 @@ import { getAllProducts } from '../features/products/productSlice';
 import { toast } from 'react-toastify';
 const Cart = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const authState = useSelector(state => state?.auth);
   const userCartState = useSelector(state => state?.auth?.cartUser?.result);
   const productState = useSelector((state) => state.product.products.data);
   const [totalAmount, setTotalAmount] = useState(null);
@@ -40,6 +42,11 @@ const Cart = () => {
       dispatch(getUserCart());
     }, 200)
   }
+  useEffect(() => {
+    if (authState.user === null && authState.isSuccess !== true) {
+      navigate("/login");
+    }
+  }, [authState])
   return (
     <>
       <Meta title={"Cart"} />

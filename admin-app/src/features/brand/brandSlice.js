@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
 import brandService from "./brandService";
-
+import { toast } from "react-toastify"
 export const getBrands = createAsyncThunk(
   "brand/get-brands",
   async (thunkAPI) => {
@@ -95,6 +95,9 @@ export const brandSlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         state.createdBrand = action.payload;
+        if (state.isSuccess === true) {
+          toast.success("Thêm thành công");
+        }
       })
       .addCase(createBrand.rejected, (state, action) => {
         state.isLoading = false;
@@ -125,6 +128,9 @@ export const brandSlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         state.updatedBrand = action.payload;
+        if (state.isSuccess === true) {
+          toast.success("Cập nhật thành công");
+        }
       })
       .addCase(updateABrand.rejected, (state, action) => {
         state.isLoading = false;
