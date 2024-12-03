@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import Meta from "../components/Meta";
-import { GoogleOAuthProvider } from "@react-oauth/google";
 import BreadCrumb from "../components/BreadCrumb";
 import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
@@ -8,16 +7,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import { googlelogin, handleLogin } from "../features/user/userSlice";
 import { GoogleLogin } from "@react-oauth/google";
-const clientId =
-  "354282151928-io0qjv0qkn919lnf89efelaja0fp0njn.apps.googleusercontent.com";
-// import axios from "axios";
+
 const LoginSchema = yup.object({
   email: yup
     .string()
     .nullable()
-    .email("Email should be valid")
-    .required("Email Address is Required"),
-  password: yup.string().required("Password is Required"),
+    .email("Email không hợp lệ")
+    .required("Vui lòng nhập địa chỉ Email"),
+  password: yup.string().required("Vui lòng nhập mật khẩu"),
 });
 
 const Login = () => {
@@ -105,11 +102,13 @@ const Login = () => {
                         to="/forgot-password"
                         className="mb-3 text-decoration-underline fs-6 text-primary"
                       >
-                        Bạn đã quên mật khẩu?
+                        Quên mật khẩu?
                       </Link>
                     </div>
                     <div className="mt-3 d-flex justify-content-center gap-15 align-items-center mb-3">
-                      <button className="button border-0">Đăng nhập</button>
+                      <button className="button border-0 w-100">
+                        Đăng nhập
+                      </button>
                     </div>
                   </div>
                 </form>
