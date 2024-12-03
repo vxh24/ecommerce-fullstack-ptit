@@ -24,7 +24,7 @@ const Checkout = () => {
   const [click, setClick] = useState(false);
   const [click1, setClick1] = useState(false);
   const [click2, setClick2] = useState(false);
-  const [payment, setpayment] = useState(false);
+  const [payment, setpayment] = useState(1);
   const [totalcoupon, setTotalcoupoon] = useState(false);
   const [shipping, setShipping] = useState(50000);
   const [coupon, setCoupon] = useState();
@@ -52,6 +52,7 @@ const Checkout = () => {
   useEffect(() => {
     dispatch(getAddressSlice());
     dispatch(getAllCoupon());
+    dispatch(getUserCart());
   }, [])
   useEffect(() => {
     let Address = addressState?.find((item) => item.isDefault === true);
@@ -73,17 +74,25 @@ const Checkout = () => {
   const createOrder = () => {
     if (payment === 1) {
       dispatch(cashOrderUser({ COD: true, couponApplied: false }));
-
       setTimeout(() => {
         dispatch(getUserCart())
-      }, 100)
+        navigate("/my-orders");
+      }, 200)
+      // if (authState.user !== null && authState?.order?.message === "success") {
+      //   navigate("/my-orders");
+      // }
     }
   }
   useEffect(() => {
-    if (authState.user !== null && authState.order.message === "success") {
-      navigate("/my-orders");
+    if (authState.user === null && authState.isSuccess !== true) {
+      navigate("/login");
     }
   }, [authState])
+  // useEffect(() => {
+  //   if (authState.user !== null && authState?.order?.message === "success") {
+  //     navigate("/my-orders");
+  //   }
+  // }, [authState])
   const handleAddressChange = (address) => {
     setAddressSelect(address);
   };
@@ -181,7 +190,7 @@ const Checkout = () => {
                     </div>
                   )
                 }
-                <div className='d-flex justify-content-between'>
+                <div className='d-flex justify-content-between border-bottom'>
                   <div className='d-flex gap-10'>
                     <FcShipped className='fs-3' />
                     <p className='mb-0 bold-text'>Đơn vị vận chuyển</p>
@@ -227,20 +236,24 @@ const Checkout = () => {
               </div>
             </div>
             <div className="col-5">
-              <div className='border-bottom py-4'>
+              <div className=' py-4'>
                 {
                   userCartState?.products && userCartState?.products?.map((item, index) => {
                     const product = productState?.find(productItem => productItem?._id === item?.product);
                     return (
-                      <div key={index} className='d-flex mb-2 gap-15 align-items-center justify-content-between'>
+                      <div key={index} className='d-flex mb-2 gap-15 align-items-center justify-content-between border-bottom mb-3'>
                         <div className='w-75 d-flex gap-10' >
                           <div className='w-25 position-relative'>
                             <span style={{ top: "-15px", right: "-4px" }} className='badge bg-secondary text-white rounded-circle p-2 position-absolute'>{item?.count}</span>
-                            <img src="images/watch.jpg" className='img-fluid' alt="" />
+                            <img src={product.images[0].url} className='img-fluid' alt="" />
                           </div>
                           <div>
-                            <h5 className="total">{product?.title}</h5>
-                            <p className='total-price' style={{ backgroundColor: item?.color }} ></p>
+                            <h5 className="total">{product?.name}</h5>
+                            <p className="d-flex gap-15">Màu sắc:
+                              <ul className='colors ps-0'>
+                                <li style={{ backgroundColor: item?.color }}></li>
+                              </ul>
+                            </p>
                           </div>
                         </div>
                         <div>
@@ -251,12 +264,6 @@ const Checkout = () => {
                   })
                 }
 
-              </div>
-              <div className=' py-4'>
-                <div className='d-flex align-items-center justify-content-between'>
-                  <p className='total'>SubTotal:</p>
-                  <p className='total-price'>$ {totalAmount}</p>
-                </div>
               </div>
             </div>
             <div className='col-12 border-top bg-white'>

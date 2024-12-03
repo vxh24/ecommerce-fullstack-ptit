@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 import enquiryService from "./enquiryService";
 
 export const getEnquiries = createAsyncThunk(
@@ -118,6 +119,9 @@ export const enquirySlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         state.updatedEnquiry = action.payload;
+        if (state.isSuccess === true) {
+          toast.success("Cập nhật thành công")
+        }
       })
       .addCase(updateAEnquiry.rejected, (state, action) => {
         state.isLoading = false;

@@ -13,15 +13,16 @@ const Order = () => {
   const [open, setOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [statusCounts, setStatusCounts] = useState({});
+  useEffect(() => {
+    dispatch(getOrderUser());
+  }, [])
   const orderState = useSelector(state => state?.auth?.orders?.data);
+  console.log(orderState);
   useEffect(() => {
     if (orderState?.length > 0) {
       setStatus(orderState);
     }
   }, [orderState]);
-  useEffect(() => {
-    dispatch(getOrderUser());
-  }, [])
   const handleOpenOrderDetail = (order) => {
     setSelectedOrder(order);
     setOpen(true);
@@ -32,7 +33,7 @@ const Order = () => {
     setSelectedOrder(null);
   };
   const [activeTab, setActiveTab] = useState(0);
-  const status = ["Tất cả", "Chờ xác nhận", "Chờ lấy hàng", "Chờ giao hàng", "Hoàn thành", "Đã hủy"];
+  const status = ["Tất cả", "Chờ xác nhận", "Chờ giao hàng", "Hoàn thành", "Đã hủy"];
   useEffect(() => {
     if (orderState?.length > 0) {
       const counts = orderState.reduce((acc, order) => {
@@ -90,37 +91,46 @@ const Order = () => {
                     <th scope="col" className='col-3'>Mã đơn hàng</th>
                     <th scope="col" className='col-2'>Tổng tiền</th>
                     <th scope="col" className='col-3'>Ngày đặt hàng </th>
-                    <th scope="col" className='col-3'>Trạng thái</th>
-                    <th scope="col" className='col-1'></th>
+                    <th scope="col" className='col-2'>Trạng thái</th>
+                    <th scope="col" className='col-2'></th>
                   </tr>
                 </thead>
                 <tbody>
-                  {
-                    filterstatus && filterstatus?.map((item, index) => {
-                      return (
-                        <tr key={index}>
-                          <th scope="row">{item?._id}</th>
-                          <td className='mb-3'>{item?.paymentIndent?.amount}  </td>
-                          <td>{moment(item?.createdAt).format('h:mm a,DD/MM/YYYY')}</td>
-                          <td>{item?.orderStatus}</td>
-                          <td>
-                            <div className='d-flex align-items-center justify-content-between gap-10'>
-                              <AiOutlineEye
-                                size={22}
-                                className="cursor-pointer absolute right-2 top-14"
-                                onClick={() => handleOpenOrderDetail(item)}
-                                color="#333"
-                                title="Quick view"
-                              />
-                            </div>
-                          </td>
-
-                        </tr>
-                      )
-                    })
-                  }
-
+                  {filterstatus.length > 0 ? (
+                    filterstatus.map((item, index) => (
+                      <tr key={index}>
+                        <th scope="row">{item?._id}</th>
+                        <td>{item?.paymentIndent?.amount}</td>
+                        <td>{moment(item?.createdAt).format('DD/MM/YYYY')}</td>
+                        <td>{item?.orderStatus}</td>
+                        <td>
+                          <div className='d-flex gap-10 align-items-center'>
+                            <AiOutlineEye
+                              size={22}
+                              className="cursor-pointer ms-2"
+                              onClick={() => handleOpenOrderDetail(item)}
+                              title="Quick view"
+                            />
+                            {
+                              item?.orderStatus === "Chờ xác nhận" && (
+                                <button onClick={() => handleOpenOrderDetail(item)} className="btn btn-primary btn-sm">
+                                  Hủy đơn
+                                </button>
+                              )
+                            }
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="5" className="text-center">
+                        Không có đơn hàng nào phù hợp.
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
+
               </table>
             </div>
           </div>

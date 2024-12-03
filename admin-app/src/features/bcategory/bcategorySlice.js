@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
 import bCategoryService from "./bcategoryService";
-
+import { toast } from "react-toastify"
 export const getCategories = createAsyncThunk(
   "blogCategory/get-categories",
   async (thunkAPI) => {
@@ -94,6 +94,9 @@ export const pCategorySlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         state.createBlogCategory = action.payload;
+        if (state.isSuccess === true) {
+          toast.success("Thêm thành công");
+        }
       })
       .addCase(createNewblogCat.rejected, (state, action) => {
         state.isLoading = false;
@@ -124,6 +127,9 @@ export const pCategorySlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         state.updatedBlogCategory = action.payload;
+        if (state.isSuccess === true) {
+          toast.success("Cập nhật thành công");
+        }
       })
       .addCase(updateABlogCat.rejected, (state, action) => {
         state.isLoading = false;

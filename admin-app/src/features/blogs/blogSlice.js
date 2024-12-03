@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
 import blogService from "./blogService";
-
+import { toast } from "react-toastify"
 export const getBlogs = createAsyncThunk("blog/get-blogs", async (thunkAPI) => {
   try {
     return await blogService.getBlogs();
@@ -92,6 +92,9 @@ export const blogSlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         state.createdBlog = action.payload;
+        if (state.isSuccess === true) {
+          toast.success("Thêm thành công");
+        }
       })
       .addCase(createBlogs.rejected, (state, action) => {
         state.isLoading = false;
@@ -124,6 +127,9 @@ export const blogSlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         state.updatedBlog = action.payload;
+        if (state.isSuccess === true) {
+          toast.success("Cập nhật thành công");
+        }
       })
       .addCase(updateABlog.rejected, (state, action) => {
         state.isLoading = false;

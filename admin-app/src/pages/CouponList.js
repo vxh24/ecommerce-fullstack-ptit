@@ -4,14 +4,24 @@ import { BiEdit } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import CustomModal from "../components/CustomModal";
+import CustomInput from "../components/CustomInput";
+import * as yup from "yup";
+import { useFormik } from "formik";
 import {
   deleteACoupon,
   getCoupons,
   resetState,
+  createCoupon,
+  getACoupon,
+  updateACoupon,
 } from "../features/coupon/couponSlice";
-import CustomModal from "../components/CustomModal";
 import moment from "moment";
-
+let schema = yup.object().shape({
+  name: yup.string().required("Coupon Name is Required"),
+  expiry: yup.date().required("Expiry Date is Required"),
+  discount: yup.number().required("Discount Percent is Required"),
+});
 const columns = [
   {
     title: "SNo",
@@ -41,7 +51,9 @@ const columns = [
 const Couponlist = () => {
   const [open, setOpen] = useState(false);
   const [couponId, setcouponId] = useState("");
-
+  const [click, setClick] = useState(false);
+  const [click1, setClick1] = useState(false);
+  const [coupon, setCoupon] = useState(false);
   const showModal = (e) => {
     setOpen(true);
     setcouponId(e);
@@ -71,18 +83,21 @@ const Couponlist = () => {
         expiry: moment(couponState[i].expiry).format("DD/MM/YYYY"),
         action: (
           <>
-            <Link
-              to={`/admin/coupon/${couponState[i]._id}`}
-              className=" fs-3 text-danger"
-            >
-              <BiEdit />
-            </Link>
-            <button
-              className="ms-3 fs-3 text-danger bg-transparent border-0"
-              onClick={() => showModal(couponState[i]._id)}
-            >
-              <AiFillDelete />
-            </button>
+            <div>
+              <Link
+                // to={`/admin/coupon/${couponState[i]._id}`}
+                onClick={() => { setClick1(true); setCoupon(couponState[i]) }}
+                className=" fs-3 text-danger border-0 bg-transparent"
+              >
+                <BiEdit />
+              </Link>
+              <button
+                className="ms-3 fs-3 text-danger bg-transparent border-0"
+                onClick={() => showModal(couponState[i]._id)}
+              >
+                <AiFillDelete />
+              </button>
+            </div>
           </>
         ),
       });
@@ -99,21 +114,198 @@ const Couponlist = () => {
   };
 
   return (
-    <div>
-      <h3 className="mb-4 title">Coupons</h3>
+    <>
       <div>
-        <Table columns={columns} dataSource={data1} />
+        <div className="product-list d-flex justify-content-between align-items-center">
+          <h3 className="mb-4 title">Coupon</h3>
+          <button onClick={() => setClick(true)}>+Add coupon</button>
+        </div>
+        <div>
+          <Table columns={columns} dataSource={data1} />
+        </div>
+        <CustomModal
+          hideModal={hideModal}
+          open={open}
+          performAction={() => {
+            deleteCoupon(couponId);
+          }}
+          title="Are you sure you want to delete this coupon?"
+        />
       </div>
-      <CustomModal
-        hideModal={hideModal}
-        open={open}
-        performAction={() => {
-          deleteCoupon(couponId);
-        }}
-        title="Are you sure you want to delete this coupon?"
+      {
+        click && (
+          < div className="modal" >
+            <div className="modal-content">
+              <button className="close-model" onClick={() => setClick(false)}>✖</button>
+              <h3 className="mb-3 title">
+                Add Coupon
+              </h3>
+              <AddCoupon />
+            </div>
+          </div>
+        )
+      }
+      {
+        click1 && (
+          < div className="modal" >
+            <div className="modal-content">
+              <button className="close-model" onClick={() => setClick1(false)}>✖</button>
+              <h3 className="mb-3 title">
+                Update Coupon
+              </h3>
+              <EditCoupon coupon={coupon} />
+            </div>
+          </div>
+        )
+      }
+    </>
+  );
+};
+const AddCoupon = () => {
+  const dispatch = useDispatch();
+
+
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      name: "",
+      expiry: "",
+      discount: "",
+    },
+    validationSchema: schema,
+    onSubmit: (values) => {
+      dispatch(createCoupon(values));
+      setTimeout(() => {
+        dispatch(getCoupons());
+      }, 300);
+    }
+  });
+
+  return (
+    <form action="" onSubmit={formik.handleSubmit}>
+      <CustomInput
+        type="text"
+        name="name"
+        onChng={formik.handleChange("name")}
+        onBlr={formik.handleBlur("name")}
+        val={formik.values.name}
+        label="Enter Coupon Name"
+        id="name"
       />
+      <div className="error">
+        {formik.touched.name && formik.errors.name}
+      </div>
+      <CustomInput
+        type="date"
+        name="expiry"
+        onChng={formik.handleChange("expiry")}
+        onBlr={formik.handleBlur("expiry")}
+        val={formik.values.expiry}
+        label="Enter Expiry Data"
+        id="date"
+      />
+      <div className="error">
+        {formik.touched.expiry && formik.errors.expiry}
+      </div>
+      <CustomInput
+        type="number"
+        name="discount"
+        onChng={formik.handleChange("discount")}
+        onBlr={formik.handleBlur("discount")}
+        val={formik.values.discount}
+        label="Enter Discount"
+        id="discount"
+      />
+      <div className="error">
+        {formik.touched.discount && formik.errors.discount}
+      </div>
+      <button
+        className="btn btn-success border-0 rounded-3 my-5"
+        type="submit"
+      >
+        Add Coupon
+      </button>
+    </form>
+  );
+};
+const EditCoupon = ({ coupon }) => {
+  const dispatch = useDispatch();
+  const changeDateFormat = (date) => {
+    const newDate = new Date(date);
+    const year = newDate.getFullYear();
+    const month = String(newDate.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+    const day = String(newDate.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      name: coupon.name,
+      expiry: changeDateFormat(coupon.expiry),
+      discount: coupon.discount,
+    },
+    validationSchema: schema,
+    onSubmit: (values) => {
+      const data = { id: coupon._id, couponData: values };
+      dispatch(updateACoupon(data));
+      setTimeout(() => {
+        dispatch(getCoupons());
+      }, 300);
+    },
+  });
+
+  return (
+    <div>
+      <h3 className="mb-4 title">
+        Edit Coupon
+      </h3>
+      <div>
+        <form action="" onSubmit={formik.handleSubmit}>
+          <CustomInput
+            type="text"
+            name="name"
+            onChng={formik.handleChange("name")}
+            onBlr={formik.handleBlur("name")}
+            val={formik.values.name}
+            label="Enter Coupon Name"
+            id="name"
+          />
+          <div className="error">
+            {formik.touched.name && formik.errors.name}
+          </div>
+          <CustomInput
+            type="date"
+            name="expiry"
+            onChng={formik.handleChange("expiry")}
+            onBlr={formik.handleBlur("expiry")}
+            val={formik.values.expiry}
+            label="Enter Expiry Data"
+            id="date"
+          />
+          <div className="error">
+            {formik.touched.expiry && formik.errors.expiry}
+          </div>
+          <CustomInput
+            type="number"
+            name="discount"
+            onChng={formik.handleChange("discount")}
+            onBlr={formik.handleBlur("discount")}
+            val={formik.values.discount}
+            label="Enter Discount"
+            id="discount"
+          />
+          <div className="error">
+            {formik.touched.discount && formik.errors.discount}
+          </div>
+          <button
+            className="btn btn-success border-0 rounded-3 my-5"
+            type="submit"
+          >
+            Edit Coupon
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
-
 export default Couponlist;

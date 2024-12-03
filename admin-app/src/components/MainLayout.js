@@ -132,11 +132,11 @@ const MainLayout = () => {
               icon: <RiCouponLine className="fs-4" />,
               label: "Marketing",
               children: [
-                {
-                  key: "coupon",
-                  icon: <ImBlog className="fs-4" />,
-                  label: "Add Coupon",
-                },
+                // {
+                //   key: "coupon",
+                //   icon: <ImBlog className="fs-4" />,
+                //   label: "Add Coupon",
+                // },
                 {
                   key: "coupon-list",
                   icon: <RiCouponLine className="fs-4" />,
@@ -149,21 +149,21 @@ const MainLayout = () => {
               icon: <FaBloggerB className="fs-4" />,
               label: "Blogs",
               children: [
-                {
-                  key: "blog",
-                  icon: <ImBlog className="fs-4" />,
-                  label: "Add Blog",
-                },
+                // {
+                //   key: "blog",
+                //   icon: <ImBlog className="fs-4" />,
+                //   label: "Add Blog",
+                // },
                 {
                   key: "blog-list",
                   icon: <FaBloggerB className="fs-4" />,
                   label: "Blog List",
                 },
-                {
-                  key: "blog-category",
-                  icon: <ImBlog className="fs-4" />,
-                  label: "Add Blog Category",
-                },
+                // {
+                //   key: "blog-category",
+                //   icon: <ImBlog className="fs-4" />,
+                //   label: "Add Blog Category",
+                // },
                 {
                   key: "blog-category-list",
                   icon: <FaBloggerB className="fs-4" />,

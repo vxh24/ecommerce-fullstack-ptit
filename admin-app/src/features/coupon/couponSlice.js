@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
 import couponService from "./couponService";
-
+import { toast } from "react-toastify"
 export const getCoupons = createAsyncThunk(
   "coupon/get-coupons",
   async (thunkAPI) => {
@@ -94,6 +94,9 @@ export const couponSlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         state.createdCoupon = action.payload;
+        if (state.isSuccess === true) {
+          toast.success("Thêm thành công");
+        }
       })
       .addCase(createCoupon.rejected, (state, action) => {
         state.isLoading = false;
@@ -126,6 +129,9 @@ export const couponSlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         state.updatedCoupon = action.payload;
+        if (state.isSuccess === true) {
+          toast.success("Cập nhật thành công");
+        }
       })
       .addCase(updateACoupon.rejected, (state, action) => {
         state.isLoading = false;

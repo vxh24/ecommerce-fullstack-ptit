@@ -12,10 +12,9 @@ const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const authState = useSelector(state => state?.auth);
-  const userCartState = useSelector(state => state?.auth?.cartUser?.result);
+  const userCartState = useSelector(state => state?.auth?.cartUser?.cart);
   const productState = useSelector((state) => state.product.products.data);
   const [totalAmount, setTotalAmount] = useState(null);
-
   useEffect(() => {
     dispatch(getUserCart())
     dispatch(getAllProducts());
@@ -68,10 +67,10 @@ const Cart = () => {
                     <div key={index} className="cart-data py-3 d-flex justify-content-between align-items-center">
                       <div className='cart-col-1 gap-15 d-flex justify-content-between align-items-center'>
                         <div className='w-25'>
-                          <img src="images/watch.jpg" className='img-fluid' alt="" />
+                          <img src={product?.images[0]?.url} className='img-fluid' alt="" />
                         </div>
                         <div className='w-75'>
-                          <p>{product?.title}</p>
+                          <p>{product?.name}</p>
                           <p className="d-flex gap-15">Màu sắc:
                             <ul className='colors ps-0'>
                               <li style={{ backgroundColor: item?.color }}></li>
@@ -81,7 +80,7 @@ const Cart = () => {
                         </div>
                       </div>
                       <div className='cart-col-2'>
-                        <h5 className="price">$ {item?.price}</h5>
+                        <h5 className="price">đ{item?.price}</h5>
                       </div>
                       <div className='cart-col-3 d-flex align-items-center gap-15'>
                         <div className="">
@@ -120,7 +119,18 @@ const Cart = () => {
                   </div>
                   <div className='d-flex justify-content-between align-items-center'>
                     <Link to="/product" className='text-dark'><MdOutlineKeyboardReturn className='me-2' />Tiếp tục mua sắm</Link>
-                    <Link to="/checkout" className='button'>Thanh toán</Link>
+                    {
+                      totalAmount !== 0 ? (
+                        <Link to="/checkout" className='button'>Thanh toán</Link>
+                      )
+                        :
+                        (
+                          <div></div>
+                        )
+
+
+                    }
+
                   </div>
                 </>
               }
