@@ -33,14 +33,34 @@ const updateAUser = asyncHandler(async (id, userData) => {
 
 const blockAUser = asyncHandler(async (id) => {
   validateMongodbId(id);
-  const result = await User.deleteById(id);
-  return result;
+  const user = await User.findById(id);
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  user.isBlock = true;
+  const result = await user.save();
+  return {
+    _id: result._id,
+    email: result.email,
+    isBlock: result.isBlock,
+  };
 });
 
 const unBlockAUser = asyncHandler(async (id) => {
   validateMongodbId(id);
-  const result = await User.updateOne({ _id: id }, { deleted: false });
-  return result;
+  const user = await User.findById(id);
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  user.isBlock = false;
+  const result = await user.save();
+  return {
+    _id: result._id,
+    email: result.email,
+    isBlock: result.isBlock,
+  };
 });
 
 const updatePassword = asyncHandler(async (email, newPassword) => {
@@ -125,9 +145,7 @@ const createAddress = asyncHandler(
       throw new Error("Please provide all required fields");
     }
     if (isDefault) {
-      await Address.updateMany(
-        { $set: { isDefault: false } }
-      );
+      await Address.updateMany({ $set: { isDefault: false } });
     }
     const newAddress = new Address({
       name,

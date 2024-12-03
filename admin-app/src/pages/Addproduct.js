@@ -15,7 +15,7 @@ import "../assets/style.css";
 import { useNavigate } from "react-router-dom";
 
 let schema = yup.object().shape({
-  title: yup.string().required("Title is Required"),
+  name: yup.string().required("Title is Required"),
   description: yup.string().required("Description is Required"),
   price: yup.number().required("Price is Required"),
   brand: yup.string().required("Brand is Required"),
@@ -47,7 +47,7 @@ const AddProduct = () => {
     if (click === true) {
       navigate("/admin/list-product");
     }
-  }, [click])
+  }, [click]);
   const brandState = useSelector((state) => state.brand.brands.data);
   const catState = useSelector((state) => state.pCategory.pCategories.data);
   const colorState = useSelector((state) => state.color.colors.data);
@@ -89,20 +89,20 @@ const AddProduct = () => {
   const formik = useFormik({
     initialValues: {
       images: [],
-      title: "",
+      name: "",
       description: "",
       price: "",
       category: "",
       brand: "",
-      colors: "",
+      colors: [],
       quantity: "",
-      tags: "",
+      tags: [],
     },
     validationSchema: schema,
     onSubmit: () => {
       const formData = new FormData();
 
-      formData.append("title", formik.values.title);
+      formData.append("name", formik.values.name);
       formData.append("description", formik.values.description);
       formData.append("price", formik.values.price);
       formData.append("category", formik.values.category);
@@ -116,6 +116,7 @@ const AddProduct = () => {
       });
 
       dispatch(createProducts(formData));
+
       formik.resetForm();
       setColors([]);
       setImages([]);
@@ -350,7 +351,9 @@ const AddProduct = () => {
           </form>
         </div>
         <div className="img-product">
-          <div className=" d-flex flex-wrap justify-content-center gap-3">{getImages()}</div>
+          <div className=" d-flex flex-wrap justify-content-center gap-3">
+            {getImages()}
+          </div>
         </div>
       </div>
     </div>

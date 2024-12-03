@@ -4,6 +4,7 @@ const validateMongodbId = require("../utils/validateMongodbId");
 const Product = require("../models/productModel");
 const Coupon = require("../models/couponModel");
 const Cart = require("../models/cartModel");
+const Color = require("../models/colorModel");
 
 const addToCart = asyncHandler(async (id, cart) => {
   validateMongodbId(id);
@@ -14,9 +15,12 @@ const addToCart = asyncHandler(async (id, cart) => {
     existingCart = new Cart({ products: [], cartTotal: 0, orderBy: user._id });
   }
   for (let i = 0; i < cart.length; i++) {
-    const { _id, count, color } = cart[i];
+    const { _id, count, color_id } = cart[i];
+
     const productIndex = existingCart.products.findIndex(
-      (item) => item.product.toString() === _id && item.color === color
+      (item) =>
+        item.product.toString() === _id &&
+        item.color._id.toString() === color_id
     );
     if (productIndex >= 0) {
       existingCart.products[productIndex].count += count;
@@ -25,7 +29,7 @@ const addToCart = asyncHandler(async (id, cart) => {
       existingCart.products.push({
         product: _id,
         count,
-        color,
+        color: color_id,
         price: getPrice.price,
       });
     }
@@ -37,7 +41,7 @@ const addToCart = asyncHandler(async (id, cart) => {
 
   await existingCart.save();
 
-  return existingCart;
+  return existingCart.populate("products.color");
 });
 
 const removeProductFromCart = asyncHandler(async (userId, productId, color) => {
@@ -59,35 +63,37 @@ const removeProductFromCart = asyncHandler(async (userId, productId, color) => {
   return cart;
 });
 
-const updateProductQuantityInCart = asyncHandler(async (userId, productId, color, newQuantity) => {
-  validateMongodbId(userId);
-  validateMongodbId(productId);
+const updateProductQuantityInCart = asyncHandler(
+  async (userId, productId, color, newQuantity) => {
+    validateMongodbId(userId);
+    validateMongodbId(productId);
 
-  const user = await User.findById(userId);
-  const cart = await Cart.findOne({ orderBy: user._id });
+    const user = await User.findById(userId);
+    const cart = await Cart.findOne({ orderBy: user._id });
 
-  const productIndex = cart.products.findIndex(
-    (item) => item.product.toString() === productId && item.color === color
-  );
+    const productIndex = cart.products.findIndex(
+      (item) => item.product.toString() === productId && item.color === color
+    );
 
-  if (productIndex === -1) {
-    throw new Error("Product not found in cart");
+    if (productIndex === -1) {
+      throw new Error("Product not found in cart");
+    }
+
+    cart.products[productIndex].count = newQuantity;
+
+    cart.cartTotal = cart.products.reduce(
+      (total, item) => total + item.price * item.count,
+      0
+    );
+
+    await cart.save();
+    return cart;
   }
-
-  cart.products[productIndex].count = newQuantity;
-
-  cart.cartTotal = cart.products.reduce(
-    (total, item) => total + item.price * item.count,
-    0
-  );
-
-  await cart.save();
-  return cart;
-});
+);
 
 const getCartUser = asyncHandler(async (id) => {
   validateMongodbId(id);
-  const cart = await Cart.findOne({ orderBy: id });
+  const cart = await Cart.findOne({ orderBy: id }).populate("products.color");
   return cart;
 });
 

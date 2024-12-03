@@ -66,6 +66,7 @@ const blockAUserController = asyncHandler(async (req, res) => {
   const result = await blockAUser(id);
   res.status(200).json({
     EC: 0,
+    message: "Block user successfull!!!",
     data: result,
   });
 });
@@ -75,6 +76,7 @@ const unBlockAUserController = asyncHandler(async (req, res) => {
   const result = await unBlockAUser(id);
   res.status(200).json({
     EC: 0,
+    message: "Unblock user successfull!!!",
     data: result,
   });
 });
@@ -153,7 +155,6 @@ const getAddressController = asyncHandler(async (req, res) => {
     throw new Error(error);
   }
 });
-
 
 const saveAddressController = asyncHandler(async (req, res) => {
   const { _id } = req.user;

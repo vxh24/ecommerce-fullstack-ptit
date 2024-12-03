@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const mongoose_delete = require("mongoose-delete");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 
@@ -15,7 +14,7 @@ var userSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
-      require: true,
+      require: false,
     },
     password: {
       type: String,
@@ -46,6 +45,10 @@ var userSchema = new mongoose.Schema(
         ref: "Product",
       },
     ],
+    isBlock: {
+      type: Boolean,
+      default: false,
+    },
     refresh_token: {
       type: String,
     },
@@ -61,8 +64,6 @@ var userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
-userSchema.plugin(mongoose_delete);
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {

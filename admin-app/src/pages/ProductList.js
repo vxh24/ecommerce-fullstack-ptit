@@ -11,9 +11,9 @@ const columns = [
     dataIndex: "key",
   },
   {
-    title: "Title",
-    dataIndex: "title",
-    sorter: (a, b) => a.title.length - b.title.length,
+    title: "Name",
+    dataIndex: "name",
+    sorter: (a, b) => a.name.length - b.name.length,
   },
   {
     title: "Brand",
@@ -26,8 +26,43 @@ const columns = [
     sorter: (a, b) => a.category.length - b.category.length,
   },
   {
-    title: "Color",
-    dataIndex: "color",
+    title: "Colors",
+    dataIndex: "colors",
+    render: (colorIds, record) => {
+      if (!Array.isArray(record.colors) || record.colors.length === 0) {
+        return null;
+      }
+
+      console.log(record.colors);
+
+      return colorIds.map((colorId, index) => {
+        const color = record.colors.find((c) => c._id === colorId);
+
+        if (!color) {
+          return null;
+        }
+
+        return (
+          <span
+            key={index}
+            style={{
+              backgroundColor: color.colorHex,
+              padding: "5px 10px",
+              marginRight: "5px",
+              borderRadius: "4px",
+              color: "#fff",
+            }}
+          >
+            {color.colorHex}
+          </span>
+        );
+      });
+    },
+  },
+  {
+    title: "Quantity",
+    dataIndex: "quantity",
+    sorter: (a, b) => a.quantity - b.quantity,
   },
   {
     title: "Price",
@@ -55,7 +90,7 @@ const ProductList = () => {
     if (click === true) {
       navigate("/admin/product");
     }
-  }, [click])
+  }, [click]);
   if (productState && productState.length) {
     for (let i = 0; i < productState.length; i++) {
       data1.push({

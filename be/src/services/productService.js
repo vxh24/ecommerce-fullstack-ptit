@@ -19,7 +19,7 @@ const createProduct = asyncHandler(async (productData, files) => {
 
   const newProduct = new Product({
     images: uploadedImages,
-    title: productData.title,
+    name: productData.name,
     description: productData.description,
     price: productData.price,
     category: productData.category,
@@ -31,7 +31,7 @@ const createProduct = asyncHandler(async (productData, files) => {
 
   await newProduct.save();
 
-  return newProduct;
+  return newProduct.populate("colors");
 });
 
 const getAProduct = asyncHandler(async (id) => {
@@ -42,7 +42,7 @@ const getAProduct = asyncHandler(async (id) => {
 
 const getAllProducts = asyncHandler(
   async (queryObj, sortBy, fields, page, limit) => {
-    let query = Product.find(queryObj);
+    let query = Product.find(queryObj).populate("colors");
 
     //sorting
     if (sortBy) {
@@ -82,7 +82,7 @@ const updateProduct = asyncHandler(async (id, productData) => {
 
 const deleteProduct = asyncHandler(async (id) => {
   validateMongodbId(id);
-  const result = await Product.deleteById(id);
+  const result = await Product.deleteOne({ _id: id });
   return result;
 });
 
