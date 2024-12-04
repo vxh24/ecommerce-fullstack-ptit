@@ -46,8 +46,10 @@ const ProductCard = (props) => {
                 </button>
               </div>
               <div className="product-image">
-                <img src="images/watch.jpg" className='img-fluid mx-auto' alt="product image" />
-                <img src="images/watch1.jpg" className='img-fluid' alt="product image" />
+                {/* <img src="images/watch.jpg" className='img-fluid mx-auto' alt="product image" />
+                <img src="images/watch1.jpg" className='img-fluid' alt="product image" /> */}
+                <img src={item?.images[0]?.url} className='img-fluid mx-auto' alt="product image" />
+                <img src={item?.images[1]?.url} className='img-fluid' alt="product image" />
               </div>
               <div className="product-details">
                 <h6 className='brand'>{item.brand}</h6>
@@ -65,9 +67,7 @@ const ProductCard = (props) => {
               </div>
               <div className="action-bar position-absolute">
                 <div className="d-flex flex-column gap-15">
-                  <Link><img src="images/prodcompare.svg" alt="compare" /></Link>
                   <Link to={"/product/" + item?._id}><img src="images/view.svg" alt="view" /></Link>
-                  <Link><img src="images/add-cart.svg" alt="add cart" /></Link>
 
                 </div>
               </div>

@@ -14,13 +14,13 @@ const Color = (props) => {
       <ul className="colors ps-0">
         {colorData &&
           colorData?.map((item, index) => {
-            const isSelected = selectedColor === item?.title;
+            const isSelected = selectedColor === item?._id;
 
             return (
               <>
                 <li
                   key={index}
-                  onClick={() => handleColorClick(item?.title)}
+                  onClick={() => handleColorClick(item?._id)}
                   style={{
                     backgroundColor: item?.title,
                     border: isSelected ? '3px solid #007bff' : 'none',

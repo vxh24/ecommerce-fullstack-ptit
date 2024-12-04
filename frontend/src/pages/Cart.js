@@ -73,7 +73,7 @@ const Cart = () => {
                           <p>{product?.name}</p>
                           <p className="d-flex gap-15">Màu sắc:
                             <ul className='colors ps-0'>
-                              <li style={{ backgroundColor: item?.color }}></li>
+                              <li style={{ backgroundColor: item?.color.title }}></li>
                             </ul>
                           </p>
 

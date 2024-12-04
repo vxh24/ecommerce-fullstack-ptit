@@ -192,6 +192,16 @@ export const getProfileSlice = createAsyncThunk(
     }
   }
 );
+export const applyCouponSlice = createAsyncThunk(
+  "user/applycoupon",
+  async (counpon, thunkAPI) => {
+    try {
+      return await authService.applyCoupon(counpon);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
 const getCustomerfromLocalStorage = localStorage.getItem("customer")
   ? JSON.parse(localStorage.getItem("customer"))
   : null;
@@ -555,6 +565,21 @@ export const authSlice = createSlice({
         state.profile = action.payload;
       })
       .addCase(getProfileSlice.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+      })
+      .addCase(applyCouponSlice.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(applyCouponSlice.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.applycoupon = action.payload;
+      })
+      .addCase(applyCouponSlice.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;

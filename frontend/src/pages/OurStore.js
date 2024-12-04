@@ -29,6 +29,16 @@ const OurStore = () => {
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = productState?.slice(indexOfFirstProduct, indexOfLastProduct);
+  const [randomProducts, setRandomProducts] = useState([]);
+
+  useEffect(() => {
+    if (productState?.length > 2) {
+      const shuffled = [...productState].sort(() => 0.5 - Math.random());
+      setRandomProducts(shuffled.slice(0, 2));
+    } else {
+      setRandomProducts(productState);
+    }
+  }, [productState]);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   useEffect(() => {
     getProducts();
@@ -226,38 +236,26 @@ const OurStore = () => {
                   Sản phẩm ngẫu nhiên
                 </h3>
                 <div>
-                  <div className="random-products d-flex mb-3">
-                    <div className="w-50">
-                      <img src="images/watch.jpg" className='img-fluid' alt="watch" />
-                    </div>
-                    <div className="w-50">
-                      <h5>TWS Tai Nghe Bluetooth Không Dây M10 Bluetooth</h5>
-                      <ReactStars
-                        count={5}
-                        size={24}
-                        value={3}
-                        edit={false}
-                        activeColor="#ffd700"
-                      />
-                      <b>$100</b>
-                    </div>
-                  </div>
-                  <div className="random-products d-flex">
-                    <div className="w-50">
-                      <img src="images/watch.jpg" className='img-fluid' alt="watch" />
-                    </div>
-                    <div className="w-50">
-                      <h5>TWS Tai Nghe Bluetooth Không Dây M10 Bluetooth</h5>
-                      <ReactStars
-                        count={5}
-                        size={24}
-                        value="3"
-                        edit={false}
-                        activeColor="#ffd700"
-                      />
-                      <b>$100</b>
-                    </div>
-                  </div>
+                  {randomProducts && randomProducts.map((item, index) => {
+                    return (
+                      <div className="random-products d-flex mb-3" key={index}>
+                        <div className="w-50">
+                          <img src={item?.images[0]?.url} className='img-fluid p-2' alt="watch" />
+                        </div>
+                        <div className="w-50">
+                          <h5 className='mt-2'>{item.name}</h5>
+                          <ReactStars
+                            count={5}
+                            size={24}
+                            value={3}
+                            edit={false}
+                            activeColor="#ffd700"
+                          />
+                          <b>đ{item.price}</b>
+                        </div>
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
             </div>

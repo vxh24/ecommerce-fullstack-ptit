@@ -18,6 +18,7 @@ import { FaFacebookSquare } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { FcNext, FcPrevious } from "react-icons/fc";
 import ReactImageZoom from 'react-image-zoom';
+import { GiConsoleController } from 'react-icons/gi';
 const SingleProduct = () => {
   const location = useLocation();
   const productState = useSelector(state => state?.product?.product?.data);
@@ -57,6 +58,7 @@ const SingleProduct = () => {
   const colorIds = useSelector(state => state?.product?.product?.data?.colors);
   const colors = useSelector(state => state?.color?.colors?.data);
   const matchedColors = colors?.filter((color) => colorIds?.includes(color?._id));
+  console.log(matchedColors);
   const [currentIndex, setCurrentIndex] = useState(0);
   const props = {
     width: 600,
@@ -99,7 +101,7 @@ const SingleProduct = () => {
       return false;
     }
     else {
-      dispatch(AddProdToCart({ _id: productState?._id, count, color }))
+      dispatch(AddProdToCart({ _id: productState?._id, count, color_id: color }))
       setTimeout(() => {
         navigate("/cart");
         dispatch(getUserCart())
@@ -391,8 +393,8 @@ const SingleProduct = () => {
                           </button>
                         </div>
                         <div className="product-image">
-                          <img src="images/watch.jpg" className='img-fluid mx-auto' alt="product image" />
-                          <img src="images/watch1.jpg" className='img-fluid' alt="product image" />
+                          <img src={item.product?.images[0]?.url} className='img-fluid mx-auto' alt="product image" />
+                          <img src={item.product?.images[1]?.url} className='img-fluid' alt="product image" />
                         </div>
                         <div className="product-details">
                           <h6 className='brand'>{item.product.brand}</h6>

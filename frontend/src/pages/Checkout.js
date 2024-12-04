@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { RiCoupon3Line } from "react-icons/ri";
 import { FcShipped } from "react-icons/fc";
 import { useDispatch, useSelector } from 'react-redux';
-import { cashOrderUser, getAddressSlice, getUserCart } from '../features/user/userSlice';
+import { applyCouponSlice, cashOrderUser, getAddressSlice, getUserCart } from '../features/user/userSlice';
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { MdOutlineKeyboardReturn } from "react-icons/md";
 import VoucherModal from '../components/VoucherModal';
@@ -18,7 +18,7 @@ const Checkout = () => {
   const handleClose = () => setShowModal(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const userCartState = useSelector(state => state?.auth?.cartUser?.result);
+  const userCartState = useSelector(state => state?.auth?.cartUser?.cart);
   const productState = useSelector((state) => state?.product?.products?.data);
   const [totalAmount, setTotalAmount] = useState(null);
   const [click, setClick] = useState(false);
@@ -245,13 +245,13 @@ const Checkout = () => {
                         <div className='w-75 d-flex gap-10' >
                           <div className='w-25 position-relative'>
                             <span style={{ top: "-15px", right: "-4px" }} className='badge bg-secondary text-white rounded-circle p-2 position-absolute'>{item?.count}</span>
-                            <img src={product.images[0].url} className='img-fluid' alt="" />
+                            <img src={product?.images[0]?.url} className='img-fluid' alt="" />
                           </div>
                           <div>
                             <h5 className="total">{product?.name}</h5>
                             <p className="d-flex gap-15">Màu sắc:
                               <ul className='colors ps-0'>
-                                <li style={{ backgroundColor: item?.color }}></li>
+                                <li style={{ backgroundColor: item?.color.title }}></li>
                               </ul>
                             </p>
                           </div>

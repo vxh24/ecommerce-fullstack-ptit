@@ -40,7 +40,7 @@ const Header = () => {
     setProductOpt(data);
     setCategories([...category]);
   }, [productState]);
-  const userCartState = useSelector((state) => state?.auth?.cartUser?.result);
+  const userCartState = useSelector((state) => state?.auth?.cartUser?.cart);
   const [total, setTotal] = useState(null);
   useEffect(() => {
     let sum = 0;
@@ -48,7 +48,7 @@ const Header = () => {
       sum =
         sum +
         Number(userCartState.products[index].count) *
-          Number(userCartState.products[index].price);
+        Number(userCartState.products[index].price);
       setTotal(sum);
     }
   }, [userCartState]);
@@ -204,38 +204,35 @@ const Header = () => {
         <div className="container-xxl">
           <div className="row">
             <div className="col-12">
-              <div className="menu-bottom d-flex align-items-center gap-15">
-                <div className="">
-                  <div className="dropdown">
-                    <button
-                      className="btn btn-secondary dropdown-toggle bg-transparent border-0 gap-15 d-flex align-items-center"
-                      type="button"
-                      id="dropdownMenuButton1"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      <BiCategory className="fs-3" />
-                      <span className="me-5 d-inline-block">
-                        {" "}
-                        Danh mục sản phẩm{" "}
-                      </span>
-                    </button>
-                    <ul
-                      className="dropdown-menu"
-                      aria-labelledby="dropdownMenuButton1"
-                    >
-                      {categories &&
-                        categories?.map((item, index) => {
-                          return (
-                            <li key={index}>
-                              <Link className="dropdown-item text-white" to="">
-                                {item}
-                              </Link>
-                            </li>
-                          );
-                        })}
-                    </ul>
-                  </div>
+              <div className="menu-bottom d-flex align-items-center gap-30">
+                <div className="dropdown">
+                  <button
+                    className="btn btn-secondary dropdown-toggle d-flex gap-10 align-items-center mb-0"
+                    type="button"
+                    id="dropdownMenu2"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    <BiCategory className="fs-3" />
+                    <span >
+                      Danh mục sản phẩm
+                    </span>
+                  </button>
+                  <ul
+                    className="dropdown-menu"
+                    aria-labelledby="dropdownMenu2"
+                  >
+                    {categories &&
+                      categories?.map((item, index) => {
+                        return (
+                          <li key={index} className="mt-0">
+                            <button className="dropdown-item text-dark bold-text">
+                              {item}
+                            </button>
+                          </li>
+                        );
+                      })}
+                  </ul>
                 </div>
                 <div className="menu-links">
                   <div className="div d-flex align-items-center gap-30">

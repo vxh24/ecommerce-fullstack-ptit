@@ -40,13 +40,15 @@ const Wishlist = () => {
             {
               wishlistState?.map((item, index) => {
                 return (
+
                   <div className="col-3" key={index}>
                     <div className="wishlist-card position-relative">
                       <img onClick={(e) => { removeFromWishlist(item?._id) }} src="images/cross.svg" alt="cross" className="position-absolute cross img-fluid" />
                       <div className="wishlist-card-image">
-                        <img src="images/watch.jpg" className='img-fluid w-100' alt="watch" />
-                        <div className='py-3 px-3'>
-                          <h5 className="title">{item?.title}</h5>
+                        <img src={item?.images[0]?.url} className='img-fluid w-100' alt="watch" />
+                        <div className='hover-container py-3 px-3'>
+                          <h5 className="hover-title title" onClick={() => navigate(`/product/${item._id}`)}>{item?.name}</h5>
+                          <span class="hover-detail">Xem chi tiết</span>
                           <h6 className="price mb-3 mt-3">$ {item?.price}</h6>
                         </div>
                       </div>
