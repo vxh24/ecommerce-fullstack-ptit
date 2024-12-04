@@ -11,7 +11,6 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Link, useLocation } from "react-router-dom";
 import { Outlet } from "react-router-dom";
-import { ImBlog } from "react-icons/im";
 import { IoIosNotifications } from "react-icons/io";
 import { FaClipboardList, FaBloggerB } from "react-icons/fa";
 import { SiBrandfolder } from "react-icons/si";
@@ -68,113 +67,57 @@ const MainLayout = () => {
             {
               key: "",
               icon: <AiOutlineDashboard className="fs-4" />,
-              label: "Dashboard",
+              label: "Giao diện quản trị",
             },
             {
               key: "customers",
               icon: <AiOutlineUser className="fs-4" />,
-              label: "Customers",
+              label: "Quản lý người dùng",
             },
             {
-              key: "Catalog",
+              key: "list-product",
               icon: <AiOutlineShoppingCart className="fs-4" />,
-              label: "Catalog",
-              children: [
-                // {
-                //   key: "product",
-                //   icon: <AiOutlineShoppingCart className="fs-4" />,
-                //   label: "Add Product",
-                // },
-                {
-                  key: "list-product",
-                  icon: <AiOutlineShoppingCart className="fs-4" />,
-                  label: "Product List",
-                },
-                // {
-                //   key: "brand",
-                //   icon: <SiBrandfolder className="fs-4" />,
-                //   label: "Brand",
-                // },
-                {
-                  key: "list-brand",
-                  icon: <SiBrandfolder className="fs-4" />,
-                  label: "Brand List ",
-                },
-                // {
-                //   key: "category",
-                //   icon: <BiCategoryAlt className="fs-4" />,
-                //   label: "Category",
-                // },
-                {
-                  key: "list-category",
-                  icon: <BiCategoryAlt className="fs-4" />,
-                  label: "Category List",
-                },
-                // {
-                //   key: "color",
-                //   icon: <AiOutlineBgColors className="fs-4" />,
-                //   label: "Color",
-                // },
-                {
-                  key: "list-color",
-                  icon: <AiOutlineBgColors className="fs-4" />,
-                  label: "Color List",
-                },
-              ],
+              label: "Quản lý sản phẩm",
+            },
+            {
+              key: "list-brand",
+              icon: <SiBrandfolder className="fs-4" />,
+              label: "Quản lý thương hiệu",
+            },
+            {
+              key: "list-category",
+              icon: <BiCategoryAlt className="fs-4" />,
+              label: "Quản lý danh mục",
+            },
+            {
+              key: "list-color",
+              icon: <AiOutlineBgColors className="fs-4" />,
+              label: "Quản lý màu sắc",
             },
             {
               key: "orders",
               icon: <FaClipboardList className="fs-4" />,
-              label: "Orders",
+              label: "Quản lý đơn hàng",
             },
             {
-              key: "marketing",
+              key: "coupon-list",
               icon: <RiCouponLine className="fs-4" />,
-              label: "Marketing",
-              children: [
-                // {
-                //   key: "coupon",
-                //   icon: <ImBlog className="fs-4" />,
-                //   label: "Add Coupon",
-                // },
-                {
-                  key: "coupon-list",
-                  icon: <RiCouponLine className="fs-4" />,
-                  label: "Coupon List",
-                },
-              ],
+              label: "Quản lý mã giảm giá",
             },
             {
-              key: "blogs",
+              key: "blog-list",
               icon: <FaBloggerB className="fs-4" />,
-              label: "Blogs",
-              children: [
-                // {
-                //   key: "blog",
-                //   icon: <ImBlog className="fs-4" />,
-                //   label: "Add Blog",
-                // },
-                {
-                  key: "blog-list",
-                  icon: <FaBloggerB className="fs-4" />,
-                  label: "Blog List",
-                },
-                // {
-                //   key: "blog-category",
-                //   icon: <ImBlog className="fs-4" />,
-                //   label: "Add Blog Category",
-                // },
-                {
-                  key: "blog-category-list",
-                  icon: <FaBloggerB className="fs-4" />,
-                  label: "Blog Category List",
-                },
-              ],
+              label: "Quản lý bài viết",
+            },
+            {
+              key: "blog-category-list",
+              icon: <FaBloggerB className="fs-4" />,
+              label: "Quản lý danh mục bài viết",
             },
             {
               key: "enquiries",
               icon: <FaClipboardList className="fs-4" />,
-              label: "Enquiries",
+              label: "Quản lý khảo sát khách hàng",
             },
           ]}
         />

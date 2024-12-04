@@ -10,6 +10,7 @@ const productSchema = new mongoose.Schema(
     description: {
       type: String,
       required: true,
+      min: 0,
     },
     price: {
       type: Number,
@@ -26,6 +27,7 @@ const productSchema = new mongoose.Schema(
     quantity: {
       type: Number,
       required: true,
+      min: 0,
     },
     sold: {
       type: Number,
@@ -46,7 +48,7 @@ const productSchema = new mongoose.Schema(
     tags: [],
     ratings: [
       {
-        star: Number,
+        star: { type: Number, min: 1, max: 5 },
         comment: String,
         postedBy: {
           type: mongoose.Schema.Types.ObjectId,

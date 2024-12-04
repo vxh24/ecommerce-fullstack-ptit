@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const mongoose_delete = require("mongoose-delete");
 
 const couponSchema = new mongoose.Schema({
   name: {
@@ -17,8 +16,6 @@ const couponSchema = new mongoose.Schema({
     required: true,
   },
 });
-
-couponSchema.plugin(mongoose_delete, { overrideMethods: "all" });
 
 const Coupon = mongoose.model("Coupon", couponSchema);
 

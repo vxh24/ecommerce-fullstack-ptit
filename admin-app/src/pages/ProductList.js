@@ -7,33 +7,31 @@ import { getProducts } from "../features/product/productSlice";
 import { Link, useNavigate } from "react-router-dom";
 const columns = [
   {
-    title: "SNo",
+    title: "STT",
     dataIndex: "key",
   },
   {
-    title: "Name",
+    title: "Tên sản phẩm",
     dataIndex: "name",
     sorter: (a, b) => a.name.length - b.name.length,
   },
   {
-    title: "Brand",
+    title: "Thương hiệu",
     dataIndex: "brand",
     sorter: (a, b) => a.brand.length - b.brand.length,
   },
   {
-    title: "Category",
+    title: "Danh mục",
     dataIndex: "category",
     sorter: (a, b) => a.category.length - b.category.length,
   },
   {
-    title: "Colors",
+    title: "Màu sắc",
     dataIndex: "colors",
     render: (colorIds, record) => {
       if (!Array.isArray(record.colors) || record.colors.length === 0) {
         return null;
       }
-
-      console.log(record.colors);
 
       return colorIds.map((colorId, index) => {
         const color = record.colors.find((c) => c._id === colorId);
@@ -60,37 +58,46 @@ const columns = [
     },
   },
   {
-    title: "Quantity",
+    title: "Số lượng",
     dataIndex: "quantity",
     sorter: (a, b) => a.quantity - b.quantity,
   },
   {
-    title: "Price",
+    title: "Giá",
     dataIndex: "price",
     sorter: (a, b) => a.price - b.price,
   },
   {
-    title: "Action",
+    title: "Thao tác",
     dataIndex: "action",
   },
 ];
 
+const formattedPrice = (price) =>
+  new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(price);
+
 const ProductList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   useEffect(() => {
     dispatch(getProducts());
   }, []);
+
   const [click, setClick] = useState(false);
-  console.log(click);
   const productState = useSelector((state) => state.product.products.data);
-  // console.log(productState);
+
   const data1 = [];
+
   useEffect(() => {
     if (click === true) {
       navigate("/admin/product");
     }
   }, [click]);
+
   if (productState && productState.length) {
     for (let i = 0; i < productState.length; i++) {
       data1.push({
@@ -99,7 +106,7 @@ const ProductList = () => {
         brand: productState[i].brand,
         category: productState[i].category,
         color: productState[i].color,
-        price: `${productState[i].price}`,
+        price: formattedPrice(productState[i].price),
         action: (
           <>
             <Link to="/" className=" fs-3 text-danger">
@@ -117,7 +124,7 @@ const ProductList = () => {
   return (
     <div>
       <div className="product-list d-flex justify-content-between align-items-center">
-        <h3 className="mb-4 title">Products</h3>
+        <h3 className="mb-4 title">Danh sách sản phẩm</h3>
         <button onClick={() => setClick(true)}>+Thêm sản phẩm</button>
       </div>
       <div>
