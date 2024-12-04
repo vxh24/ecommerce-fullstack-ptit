@@ -264,7 +264,7 @@ const OurStore = () => {
                 <div className="d-flex justify-content-between align-items-center">
                   <div className="d-flex align-items-center gap-10">
                     <p className='mb-0 d-block' style={{ "width": "100px" }}>Sort By:</p>
-                    <select name="manual" id="" className="form-control form-select"
+                    <select style={{ "width": "200px" }} name="manual" id="" className="form-control form-select"
                       onChange={handleSortChange}
                     >
                       <option value="manual">Tất cả</option>
@@ -280,7 +280,7 @@ const OurStore = () => {
                     </select>
                   </div>
                   <div className='d-flex align-items-center gap-10'>
-                    <p className='totalproducts mb-0'>21 Products</p>
+                    <p className='totalproducts mb-0'>{productState.length} Sản phẩm</p>
                     <div className="d-flex align-items-center gap-10 grid">
                       <img onClick={() => { setGrid(3); }} src="images/gr4.svg" className="d-block img-fluid" alt="grid" />
                       <img onClick={() => { setGrid(4); }} src="images/gr3.svg" className="d-block img-fluid" alt="grid" />

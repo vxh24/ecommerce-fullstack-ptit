@@ -20,7 +20,6 @@ const Header = () => {
     // dispatch(logoutSlice());
     googleLogout();
     localStorage.clear();
-    window.location.reload();
   };
   const authState = useSelector((state) => state?.auth);
   const [paginate, setPaginate] = useState(true);
@@ -34,7 +33,7 @@ const Header = () => {
     let category = new Set();
     for (let index = 0; index < productState?.length; index++) {
       const element = productState[index];
-      data.push({ id: index, prod: element?._id, name: element?.title });
+      data.push({ id: index, prod: element?._id, name: element?.name });
       category.add(element?.category);
     }
     setProductOpt(data);

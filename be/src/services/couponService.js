@@ -27,7 +27,7 @@ const updateCoupon = asyncHandler(async (id, couponData) => {
 
 const deleteCoupon = asyncHandler(async (id) => {
   validateMongodbId(id);
-  const deletedCoupon = await Coupon.deleteById(id);
+  const deletedCoupon = await Coupon.deleteOne({ _id: id });
   return deletedCoupon;
 });
 

@@ -41,11 +41,12 @@ const Home = () => {
           return prevIndex - 1;
         });
       }
-    }, 3000);
+    }, 2000);
 
     return () => clearInterval(interval);
   }, [direction]);
   const blogState = useSelector((state) => state?.blog?.blogs?.data);
+  const firstFourBlogs = blogState?.slice(0, 4) || [];
   const productState = useSelector((state) => state?.product?.products?.data);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -247,52 +248,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-      <section className="famous-wrapper py-5 home-wrapper-2">
-        <div className="container-xxl">
-          <div className="row">
-            <div className="col-3">
-              <div className="famous-card position-relative">
-                <img src="images/famous.webp" className='img-fluid' alt="famous" />
-                <div className="famous-content position-absolute">
-                  <h5>Big Screen</h5>
-                  <h6>Smart Watch Series 7</h6>
-                  <p>From $399or $200/mo. for 24mo.</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-3">
-              <div className="famous-card position-relative">
-                <img src="images/famous.webp" className='img-fluid' alt="famous" />
-                <div className="famous-content position-absolute">
-                  <h5>Big Screen</h5>
-                  <h6>Smart Watch Series 7</h6>
-                  <p>From $399or $200/mo. for 24mo.</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-3">
-              <div className="famous-card position-relative">
-                <img src="images/famous.webp" className='img-fluid' alt="famous" />
-                <div className="famous-content position-absolute">
-                  <h5>Big Screen</h5>
-                  <h6>Smart Watch Series 7</h6>
-                  <p>From $399or $200/mo. for 24mo.</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-3">
-              <div className="famous-card position-relative">
-                <img src="images/famous.webp" className='img-fluid' alt="famous" />
-                <div className="famous-content position-absolute">
-                  <h5>Big Screen</h5>
-                  <h6>Smart Watch Series 7</h6>
-                  <p>From $399or $200/mo. for 24mo.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
       <section className='special-wrapper py-5 home-wrapper-2'>
         <div className="container-xxl">
           <div className="row">
@@ -393,7 +348,7 @@ const Home = () => {
           </div>
           <div className="row">
             {
-              blogState?.map((item, index) => {
+              firstFourBlogs?.map((item, index) => {
                 return (
                   <div className="col-3 " key={index}>
 

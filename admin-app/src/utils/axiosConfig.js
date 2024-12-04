@@ -6,10 +6,12 @@ const getTokenFromLocalStorage = localStorage.getItem("user")
 
 export const getConfig = {
   headers: {
-    Authorization: `Bearer ${getTokenFromLocalStorage !== null
+    "Content-Type": "multipart/form-data",
+    Authorization: `Bearer ${
+      getTokenFromLocalStorage !== null
         ? getTokenFromLocalStorage.access_token
         : ""
-      }`,
+    }`,
     Accept: "application/json",
   },
 };

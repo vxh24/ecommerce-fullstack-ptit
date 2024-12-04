@@ -355,6 +355,17 @@ footer .input-group-text {
   font-size: 14px;
 }
 
+.blog-sidebar {
+  margin-top: 24px;
+  padding: 10px;
+  background-color: #F0F0F0;
+}
+
+.blog-featured {
+  background-color: #F0F0F0;
+  padding: 15px;
+}
+
 /* blog card end */
 
 /* product card */
@@ -1220,7 +1231,6 @@ footer .input-group-text {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  background: linear-gradient(90deg, #ff7e5f, #feb47b);
 }
 
 .header h2 {
