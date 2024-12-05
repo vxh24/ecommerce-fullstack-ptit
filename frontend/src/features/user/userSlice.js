@@ -98,6 +98,35 @@ export const cashOrderUser = createAsyncThunk(
     }
   }
 );
+export const momoOrderUser = createAsyncThunk(
+  "user/cart/momo-order",
+  async (
+    {
+      orderId,
+      amount,
+      resultCode,
+      message,
+      transId,
+      partnerCode,
+      responseTime,
+    },
+    thunkAPI
+  ) => {
+    try {
+      return await authService.momoOrder({
+        orderId,
+        amount,
+        resultCode,
+        message,
+        transId,
+        partnerCode,
+        responseTime,
+      });
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
 export const getOrderUser = createAsyncThunk(
   "user/orders",
   async (thunkAPI) => {
@@ -384,6 +413,27 @@ export const authSlice = createSlice({
         }
       })
       .addCase(cashOrderUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+        // if (state.isError === true) {
+        //   toast.error("ko đc")
+        // }
+      })
+      .addCase(momoOrderUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(momoOrderUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.order = action.payload;
+        if (state.isSuccess === true) {
+          toast.success("Order Created Successfully!");
+        }
+      })
+      .addCase(momoOrderUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;

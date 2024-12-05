@@ -3,9 +3,13 @@ import Meta from "../components/Meta";
 import BreadCrumb from "../components/BreadCrumb";
 import { IoIosCheckmarkCircle } from "react-icons/io";
 import { useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import moment from "moment";
+import { momoOrderUser } from "../features/user/userSlice";
+import { toast } from "react-toastify";
 const PaymentResult = () => {
   const location = useLocation();
+  const dispatch = useDispatch();
 
   const [paymentDetails, setPaymentDetails] = useState({
     partnerCode: "",
@@ -17,6 +21,9 @@ const PaymentResult = () => {
     message: "",
     responseTime: "",
   });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -31,6 +38,10 @@ const PaymentResult = () => {
       message: params.get("message"),
       responseTime: params.get("responseTime"),
     });
+
+    if (params.get("resultCode") === "0") {
+      handlePaymentCallback();
+    }
   }, [location.search]);
 
   const formatDate = (timestamp) => {
@@ -42,6 +53,31 @@ const PaymentResult = () => {
       style: "currency",
       currency: "VND",
     }).format(amount);
+  };
+
+  const handlePaymentCallback = async () => {
+    const paymentData = {
+      orderId: paymentDetails.orderId,
+      amount: paymentDetails.amount,
+      resultCode: paymentDetails.resultCode,
+      message: paymentDetails.message,
+      transId: paymentDetails.transId,
+      partnerCode: paymentDetails.partnerCode,
+      responseTime: paymentDetails.responseTime,
+    };
+
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await dispatch(momoOrderUser(paymentData));
+      console.log("Payment success:", result);
+
+      toast.success("Tạo đơn hàng thành công!!!");
+    } catch (err) {
+      setError("Payment failed: " + err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
