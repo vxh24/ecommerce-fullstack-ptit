@@ -29,6 +29,16 @@ const OurStore = () => {
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = productState?.slice(indexOfFirstProduct, indexOfLastProduct);
+  const [randomProducts, setRandomProducts] = useState([]);
+
+  useEffect(() => {
+    if (productState?.length > 2) {
+      const shuffled = [...productState].sort(() => 0.5 - Math.random());
+      setRandomProducts(shuffled.slice(0, 2));
+    } else {
+      setRandomProducts(productState);
+    }
+  }, [productState]);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   useEffect(() => {
     getProducts();
@@ -94,8 +104,8 @@ const OurStore = () => {
   };
   return (
     <>
-      <Meta title={"Our Store"} />
-      <BreadCrumb title="Shop" />
+      <Meta title={"Cửa hàng"} />
+      <BreadCrumb title="Cửa hàng" />
       <div className="store-wrapper home-wrapper-2 py-5">
         <div className="container-xxl">
           <div className="row">
@@ -226,38 +236,26 @@ const OurStore = () => {
                   Sản phẩm ngẫu nhiên
                 </h3>
                 <div>
-                  <div className="random-products d-flex mb-3">
-                    <div className="w-50">
-                      <img src="images/watch.jpg" className='img-fluid' alt="watch" />
-                    </div>
-                    <div className="w-50">
-                      <h5>TWS Tai Nghe Bluetooth Không Dây M10 Bluetooth</h5>
-                      <ReactStars
-                        count={5}
-                        size={24}
-                        value={3}
-                        edit={false}
-                        activeColor="#ffd700"
-                      />
-                      <b>$100</b>
-                    </div>
-                  </div>
-                  <div className="random-products d-flex">
-                    <div className="w-50">
-                      <img src="images/watch.jpg" className='img-fluid' alt="watch" />
-                    </div>
-                    <div className="w-50">
-                      <h5>TWS Tai Nghe Bluetooth Không Dây M10 Bluetooth</h5>
-                      <ReactStars
-                        count={5}
-                        size={24}
-                        value="3"
-                        edit={false}
-                        activeColor="#ffd700"
-                      />
-                      <b>$100</b>
-                    </div>
-                  </div>
+                  {randomProducts && randomProducts.map((item, index) => {
+                    return (
+                      <div className="random-products d-flex mb-3" key={index}>
+                        <div className="w-50">
+                          <img src={item?.images[0]?.url} className='img-fluid p-2' alt="watch" />
+                        </div>
+                        <div className="w-50">
+                          <h5 className='mt-2'>{item.name}</h5>
+                          <ReactStars
+                            count={5}
+                            size={24}
+                            value={3}
+                            edit={false}
+                            activeColor="#ffd700"
+                          />
+                          <h5 className='price'>{item.price}<span className='currency'>đ</span></h5>
+                        </div>
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
             </div>
@@ -266,7 +264,7 @@ const OurStore = () => {
                 <div className="d-flex justify-content-between align-items-center">
                   <div className="d-flex align-items-center gap-10">
                     <p className='mb-0 d-block' style={{ "width": "100px" }}>Sort By:</p>
-                    <select name="manual" id="" className="form-control form-select"
+                    <select style={{ "width": "200px" }} name="manual" id="" className="form-control form-select"
                       onChange={handleSortChange}
                     >
                       <option value="manual">Tất cả</option>
@@ -282,7 +280,7 @@ const OurStore = () => {
                     </select>
                   </div>
                   <div className='d-flex align-items-center gap-10'>
-                    <p className='totalproducts mb-0'>21 Products</p>
+                    <p className='totalproducts mb-0'>{productState?.length} Sản phẩm</p>
                     <div className="d-flex align-items-center gap-10 grid">
                       <img onClick={() => { setGrid(3); }} src="images/gr4.svg" className="d-block img-fluid" alt="grid" />
                       <img onClick={() => { setGrid(4); }} src="images/gr3.svg" className="d-block img-fluid" alt="grid" />

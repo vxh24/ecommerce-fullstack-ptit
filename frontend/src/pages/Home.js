@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getAllBlog } from '../features/blogs/blogSlice';
 import moment from "moment";
 import { getAllProducts } from '../features/products/productSlice';
+import Chat from '../components/Chat';
 const Home = () => {
   const banners = [
     { id: 1, image: "/images/main-banner-1.jpg" },
@@ -41,11 +42,12 @@ const Home = () => {
           return prevIndex - 1;
         });
       }
-    }, 3000);
+    }, 2000);
 
     return () => clearInterval(interval);
   }, [direction]);
   const blogState = useSelector((state) => state?.blog?.blogs?.data);
+  const firstFourBlogs = blogState?.slice(0, 4) || [];
   const productState = useSelector((state) => state?.product?.products?.data);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -236,59 +238,13 @@ const Home = () => {
                       < FeaturedProduct key={index} title={item?.title} brand={item?.brand}
                         price={item?.price} totalRating={item?.totalRatings.toString()}
                         sold={item?.sold} quantity={item?.quantity} description={item?.description}
-                        id={item?._id}
+                        id={item?._id} image={item?.images}
                       />
                     )
                   }
 
                 })
               }
-            </div>
-          </div>
-        </div>
-      </section>
-      <section className="famous-wrapper py-5 home-wrapper-2">
-        <div className="container-xxl">
-          <div className="row">
-            <div className="col-3">
-              <div className="famous-card position-relative">
-                <img src="images/famous.webp" className='img-fluid' alt="famous" />
-                <div className="famous-content position-absolute">
-                  <h5>Big Screen</h5>
-                  <h6>Smart Watch Series 7</h6>
-                  <p>From $399or $200/mo. for 24mo.</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-3">
-              <div className="famous-card position-relative">
-                <img src="images/famous.webp" className='img-fluid' alt="famous" />
-                <div className="famous-content position-absolute">
-                  <h5>Big Screen</h5>
-                  <h6>Smart Watch Series 7</h6>
-                  <p>From $399or $200/mo. for 24mo.</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-3">
-              <div className="famous-card position-relative">
-                <img src="images/famous.webp" className='img-fluid' alt="famous" />
-                <div className="famous-content position-absolute">
-                  <h5>Big Screen</h5>
-                  <h6>Smart Watch Series 7</h6>
-                  <p>From $399or $200/mo. for 24mo.</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-3">
-              <div className="famous-card position-relative">
-                <img src="images/famous.webp" className='img-fluid' alt="famous" />
-                <div className="famous-content position-absolute">
-                  <h5>Big Screen</h5>
-                  <h6>Smart Watch Series 7</h6>
-                  <p>From $399or $200/mo. for 24mo.</p>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -335,7 +291,7 @@ const Home = () => {
                       < PopularProduct key={index} title={item?.title} brand={item?.brand}
                         price={item?.price} totalRating={item?.totalRatings.toString()}
                         sold={item?.sold} quantity={item?.quantity} description={item?.description}
-                        id={item?._id}
+                        id={item?._id} image={item?.images}
                       />
                     )
                   }
@@ -393,7 +349,7 @@ const Home = () => {
           </div>
           <div className="row">
             {
-              blogState?.map((item, index) => {
+              firstFourBlogs?.map((item, index) => {
                 return (
                   <div className="col-3 " key={index}>
 
@@ -408,6 +364,7 @@ const Home = () => {
           </div>
         </div>
       </section>
+
     </>
   )
 }

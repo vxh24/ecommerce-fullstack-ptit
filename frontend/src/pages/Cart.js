@@ -23,28 +23,28 @@ const Cart = () => {
     dispatch(getUserCart());
     dispatch(getAllProducts());
   }, []);
-  useEffect(() => {
-    let sum = 0;
-    for (let index = 0; index < userCartState?.products?.length; index++) {
-      sum =
-        sum +
-        Number(userCartState.products[index].count) *
-          userCartState.products[index].price;
-      setTotalAmount(sum);
-    }
-    setTimeout(() => {
-      setTotalAmount(sum);
-    }, 200);
-  }, [userCartState]);
+  // useEffect(() => {
+  //   let sum = 0;
+  //   for (let index = 0; index < userCartState?.products?.length; index++) {
+  //     sum =
+  //       sum +
+  //       Number(userCartState.products[index].count) *
+  //       userCartState.products[index].price;
+  //     setTotalAmount(sum);
+  //   }
+  //   setTimeout(() => {
+  //     setTotalAmount(sum);
+  //   }, 200);
+  // }, [userCartState]);
   const deleteproduct = (id, color) => {
     dispatch(deleteProductfromCart({ productId: id, color }));
     setTimeout(() => {
       dispatch(getUserCart());
-    }, 200);
+    }, 300);
   };
   const updatecount = (id, color, newquantity) => {
     dispatch(
-      updatecountCart({ productId: id, color, newQuantity: newquantity })
+      updatecountCart({ productId: id, color: color._id, newQuantity: newquantity })
     );
     setTimeout(() => {
       dispatch(getUserCart());
@@ -57,8 +57,8 @@ const Cart = () => {
   }, [authState]);
   return (
     <>
-      <Meta title={"Cart"} />
-      <BreadCrumb title="Cart" />
+      <Meta title={"Giỏ hàng"} />
+      <BreadCrumb title="Giỏ hàng" />
       <div className="cart-wrapper home-wrapper-2 py-5">
         <div className="container-xxl">
           <div className="row">
@@ -89,16 +89,15 @@ const Cart = () => {
                         </div>
                         <div className="w-75">
                           <p>{product?.name}</p>
-                          <p className="d-flex gap-15">
-                            Màu sắc:
-                            <ul className="colors ps-0">
-                              <li style={{ backgroundColor: item?.color }}></li>
+                          <p className="d-flex gap-15">Màu sắc:
+                            <ul className='colors ps-0'>
+                              <li style={{ backgroundColor: item?.color?.title }}></li>
                             </ul>
                           </p>
                         </div>
                       </div>
                       <div className="cart-col-2">
-                        <h5 className="price">đ{item?.price}</h5>
+                        <h5 className="price">{item?.price}<span className='currency'>đ</span></h5>
                       </div>
                       <div className="cart-col-3 d-flex align-items-center gap-15">
                         <div className="">
@@ -130,42 +129,42 @@ const Cart = () => {
                         <div>
                           <MdDelete
                             onClick={(e) => {
-                              deleteproduct(item?.product, item?.color);
+                              deleteproduct(item?.product, item?.color?._id);
                             }}
                             className="text-danger fs-4"
                           />
                         </div>
                       </div>
                       <div className="cart-col-4">
-                        <h5 className="price"> đ{item?.price * item?.count}</h5>
+                        <h5 className="price">{item?.price * item?.count}<span className='currency'>đ</span></h5>
                       </div>
                     </div>
                   );
                 })}
             </div>
             <div className="col-12 py-2 mt-4">
-              {(totalAmount !== null || totalAmount !== 0) && (
-                <>
-                  <div className="d-flex justify-content-end mb-3">
-                    <div>
-                      <h4>Tổng tiền: đ{totalAmount}</h4>
-                    </div>
-                  </div>
-                  <div className="d-flex justify-content-between align-items-center">
-                    <Link to="/product" className="text-dark">
-                      <MdOutlineKeyboardReturn className="me-2" />
-                      Tiếp tục mua sắm
-                    </Link>
-                    {totalAmount !== 0 ? (
-                      <Link to="/checkout" className="button">
-                        Thanh toán
-                      </Link>
-                    ) : (
-                      <div></div>
-                    )}
-                  </div>
-                </>
-              )}
+              {/* {(totalAmount !== null || totalAmount !== 0) && (
+                <> */}
+              <div className="d-flex justify-content-end mb-3">
+                <div>
+                  <h4 className="price">Tổng tiền: {userCartState?.cartTotal} <span className='currency'>đ</span></h4>
+                </div>
+              </div>
+              <div className="d-flex justify-content-between align-items-center">
+                <Link to="/product" className="text-dark">
+                  <MdOutlineKeyboardReturn className="me-2" />
+                  Tiếp tục mua sắm
+                </Link>
+                {userCartState !== null ? (
+                  <Link to="/checkout" className="button">
+                    Thanh toán
+                  </Link>
+                ) : (
+                  <div></div>
+                )}
+              </div>
+              {/* </>
+              )} */}
             </div>
           </div>
         </div>

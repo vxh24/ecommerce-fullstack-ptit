@@ -26,7 +26,7 @@ const ProductCard = (props) => {
     dispatch(addToWishlist(id));
     setTimeout(() => {
       dispatch(getUserProductWishlist());
-    }, 100)
+    }, 200)
   }
   return (
     <>
@@ -46,12 +46,12 @@ const ProductCard = (props) => {
                 </button>
               </div>
               <div className="product-image">
-                <img src="images/watch.jpg" className='img-fluid mx-auto' alt="product image" />
-                <img src="images/watch1.jpg" className='img-fluid' alt="product image" />
+                <img src={item?.images[0]?.url} className='img-fluid mx-auto' alt="product image" />
+                <img src={item?.images[1]?.url} className='img-fluid' alt="product image" />
               </div>
               <div className="product-details">
                 <h6 className='brand'>{item.brand}</h6>
-                <h5 className="product-title">{item.title}</h5>
+                <h5 className="product-title">{item.name}</h5>
                 <ReactStars
                   count={5}
                   size={24}
@@ -61,13 +61,11 @@ const ProductCard = (props) => {
                 />
                 <p className={`description ${grid === 12 ? "d-block" : "d-none"}`}>{item?.description}
                 </p>
-                <p className='price'>${item.price}</p>
+                <p className='price'>{item.price}<span className='currency'>đ</span></p>
               </div>
               <div className="action-bar position-absolute">
                 <div className="d-flex flex-column gap-15">
-                  <Link><img src="images/prodcompare.svg" alt="compare" /></Link>
                   <Link to={"/product/" + item?._id}><img src="images/view.svg" alt="view" /></Link>
-                  <Link><img src="images/add-cart.svg" alt="add cart" /></Link>
 
                 </div>
               </div>

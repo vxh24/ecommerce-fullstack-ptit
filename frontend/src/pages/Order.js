@@ -96,11 +96,11 @@ const Order = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filterstatus.length > 0 ? (
+                  {filterstatus?.length > 0 ? (
                     filterstatus.map((item, index) => (
                       <tr key={index}>
                         <th scope="row">{item?._id}</th>
-                        <td>{item?.paymentIndent?.amount}</td>
+                        <td className='price'>{item?.paymentIndent?.amount}<span className='currency'>đ</span></td>
                         <td>{moment(item?.createdAt).format('DD/MM/YYYY')}</td>
                         <td>{item?.orderStatus}</td>
                         <td>

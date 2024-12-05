@@ -187,6 +187,16 @@ const getProfile = async () => {
     return response.data;
   }
 };
+const applyCoupon = async (counpon) => {
+  const response = await axios.post(
+    `${base_url}user/apply-coupon`,
+    counpon,
+    config
+  );
+  if (response.data) {
+    return response.data;
+  }
+};
 export const authService = {
   createUser,
   handleLogin,
@@ -208,4 +218,5 @@ export const authService = {
   logOut,
   getProfile,
   momoOrder,
+  applyCoupon,
 };
