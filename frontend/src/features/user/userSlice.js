@@ -309,7 +309,7 @@ export const authSlice = createSlice({
         state.isSuccess = true;
         state.cartUser = action.payload;
         if (state.isSuccess === true) {
-          toast.success("Add Product To Cart Successfully!");
+          toast.success("Sản phẩm đã được thêm vào giỏ hàng");
         }
       })
       .addCase(AddProdToCart.rejected, (state, action) => {
@@ -317,9 +317,6 @@ export const authSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
-        // if (state.isError === true) {
-        //   toast.error("ko đc")
-        // }
       })
       .addCase(getUserCart.pending, (state) => {
         state.isLoading = true;
@@ -335,9 +332,6 @@ export const authSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
-        // if (state.isError === true) {
-        //   toast.error("ko đc")
-        // }
       })
       .addCase(forgotPass.pending, (state) => {
         state.isLoading = true;
@@ -348,7 +342,7 @@ export const authSlice = createSlice({
         state.isSuccess = true;
         state.token = action.payload;
         if (state.isSuccess === true) {
-          toast.success("Email Send Successfully!");
+          toast.success("Vui lòng kiểm tra email");
         }
       })
       .addCase(forgotPass.rejected, (state, action) => {
@@ -356,9 +350,6 @@ export const authSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
-        // if (state.isError === true) {
-        //   toast.error("ko đc")
-        // }
       })
       .addCase(ResetPassWord.pending, (state) => {
         state.isLoading = true;
@@ -369,7 +360,7 @@ export const authSlice = createSlice({
         state.isSuccess = true;
         state.pass = action.payload;
         if (state.isSuccess === true) {
-          toast.success("Password Update Successfully!");
+          toast.success("Mật khẩu đã được thay đổi");
         }
       })
       .addCase(ResetPassWord.rejected, (state, action) => {
@@ -377,9 +368,6 @@ export const authSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
-        // if (state.isError === true) {
-        //   toast.error("ko đc")
-        // }
       })
       .addCase(cashOrderUser.pending, (state) => {
         state.isLoading = true;
@@ -390,7 +378,7 @@ export const authSlice = createSlice({
         state.isSuccess = true;
         state.order = action.payload;
         if (state.isSuccess === true) {
-          toast.success("Order Created Successfully!");
+          toast.success("Đơn hàng đã được tạo");
         }
       })
       .addCase(cashOrderUser.rejected, (state, action) => {
@@ -398,9 +386,6 @@ export const authSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
-        // if (state.isError === true) {
-        //   toast.error("ko đc")
-        // }
       })
       .addCase(getOrderUser.pending, (state) => {
         state.isLoading = true;
@@ -416,9 +401,6 @@ export const authSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
-        if (state.isError === true) {
-          toast.error("Fail");
-        }
       })
       .addCase(deleteProductfromCart.pending, (state) => {
         state.isLoading = true;
@@ -437,9 +419,6 @@ export const authSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
-        if (state.isError === true) {
-          toast.error("Có lỗi xảy ra");
-        }
       })
       .addCase(updatecountCart.pending, (state) => {
         state.isLoading = true;
@@ -455,9 +434,6 @@ export const authSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
-        if (state.isError === true) {
-          toast.error("Có lỗi xảy ra");
-        }
       })
       .addCase(createAdd.pending, (state) => {
         state.isLoading = true;
@@ -476,9 +452,6 @@ export const authSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
-        if (state.isError === true) {
-          toast.error("Có lỗi xảy ra");
-        }
       })
       .addCase(getAddressSlice.pending, (state) => {
         state.isLoading = true;
@@ -494,9 +467,6 @@ export const authSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
-        if (state.isError === true) {
-          toast.error("Có lỗi xảy ra");
-        }
       })
       .addCase(updateAddressSlice.pending, (state) => {
         state.isLoading = true;
@@ -533,9 +503,6 @@ export const authSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
-        if (state.isError === true) {
-          toast.error("Có lỗi xảy ra");
-        }
       })
       .addCase(logoutSlice.pending, (state) => {
         state.isLoading = true;

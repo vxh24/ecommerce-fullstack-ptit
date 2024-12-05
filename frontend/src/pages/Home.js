@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getAllBlog } from '../features/blogs/blogSlice';
 import moment from "moment";
 import { getAllProducts } from '../features/products/productSlice';
+import Chat from '../components/Chat';
 const Home = () => {
   const banners = [
     { id: 1, image: "/images/main-banner-1.jpg" },
@@ -237,7 +238,7 @@ const Home = () => {
                       < FeaturedProduct key={index} title={item?.title} brand={item?.brand}
                         price={item?.price} totalRating={item?.totalRatings.toString()}
                         sold={item?.sold} quantity={item?.quantity} description={item?.description}
-                        id={item?._id}
+                        id={item?._id} image={item?.images}
                       />
                     )
                   }
@@ -290,7 +291,7 @@ const Home = () => {
                       < PopularProduct key={index} title={item?.title} brand={item?.brand}
                         price={item?.price} totalRating={item?.totalRatings.toString()}
                         sold={item?.sold} quantity={item?.quantity} description={item?.description}
-                        id={item?._id}
+                        id={item?._id} image={item?.images}
                       />
                     )
                   }
@@ -363,6 +364,7 @@ const Home = () => {
           </div>
         </div>
       </section>
+
     </>
   )
 }

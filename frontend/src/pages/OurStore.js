@@ -104,8 +104,8 @@ const OurStore = () => {
   };
   return (
     <>
-      <Meta title={"Our Store"} />
-      <BreadCrumb title="Shop" />
+      <Meta title={"Cửa hàng"} />
+      <BreadCrumb title="Cửa hàng" />
       <div className="store-wrapper home-wrapper-2 py-5">
         <div className="container-xxl">
           <div className="row">
@@ -251,7 +251,7 @@ const OurStore = () => {
                             edit={false}
                             activeColor="#ffd700"
                           />
-                          <b>đ{item.price}</b>
+                          <h5 className='price'>{item.price}<span className='currency'>đ</span></h5>
                         </div>
                       </div>
                     )
@@ -280,7 +280,7 @@ const OurStore = () => {
                     </select>
                   </div>
                   <div className='d-flex align-items-center gap-10'>
-                    <p className='totalproducts mb-0'>{productState.length} Sản phẩm</p>
+                    <p className='totalproducts mb-0'>{productState?.length} Sản phẩm</p>
                     <div className="d-flex align-items-center gap-10 grid">
                       <img onClick={() => { setGrid(3); }} src="images/gr4.svg" className="d-block img-fluid" alt="grid" />
                       <img onClick={() => { setGrid(4); }} src="images/gr3.svg" className="d-block img-fluid" alt="grid" />

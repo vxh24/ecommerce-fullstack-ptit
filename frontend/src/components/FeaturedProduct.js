@@ -3,13 +3,22 @@ import ReactStars from "react-rating-stars-component";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { addToWishlist } from '../features/products/productSlice';
+import { getUserProductWishlist } from '../features/user/userSlice';
+import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 const FeaturedProduct = (props) => {
-  const { grid, title, brand, price, totalRating, id, description } = props;
+  const { grid, title, brand, price, totalRating, id, description, image } = props;
   const dispatch = useDispatch();
   let location = useLocation();
+  useEffect(() => {
+    dispatch(getUserProductWishlist());
+  }, []);
+  const wishlist = useSelector(state => state?.auth?.wishlist?.data?.wishlist);
+  const isWishlisted = wishlist?.some(wishlistItem => wishlistItem._id === id);
   const addToWish = (id) => {
-    console.log(id);
     dispatch(addToWishlist(id));
+    setTimeout(() => {
+      dispatch(getUserProductWishlist());
+    }, 200)
   }
   return (
     <>
@@ -17,13 +26,17 @@ const FeaturedProduct = (props) => {
         className="col-3">
         <Link className="product-card position-relative">
           <div className="wishlis-icon position-absolute">
-            <button className='border-0 bg-transparent' onClick={() => { addToWish(id) }}>
-              <img src="images/wish.svg" alt="wish" />
+            <button className='border-0 bg-transparent'>
+              {isWishlisted ? (
+                <AiFillHeart onClick={() => { addToWish(id) }} color="red" />
+              ) : (
+                <AiOutlineHeart onClick={() => { addToWish(id) }} color="#333" />
+              )}
             </button>
           </div>
           <div className="product-image">
-            <img src="images/watch.jpg" className='img-fluid mx-auto' alt="product image" />
-            <img src="images/watch1.jpg" className='img-fluid' alt="product image" />
+            <img src={image[0]?.url} className='img-fluid mx-auto' alt="product image" />
+            <img src={image[1]?.url} className='img-fluid' alt="product image" />
           </div>
           <div className="product-details">
             <h6 className='brand'>{brand}</h6>
@@ -32,7 +45,7 @@ const FeaturedProduct = (props) => {
               count={5}
               size={24}
               value={totalRating}
-              edit={true}
+              edit={false}
               activeColor="#ffd700"
             />
             <p className={`description ${grid == 12 ? "d-block" : "d-none"}`}>{description}

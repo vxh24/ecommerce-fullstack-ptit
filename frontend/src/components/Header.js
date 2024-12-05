@@ -5,21 +5,23 @@ import { useDispatch, useSelector } from "react-redux";
 import { Typeahead } from "react-bootstrap-typeahead";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 import { getAProducts } from "../features/products/productSlice";
-import { AiOutlineHeart } from "react-icons/ai";
+import { FaHeart } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
 import { GiShoppingCart } from "react-icons/gi";
 import { BiCategory } from "react-icons/bi";
 import { googleLogout } from "@react-oauth/google";
-import { getProfileSlice, logoutSlice } from "../features/user/userSlice";
+import { getProfileSlice, getUserCart, logoutSlice } from "../features/user/userSlice";
 const Header = () => {
   const profileState = useSelector((state) => state?.auth?.profile?.data);
   useEffect(() => {
     dispatch(getProfileSlice());
+    dispatch(getUserCart());
   }, []);
   const handleLogout = () => {
     // dispatch(logoutSlice());
     googleLogout();
     localStorage.clear();
+    window.location.reload()
   };
   const authState = useSelector((state) => state?.auth);
   const [paginate, setPaginate] = useState(true);
@@ -40,24 +42,13 @@ const Header = () => {
     setCategories([...category]);
   }, [productState]);
   const userCartState = useSelector((state) => state?.auth?.cartUser?.cart);
-  const [total, setTotal] = useState(null);
-  useEffect(() => {
-    let sum = 0;
-    for (let index = 0; index < userCartState?.products?.length; index++) {
-      sum =
-        sum +
-        Number(userCartState.products[index].count) *
-        Number(userCartState.products[index].price);
-      setTotal(sum);
-    }
-  }, [userCartState]);
   return (
     <>
       <header className="header-top-strip py-3">
         <div className="container-xxl">
           <div className="row">
             <div className="col-6">
-              <p className="text-white mb-0">Free ship</p>
+              <p className="text-white mb-0">Miễn phí vận chuyển</p>
             </div>
             <div className="col-6">
               <p className="text-end text-white mb-0">
@@ -105,7 +96,7 @@ const Header = () => {
                     to="wishlist"
                     className="d-flex align-items-center gap-10 text-white"
                   >
-                    <AiOutlineHeart className="fs-2" />
+                    <FaHeart className="fs-2 text-red" />
                     <p className="mb-0">
                       Sản phẩm <br /> Yêu thích
                     </p>
@@ -234,7 +225,7 @@ const Header = () => {
                   </ul>
                 </div>
                 <div className="menu-links">
-                  <div className="div d-flex align-items-center gap-30">
+                  <div className="d-flex align-items-center gap-30">
                     <NavLink to="/">Trang chủ</NavLink>
                     <NavLink to="/product">Cửa hàng</NavLink>
                     <NavLink to="/blog">Blog</NavLink>

@@ -18,7 +18,6 @@ import { FaFacebookSquare } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { FcNext, FcPrevious } from "react-icons/fc";
 import ReactImageZoom from 'react-image-zoom';
-import { GiConsoleController } from 'react-icons/gi';
 const SingleProduct = () => {
   const location = useLocation();
   const productState = useSelector(state => state?.product?.product?.data);
@@ -44,7 +43,6 @@ const SingleProduct = () => {
   const [alreadyAdded, setAlreadyAdded] = useState(false);
   const navigate = useNavigate();
   const copyToClipboard = (text) => {
-    console.log('text', text)
     var textField = document.createElement('textarea')
     textField.innerText = text
     document.body.appendChild(textField)
@@ -58,7 +56,6 @@ const SingleProduct = () => {
   const colorIds = useSelector(state => state?.product?.product?.data?.colors);
   const colors = useSelector(state => state?.color?.colors?.data);
   const matchedColors = colors?.filter((color) => colorIds?.includes(color?._id));
-  console.log(matchedColors);
   const [currentIndex, setCurrentIndex] = useState(0);
   const props = {
     width: 600,
@@ -76,7 +73,6 @@ const SingleProduct = () => {
     getWishlist();
   }, [])
   const cartState = useSelector(state => state?.auth?.cartUser?.cart?.products);
-  console.log(color);
   const getWishlist = () => {
     dispatch(getUserProductWishlist());
   }
@@ -103,7 +99,7 @@ const SingleProduct = () => {
     else {
       dispatch(AddProdToCart({ _id: productState?._id, count, color_id: color }))
       setTimeout(() => {
-        navigate("/cart");
+        // navigate("/cart");
         dispatch(getUserCart())
       }, 200)
 
@@ -180,7 +176,7 @@ const SingleProduct = () => {
                   <h3 className='title'>{productState?.name}</h3>
                 </div>
                 <div className="border-bottom py-3">
-                  <p className='price'> $ {productState?.price} </p>
+                  <p className='price'> <span className='currency'>đ</span> {productState?.price} </p>
                   <div className="d-flex align-items-center gap-10">
                     <ReactStars
                       count={5}
@@ -265,7 +261,7 @@ const SingleProduct = () => {
                     }}>Click vào đây để copy sản phẩm</Link>
 
                     <h3 className='product-heading ms-4'>Chia sẻ</h3>
-                    <Link onClick={() => shareOnFacebook(``)}><FaFacebookSquare className='fs-4 text-dark' /></Link>
+                    <Link onClick={(e) => { e.preventDefault(); shareOnFacebook(`${window.location.origin}/product/${productState?._id}`) }}><FaFacebookSquare className='fs-4 text-dark' /></Link>
                   </div>
                 </div>
               </div>

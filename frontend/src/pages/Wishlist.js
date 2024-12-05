@@ -49,7 +49,7 @@ const Wishlist = () => {
                         <div className='hover-container py-3 px-3'>
                           <h5 className="hover-title title" onClick={() => navigate(`/product/${item._id}`)}>{item?.name}</h5>
                           <span class="hover-detail">Xem chi tiết</span>
-                          <h6 className="price mb-3 mt-3">$ {item?.price}</h6>
+                          <h4 className="price mb-3 mt-3">{item?.price}<span className='currency'>đ</span></h4>
                         </div>
                       </div>
                     </div>

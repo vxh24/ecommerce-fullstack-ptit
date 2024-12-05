@@ -98,8 +98,8 @@ const Checkout = () => {
   };
   return (
     <>
-      <Meta title={"Checkout"} />
-      <BreadCrumb title="Checkout" />
+      <Meta title={"Thanh toán"} />
+      <BreadCrumb title="Thanh toán" />
       <div className="checkout-wrapper py-5 home-wrapper-2">
         <div className="container-xxl">
           <div className="row">
@@ -227,7 +227,7 @@ const Checkout = () => {
                   {
                     coupon && (
                       <div className='d-flex align-items-center gap-10'>
-                        <p className='mb-0 voucher'>{couponN}</p>
+                        <p className='mb-0 text-red bold-text'>{couponN}</p>
                       </div>
                     )
                   }
@@ -251,13 +251,13 @@ const Checkout = () => {
                             <h5 className="total">{product?.name}</h5>
                             <p className="d-flex gap-15">Màu sắc:
                               <ul className='colors ps-0'>
-                                <li style={{ backgroundColor: item?.color.title }}></li>
+                                <li style={{ backgroundColor: item?.color?.title }}></li>
                               </ul>
                             </p>
                           </div>
                         </div>
                         <div>
-                          <h5 className='total-price'>$ {item?.price * item?.count}</h5>
+                          <h5 className='total-price'>{item?.price * item?.count}<span className='currency'>đ</span></h5>
                         </div>
                       </div>
                     )
@@ -297,10 +297,16 @@ const Checkout = () => {
                   </div>
                 </div>
                 <div className='ps-3'>
-                  <p className=''><strong>Tổng tiền hàng:</strong> đ{totalAmount}</p>
-                  <p className=''><strong>Tổng giảm giá:</strong> đ{coupon ? totalcoupon : 0} </p>
-                  <p className=''> <strong>Tổng phí vận chuyển:</strong> đ{shipping}</p>
-                  <p className=''><strong>Tổng thanh toán:</strong> đ{totalpayment}</p>
+                  <div className='d-flex gap-10 align-items-center mb-2'>
+                    <strong>Tổng tiền hàng:</strong> <p className='price mb-0'>{totalAmount}<span className='currency'>đ</span></p>
+                  </div>
+                  <div className='d-flex gap-10 align-items-center mb-2'>
+                    <strong>Tổng giảm giá:</strong> <p className='price mb-0'>{coupon ? totalcoupon : 0}<span className='currency'>đ</span></p>
+                  </div>
+                  <div className='d-flex gap-10 align-items-center mb-2'>
+                    <strong>Tổng phí vận chuyển:</strong> <p className='price mb-0'>{shipping}<span className='currency'>đ</span></p>
+                  </div>
+                  <p className='price'><strong>Tổng thanh toán:</strong> {totalpayment}<span className='currency'>đ</span></p>
                 </div>
               </div>
               <div className='d-flex justify-content-between py-3'>

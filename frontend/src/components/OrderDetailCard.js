@@ -41,7 +41,7 @@ const OrderDetailCard = ({ order }) => {
               <div key={index} className="cart-data py-3 d-flex justify-content-between align-items-center">
                 <div className='cart-col-1 gap-15 d-flex justify-content-between align-items-center'>
                   <div className='w-25'>
-                    <img src={item.product.images[0].url} className='img-fluid' alt="" />
+                    <img src={item?.product?.images[0]?.url} className='img-fluid' alt="" />
                   </div>
                   <div className='w-75'>
                     <p>{item?.product?.name}</p>
@@ -54,15 +54,15 @@ const OrderDetailCard = ({ order }) => {
                   </div>
                 </div>
                 <div className='cart-col-2'>
-                  <h5 className="price">đ{item?.product?.price}</h5>
+                  <h5 className="price">{item?.product?.price}<span className='currency'>đ</span></h5>
                 </div>
                 <div className='cart-col-3 d-flex align-items-center gap-15'>
                   <div className="">
-                    <h5 className="price">{item?.count}</h5>
+                    <h5 className="">{item?.count}</h5>
                   </div>
                 </div>
                 <div className='cart-col-4'>
-                  <h5 className="price">đ{item?.product?.price * item?.count}</h5>
+                  <h5 className="price">{item?.product?.price * item?.count}<span className='currency'>đ</span></h5>
                 </div>
                 {
                   order.orderStatus === "Hoàn thành" && (

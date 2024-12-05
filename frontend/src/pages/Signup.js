@@ -30,7 +30,7 @@ const Signup = () => {
     },
   });
   useEffect(() => {
-    if (authState.createUser.data !== null && authState.isError === false) {
+    if (authState?.createUser?.data !== null && authState?.isError === false) {
       navigate("/login");
     }
   }, [authState])
@@ -67,7 +67,7 @@ const Signup = () => {
                     }
                   </div>
                   <div>
-                    <input type="password" name='password' className="form-control mt-1" placeholder='Password'
+                    <input type="password" name='password' className="form-control mt-1" placeholder='Mật khẩu'
                       value={formik.values.password} onChange={formik.handleChange("password")}
                       onBlur={formik.handleBlur("password")} />
                   </div>
@@ -78,7 +78,7 @@ const Signup = () => {
                   </div>
                   <div>
                     <div className="mt-3 d-flex justify-content-center gap-15 align-items-center">
-                      <button className="button border-0">Tạo</button>
+                      <button className="button border-0 w-100">ĐĂng ký</button>
                     </div>
                     <div className='d-flex justify-content-center gap-10 align-items-center mt-3'>
                       <h3 className=''>Bạn đã có tài khoản?</h3>

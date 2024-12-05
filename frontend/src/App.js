@@ -24,6 +24,7 @@ import Checkout from './pages/Checkout';
 import Order from './pages/Order';
 import Profile from './pages/Profile';
 import PaymentResult from './pages/PaymentResult';
+import Chat from './components/Chat';
 function App() {
   return (
     <>
