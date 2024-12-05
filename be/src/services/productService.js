@@ -4,6 +4,7 @@ const validateMongodbId = require("../utils/validateMongodbId");
 const User = require("../models/userModel");
 const natural = require("natural");
 const { uploadMultipleFiles } = require("./fileService");
+const Color = require("../models/colorModel");
 const tfidf = new natural.TfIdf();
 
 // var TfIdf = require('node-tfidf');
@@ -17,6 +18,30 @@ const createProduct = asyncHandler(async (productData, files) => {
     url: result.cloudinaryUrl,
   }));
 
+  let colorIds = productData.colors;
+
+  if (!Array.isArray(colorIds)) {
+    colorIds = [colorIds];
+  }
+
+  const existingColors = await Color.find({
+    _id: { $in: colorIds },
+  }).select("_id");
+
+  const existingColorIds = existingColors.map((color) => color._id.toString());
+
+  const notFoundColors = colorIds.filter(
+    (id) => !existingColorIds.includes(id)
+  );
+
+  if (notFoundColors.length > 0) {
+    throw new Error(
+      `One or more colors do not exist: ${notFoundColors.join(", ")}`
+    );
+  } else {
+    console.log("All color IDs are valid.");
+  }
+
   const newProduct = new Product({
     images: uploadedImages,
     name: productData.name,
@@ -25,7 +50,7 @@ const createProduct = asyncHandler(async (productData, files) => {
     category: productData.category,
     brand: productData.brand,
     quantity: productData.quantity,
-    colors: productData.colors,
+    colors: colorIds,
     tags: productData.tags,
   });
 

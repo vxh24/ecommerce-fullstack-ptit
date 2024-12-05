@@ -13,7 +13,6 @@ import {
   getCoupons,
   resetState,
   createCoupon,
-  getACoupon,
   updateACoupon,
 } from "../features/coupon/couponSlice";
 import moment from "moment";
@@ -24,26 +23,24 @@ let schema = yup.object().shape({
 });
 const columns = [
   {
-    title: "SNo",
+    title: "STT",
     dataIndex: "key",
   },
   {
-    title: "Name",
+    title: "Tên",
     dataIndex: "name",
-    sorter: (a, b) => a.name.length - b.name.length,
   },
   {
-    title: "Discount",
+    title: "Giảm giá",
     dataIndex: "discount",
     sorter: (a, b) => a.discount - b.discount,
   },
   {
-    title: "Expiry",
+    title: "Ngày hết hạn",
     dataIndex: "expiry",
-    sorter: (a, b) => a.name.length - b.name.length,
   },
   {
-    title: "Action",
+    title: "Thao tác",
     dataIndex: "action",
   },
 ];
@@ -70,7 +67,6 @@ const Couponlist = () => {
   }, []);
 
   const couponState = useSelector((state) => state.coupon.coupons.data);
-  // console.log(couponState);
 
   const data1 = [];
 
@@ -86,7 +82,10 @@ const Couponlist = () => {
             <div>
               <Link
                 // to={`/admin/coupon/${couponState[i]._id}`}
-                onClick={() => { setClick1(true); setCoupon(couponState[i]) }}
+                onClick={() => {
+                  setClick1(true);
+                  setCoupon(couponState[i]);
+                }}
                 className=" fs-3 text-danger border-0 bg-transparent"
               >
                 <BiEdit />
@@ -118,7 +117,7 @@ const Couponlist = () => {
       <div>
         <div className="product-list d-flex justify-content-between align-items-center">
           <h3 className="mb-4 title">Coupon</h3>
-          <button onClick={() => setClick(true)}>+Add coupon</button>
+          <button onClick={() => setClick(true)}>Thêm mã giảm giá</button>
         </div>
         <div>
           <Table columns={columns} dataSource={data1} />
@@ -129,41 +128,35 @@ const Couponlist = () => {
           performAction={() => {
             deleteCoupon(couponId);
           }}
-          title="Are you sure you want to delete this coupon?"
+          title="Bạn có chắc chắn muốn xóa mã giảm này không?"
         />
       </div>
-      {
-        click && (
-          < div className="modal" >
-            <div className="modal-content">
-              <button className="close-model" onClick={() => setClick(false)}>✖</button>
-              <h3 className="mb-3 title">
-                Add Coupon
-              </h3>
-              <AddCoupon />
-            </div>
+      {click && (
+        <div className="modal">
+          <div className="modal-content">
+            <button className="close-model" onClick={() => setClick(false)}>
+              ✖
+            </button>
+            <h3 className="mb-3 title">Thêm mã</h3>
+            <AddCoupon />
           </div>
-        )
-      }
-      {
-        click1 && (
-          < div className="modal" >
-            <div className="modal-content">
-              <button className="close-model" onClick={() => setClick1(false)}>✖</button>
-              <h3 className="mb-3 title">
-                Update Coupon
-              </h3>
-              <EditCoupon coupon={coupon} />
-            </div>
+        </div>
+      )}
+      {click1 && (
+        <div className="modal">
+          <div className="modal-content">
+            <button className="close-model" onClick={() => setClick1(false)}>
+              ✖
+            </button>
+            <EditCoupon coupon={coupon} />
           </div>
-        )
-      }
+        </div>
+      )}
     </>
   );
 };
 const AddCoupon = () => {
   const dispatch = useDispatch();
-
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -178,7 +171,7 @@ const AddCoupon = () => {
       setTimeout(() => {
         dispatch(getCoupons());
       }, 300);
-    }
+    },
   });
 
   return (
@@ -189,19 +182,17 @@ const AddCoupon = () => {
         onChng={formik.handleChange("name")}
         onBlr={formik.handleBlur("name")}
         val={formik.values.name}
-        label="Enter Coupon Name"
+        label="Nhập tên mã"
         id="name"
       />
-      <div className="error">
-        {formik.touched.name && formik.errors.name}
-      </div>
+      <div className="error">{formik.touched.name && formik.errors.name}</div>
       <CustomInput
         type="date"
         name="expiry"
         onChng={formik.handleChange("expiry")}
         onBlr={formik.handleBlur("expiry")}
         val={formik.values.expiry}
-        label="Enter Expiry Data"
+        label="Nhập ngày hết hạn"
         id="date"
       />
       <div className="error">
@@ -213,17 +204,14 @@ const AddCoupon = () => {
         onChng={formik.handleChange("discount")}
         onBlr={formik.handleBlur("discount")}
         val={formik.values.discount}
-        label="Enter Discount"
+        label="Nhập % giảm giá"
         id="discount"
       />
       <div className="error">
         {formik.touched.discount && formik.errors.discount}
       </div>
-      <button
-        className="btn btn-success border-0 rounded-3 my-5"
-        type="submit"
-      >
-        Add Coupon
+      <button className="btn btn-success border-0 rounded-3 my-5" type="submit">
+        Thêm
       </button>
     </form>
   );
@@ -233,8 +221,8 @@ const EditCoupon = ({ coupon }) => {
   const changeDateFormat = (date) => {
     const newDate = new Date(date);
     const year = newDate.getFullYear();
-    const month = String(newDate.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
-    const day = String(newDate.getDate()).padStart(2, '0');
+    const month = String(newDate.getMonth() + 1).padStart(2, "0"); // Tháng bắt đầu từ 0
+    const day = String(newDate.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
   const formik = useFormik({
@@ -256,9 +244,7 @@ const EditCoupon = ({ coupon }) => {
 
   return (
     <div>
-      <h3 className="mb-4 title">
-        Edit Coupon
-      </h3>
+      <h3 className="mb-4 title">Cập nhật mã</h3>
       <div>
         <form action="" onSubmit={formik.handleSubmit}>
           <CustomInput
@@ -267,7 +253,7 @@ const EditCoupon = ({ coupon }) => {
             onChng={formik.handleChange("name")}
             onBlr={formik.handleBlur("name")}
             val={formik.values.name}
-            label="Enter Coupon Name"
+            label="Nhập tên mã"
             id="name"
           />
           <div className="error">
@@ -279,7 +265,7 @@ const EditCoupon = ({ coupon }) => {
             onChng={formik.handleChange("expiry")}
             onBlr={formik.handleBlur("expiry")}
             val={formik.values.expiry}
-            label="Enter Expiry Data"
+            label="Nhập ngày hết hạn"
             id="date"
           />
           <div className="error">
@@ -291,7 +277,7 @@ const EditCoupon = ({ coupon }) => {
             onChng={formik.handleChange("discount")}
             onBlr={formik.handleBlur("discount")}
             val={formik.values.discount}
-            label="Enter Discount"
+            label="Nhập % giảm giá"
             id="discount"
           />
           <div className="error">
@@ -301,7 +287,7 @@ const EditCoupon = ({ coupon }) => {
             className="btn btn-success border-0 rounded-3 my-5"
             type="submit"
           >
-            Edit Coupon
+            Cập nhật
           </button>
         </form>
       </div>

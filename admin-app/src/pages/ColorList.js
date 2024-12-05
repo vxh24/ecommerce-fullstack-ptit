@@ -9,12 +9,7 @@ import CustomModal from "../components/CustomModal";
 import CustomInput from "../components/CustomInput";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import {
-  createColor,
-  getAColor,
-  resetState,
-  updateAColor,
-} from "../features/color/colorSlice";
+import { createColor, updateAColor } from "../features/color/colorSlice";
 
 let schema = yup.object().shape({
   title: yup.string().required("Color is Required"),
@@ -22,19 +17,18 @@ let schema = yup.object().shape({
 
 const columns = [
   {
-    title: "SNo",
+    title: "STT",
     dataIndex: "key",
   },
   {
-    title: "Name",
+    title: "Tên",
     dataIndex: "name",
   },
   {
-    title: "Color",
+    title: "Màu",
     dataIndex: "color",
     render: (colorHex) => (
       <div style={{ display: "flex", alignItems: "center" }}>
-        {/* Hiển thị màu sắc */}
         <div
           style={{
             width: "30px",
@@ -48,7 +42,7 @@ const columns = [
     ),
   },
   {
-    title: "Action",
+    title: "Thao tác",
     dataIndex: "action",
   },
 ];
@@ -87,8 +81,10 @@ const ColorList = () => {
         action: (
           <>
             <Link
-              // to={`/admin/color/${colorState[i]._id}`}
-              onClick={() => { setClick1(true); setColor(colorState[i]) }}
+              onClick={() => {
+                setClick1(true);
+                setColor(colorState[i]);
+              }}
               className=" fs-3 text-danger"
             >
               <BiEdit />
@@ -118,8 +114,8 @@ const ColorList = () => {
     <>
       <div>
         <div className="product-list d-flex justify-content-between align-items-center">
-          <h3 className="mb-4 title">Colors</h3>
-          <button onClick={() => setClick(true)}>+Add Color</button>
+          <h3 className="mb-4 title">Danh sách màu sắc</h3>
+          <button onClick={() => setClick(true)}>Thêm màu</button>
         </div>
         <div>
           <Table columns={columns} dataSource={data1} />
@@ -130,39 +126,34 @@ const ColorList = () => {
           performAction={() => {
             deleteColor(colorId);
           }}
-          title="Are you sure you want to delete this color?"
+          title="Bạn có chắc chắn muốn xóa màu này không?"
         />
       </div>
-      {
-        click && (
-          < div className="modal" >
-            <div className="modal-content">
-              <button className="close-model" onClick={() => setClick(false)}>✖</button>
-              <h3 className="mb-3 title">
-                Add Color
-              </h3>
-              <AddColor />
-            </div>
+      {click && (
+        <div className="modal">
+          <div className="modal-content">
+            <button className="close-model" onClick={() => setClick(false)}>
+              ✖
+            </button>
+            <h3 className="mb-3 title">Thêm màu</h3>
+            <AddColor />
           </div>
-        )
-      }
-      {
-        click1 && (
-          < div className="modal" >
-            <div className="modal-content">
-              <button className="close-model" onClick={() => setClick1(false)}>✖</button>
-              <h3 className="mb-3 title">
-                Edit Color
-              </h3>
-              <EditColor color={color} />
-            </div>
+        </div>
+      )}
+      {click1 && (
+        <div className="modal">
+          <div className="modal-content">
+            <button className="close-model" onClick={() => setClick1(false)}>
+              ✖
+            </button>
+            <h3 className="mb-3 title">Cập nhật màu</h3>
+            <EditColor color={color} />
           </div>
-        )
-      }
+        </div>
+      )}
     </>
   );
 };
-
 
 const AddColor = () => {
   const dispatch = useDispatch();
@@ -177,7 +168,7 @@ const AddColor = () => {
       setTimeout(() => {
         dispatch(getColors());
       }, 200);
-    }
+    },
   });
 
   return (
@@ -190,13 +181,8 @@ const AddColor = () => {
         val={formik.values.title}
         id="color"
       />
-      <div className="error">
-        {formik.touched.title && formik.errors.title}
-      </div>
-      <button
-        className="btn btn-success border-0 rounded-3 my-5"
-        type="submit"
-      >
+      <div className="error">{formik.touched.title && formik.errors.title}</div>
+      <button className="btn btn-success border-0 rounded-3 my-5" type="submit">
         Add Color
       </button>
     </form>
@@ -216,7 +202,7 @@ const EditColor = ({ color }) => {
       setTimeout(() => {
         dispatch(getColors());
       }, 200);
-    }
+    },
   });
 
   return (
@@ -229,13 +215,8 @@ const EditColor = ({ color }) => {
         val={formik.values.title}
         id="color"
       />
-      <div className="error">
-        {formik.touched.title && formik.errors.title}
-      </div>
-      <button
-        className="btn btn-success border-0 rounded-3 my-5"
-        type="submit"
-      >
+      <div className="error">{formik.touched.title && formik.errors.title}</div>
+      <button className="btn btn-success border-0 rounded-3 my-5" type="submit">
         Edit Color
       </button>
     </form>
