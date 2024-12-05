@@ -22,17 +22,17 @@ let schema = yup.object().shape({
 
 const columns = [
   {
-    title: "SNo",
+    title: "STT",
     dataIndex: "key",
   },
   {
-    title: "Name",
+    title: "Tên",
     dataIndex: "name",
     sorter: (a, b) => a.name.length - b.name.length,
   },
 
   {
-    title: "Action",
+    title: "Thao tác",
     dataIndex: "action",
   },
 ];
@@ -70,7 +70,10 @@ const CategoryList = () => {
           <>
             <button
               // to={`/admin/category/${pCatStat[i]._id}`}
-              onClick={() => { setClick1(true); setCategory(pCatStat[i]) }}
+              onClick={() => {
+                setClick1(true);
+                setCategory(pCatStat[i]);
+              }}
               className=" fs-3 text-danger border-0 bg-transparent"
             >
               <BiEdit />
@@ -99,8 +102,8 @@ const CategoryList = () => {
     <>
       <div>
         <div className="product-list d-flex justify-content-between align-items-center">
-          <h3 className="mb-4 title">Product Categories</h3>
-          <button onClick={() => setClick(true)}>+Add Category</button>
+          <h3 className="mb-4 title">Danh sách danh mục sản phẩm</h3>
+          <button onClick={() => setClick(true)}>Thêm danh mục</button>
         </div>
         <div>
           <Table columns={columns} dataSource={data1} />
@@ -111,35 +114,31 @@ const CategoryList = () => {
           performAction={() => {
             deleteCategory(pCatId);
           }}
-          title="Are you sure you want to delete this Product Category?"
+          title="Bạn có chắc chắn muốn xóa danh mục này không?"
         />
       </div>
-      {
-        click && (
-          < div className="modal" >
-            <div className="modal-content">
-              <button className="close-model" onClick={() => setClick(false)}>✖</button>
-              <h3 className="mb-3 title">
-                Add Category
-              </h3>
-              <AddCat />
-            </div>
+      {click && (
+        <div className="modal">
+          <div className="modal-content">
+            <button className="close-model" onClick={() => setClick(false)}>
+              ✖
+            </button>
+            <h3 className="mb-3 title">Thêm danh mục</h3>
+            <AddCat />
           </div>
-        )
-      }
-      {
-        click1 && (
-          < div className="modal" >
-            <div className="modal-content">
-              <button className="close-model" onClick={() => setClick1(false)}>✖</button>
-              <h3 className="mb-3 title">
-                Edit Category
-              </h3>
-              <EditCat cat={category} />
-            </div>
+        </div>
+      )}
+      {click1 && (
+        <div className="modal">
+          <div className="modal-content">
+            <button className="close-model" onClick={() => setClick1(false)}>
+              ✖
+            </button>
+            <h3 className="mb-3 title">Cập nhật danh mục</h3>
+            <EditCat cat={category} />
           </div>
-        )
-      }
+        </div>
+      )}
     </>
   );
 };
@@ -157,27 +156,22 @@ const AddCat = () => {
       setTimeout(() => {
         dispatch(getCategories());
       }, 200);
-    }
+    },
   });
 
   return (
     <form action="" onSubmit={formik.handleSubmit}>
       <CustomInput
         type="text"
-        label="Enter Product Category"
+        label="Nhập danh mục"
         onChng={formik.handleChange("title")}
         onBlr={formik.handleBlur("title")}
         val={formik.values.title}
         id="brand"
       />
-      <div className="error">
-        {formik.touched.title && formik.errors.title}
-      </div>
-      <button
-        className="btn btn-success border-0 rounded-3 my-3"
-        type="submit"
-      >
-        Add Category
+      <div className="error">{formik.touched.title && formik.errors.title}</div>
+      <button className="btn btn-success border-0 rounded-3 my-3" type="submit">
+        Thêm
       </button>
     </form>
   );
@@ -197,27 +191,22 @@ const EditCat = ({ cat }) => {
       setTimeout(() => {
         dispatch(getCategories());
       }, 200);
-    }
+    },
   });
 
   return (
     <form action="" onSubmit={formik.handleSubmit}>
       <CustomInput
         type="text"
-        label="Enter Product Category"
+        label="Nhập danh mục"
         onChng={formik.handleChange("title")}
         onBlr={formik.handleBlur("title")}
         val={formik.values.title}
         id="brand"
       />
-      <div className="error">
-        {formik.touched.title && formik.errors.title}
-      </div>
-      <button
-        className="btn btn-success border-0 rounded-3 my-3"
-        type="submit"
-      >
-        Edit Category
+      <div className="error">{formik.touched.title && formik.errors.title}</div>
+      <button className="btn btn-success border-0 rounded-3 my-3" type="submit">
+        Cập nhật
       </button>
     </form>
   );

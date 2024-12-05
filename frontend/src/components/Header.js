@@ -27,8 +27,11 @@ const Header = () => {
   const [paginate, setPaginate] = useState(true);
   const dispatch = useDispatch();
   const productState = useSelector((state) => state?.product?.products?.data);
+  const userCartState = useSelector((state) => state?.auth?.cartUser?.cart);
   const [productOpt, setProductOpt] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [cartlengt, setCartlengt] = useState();
+  const [showCartDropdown, setShowCartDropdown] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     let data = [];
@@ -41,7 +44,10 @@ const Header = () => {
     setProductOpt(data);
     setCategories([...category]);
   }, [productState]);
-  const userCartState = useSelector((state) => state?.auth?.cartUser?.cart);
+  useEffect(() => {
+    setCartlengt(userCartState?.products?.length);
+  }, [userCartState])
+
   return (
     <>
       <header className="header-top-strip py-3">
@@ -170,20 +176,56 @@ const Header = () => {
                     )}
                   </Link>
                 </div>
-                <div className="cart-icon-container">
+                <div className="cart-icon-container"
+                  onMouseEnter={() => setShowCartDropdown(true)}
+                  onMouseLeave={() => setShowCartDropdown(false)}
+                >
                   <Link
                     to="/cart"
                     className="d-flex align-items-center gap-10 text-white"
                   >
                     <GiShoppingCart className="fs-1" />
-                    {/* <div className="d-flex flex-column gap-10"> */}
                     <span className="cart-badge bg-white text-dark">
-                      {userCartState?.products?.length
-                        ? userCartState?.products?.length
-                        : 0}
+                      {
+                        cartlengt ? cartlengt : 0
+                      }
                     </span>
-                    {/* </div> */}
                   </Link>
+                  {showCartDropdown && (
+                    <div className="cart-dropdown">
+                      {userCartState?.products?.length > 0 ? (
+                        <>
+                          <ul className="cart-items">
+                            {userCartState.products.map((item, index) => {
+                              const product = productState?.find(
+                                (productItem) => productItem?._id === item?.product
+                              );
+                              return (
+                                <li key={index} className="cart-item">
+                                  <img
+                                    src={product?.images[0]?.url}
+                                    alt={item?.product?.name}
+                                    className="cart-item-image"
+                                  />
+                                  <div className="cart-item-info">
+                                    <p className="cart-item-name">{product?.name}</p>
+                                    <p className="cart-item-quantity">Số lượng: {item?.count}</p>
+                                  </div>
+                                  <p className="cart-item-price">
+                                    {product?.price.toLocaleString()}₫
+                                  </p>
+                                </li>
+                              )
+                            })}
+                          </ul>
+                        </>
+                      ) : (
+                        <ul className="cart-items">
+                          <p className="text-center mb-0 bold-text">Giỏ hàng trống</p>
+                        </ul>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

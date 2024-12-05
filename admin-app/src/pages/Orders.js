@@ -43,8 +43,6 @@ const Orders = () => {
 
   const orderState = useSelector((state) => state.auth.orders.data);
 
-  // console.log("orderState: ", orderState);
-
   const data1 = [];
 
   if (orderState && orderState.length) {

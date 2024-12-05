@@ -22,7 +22,6 @@ const blockAUser = async (userId) => {
       throw new Error("Failed to block the user");
     }
   } catch (error) {
-    console.error("Error blocking user:", error);
     throw error;
   }
 };
@@ -41,7 +40,6 @@ const unBlockAUser = async (userId) => {
       throw new Error("Failed to unblock the user");
     }
   } catch (error) {
-    console.error("Error unblocking user:", error);
     throw error;
   }
 };

@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
 import colorService from "./colorService";
-import { toast } from "react-toastify"
+import { toast } from "react-toastify";
 export const getColors = createAsyncThunk(
   "color/get-colors",
   async (thunkAPI) => {
@@ -145,7 +145,7 @@ export const colorSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.deletedColor = action.payload.title;
+        state.deletedColor = action.payload;
       })
       .addCase(deleteAColor.rejected, (state, action) => {
         state.isLoading = false;

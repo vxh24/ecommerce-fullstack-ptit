@@ -21,30 +21,81 @@ import { useSelector } from "react-redux";
 const { Header, Sider, Content } = Layout;
 const MainLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
-
   const [selectedKey, setSelectedKey] = useState("");
-
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const path = location.pathname.split("/")[2];
-    if (path) {
-      setSelectedKey(path);
-    }
+    const path = location.pathname.split("/")[2] || "";
+    setSelectedKey(path);
   }, [location]);
 
   const {
     token: { colorBgContainer },
   } = theme.useToken();
 
-  const navigate = useNavigate();
+  const menuItems = [
+    {
+      key: "",
+      icon: <AiOutlineDashboard className="fs-4" />,
+      label: "Giao diện quản trị",
+    },
+    {
+      key: "customers",
+      icon: <AiOutlineUser className="fs-4" />,
+      label: "Quản lý người dùng",
+    },
+    {
+      key: "list-product",
+      icon: <AiOutlineShoppingCart className="fs-4" />,
+      label: "Quản lý sản phẩm",
+    },
+    {
+      key: "list-brand",
+      icon: <SiBrandfolder className="fs-4" />,
+      label: "Quản lý thương hiệu",
+    },
+    {
+      key: "list-category",
+      icon: <BiCategoryAlt className="fs-4" />,
+      label: "Quản lý danh mục",
+    },
+    {
+      key: "list-color",
+      icon: <AiOutlineBgColors className="fs-4" />,
+      label: "Quản lý màu sắc",
+    },
+    {
+      key: "orders",
+      icon: <FaClipboardList className="fs-4" />,
+      label: "Quản lý đơn hàng",
+    },
+    {
+      key: "coupon-list",
+      icon: <RiCouponLine className="fs-4" />,
+      label: "Quản lý mã giảm giá",
+    },
+    {
+      key: "blog-list",
+      icon: <FaBloggerB className="fs-4" />,
+      label: "Quản lý bài viết",
+    },
+    {
+      key: "blog-category-list",
+      icon: <FaBloggerB className="fs-4" />,
+      label: "Quản lý danh mục bài viết",
+    },
+    {
+      key: "enquiries",
+      icon: <FaClipboardList className="fs-4" />,
+      label: "Quản lý khảo sát khách hàng",
+    },
+  ];
 
   const { user } = useSelector((state) => state.auth.user);
 
-  console.log("user: ", user);
-
   return (
-    <Layout /* onContextMenu={(e) => e.preventDefault()} */>
+    <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="logo">
           <h2 className="text-white fs-5 text-center py-3 mb-0">
@@ -63,63 +114,7 @@ const MainLayout = () => {
               navigate(key);
             }
           }}
-          items={[
-            {
-              key: "",
-              icon: <AiOutlineDashboard className="fs-4" />,
-              label: "Giao diện quản trị",
-            },
-            {
-              key: "customers",
-              icon: <AiOutlineUser className="fs-4" />,
-              label: "Quản lý người dùng",
-            },
-            {
-              key: "list-product",
-              icon: <AiOutlineShoppingCart className="fs-4" />,
-              label: "Quản lý sản phẩm",
-            },
-            {
-              key: "list-brand",
-              icon: <SiBrandfolder className="fs-4" />,
-              label: "Quản lý thương hiệu",
-            },
-            {
-              key: "list-category",
-              icon: <BiCategoryAlt className="fs-4" />,
-              label: "Quản lý danh mục",
-            },
-            {
-              key: "list-color",
-              icon: <AiOutlineBgColors className="fs-4" />,
-              label: "Quản lý màu sắc",
-            },
-            {
-              key: "orders",
-              icon: <FaClipboardList className="fs-4" />,
-              label: "Quản lý đơn hàng",
-            },
-            {
-              key: "coupon-list",
-              icon: <RiCouponLine className="fs-4" />,
-              label: "Quản lý mã giảm giá",
-            },
-            {
-              key: "blog-list",
-              icon: <FaBloggerB className="fs-4" />,
-              label: "Quản lý bài viết",
-            },
-            {
-              key: "blog-category-list",
-              icon: <FaBloggerB className="fs-4" />,
-              label: "Quản lý danh mục bài viết",
-            },
-            {
-              key: "enquiries",
-              icon: <FaClipboardList className="fs-4" />,
-              label: "Quản lý khảo sát khách hàng",
-            },
-          ]}
+          items={menuItems}
         />
       </Sider>
       <Layout className="site-layout">

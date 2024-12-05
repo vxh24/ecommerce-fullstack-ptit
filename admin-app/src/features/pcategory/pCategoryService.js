@@ -31,7 +31,6 @@ const deleteProductCategory = async (id) => {
 };
 
 const updateProductCategory = async (category) => {
-  console.log(category);
   const response = await axios.put(
     `${base_url}category/${category.id}`,
     { title: category.pCatData.title },

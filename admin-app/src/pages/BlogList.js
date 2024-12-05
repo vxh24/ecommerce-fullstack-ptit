@@ -6,7 +6,13 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import CustomModal from "../components/CustomModal";
 import CustomInput from "../components/CustomInput";
-import { deleteABlog, getBlogs, resetState, createBlogs, updateABlog, } from "../features/blogs/blogSlice";
+import {
+  deleteABlog,
+  getBlogs,
+  resetState,
+  createBlogs,
+  updateABlog,
+} from "../features/blogs/blogSlice";
 import { getCategories } from "../features/bcategory/bcategorySlice";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -19,19 +25,19 @@ let schema = yup.object().shape({
 });
 const columns = [
   {
-    title: "SNo",
+    title: "STT",
     dataIndex: "key",
   },
   {
-    title: "Title",
+    title: "Chủ đề",
     dataIndex: "name",
   },
   {
-    title: "Category",
+    title: "Danh mục",
     dataIndex: "category",
   },
   {
-    title: "Action",
+    title: "Thao tác",
     dataIndex: "action",
   },
 ];
@@ -73,7 +79,10 @@ const BlogList = () => {
           <>
             <Link
               // to={`/admin/blog/${getBlogState[i].id}`}
-              onClick={() => { setClick1(true); setBlog(getBlogState[i]) }}
+              onClick={() => {
+                setClick1(true);
+                setBlog(getBlogState[i]);
+              }}
               className=" fs-3 text-danger border-0 bg-transparent"
             >
               <BiEdit />
@@ -103,8 +112,8 @@ const BlogList = () => {
     <>
       <div>
         <div className="product-list d-flex justify-content-between align-items-center">
-          <h3 className="mb-4 title">Blogs List</h3>
-          <button onClick={() => setClick(true)}>+Add Blog</button>
+          <h3 className="mb-4 title">Danh sách bài viết</h3>
+          <button onClick={() => setClick(true)}>Thêm bài viết</button>
         </div>
         <div>
           <Table columns={columns} dataSource={data1} />
@@ -115,58 +124,42 @@ const BlogList = () => {
           performAction={() => {
             deleteBlog(blogId);
           }}
-          title="Are you sure you want to delete this blog?"
+          title="Bạn chắc chắn muốn xóa bài viết này không?"
         />
       </div>
-      {
-        click && (
-          < div className="modal" >
-            <div className="modal-content">
-              <button className="close-model" onClick={() => setClick(false)}>✖</button>
-              <h3 className="mb-3 title">
-                Add Blog
-              </h3>
-              <AddBlog />
-            </div>
+      {click && (
+        <div className="modal">
+          <div className="modal-content">
+            <button className="close-model" onClick={() => setClick(false)}>
+              ✖
+            </button>
+            <h3 className="mb-3 title">Thêm bài viết</h3>
+            <AddBlog />
           </div>
-        )
-      }
-      {
-        click1 && (
-          < div className="modal" >
-            <div className="modal-content">
-              <button className="close-model" onClick={() => setClick1(false)}>✖</button>
-              <h3 className="mb-3 title">
-                Update Blog
-              </h3>
-              <EditBlog blog={blog} />
-            </div>
+        </div>
+      )}
+      {click1 && (
+        <div className="modal">
+          <div className="modal-content">
+            <button className="close-model" onClick={() => setClick1(false)}>
+              ✖
+            </button>
+            <h3 className="mb-3 title">Cập nhật bài viết</h3>
+            <EditBlog blog={blog} />
           </div>
-        )
-      }
+        </div>
+      )}
     </>
   );
 };
 const EditBlog = ({ blog }) => {
   const dispatch = useDispatch();
 
-  const imgState = useSelector((state) => state.upload.images.images);
   const bCatState = useSelector((state) => state.bCategory.bCategories.data);
-
 
   useEffect(() => {
     dispatch(getCategories());
   }, []);
-
-  const img = [];
-  if (Array.isArray(imgState)) {
-    imgState.forEach((i) => {
-      img.push({
-        public_id: i.public_id,
-        url: i.url,
-      });
-    });
-  }
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -174,7 +167,6 @@ const EditBlog = ({ blog }) => {
       title: blog.title,
       description: blog.description,
       category: blog.category,
-      images: "",
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -183,7 +175,6 @@ const EditBlog = ({ blog }) => {
       setTimeout(() => {
         dispatch(getBlogs());
       }, 300);
-
     },
   });
 
@@ -192,16 +183,14 @@ const EditBlog = ({ blog }) => {
       <div className="mt-4">
         <CustomInput
           type="text"
-          label="Enter Blog Title"
+          label="Nhập chủ đề"
           name="title"
           onChng={formik.handleChange("title")}
           onBlr={formik.handleBlur("title")}
           val={formik.values.title}
         />
       </div>
-      <div className="error">
-        {formik.touched.title && formik.errors.title}
-      </div>
+      <div className="error">{formik.touched.title && formik.errors.title}</div>
       <select
         name="category"
         onChange={formik.handleChange("category")}
@@ -210,7 +199,7 @@ const EditBlog = ({ blog }) => {
         className="form-control py-3  mt-3"
         id=""
       >
-        <option value="">Select Blog Category</option>
+        <option value="">Chọn danh mục</option>
         {Array.isArray(bCatState) &&
           bCatState.map((i, j) => {
             return (
@@ -234,11 +223,8 @@ const EditBlog = ({ blog }) => {
         {formik.touched.description && formik.errors.description}
       </div>
 
-      <button
-        className="btn btn-success border-0 rounded-3 my-5"
-        type="submit"
-      >
-        Edit Blog
+      <button className="btn btn-success border-0 rounded-3 my-5" type="submit">
+        Cập nhật
       </button>
     </form>
   );
@@ -246,22 +232,11 @@ const EditBlog = ({ blog }) => {
 const AddBlog = () => {
   const dispatch = useDispatch();
 
-  const imgState = useSelector((state) => state.upload.images.images);
   const bCatState = useSelector((state) => state.bCategory.bCategories.data);
 
   useEffect(() => {
     dispatch(getCategories());
   }, []);
-
-  const img = [];
-  if (Array.isArray(imgState)) {
-    imgState.forEach((i) => {
-      img.push({
-        public_id: i.public_id,
-        url: i.url,
-      });
-    });
-  }
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -269,7 +244,6 @@ const AddBlog = () => {
       title: "",
       description: "",
       category: "",
-      images: "",
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -277,7 +251,7 @@ const AddBlog = () => {
       setTimeout(() => {
         dispatch(getBlogs());
       }, 300);
-    }
+    },
   });
 
   return (
@@ -285,16 +259,14 @@ const AddBlog = () => {
       <div className="mt-4">
         <CustomInput
           type="text"
-          label="Enter Blog Title"
+          label="Nhập chủ đề"
           name="title"
           onChng={formik.handleChange("title")}
           onBlr={formik.handleBlur("title")}
           val={formik.values.title}
         />
       </div>
-      <div className="error">
-        {formik.touched.title && formik.errors.title}
-      </div>
+      <div className="error">{formik.touched.title && formik.errors.title}</div>
       <select
         name="category"
         onChange={formik.handleChange("category")}
@@ -303,7 +275,7 @@ const AddBlog = () => {
         className="form-control py-3  mt-3"
         id=""
       >
-        <option value="">Select Blog Category</option>
+        <option value="">Chọn danh mục</option>
         {Array.isArray(bCatState) &&
           bCatState.map((i, j) => {
             return (
@@ -327,11 +299,8 @@ const AddBlog = () => {
         {formik.touched.description && formik.errors.description}
       </div>
 
-      <button
-        className="btn btn-success border-0 rounded-3 my-5"
-        type="submit"
-      >
-        Add Blog
+      <button className="btn btn-success border-0 rounded-3 my-5" type="submit">
+        Thêm
       </button>
     </form>
   );

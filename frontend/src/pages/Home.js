@@ -76,10 +76,10 @@ const Home = () => {
                   </div>
                   <div className="carousel-inner">
                     <div class="carousel-item active">
-                      <img src="https://cf.shopee.vn/file/vn-11134258-7ras8-m2tcah6wix8ab5_xxhdpi" class="d-block w-100" alt="..." />
+                      <img src="https://img.lazcdn.com/us/domino/2b311bc1-5d74-447c-80fb-58a5959862f0_VN-1976-688.jpg_2200x2200q80.jpg_.avif" class="d-block w-100" alt="..." />
                     </div>
                     <div className="carousel-item">
-                      <img src="https://cf.shopee.vn/file/vn-11134258-7ras8-m2t746tuh4aud8_xxhdpi" class="d-block w-100" alt="..." />
+                      <img src="https://img.lazcdn.com/us/domino/45a52818-c6fb-4997-abde-537071143f4a_VN-1976-688.jpg_2200x2200q80.jpg_.avif" class="d-block w-100" alt="..." />
                     </div>
                     <div className="carousel-item">
                       <img src="https://cf.shopee.vn/file/vn-11134258-7ras8-m2t71qmtks6yfb_xxhdpi" class="d-block w-100" alt="..." />

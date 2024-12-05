@@ -2,8 +2,6 @@ const getTokenFromLocalStorage = localStorage.getItem("user")
   ? JSON.parse(localStorage.getItem("user"))
   : null;
 
-// console.log(getTokenFromLocalStorage.access_token);
-
 export const getConfig = {
   headers: {
     "Content-Type": "multipart/form-data",

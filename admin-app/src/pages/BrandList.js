@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import * as yup from "yup";
-import { useFormik } from 'formik';
+import { useFormik } from "formik";
 import CustomInput from "../components/CustomInput";
 import {
   deleteABrand,
@@ -22,16 +22,15 @@ let schema = yup.object().shape({
 });
 const columns = [
   {
-    title: "SNo",
+    title: "STT",
     dataIndex: "key",
   },
   {
-    title: "Name",
+    title: "Tên",
     dataIndex: "name",
-    sorter: (a, b) => a.name.length - b.name.length,
   },
   {
-    title: "Action",
+    title: "Thao tác",
     dataIndex: "action",
   },
 ];
@@ -57,7 +56,6 @@ const Brandlist = () => {
   }, []);
 
   const brandState = useSelector((state) => state.brand.brands.data);
-  console.log(brandState)
 
   const data1 = [];
 
@@ -70,7 +68,10 @@ const Brandlist = () => {
           <>
             <button
               // to={`/admin/brand/${brandState[i]._id}`}
-              onClick={() => { setClick1(true); setBrand(brandState[i]) }}
+              onClick={() => {
+                setClick1(true);
+                setBrand(brandState[i]);
+              }}
               className=" fs-3 text-danger border-0 bg-transparent "
             >
               <BiEdit />
@@ -98,8 +99,8 @@ const Brandlist = () => {
     <>
       <div>
         <div className="product-list d-flex justify-content-between align-items-center">
-          <h3 className="mb-4 title">Brands</h3>
-          <button onClick={() => setClick(true)}>+Add brand</button>
+          <h3 className="mb-4 title">Danh sách thương hiệu</h3>
+          <button onClick={() => setClick(true)}>Thêm thương hiệu</button>
         </div>
         <div>
           <Table columns={columns} dataSource={data1} />
@@ -110,35 +111,31 @@ const Brandlist = () => {
           performAction={() => {
             deleteBrand(brandId);
           }}
-          title="Are you sure you want to delete this brand?"
+          title="Bạn có chắc chắn muốn xóa thương hiệu này không?"
         />
       </div>
-      {
-        click && (
-          < div className="modal" >
-            <div className="modal-content">
-              <button className="close-model" onClick={() => setClick(false)}>✖</button>
-              <h3 className="mb-3 title">
-                Add Brand
-              </h3>
-              <AddBrand1 />
-            </div>
+      {click && (
+        <div className="modal">
+          <div className="modal-content">
+            <button className="close-model" onClick={() => setClick(false)}>
+              ✖
+            </button>
+            <h3 className="mb-3 title">Thêm thương hiệu</h3>
+            <AddBrand1 />
           </div>
-        )
-      }
-      {
-        click1 && (
-          < div className="modal" >
-            <div className="modal-content">
-              <button className="close-model" onClick={() => setClick1(false)}>✖</button>
-              <h3 className="mb-3 title">
-                Update Brand
-              </h3>
-              <UpdateBrand brand={brand} />
-            </div>
+        </div>
+      )}
+      {click1 && (
+        <div className="modal">
+          <div className="modal-content">
+            <button className="close-model" onClick={() => setClick1(false)}>
+              ✖
+            </button>
+            <h3 className="mb-3 title">Cập nhật thương hiệu</h3>
+            <UpdateBrand brand={brand} />
           </div>
-        )
-      }
+        </div>
+      )}
     </>
   );
 };
@@ -152,13 +149,12 @@ const AddBrand1 = () => {
     },
     validationSchema: schema,
     onSubmit: (values) => {
-
       dispatch(createBrand(values));
       formik.resetForm();
       setTimeout(() => {
         dispatch(getBrands());
       }, 100);
-    }
+    },
   });
 
   return (
@@ -170,7 +166,7 @@ const AddBrand1 = () => {
           onChng={formik.handleChange("title")}
           onBlr={formik.handleBlur("title")}
           val={formik.values.title}
-          label="Enter Brand"
+          label="Nhập tên thương hiệu"
           id="brand"
         />
         <div className="error">
@@ -181,11 +177,10 @@ const AddBrand1 = () => {
             className="btn btn-success border-0 rounded-3 my-3"
             type="submit"
           >
-            Add Brand
+            Thêm
           </button>
         </div>
       </form>
-
     </>
   );
 };
@@ -204,7 +199,7 @@ const UpdateBrand = ({ brand }) => {
       setTimeout(() => {
         dispatch(getBrands());
       }, 100);
-    }
+    },
   });
 
   return (
@@ -216,7 +211,7 @@ const UpdateBrand = ({ brand }) => {
           onChng={formik.handleChange("title")}
           onBlr={formik.handleBlur("title")}
           val={formik.values.title}
-          label="Enter Brand"
+          label="Nhập tên thương hiệu"
           id="brand"
         />
         <div className="error">
@@ -227,11 +222,10 @@ const UpdateBrand = ({ brand }) => {
             className="btn btn-success border-0 rounded-3 my-3"
             type="submit"
           >
-            Add Brand
+            Cập nhật
           </button>
         </div>
       </form>
-
     </>
   );
 };
