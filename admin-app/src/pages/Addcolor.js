@@ -1,4 +1,4 @@
-import { React, useEffect } from "react";
+import { React, useEffect, useState } from "react";
 import CustomInput from "../components/CustomInput";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -18,7 +18,6 @@ let schema = yup.object().shape({
 
 const AddColor = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const location = useLocation();
   const getColorId = location.pathname.split("/")[3];
   const newColor = useSelector((state) => state.color);
@@ -41,14 +40,13 @@ const AddColor = () => {
 
   useEffect(() => {
     if (isSuccess && createdColor) {
-      toast.success("Color Added Successfullly!");
+      toast.success("Thêm màu thành công");
     }
     if (isSuccess && updatedColor) {
-      toast.success("Color Updated Successfullly!");
-      navigate("/admin/list-color");
+      toast.success("Cập nhật màu thành công");
     }
     if (isError) {
-      toast.error("Something Went Wrong!");
+      toast.error("Có lỗi xảy ra!!!");
     }
   }, [isSuccess, isError, isLoading]);
 

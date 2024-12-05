@@ -108,9 +108,23 @@ const AddProduct = () => {
       tags: [],
     },
     validationSchema: schema,
-    onSubmit: (values) => {
-      console.log(values);
-      dispatch(createProducts(values));
+    onSubmit: () => {
+      const formData = new FormData();
+
+      formData.append("name", formik.values.name);
+      formData.append("description", formik.values.description);
+      formData.append("price", formik.values.price);
+      formData.append("category", formik.values.category);
+      formData.append("brand", formik.values.brand);
+      formData.append("quantity", formik.values.quantity);
+      formData.append("colors", JSON.stringify(formik.values.colors));
+      formData.append("tags", JSON.stringify(formik.values.tags));
+
+      images.forEach((image) => {
+        formData.append("images", image);
+      });
+
+      dispatch(createProducts(formData));
 
       formik.resetForm();
       setColors([]);
@@ -134,12 +148,7 @@ const AddProduct = () => {
     if (images.length + newImages.length > 5) {
       toast.error("Bạn chỉ có thể tải tối đa 5 hình ảnh.");
     } else {
-
-      setImages((prevImages) => {
-        const updatedImages = [...prevImages, ...newImages];
-        formik.setFieldValue("images", updatedImages);
-        return updatedImages;
-      });
+      setImages((prevImages) => [...prevImages, ...newImages]);
     }
   };
 

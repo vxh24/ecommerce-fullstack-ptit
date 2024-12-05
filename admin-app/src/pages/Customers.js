@@ -9,11 +9,11 @@ import {
 
 const columns = [
   {
-    title: "SNo",
+    title: "STT",
     dataIndex: "key",
   },
   {
-    title: "Name",
+    title: "Tên",
     dataIndex: "name",
     sorter: (a, b) => a.name.length - b.name.length,
   },
@@ -22,11 +22,11 @@ const columns = [
     dataIndex: "email",
   },
   {
-    title: "Status",
+    title: "Trạng thái",
     dataIndex: "status",
   },
   {
-    title: "Action",
+    title: "Thao tác",
     dataIndex: "action",
   },
 ];
@@ -48,8 +48,6 @@ const Customers = () => {
 
   const customerState = useSelector((state) => state.customer.customers?.data);
 
-  console.log(customerState);
-
   const data1 = [];
   if (customerState && customerState.length) {
     for (let i = 0; i < customerState.length; i++) {
@@ -62,12 +60,14 @@ const Customers = () => {
             customerState[i]?.deleted === false ? (
               <>
                 <span style={{ color: "green", fontWeight: "bold" }}>
-                  Active
+                  Hoạt động
                 </span>
               </>
             ) : (
               <>
-                <span style={{ color: "red", fontWeight: "bold" }}>Block</span>
+                <span style={{ color: "red", fontWeight: "bold" }}>
+                  Tài khoản bị khóa
+                </span>
               </>
             ),
           action:
@@ -79,7 +79,7 @@ const Customers = () => {
                   style={{ width: "100px" }}
                   onClick={() => handleBlock(customerState[i]._id)}
                 >
-                  Block
+                  Khóa
                 </button>
               </>
             ) : (
@@ -90,7 +90,7 @@ const Customers = () => {
                   style={{ width: "100px" }}
                   onClick={() => handleUnblock(customerState[i]._id)}
                 >
-                  Unblock
+                  Mở khóa
                 </button>
               </>
             ),
@@ -101,7 +101,7 @@ const Customers = () => {
 
   return (
     <div>
-      <h3 className="mb-4 title">Customers</h3>
+      <h3 className="mb-4 title">Danh sách người dùng</h3>
       <div>
         <Table columns={columns} dataSource={data1} />
       </div>

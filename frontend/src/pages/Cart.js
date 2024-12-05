@@ -15,14 +15,14 @@ import { toast } from "react-toastify";
 const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  useEffect(() => {
-    dispatch(getUserCart());
-    dispatch(getAllProducts());
-  }, []);
   const authState = useSelector((state) => state?.auth);
   const userCartState = useSelector((state) => state?.auth?.cartUser?.cart);
   const productState = useSelector((state) => state.product.products.data);
   const [totalAmount, setTotalAmount] = useState(null);
+  useEffect(() => {
+    dispatch(getUserCart());
+    dispatch(getAllProducts());
+  }, []);
   // useEffect(() => {
   //   let sum = 0;
   //   for (let index = 0; index < userCartState?.products?.length; index++) {
@@ -40,11 +40,11 @@ const Cart = () => {
     dispatch(deleteProductfromCart({ productId: id, color }));
     setTimeout(() => {
       dispatch(getUserCart());
-    }, 200);
+    }, 300);
   };
   const updatecount = (id, color, newquantity) => {
     dispatch(
-      updatecountCart({ productId: id, color, newQuantity: newquantity })
+      updatecountCart({ productId: id, color: color._id, newQuantity: newquantity })
     );
     setTimeout(() => {
       dispatch(getUserCart());
@@ -69,7 +69,7 @@ const Cart = () => {
                 <h4 className="cart-col-3">Số lượng</h4>
                 <h4 className="cart-col-4">Tổng</h4>
               </div>
-              {
+              {userCartState?.products &&
                 userCartState?.products?.map((item, index) => {
                   const product = productState?.find(
                     (productItem) => productItem?._id === item?.product
@@ -129,7 +129,7 @@ const Cart = () => {
                         <div>
                           <MdDelete
                             onClick={(e) => {
-                              deleteproduct(item?.product, item?.color);
+                              deleteproduct(item?.product, item?.color?._id);
                             }}
                             className="text-danger fs-4"
                           />

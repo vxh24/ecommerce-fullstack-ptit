@@ -5,21 +5,19 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   deleteAEnquiry,
   getEnquiries,
-  resetState,
   updateAEnquiry,
 } from "../features/enquiry/enquirySlice";
 import { AiFillDelete, AiOutlineEye } from "react-icons/ai";
-import { Link } from "react-router-dom";
 import CustomModal from "../components/CustomModal";
 import ViewEnquiry from "./ViewEnquiry";
 
 const columns = [
   {
-    title: "SNo",
+    title: "STT",
     dataIndex: "key",
   },
   {
-    title: "Name",
+    title: "Tên",
     dataIndex: "name",
   },
   {
@@ -27,16 +25,16 @@ const columns = [
     dataIndex: "email",
   },
   {
-    title: "Phone",
+    title: "Số điện thoại",
     dataIndex: "phone",
   },
   {
-    title: "Status",
+    title: "Trạng thái",
     dataIndex: "status",
   },
 
   {
-    title: "Action",
+    title: "Thao tác",
     dataIndex: "action",
   },
 ];
@@ -59,7 +57,6 @@ const Enquiries = () => {
   };
 
   useEffect(() => {
-    // dispatch(resetState());
     dispatch(getEnquiries());
   }, []);
 
@@ -101,7 +98,10 @@ const Enquiries = () => {
             <button
               className="ms-3 fs-3 text-danger border-0 bg-transparent"
               // to={`/admin/enquiries/${enqState[i]._id}`}
-              onClick={() => { setClick(true); setEnquiry(enqState[i]) }}
+              onClick={() => {
+                setClick(true);
+                setEnquiry(enqState[i]);
+              }}
             >
               <AiOutlineEye />
             </button>
@@ -136,7 +136,7 @@ const Enquiries = () => {
   return (
     <>
       <div>
-        <h3 className="mb-4 title">Enquiries</h3>
+        <h3 className="mb-4 title">Danh sách khảo sát</h3>
         <div>
           <Table columns={columns} dataSource={data1} />
         </div>
@@ -146,22 +146,20 @@ const Enquiries = () => {
           performAction={() => {
             deleteEnq(enqId);
           }}
-          title="Are you sure you want to delete this enquiry?"
+          title="Bạn có chắc chắn muốn xóa khảo sát này không?"
         />
       </div>
-      {
-        click && (
-          < div className="modal" >
-            <div className="modal-content">
-              <button className="close-model" onClick={() => setClick(false)}>✖</button>
-              <h3 className="mb-3 title">
-                View Enquiry
-              </h3>
-              <ViewEnquiry enquiry={enquiry} />
-            </div>
+      {click && (
+        <div className="modal">
+          <div className="modal-content">
+            <button className="close-model" onClick={() => setClick(false)}>
+              ✖
+            </button>
+            <h3 className="mb-3 title">Xem khảo sát</h3>
+            <ViewEnquiry enquiry={enquiry} />
           </div>
-        )
-      }
+        </div>
+      )}
     </>
   );
 };

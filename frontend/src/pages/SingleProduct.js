@@ -99,9 +99,9 @@ const SingleProduct = () => {
     else {
       dispatch(AddProdToCart({ _id: productState?._id, count, color_id: color }))
       setTimeout(() => {
-        // navigate("/cart");
+        navigate("/cart");
         dispatch(getUserCart())
-      }, 200)
+      }, 400)
 
     }
   }

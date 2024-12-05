@@ -4,7 +4,6 @@ const validateMongodbId = require("../utils/validateMongodbId");
 const Product = require("../models/productModel");
 const Coupon = require("../models/couponModel");
 const Cart = require("../models/cartModel");
-const Color = require("../models/colorModel");
 
 const addToCart = asyncHandler(async (id, cart) => {
   validateMongodbId(id);
@@ -17,13 +16,26 @@ const addToCart = asyncHandler(async (id, cart) => {
   for (let i = 0; i < cart.length; i++) {
     const { _id, count, color_id } = cart[i];
 
+    const product = await Product.findById(_id).populate("colors");
+    if (!product) {
+      throw new Error("Product not found");
+    }
+
+    const colorExists = product.colors.some(
+      (color) => color._id.toString() === color_id.toString()
+    );
+    if (!colorExists) {
+      throw new Error("Color does not exist for this product");
+    }
+
     const productIndex = existingCart.products.findIndex(
       (item) =>
         item.product.toString() === _id &&
-        item.color._id.toString() === color_id
+        item.color.toString() === color_id.toString()
     );
+
     if (productIndex >= 0) {
-      existingCart.products[productIndex].count += count;
+      existingCart.products[productIndex].count += count; // Nếu trùng, tăng số lượng sản phẩm trong giỏ
     } else {
       const getPrice = await Product.findById(_id).select("price").exec();
       existingCart.products.push({
@@ -47,12 +59,20 @@ const addToCart = asyncHandler(async (id, cart) => {
 const removeProductFromCart = asyncHandler(async (userId, productId, color) => {
   validateMongodbId(userId);
   validateMongodbId(productId);
+
   const user = await User.findById(userId);
   const cart = await Cart.findOne({ orderBy: user._id });
 
-  cart.products = cart.products.filter(
-    (item) => item.product.toString() !== productId || item.color !== color
-  );
+  cart.products = cart.products.filter((item) => {
+    if (color === null) {
+      return item.product.toString() !== productId || item.color === null;
+    } else {
+      return (
+        item.product.toString() !== productId ||
+        item.color.toString() !== color.toString()
+      );
+    }
+  });
 
   cart.cartTotal = cart.products.reduce(
     (total, item) => total + item.price * item.count,

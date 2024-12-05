@@ -55,8 +55,6 @@ const ViewOrder = () => {
     (state) => state.auth.orderbyuser?.data?.products
   );
 
-  console.log(orderState);
-
   const data1 = [];
 
   if (orderState && orderState.length) {

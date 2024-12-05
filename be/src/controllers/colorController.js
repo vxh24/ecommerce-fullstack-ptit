@@ -38,7 +38,7 @@ const deleteColorController = asyncHandler(async (req, res) => {
     const result = await deleteColor(id);
     res.status(200).json({
       EC: 0,
-      data: result,
+      message: "Delete color successfull!!!",
     });
   } catch (error) {
     throw new Error(error);

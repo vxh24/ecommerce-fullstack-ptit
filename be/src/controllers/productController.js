@@ -89,7 +89,7 @@ const deleteProductController = asyncHandler(async (req, res) => {
   const result = await deleteProduct(id);
   res.status(200).json({
     EC: 0,
-    data: result,
+    message: "Delete product successfully!!!",
   });
 });
 
