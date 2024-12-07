@@ -13,46 +13,48 @@ var accessKey = process.env.ACCESS_KEY;
 var secretKey = process.env.SECRET_KEY_MOMO;
 var partnerCode = process.env.PARTNER_CODE;
 
-const createOrderByCOD = asyncHandler(async (id, COD, couponApplied) => {
-  validateMongodbId(id);
-  const user = await User.findById(id);
+const createOrderByCOD = asyncHandler(async (userId, totalAmount) => {
+  validateMongodbId(userId);
+
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
   let userCart = await Cart.findOne({ orderBy: user._id });
 
-  const finalAmount =
-    couponApplied && userCart.totalAfterDiscount
-      ? userCart.totalAfterDiscount
-      : userCart.cartTotal;
-
-  if (COD === true) {
-    let newOrder = await new Order({
-      products: userCart.products,
-      paymentIndent: {
-        id: uniqid(),
-        method: "COD",
-        amount: finalAmount,
-        status: "Cash on delivery",
-        created: Date.now(),
-        currency: "VNĐ",
-      },
-      orderBy: user._id,
-      orderStatus: "Cash on delivery",
-    }).save();
-
-    let update = userCart.products.map((item) => {
-      return {
-        updateOne: {
-          filter: { _id: item.product._id },
-          update: { $inc: { quantity: -item.count, sold: +item.count } },
-        },
-      };
-    });
-
-    await Product.bulkWrite(update, {});
-
-    await Cart.findByIdAndDelete(userCart._id);
-
-    return newOrder;
+  if (!userCart) {
+    throw new Error("Cart not found");
   }
+
+  let newOrder = await new Order({
+    products: userCart.products,
+    paymentIndent: {
+      id: uniqid(),
+      method: "COD",
+      amount: totalAmount,
+      status: "Cash on delivery",
+      created: Date.now(),
+    },
+    orderBy: user._id,
+    orderStatus: "Cash on delivery",
+  }).save();
+
+  let update = userCart.products.map((item) => {
+    return {
+      updateOne: {
+        filter: { _id: item.product._id },
+        update: { $inc: { quantity: -item.count, sold: +item.count } },
+      },
+    };
+  });
+
+  await Product.bulkWrite(update, {});
+
+  await Cart.findByIdAndDelete(userCart._id);
+
+  return newOrder;
 });
 
 const createPaymentService = asyncHandler(async (totalAmount) => {
