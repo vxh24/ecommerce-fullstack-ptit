@@ -5,7 +5,7 @@ import { GoDeviceCameraVideo } from "react-icons/go";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { RatingProduct } from '../features/products/productSlice';
+import { RatingProduct, resetState } from '../features/products/productSlice';
 import { useEffect } from "react";
 const ProductReview = ({ product }) => {
   const dispatch = useDispatch();
@@ -23,7 +23,7 @@ const ProductReview = ({ product }) => {
     const files = Array.from(e.target.files);
     setVideos((prev) => [...prev, ...files]);
   };
-  const [star, setStar] = useState(0);
+  const [star, setStar] = useState(null);
   const [comment, SetComment] = useState(null);
   const handleRatingChange = (value) => {
     setStar(value);
@@ -34,7 +34,7 @@ const ProductReview = ({ product }) => {
       return false;
     }
     else if (comment === null) {
-      toast.info("No comment?");
+      toast.info("Bình luận không được để trống");
       return false;
     }
     else {
@@ -94,7 +94,7 @@ const ProductReview = ({ product }) => {
         ></textarea>
       </div>
 
-      <div className="upload-section">
+      {/* <div className="upload-section">
         <div className="d-flex gap-15">
           <div className="upload-data file btn btn-lg btn-primary d-flex align-items-center gap-10">
             <CiCamera className="" /><p className="mb-0">Thêm hình ảnh</p>
@@ -105,7 +105,7 @@ const ProductReview = ({ product }) => {
             <input type="file" name="file" />
           </div>
         </div>
-      </div>
+      </div> */}
 
 
       <div className="d-flex justify-content-end">
@@ -116,7 +116,7 @@ const ProductReview = ({ product }) => {
             </Link>
           ) : (
             <button className="btn btn-submit button my-3" onClick={addToRatingProduct}>
-              Hoàn Thành
+              Đánh giá
             </button>
           )
         }

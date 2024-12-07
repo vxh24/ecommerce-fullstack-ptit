@@ -147,7 +147,7 @@ const Cart = () => {
                 <> */}
               <div className="d-flex justify-content-end mb-3">
                 <div>
-                  <h4 className="price">Tổng tiền: {userCartState?.cartTotal} <span className='currency'>đ</span></h4>
+                  <h4 className="price">Tổng tiền: {userCartState?.cartTotal ? userCartState?.cartTotal : 0} <span className='currency'>đ</span></h4>
                 </div>
               </div>
               <div className="d-flex justify-content-between align-items-center">

@@ -6,7 +6,7 @@ import Color from "../components/Color"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from 'react';
-import { getAProducts, RatingProduct } from '../features/products/productSlice';
+import { getAProducts, RatingProduct, resetState } from '../features/products/productSlice';
 import { addToWishlist } from '../features/products/productSlice';
 import { getAllColors } from '../features/color/colorSlice';
 import { toast } from "react-toastify"
@@ -19,19 +19,28 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { FcNext, FcPrevious } from "react-icons/fc";
 import ReactImageZoom from 'react-image-zoom';
 const SingleProduct = () => {
+  const dispatch = useDispatch();
   const location = useLocation();
   const productState = useSelector(state => state?.product?.product?.data);
+  const productState1 = useSelector(state => state?.product);
   const images = productState?.images;
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
   };
+  useEffect(() => {
+    return () => {
+      dispatch(resetState());
+    };
+  }, [location.pathname, dispatch]);
 
-  // useEffect(() => {
-  //   const targetSection = document.getElementById('target-section');
-  //   if (targetSection) {
-  //     targetSection.scrollIntoView({ behavior: 'smooth' });
-  //   }
-  // }, [location]);
+  const [rating, setRating] = useState(productState1?.rating?.data);
+  useEffect(() => {
+    const targetSection = document.getElementById('target-section');
+    if (targetSection && rating !== undefined) {
+      targetSection.scrollIntoView({ behavior: 'smooth' });
+    }
+    setRating(productState1?.rating?.data);
+  }, [productState1, rating])
   const handlePrevious = () => {
     setCurrentIndex((prevIndex) =>
       (prevIndex - 1 + images.length) % images.length
@@ -52,7 +61,6 @@ const SingleProduct = () => {
     toast.success("Copied")
   }
   const getProductId = location.pathname.split("/")[2];
-  const dispatch = useDispatch();
   const colorIds = useSelector(state => state?.product?.product?.data?.colors);
   const colors = useSelector(state => state?.color?.colors?.data);
   const matchedColors = colors?.filter((color) => colorIds?.includes(color?._id));
@@ -92,7 +100,11 @@ const SingleProduct = () => {
     }, 200)
   }
   const uploadCart = () => {
-    if (color === null) {
+    if (productState.quantity <= 0) {
+      toast.info("Sản phẩm đã hết hàng")
+      return false;
+    }
+    else if (color === null) {
       toast.info("Bạn chưa chọn màu")
       return false;
     }
@@ -101,7 +113,7 @@ const SingleProduct = () => {
       setTimeout(() => {
         // navigate("/cart");
         dispatch(getUserCart())
-      }, 200)
+      }, 300)
 
     }
   }
@@ -136,6 +148,22 @@ const SingleProduct = () => {
     const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productUrl)}`;
     window.open(facebookShareUrl, '_blank', 'width=600,height=400');
   };
+  const [tags, setTags] = useState([]);
+
+  useEffect(() => {
+    if (productState?.tags) {
+      try {
+        const parsedTags = JSON.parse(productState.tags);
+        setTags(Array.isArray(parsedTags) ? parsedTags : []);
+      } catch (error) {
+        console.error("Error parsing tags:", error.message);
+        setTags([]);
+      }
+    } else {
+      setTags([]);
+    }
+  }, [productState]);
+
   return (
     <>
       <Meta title={"Product Name"} />
@@ -185,9 +213,9 @@ const SingleProduct = () => {
                       edit={false}
                       activeColor="#ffd700"
                     />
-                    <p className='mb-0 t-review'>(2 reviews)</p>
+                    <p className='mb-0 t-review'>({productState?.ratings?.length} reviews)</p>
                   </div>
-                  <a href='#review' className='review-btn'>Viết một đánh giá</a>
+                  {/* <a href='#review' className='review-btn'>Viết một đánh giá</a> */}
                 </div>
                 <div className="border-bottom py-3">
                   <div className="d-flex align-items-center gap-10 my-2">
@@ -204,11 +232,21 @@ const SingleProduct = () => {
                   </div>
                   <div className="d-flex align-items-center gap-10 my-2">
                     <h3 className='product-heading'>Thẻ:</h3>
-                    <p className='product-data'>{productState?.tags}</p>
+                    {
+                      tags && tags.map((item, index) => {
+                        return (
+                          <p key={index} className='text-capitalize badge bg-light text-secondary py-2 px-3 rounded-3 mb-0'>{item}</p>
+                        )
+                      })
+                    }
                   </div>
                   <div className="d-flex align-items-center gap-10 my-2">
                     <h3 className='product-heading'>Số lượng:</h3>
-                    <p className='product-data'>{productState?.quantity}</p>
+                    {productState?.quantity <= 0 ? (
+                      <p className='product-data'>Hết hàng</p>
+                    ) : (
+                      <p className='product-data'>{productState?.quantity}</p>
+                    )}
                   </div>
                   {
                     alreadyAdded === false && <>
@@ -301,7 +339,7 @@ const SingleProduct = () => {
                         edit={false}
                         activeColor="#ffd700"
                       />
-                      <p className='mb-0'>(2 đánh giá)</p>
+                      <p className='mb-0'>({productState?.ratings?.length} đánh giá)</p>
                     </div>
                   </div>
                   {orderProduct && (
@@ -310,7 +348,7 @@ const SingleProduct = () => {
                     </div>
                   )}
                 </div>
-                <div className="review-form py-4">
+                {/* <div className="review-form py-4">
                   <h4>Viết một đánh giá</h4>
 
                   <div>
@@ -336,7 +374,7 @@ const SingleProduct = () => {
                     <button onClick={addToRatingProduct} className='button border-0' type='button'>Đánh giá</button>
                   </div>
 
-                </div>
+                </div> */}
                 <div className='reviews mt-4'>
                   {
                     productState && productState?.ratings?.map((item, index) => {

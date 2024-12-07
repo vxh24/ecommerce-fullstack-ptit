@@ -1,9 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CiCirclePlus } from 'react-icons/ci';
 
 const VoucherModal = ({ show, handleClose, data, setCoupon, setCouponN }) => {
+  const [voucher, setVoucher] = useState(null)
+  const [voucherN, setVoucherN] = useState(null)
+  const [voucherChecked, setVoucherChecked] = useState(null);
+  const handleOk = () => {
+    setCouponN(voucherN);
+    setCoupon(voucher);
+    handleClose();
+  };
   if (!show) return null;
-
   return (
     <div className="modal-overlay">
       <div className="modal-content">
@@ -32,7 +39,10 @@ const VoucherModal = ({ show, handleClose, data, setCoupon, setCouponN }) => {
                         <p className="text-muted">Sắp hết hạn: Còn 2 ngày</p>
                       </div>
                     </div>
-                    <input value={item} type="radio" name="voucher" onChange={() => { setCouponN(item.name); setCoupon(item.discount) }} />
+                    <input value={item}
+                      type="radio"
+                      checked={voucherChecked === item.name}
+                      name="voucher" onChange={() => { setVoucherN(item.name); setVoucher(item.discount); setVoucherChecked(item.name); }} />
                   </div>
                 </div>
               )
@@ -42,7 +52,7 @@ const VoucherModal = ({ show, handleClose, data, setCoupon, setCouponN }) => {
 
         <div className="modal-footer">
           <button className="btn btn-secondary" onClick={handleClose}>TRỞ LẠI</button>
-          <button className="btn btn-danger" onClick={handleClose}>OK</button>
+          <button className="btn btn-danger" onClick={handleOk}>OK</button>
         </div>
       </div>
     </div>

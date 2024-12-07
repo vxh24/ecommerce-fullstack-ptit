@@ -12,9 +12,8 @@ const {
 
 const createOrderByCODController = asyncHandler(async (req, res) => {
   const { _id } = req.user;
-  const { COD, couponApplied } = req.body;
-  if (!COD) throw new Error("Create cash order failed");
-  const result = await createOrderByCOD(_id, COD, couponApplied);
+  const { totalAmount } = req.body;
+  const result = await createOrderByCOD(_id, totalAmount);
   res.json({
     EC: 0,
     message: "Order created successfully",
@@ -49,14 +48,14 @@ const paymentCallbackController = async (req, res) => {
     const order = await handlePaymentCallback(_id, callbackData);
 
     res.status(200).json({
-      success: true,
+      EC: 0,
       message: "Payment processed successfully",
       data: order,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      success: false,
+      EC: 1,
       message:
         error.message || "An error occurred while processing the payment",
     });

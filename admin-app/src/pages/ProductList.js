@@ -3,10 +3,12 @@ import { Table } from "antd";
 import { BiEdit } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
-import { getProducts } from "../features/product/productSlice";
+import { deleteAProduct, getProducts } from "../features/product/productSlice";
 import { Link, useNavigate } from "react-router-dom";
 import CustomModal from "../components/CustomModal";
 import AddProduct from "./AddProduct";
+import { useFormik } from "formik";
+import CustomInput from "../components/CustomInput";
 
 const columns = [
   {
@@ -50,6 +52,7 @@ const ProductList = () => {
   const [click, setClick] = useState(false);
   const [click1, setClick1] = useState(false);
   const [productId, setProductId] = useState("");
+  const [product, setProduct] = useState(false);
 
   const showModal = (e) => {
     setOpen(true);
@@ -105,7 +108,13 @@ const ProductList = () => {
         price: formattedPrice(productState[i].price),
         action: (
           <>
-            <Link to="/" className=" fs-3 text-danger">
+            <Link
+              onClick={() => {
+                setClick1(true);
+                setProduct(productState[i]);
+              }}
+              className=" fs-3 text-danger"
+            >
               <BiEdit />
             </Link>
             <button
@@ -120,13 +129,14 @@ const ProductList = () => {
     }
   }
 
-  const deleteProduct = (e) => {
-    dispatch(deleteProduct(e));
-
-    setOpen(false);
-    setTimeout(() => {
+  const handleDeleteProduct = async () => {
+    try {
+      await dispatch(deleteAProduct(productId));
+      setOpen(false);
       dispatch(getProducts());
-    }, 100);
+    } catch (error) {
+      console.error("Lỗi khi xóa sản phẩm:", error);
+    }
   };
 
   return (
@@ -144,10 +154,8 @@ const ProductList = () => {
         <CustomModal
           hideModal={hideModal}
           open={open}
-          performAction={() => {
-            deleteProduct(productId);
-          }}
-          title="Are you sure you want to delete this product?"
+          performAction={handleDeleteProduct}
+          title="Bạn có chắc chắn muốn xóa sản phẩm này không?"
         />
       </div>
       {click && (
@@ -156,7 +164,7 @@ const ProductList = () => {
             <button className="close-model" onClick={() => setClick(false)}>
               ✖
             </button>
-            <h3 className="mb-3 title">Add Product</h3>
+            <h3 className="mb-3 title">Thêm sản phẩm</h3>
             <AddProduct />
           </div>
         </div>
@@ -168,7 +176,7 @@ const ProductList = () => {
               ✖
             </button>
             <h3 className="mb-3 title">Edit Product</h3>
-            {/* <EditProduct product={product} /> */}
+            <AddProduct product={product} />
           </div>
         </div>
       )}

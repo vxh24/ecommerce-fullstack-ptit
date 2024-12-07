@@ -221,7 +221,7 @@ const Header = () => {
                         </>
                       ) : (
                         <ul className="cart-items">
-                          <p className="text-center mb-0 bold-text">Giỏ hàng trống</p>
+                          <p className="text-center mb-0 bold-text">Chưa có sản phẩm</p>
                         </ul>
                       )}
                     </div>

@@ -117,20 +117,24 @@ const AddProduct = () => {
       formData.append("category", formik.values.category);
       formData.append("brand", formik.values.brand);
       formData.append("quantity", formik.values.quantity);
-      formData.append("colors", JSON.stringify(formik.values.colors));
+      formik.values.colors.forEach((color) => {
+        formData.append("colors", color);
+      });
       formData.append("tags", JSON.stringify(formik.values.tags));
 
       images.forEach((image) => {
         formData.append("images", image);
       });
 
+      console.log(formik.values.colors);
+
       dispatch(createProducts(formData));
 
       formik.resetForm();
-      setColors([]);
       setImages([]);
       setTimeout(() => {
         dispatch(resetState());
+        getColors();
       }, 3000);
     },
   });

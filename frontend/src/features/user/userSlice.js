@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
 import { authService } from "./userService";
 import { toast } from "react-toastify";
 export const createUser = createAsyncThunk(
@@ -93,6 +93,35 @@ export const cashOrderUser = createAsyncThunk(
   async (data, thunkAPI) => {
     try {
       return await authService.cashOrder(data);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+export const momoOrderUser = createAsyncThunk(
+  "user/cart/momo-order",
+  async (
+    {
+      orderId,
+      amount,
+      resultCode,
+      message,
+      transId,
+      partnerCode,
+      responseTime,
+    },
+    thunkAPI
+  ) => {
+    try {
+      return await authService.momoOrder({
+        orderId,
+        amount,
+        resultCode,
+        message,
+        transId,
+        partnerCode,
+        responseTime,
+      });
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -202,6 +231,17 @@ export const applyCouponSlice = createAsyncThunk(
     }
   }
 );
+export const paymentMoMoSlice = createAsyncThunk(
+  "order/paymentmomo",
+  async (totalAmount, thunkAPI) => {
+    try {
+      return await authService.createPayment(totalAmount);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+export const resetState1 = createAction("Reset_all");
 const getCustomerfromLocalStorage = localStorage.getItem("customer")
   ? JSON.parse(localStorage.getItem("customer"))
   : null;
@@ -387,6 +427,24 @@ export const authSlice = createSlice({
         state.isSuccess = false;
         state.message = action.error;
       })
+      .addCase(momoOrderUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(momoOrderUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.order = action.payload;
+      })
+      .addCase(momoOrderUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+        // if (state.isError === true) {
+        //   toast.error("ko đc")
+        // }
+      })
       .addCase(getOrderUser.pending, (state) => {
         state.isLoading = true;
       })
@@ -551,7 +609,23 @@ export const authSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
-      });
+      })
+      .addCase(paymentMoMoSlice.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(paymentMoMoSlice.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.momo = action.payload;
+      })
+      .addCase(paymentMoMoSlice.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+      })
+      .addCase(resetState1, () => initialState);
   },
 });
 export default authSlice.reducer;
