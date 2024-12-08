@@ -9,7 +9,6 @@ const {
   getOrderByUIDController,
   getOrderByIdController,
   createPaymentController,
-  createOrderByPaymentOnline,
   paymentCallbackController,
 } = require("../controllers/orderController");
 
