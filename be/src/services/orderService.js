@@ -13,49 +13,51 @@ var accessKey = process.env.ACCESS_KEY;
 var secretKey = process.env.SECRET_KEY_MOMO;
 var partnerCode = process.env.PARTNER_CODE;
 
-const createOrderByCOD = asyncHandler(async (userId, totalAmount) => {
-  validateMongodbId(userId);
+const createOrderByCOD = asyncHandler(
+  async (userId, totalAmount, orderAddress) => {
+    validateMongodbId(userId);
 
-  const user = await User.findById(userId);
+    const user = await User.findById(userId);
 
-  if (!user) {
-    throw new Error("User not found");
-  }
+    if (!user) {
+      throw new Error("User not found");
+    }
 
-  let userCart = await Cart.findOne({ orderBy: user._id });
+    let userCart = await Cart.findOne({ orderBy: user._id });
 
-  if (!userCart) {
-    throw new Error("Cart not found");
-  }
+    if (!userCart) {
+      throw new Error("Cart not found");
+    }
 
-  let newOrder = await new Order({
-    products: userCart.products,
-    paymentIndent: {
-      id: uniqid(),
-      method: "COD",
-      amount: totalAmount,
-      status: "Cash on delivery",
-      created: Date.now(),
-    },
-    orderBy: user._id,
-    orderStatus: "Cash on delivery",
-  }).save();
-
-  let update = userCart.products.map((item) => {
-    return {
-      updateOne: {
-        filter: { _id: item.product._id },
-        update: { $inc: { quantity: -item.count, sold: +item.count } },
+    let newOrder = await new Order({
+      products: userCart.products,
+      paymentIndent: {
+        orderId: uniqid(),
+        method: "COD",
+        amount: totalAmount,
+        created: Date.now(),
       },
-    };
-  });
+      orderAddress,
+      orderBy: user._id,
+      orderStatus: "Chờ xác nhận",
+    }).save();
 
-  await Product.bulkWrite(update, {});
+    let update = userCart.products.map((item) => {
+      return {
+        updateOne: {
+          filter: { _id: item.product._id },
+          update: { $inc: { quantity: -item.count, sold: +item.count } },
+        },
+      };
+    });
 
-  await Cart.findByIdAndDelete(userCart._id);
+    await Product.bulkWrite(update, {});
 
-  return newOrder;
-});
+    await Cart.findByIdAndDelete(userCart._id);
+
+    return newOrder;
+  }
+);
 
 const createPaymentService = asyncHandler(async (totalAmount) => {
   var orderInfo = "Thanh toán qua ví Momo";
@@ -141,65 +143,76 @@ const createPaymentService = asyncHandler(async (totalAmount) => {
   }
 });
 
-const handlePaymentCallback = asyncHandler(async (userId, callbackData) => {
-  validateMongodbId(userId);
-  const user = await User.findById(userId);
+const handlePaymentCallback = asyncHandler(
+  async (userId, callbackData, orderAddress) => {
+    validateMongodbId(userId);
+    const user = await User.findById(userId);
 
-  if (!user) {
-    throw new Error("User not found");
-  }
+    if (!user) {
+      throw new Error("User not found");
+    }
 
-  let userCart = await Cart.findOne({ orderBy: user._id });
+    let userCart = await Cart.findOne({ orderBy: user._id });
 
-  if (!userCart) {
-    throw new Error("Cart not found");
-  }
+    if (!userCart) {
+      throw new Error("Cart not found");
+    }
 
-  const {
-    orderId,
-    amount,
-    resultCode,
-    message,
-    transId,
-    partnerCode,
-    responseTime,
-  } = callbackData;
+    const {
+      orderId,
+      amount,
+      resultCode,
+      message,
+      transId,
+      partnerCode,
+      responseTime,
+    } = callbackData;
 
-  if (resultCode === "0") {
-    const order = new Order({
-      products: userCart.products,
-      paymentIndent: {
-        orderId,
-        amount,
-        transId,
-        partnerCode,
-        message,
-        responseTime,
-      },
-      orderBy: user._id,
-      orderStatus: "Processing",
-    });
+    const timestamp = Number(responseTime);
+    const date = new Date(timestamp);
 
-    await order.save();
+    const formattedDate = `${date.getDate()}/${
+      date.getMonth() + 1
+    }/${date.getFullYear()}`;
 
-    let update = userCart.products.map((item) => {
-      return {
-        updateOne: {
-          filter: { _id: item.product._id },
-          update: { $inc: { quantity: -item.count, sold: +item.count } },
+    if (resultCode === "0") {
+      const order = new Order({
+        products: userCart.products,
+        paymentIndent: {
+          orderId,
+          amount,
+          method: partnerCode,
+          created: formattedDate,
+          responseTime,
+          transId,
+          message,
         },
-      };
-    });
+        orderAddress,
+        orderBy: user._id,
+        orderStatus: "Chờ xác nhận",
+      });
 
-    await Product.bulkWrite(update, {});
+      await order.save();
 
-    await Cart.findByIdAndDelete(userCart._id);
+      let update = userCart.products.map((item) => {
+        return {
+          updateOne: {
+            filter: { _id: item.product._id },
+            update: { $inc: { quantity: -item.count, sold: +item.count } },
+          },
+        };
+      });
 
-    return order;
-  } else {
-    throw new Error(`Payment failed: ${message}`);
+      await Product.bulkWrite(update, {});
+
+      await Cart.findByIdAndDelete(userCart._id);
+
+      return order;
+    } else {
+      throw new Error(`Payment failed: ${message}`);
+    }
   }
-});
+);
 
 const getOrderByUID = asyncHandler(async (userID) => {
   const orderUser = await Order.find({ orderBy: userID })
