@@ -67,13 +67,28 @@ const getAProduct = asyncHandler(async (id) => {
 
 const getAllProducts = asyncHandler(
   async (queryObj, sortBy, fields, page, limit) => {
-    let query = Product.find(queryObj).populate("colors");
+    let query = Product.find(queryObj);
 
     //sorting
     if (sortBy) {
-      query = query.sort(sortBy);
+      switch (sortBy) {
+        case "name-asc": // A-Z
+          query = query.sort("name");
+          break;
+        case "name-desc": // Z-A
+          query = query.sort("-name");
+          break;
+        case "price-asc": // tang dan
+          query = query.sort("price");
+          break;
+        case "price-desc": // giam dan
+          query = query.sort("-price");
+          break;
+        default:
+          query = query.sort("-createdAt"); // ngay tao
+      }
     } else {
-      query = query.sort("-createdAt");
+      query = query.sort("-createdAt"); // ngay tao
     }
 
     //limiting the fields
