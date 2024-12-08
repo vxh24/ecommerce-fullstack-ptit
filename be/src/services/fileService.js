@@ -29,8 +29,6 @@ const uploadSingleFile = async (fileObject) => {
       error: null,
     };
   } catch (error) {
-    if (fs.existsSync(finalPath)) fs.unlinkSync(finalPath);
-
     return {
       status: "failed",
       path: null,
