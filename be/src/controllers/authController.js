@@ -13,14 +13,22 @@ const User = require("../models/userModel");
 const { generateToken } = require("../config/jwtToken");
 
 const createUserController = asyncHandler(async (req, res) => {
-  let { name, email, password } = req.body;
+  let { name, email, phone, password } = req.body;
 
   const schema = Joi.object({
     name: Joi.string().min(3).max(30).required(),
-    email: Joi.string().email({
-      minDomainSegments: 2,
-      tlds: { allow: ["com", "net"] },
-    }),
+    email: Joi.string()
+      .email({
+        minDomainSegments: 2,
+        tlds: { allow: ["com", "net"] },
+      })
+      .required(),
+    phone: Joi.string()
+      .pattern(/^[0-9]{10}$/)
+      .required()
+      .messages({
+        "string.pattern.base": "Phone number must contain exactly 10 digits",
+      }),
     password: Joi.string(),
   });
 
@@ -31,6 +39,7 @@ const createUserController = asyncHandler(async (req, res) => {
     let userData = {
       name,
       email,
+      phone,
       password,
     };
 

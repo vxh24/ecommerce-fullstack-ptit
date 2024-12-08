@@ -1,4 +1,5 @@
 require("dotenv").config();
+const Joi = require("joi");
 const asyncHandler = require("express-async-handler");
 const {
   getAllUsers,
@@ -34,10 +35,28 @@ const getUserByIdController = asyncHandler(async (req, res) => {
 });
 
 const updateAUserController = asyncHandler(async (req, res) => {
+  const schema = Joi.object({
+    name: Joi.string().min(3).max(30).required(),
+    phone: Joi.string()
+      .pattern(/^[0-9]{10}$/)
+      .required()
+      .messages({
+        "string.pattern.base": "Phone number must contain exactly 10 digits",
+      }),
+  });
+
   const { name, phone } = req.body;
   const { _id } = req.user;
-
   const file = req.files?.image;
+
+  const { error } = schema.validate({ name, phone });
+
+  if (error) {
+    return res.status(400).json({
+      EC: 1,
+      message: error.details[0].message,
+    });
+  }
 
   if (!file || file.length === 0) {
     throw new Error("No images uploaded");

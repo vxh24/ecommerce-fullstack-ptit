@@ -29,10 +29,7 @@ const updateAUser = asyncHandler(async (id, userData, file) => {
     {
       name: userData.name,
       phone: userData.phone,
-      avatar: {
-        public_id: uploadResult.public_id,
-        url: uploadResult.cloudinaryUrl,
-      },
+      avatar: uploadResult.cloudinaryUrl,
     },
     { new: true }
   );
