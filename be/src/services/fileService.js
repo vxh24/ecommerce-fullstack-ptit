@@ -18,12 +18,19 @@ const uploadSingleFile = async (fileObject) => {
   // Use the mv() method to place the file somewhere on your server
   try {
     await fileObject.mv(finalPath);
+
+    const cloudinaryResult = await uploadToCloudinary(finalPath, "avatar");
+
     return {
       status: "success",
+      cloudinaryUrl: cloudinaryResult.secure_url,
+      public_id: cloudinaryResult.public_id,
       path: finalName,
       error: null,
     };
   } catch (error) {
+    if (fs.existsSync(finalPath)) fs.unlinkSync(finalPath);
+
     return {
       status: "failed",
       path: null,

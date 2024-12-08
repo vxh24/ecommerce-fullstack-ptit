@@ -6,13 +6,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getAllCoupon } from '../features/counpons/couponSlice';
 import moment from "moment";
 import { FaCamera } from "react-icons/fa";
-import { changePassSlice, createAdd, getAddressSlice, getProfileSlice, removeAddressSlice, updateAddressSlice } from '../features/user/userSlice';
+import { changePassSlice, createAdd, getAddressSlice, getProfileSlice, removeAddressSlice, updateAddressSlice, updateProfleSlice } from '../features/user/userSlice';
 import AddAddressForm from './AddAddressForm';
 const profileSchema = yup.object({
   name: yup.string().required("Name is Require"),
-  email: yup.string().nullable().email("Email should be valid"),
   phone: yup.string().required("Mobie no is Required"),
-  address: yup.string().required("address is Required")
 });
 const ChangeSchema = yup.object({
   password: yup.string()
@@ -31,19 +29,48 @@ const ProfileContent = ({ active }) => {
     dispatch(getProfileSlice());
   }, [])
   const profileState = useSelector(state => state?.auth?.profile?.data);
-  const userState = useSelector(state => state?.auth?.user?.user)
+  const userState = useSelector(state => state?.auth?.user?.user);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [images, setImages] = useState(null);
   const formik = useFormik({
-    enableReinitialize: true,
     initialValues: {
-      name: userState?.name,
-      email: userState?.email,
-      phone: profileState?.phone,
+      name: profileState?.name || "",
+      phone: profileState?.phone || "",
+      image: null, // Khởi tạo null để lưu file ảnh
     },
     validationSchema: profileSchema,
     onSubmit: (values) => {
-      // dispatch(createUser(values));
+      const formData = new FormData();
+
+      // Thêm dữ liệu vào FormData
+      formData.append("name", formik.values.name);
+      formData.append("phone", formik.values.phone);
+      console.log(images);
+      formData.append("image", images); // Thêm file ảnh
+
+      // Dispatch action với FormData
+      dispatch(updateProfleSlice({ id: profileState._id, data: formData }));
     },
   });
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // Kiểm tra định dạng và kích thước file
+      // if (!["image/jpeg", "image/png"].includes(file.type)) {
+      //   alert("Chỉ chấp nhận định dạng .JPEG và .PNG");
+      //   return;
+      // }
+      // if (file.size > 1024 * 1024) {
+      //   alert("Dung lượng file tối đa là 1 MB");
+      //   return;
+      // }
+
+      // Cập nhật vào Formik và hiển thị preview
+      setImages(file);
+      setImagePreview(URL.createObjectURL(file)); // Hiển thị ảnh preview
+    }
+  };
+
   return (
     // <div className='w-100'>
     <>
@@ -51,45 +78,67 @@ const ProfileContent = ({ active }) => {
         <>
           <div className='d-flex mt-4'>
             <div className="profile-card justify-center-between mt-0">
-              <form onSubmit={formik.handleSubmit} className='d-flex flex-column gap-15'>
-                <div className="mb-3">
-                  <label for="exampleInputEmail1" className="form-label">Tên</label>
-                  <input name="name" type="name" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                    value={formik.values.name}
-                    onChange={formik.handleChange("name")}
-                    onBlur={formik.handleBlur("name")}
-                  />
-                  <div className="error">
-                    {formik.touched.name && formik.errors.name}
-                  </div>
-                </div>
-                <div className="mb-3">
-                  <label for="exampleInputEmail1" className="form-label">Địa chỉ email</label>
-                  <input name="email" type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                    value={formik.values.email}
-                    onChange={formik.handleChange("email")}
-                    onBlur={formik.handleBlur("email")}
-                  />
-                  <div className="error">
-                    {formik.touched.email && formik.errors.email}
-                  </div>
-                </div>
-                <div className="mb-3">
-                  <label for="exampleInputEmail1" className="form-label">Số điện thoại</label>
-                  <input name="phone" type="phone" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                    value={formik.values.phone}
-                    onChange={formik.handleChange("phone")}
-                    onBlur={formik.handleBlur("phone")}
-                  />
-                  <div className="error">
-                    {formik.touched.phone && formik.errors.phone}
-                  </div>
+              <form onSubmit={formik.handleSubmit} className='d-flex flex-column'>
+                <div className='d-flex gap-30'>
+                  <div className='w-75 d-flex flex-column gap-30'>
+                    <div className="mb-3">
+                      <label for="exampleInputEmail1" className="form-label">Tên</label>
+                      <input name="name" type="name" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                        value={formik.values.name}
+                        onChange={formik.handleChange("name")}
+                        onBlur={formik.handleBlur("name")}
+                      />
+                      <div className="error">
+                        {formik.touched.name && formik.errors.name}
+                      </div>
+                    </div>
+                    <div className="mb-3">
+                      <label for="exampleInputEmail1" className="form-label">Số điện thoại</label>
+                      <input name="phone" type="phone" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                        value={formik.values.phone}
+                        onChange={formik.handleChange("phone")}
+                        onBlur={formik.handleBlur("phone")}
+                      />
+                      <div className="error">
+                        {formik.touched.phone && formik.errors.phone}
+                      </div>
 
+                    </div>
+                    <button type="submit" className="btn btn-primary">Lưu thay đổi</button>
+                  </div>
+                  <div className='d-flex justify-content-center'>
+                    <div className="profile-img-container text-center">
+                      <div className="profile-img">
+                        <img
+                          src={imagePreview || "https://png.pngtree.com/png-clipart/20230927/original/pngtree-man-avatar-image-for-profile-png-image_13001882.png"}
+                          alt="Avatar"
+                          className="avatar-img"
+                        />
+                      </div>
+                      <div className="upload-data">
+                        <label htmlFor="avatar" className="btn btn-primary">Chọn Ảnh</label>
+                        <input
+                          type="file"
+                          id="avatar"
+                          name="image"
+                          onChange={handleFileChange}
+                          className="file-input"
+                        />
+                        {formik.touched.image && formik.errors.image && (
+                          <div className="error">{formik.errors.image}</div>
+                        )}
+                      </div>
+                      <div className="file-info">
+                        <p>Dung lượng file tối đa 1 MB</p>
+                        <p>Định dạng: .JPEG, .PNG</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <button type="submit" className="btn btn-primary">Lưu thay đổi</button>
+
               </form>
             </div>
-            <div className='profile-img d-flex justify-content-between'>
+            {/* <div className='profile-img d-flex justify-content-between'>
               <div className=' position-relative text-center'>
                 <img src="https://png.pngtree.com/png-clipart/20230927/original/pngtree-man-avatar-image-for-profile-png-image_13001882.png" className='imgs' alt="" />
                 <div className="upload-data file camera-icon">
@@ -97,7 +146,7 @@ const ProfileContent = ({ active }) => {
                   <input className='cursor-pointer' type="file" name="file" />
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
 
         </>

@@ -32,10 +32,23 @@ const Checkout = () => {
   const [totalpayment, setTotalpayment] = useState(false);
   const [address, setAddress] = useState([]);
   const [addressSelect, setAddressSelect] = useState(null);
+  const [getAddress, setGetAddress] = useState(null);
   const addressState = useSelector(state => state?.auth?.address?.data?.address);
   const couponState = useSelector(state => state?.coupon?.coupons?.data);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [payurl, setPayurl] = useState(authState?.momo?.data?.payUrl);
+  useEffect(() => {
+    if (addressSelect !== null) {
+
+
+      const fullAddress = `${addressSelect.specificAddress}, ${addressSelect.commune}, ${addressSelect.district}, ${addressSelect.city}`;
+      setGetAddress(fullAddress);
+    }
+    else {
+      const fullAddress = `${address?.specificAddress}, ${address?.commune}, ${address?.district}, ${address?.city}`;
+      setGetAddress(fullAddress);
+    }
+  }, [addressSelect, address])
   useEffect(() => {
     let sum = Number(totalAmount) * Number(coupon) / 100;
     setTotalcoupoon(sum);
@@ -58,7 +71,7 @@ const Checkout = () => {
   useEffect(() => {
     let Address = addressState?.find((item) => item.isDefault === true);
     setAddress(Address)
-  }, [addressState])
+  }, [addressState, address])
   useEffect(() => {
     // setTimeout(() => {
     //   dispatch(getUserCart())
@@ -74,14 +87,14 @@ const Checkout = () => {
   }, [userCartState])
   const createOrder = () => {
     if (payment === 1) {
-      dispatch(cashOrderUser({ totalAmount: totalpayment }));
+      dispatch(cashOrderUser({ totalAmount: totalpayment, orderAddress: getAddress }));
       setTimeout(() => {
         dispatch(getUserCart())
         navigate("/my-orders");
       }, 200)
     }
     if (payment === 2) {
-      dispatch(paymentMoMoSlice({ totalAmount: totalpayment }));
+      dispatch(paymentMoMoSlice({ totalAmount: totalpayment, orderAddress: getAddress }));
     }
   }
   useEffect(() => {

@@ -13,17 +13,14 @@ const orderSchema = new mongoose.Schema(
       },
     ],
     paymentIndent: {},
+    orderAddress: {
+      type: String,
+      require: true,
+    },
     orderStatus: {
       type: String,
-      default: "Not Processed",
-      enum: [
-        "Not Processed",
-        "Chờ xác nhận",
-        "Processing",
-        "Dispatch",
-        "Cancelled",
-        "Delivered",
-      ],
+      default: "Chờ xác nhận",
+      enum: ["Chờ xác nhận", "Chờ giao hàng", "Hoàn thành", "Hủy"],
     },
     orderBy: {
       type: mongoose.Schema.Types.ObjectId,

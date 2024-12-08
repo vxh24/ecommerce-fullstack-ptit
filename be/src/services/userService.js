@@ -4,6 +4,7 @@ const validateMongodbId = require("../utils/validateMongodbId");
 const sendEmail = require("../controllers/emailController");
 const crypto = require("crypto");
 const Address = require("../models/addressModel");
+const { uploadSingleFile } = require("./fileService");
 
 const getAllUsers = asyncHandler(async () => {
   const result = await User.find({}).select("-password");
@@ -18,15 +19,19 @@ const getUserById = asyncHandler(async (id) => {
   return result;
 });
 
-const updateAUser = asyncHandler(async (id, userData) => {
+const updateAUser = asyncHandler(async (id, userData, file) => {
   validateMongodbId(id);
-  const result = await User.updateOne(
-    { _id: id },
+
+  const uploadResult = await uploadSingleFile(file);
+
+  const result = await User.findByIdAndUpdate(
+    id,
     {
       name: userData.name,
       phone: userData.phone,
-      avatar: userData.avatar,
-    }
+      avatar: uploadResult.cloudinaryUrl,
+    },
+    { new: true }
   );
   return result;
 });
@@ -123,6 +128,7 @@ const getWishlist = asyncHandler(async (id) => {
   const user = await User.findById(id).populate("wishlist");
   return user;
 });
+
 const getAddress = asyncHandler(async (id) => {
   const user = await User.findById(id).populate("address");
   return user;

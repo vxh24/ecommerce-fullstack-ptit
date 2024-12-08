@@ -1254,9 +1254,73 @@ footer .input-group-text {
 /* orderDetail end*/
 
 /* Profile */
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-img-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .profile-img {
-  margin: 30px;
-  width: 30%;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 40px;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.upload-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.upload-data label {
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-info {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.error {
+  color: red;
+  font-size: 0.8rem;
+  margin-top: 5px;
+}
+
+.btn {
+  background-color: #28a745;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: #007bff;
 }
 
 .profile-card {
@@ -1265,29 +1329,6 @@ footer .input-group-text {
   width: 800px;
   margin-left: 60px;
   border-radius: 10px;
-}
-
-.profile-img img {
-  width: 90%;
-}
-
-.upload-data {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 5px;
-}
-
-.imgs {
-  position: relative;
-  border-radius: 50%;
-}
-
-.camera-icon {
-  bottom: -8px;
-  position: absolute;
-  z-index: 1000;
-  color: red;
 }
 
 .text-red {

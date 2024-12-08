@@ -80,10 +80,10 @@ const changePass = async (password) => {
     return response.data;
   }
 };
-const cashOrder = async (data) => {
+const cashOrder = async ({ totalAmount, orderAddress }) => {
   const response = await axios.post(
     `${base_url}user/cart/cash-order`,
-    data,
+    { totalAmount, orderAddress },
     config
   );
   if (response.data) {
@@ -133,10 +133,10 @@ const removePfromCart = async ({ productId, color }) => {
     return response.data;
   }
 };
-const updateCountProduct = async ({ productId, color, newQuantity }) => {
+const updateCountProduct = async ({ productId, colorId, newQuantity }) => {
   const response = await axios.put(
     `${base_url}user/cart/update-product`,
-    { productId, color, newQuantity },
+    { productId, colorId, newQuantity },
     config
   );
   if (response.data) {
@@ -197,10 +197,21 @@ const applyCoupon = async (counpon) => {
     return response.data;
   }
 };
-const createPayment = async (totalAmount) => {
+const createPayment = async ({ totalAmount, orderAddress }) => {
   const response = await axios.post(
     `${base_url}order/create-payment`,
-    totalAmount,
+    { totalAmount, orderAddress },
+    config
+  );
+  if (response.data) {
+    return response.data;
+  }
+};
+const updateProfileUser = async ({ id, data }) => {
+  console.log(data);
+  const response = await axios.put(
+    `${base_url}user/${id}`,
+    data,
     config
   );
   if (response.data) {
@@ -230,5 +241,6 @@ export const authService = {
   getProfile,
   momoOrder,
   applyCoupon,
-  createPayment
+  createPayment,
+  updateProfileUser
 };

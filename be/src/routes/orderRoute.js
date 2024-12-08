@@ -18,7 +18,6 @@ const router = express.Router();
 router.post("/cash-order", authMiddleware, createOrderByCODController); //COD
 router.post("/create-payment", authMiddleware, createPaymentController); //MOMO
 router.post("/payment-callback", authMiddleware, paymentCallbackController);
-router.post("/callback", authMiddleware, createOrderByPaymentOnline);
 router.get("/", authMiddleware, getOrderByUIDController);
 router.get("/get-all-orders", authMiddleware, isAdmin, getAllOrdersController);
 router.get("/:id", authMiddleware, isAdmin, getOrderByIdController);

@@ -4,6 +4,7 @@ import ProductReview from '../components/ProductReview';
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllColors } from '../features/color/colorSlice';
+import { FaMapMarkerAlt } from "react-icons/fa";
 const OrderDetailCard = ({ order }) => {
   const [open, setOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -25,6 +26,7 @@ const OrderDetailCard = ({ order }) => {
   return (
     <div>
       <h4 className='mb-4'>Chi tiết đơn hàng</h4>
+      <p><strong>Địa chỉ:  </strong> {order.orderAddress}</p>
       <p><strong>Mã đơn hàng:</strong> {order._id}</p>
       <p><strong>Tổng tiền:</strong> {order.paymentIndent.amount}</p>
       <p><strong>Ngày đặt hàng:</strong> {moment(order.created_at).format('DD-MM-YYYY')}</p>

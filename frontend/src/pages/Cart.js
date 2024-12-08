@@ -23,19 +23,6 @@ const Cart = () => {
     dispatch(getUserCart());
     dispatch(getAllProducts());
   }, []);
-  // useEffect(() => {
-  //   let sum = 0;
-  //   for (let index = 0; index < userCartState?.products?.length; index++) {
-  //     sum =
-  //       sum +
-  //       Number(userCartState.products[index].count) *
-  //       userCartState.products[index].price;
-  //     setTotalAmount(sum);
-  //   }
-  //   setTimeout(() => {
-  //     setTotalAmount(sum);
-  //   }, 200);
-  // }, [userCartState]);
   const deleteproduct = (id, color) => {
     dispatch(deleteProductfromCart({ productId: id, color }));
     setTimeout(() => {
@@ -44,7 +31,7 @@ const Cart = () => {
   };
   const updatecount = (id, color, newquantity) => {
     dispatch(
-      updatecountCart({ productId: id, color: color._id, newQuantity: newquantity })
+      updatecountCart({ productId: id, colorId: color._id, newQuantity: newquantity })
     );
     setTimeout(() => {
       dispatch(getUserCart());

@@ -38,6 +38,7 @@ const {
 
 const router = express.Router();
 
+router.get("/update-user", authMiddleware, updateAUserController);
 router.get("/all-users", authMiddleware, isAdmin, getAllUsersController);
 router.get("/wishlist", authMiddleware, getWishlistController);
 router.get("/profile", authMiddleware, getProfileUserController);

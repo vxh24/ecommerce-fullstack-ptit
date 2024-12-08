@@ -90,9 +90,9 @@ export const getUserCart = createAsyncThunk(
 );
 export const cashOrderUser = createAsyncThunk(
   "user/cart/order",
-  async (data, thunkAPI) => {
+  async ({ totalAmount, orderAddress }, thunkAPI) => {
     try {
-      return await authService.cashOrder(data);
+      return await authService.cashOrder({ totalAmount, orderAddress });
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -149,11 +149,11 @@ export const deleteProductfromCart = createAsyncThunk(
 );
 export const updatecountCart = createAsyncThunk(
   "user/updatecart",
-  async ({ productId, color, newQuantity }, thunkAPI) => {
+  async ({ productId, colorId, newQuantity }, thunkAPI) => {
     try {
       return await authService.updateCountProduct({
         productId,
-        color,
+        colorId,
         newQuantity,
       });
     } catch (error) {
@@ -233,9 +233,19 @@ export const applyCouponSlice = createAsyncThunk(
 );
 export const paymentMoMoSlice = createAsyncThunk(
   "order/paymentmomo",
-  async (totalAmount, thunkAPI) => {
+  async ({ totalAmount, orderAddress }, thunkAPI) => {
     try {
-      return await authService.createPayment(totalAmount);
+      return await authService.createPayment({ totalAmount, orderAddress });
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+export const updateProfleSlice = createAsyncThunk(
+  "user/update",
+  async ({ id, data }, thunkAPI) => {
+    try {
+      return await authService.updateProfileUser({ id, data });
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -620,6 +630,21 @@ export const authSlice = createSlice({
         state.momo = action.payload;
       })
       .addCase(paymentMoMoSlice.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+      })
+      .addCase(updateProfleSlice.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateProfleSlice.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.updateProfile = action.payload;
+      })
+      .addCase(updateProfleSlice.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
