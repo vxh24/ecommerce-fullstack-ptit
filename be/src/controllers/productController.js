@@ -77,9 +77,13 @@ const getAllProductsController = asyncHandler(async (req, res) => {
 
 const updateProductController = asyncHandler(async (req, res) => {
   const id = req.params.id;
-  const result = await updateProduct(id, req.body);
+  const productData = req.body;
+  const files = req.files ? req.files.images : [];
+
+  const result = await updateProduct(id, productData, files);
   res.status(200).json({
     EC: 0,
+    message: "Update product successfull",
     data: result,
   });
 });

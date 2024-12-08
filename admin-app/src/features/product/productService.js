@@ -20,6 +20,8 @@ const deleteAProduct = async (id) => {
   return response.data;
 };
 
+const updateProduct = async (id) => {};
+
 const productService = {
   getProducts,
   createProduct,

@@ -1,7 +1,7 @@
 const User = require("../models/userModel");
 const asyncHandler = require("express-async-handler");
 const validateMongodbId = require("../utils/validateMongodbId");
-const sendEmail = require("../controllers/emailController");
+const sendEmail = require("./emailService");
 const crypto = require("crypto");
 const Address = require("../models/addressModel");
 const { uploadSingleFile } = require("./fileService");

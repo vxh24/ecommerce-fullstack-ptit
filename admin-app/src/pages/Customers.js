@@ -57,7 +57,7 @@ const Customers = () => {
           name: customerState[i]?.name,
           email: customerState[i]?.email,
           status:
-            customerState[i]?.deleted === false ? (
+            customerState[i]?.isBlock === false ? (
               <>
                 <span style={{ color: "green", fontWeight: "bold" }}>
                   Hoạt động
@@ -71,7 +71,7 @@ const Customers = () => {
               </>
             ),
           action:
-            customerState[i]?.deleted === false ? (
+            customerState[i]?.isBlock === false ? (
               <>
                 <button
                   type="button"

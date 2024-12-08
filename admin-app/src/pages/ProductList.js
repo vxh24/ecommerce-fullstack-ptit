@@ -175,8 +175,8 @@ const ProductList = () => {
             <button className="close-model" onClick={() => setClick1(false)}>
               ✖
             </button>
-            <h3 className="mb-3 title">Edit Product</h3>
-            <AddProduct product={product} />
+            <h3 className="mb-3 title">Cập nhật sản phẩm</h3>
+            <EditProduct product={product} />
           </div>
         </div>
       )}
