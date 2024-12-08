@@ -84,15 +84,18 @@ const removeProductFromCart = asyncHandler(async (userId, productId, color) => {
 });
 
 const updateProductQuantityInCart = asyncHandler(
-  async (userId, productId, color, newQuantity) => {
+  async (userId, productId, colorId, newQuantity) => {
     validateMongodbId(userId);
     validateMongodbId(productId);
+    validateMongodbId(colorId);
 
     const user = await User.findById(userId);
     const cart = await Cart.findOne({ orderBy: user._id });
 
     const productIndex = cart.products.findIndex(
-      (item) => item.product.toString() === productId && item.color === color
+      (item) =>
+        item.product.toString() === productId &&
+        item.color.toString() === colorId.toString()
     );
 
     if (productIndex === -1) {

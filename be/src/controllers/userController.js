@@ -1,6 +1,5 @@
 require("dotenv").config();
 const asyncHandler = require("express-async-handler");
-const { uploadSingleFile } = require("../services/fileService");
 const {
   getAllUsers,
   getUserById,
@@ -35,29 +34,20 @@ const getUserByIdController = asyncHandler(async (req, res) => {
 });
 
 const updateAUserController = asyncHandler(async (req, res) => {
-  let { name } = req.body;
-  const id = req.params.id;
+  const { name, phone } = req.body;
+  const { _id } = req.user;
 
-  let imageUrl = "";
-  if (!req.files || Object.keys(req.files).length === 0) {
-    res.status(400).json({
-      msg: "No files were uploaded. Try uploading an image",
-    });
-    return;
-  } else {
-    let result = await uploadSingleFile(req.files.avatar);
-    imageUrl = result.path;
+  const file = req.files?.image;
+
+  if (!file || file.length === 0) {
+    throw new Error("No images uploaded");
   }
 
-  let userData = {
-    name,
-    avatar: imageUrl,
-  };
-
-  const result = await updateAUser(id, userData);
+  const updatedUser = await updateAUser(_id, { name, phone }, file);
   res.status(200).json({
     EC: 0,
-    data: result,
+    message: "Update user successfull",
+    data: updatedUser,
   });
 });
 
