@@ -7,6 +7,7 @@ import { IoMdArrowBack } from "react-icons/io";
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllBlog, getBlog } from '../features/blogs/blogSlice';
 import moment from "moment";
+import { BiLike, BiDislike } from "react-icons/bi";
 const SingleBlog = () => {
   const blogState = useSelector((state) => state?.blog?.singleblog?.data);
   const blogState1 = useSelector((state) => state?.blog?.blogs?.data);
@@ -15,6 +16,34 @@ const SingleBlog = () => {
   const getBlogId = location.pathname.split("/")[2];
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [likeCount, setLikeCount] = useState(1800);
+  const [liked, setLiked] = useState(false);
+  const [disliked, setDisliked] = useState(false);
+
+  const handleLike = () => {
+    if (liked) {
+      setLikeCount(likeCount - 1);
+      setLiked(false);
+    } else {
+      setLikeCount(likeCount + 1);
+      if (disliked) {
+        setDisliked(false);
+      }
+      setLiked(true);
+    }
+  };
+
+  const handleDislike = () => {
+    if (disliked) {
+      setDisliked(false);
+    } else {
+      if (liked) {
+        setLikeCount(likeCount - 1);
+        setLiked(false);
+      }
+      setDisliked(true);
+    }
+  };
   useEffect(() => {
     getblog();
     dispatch(getAllBlog());
@@ -32,6 +61,15 @@ const SingleBlog = () => {
             <div className="col-9">
               <div className="single-blog-card">
                 <img src={blogState?.image} className='img-fluid w-100 my-4' alt="blog" />
+                <div className="like-dislike-container">
+                  <div className="like-button" onClick={handleLike}>
+                    <BiLike className={`icon ${liked ? "active" : ""}`} />
+                    <p className="count">{likeCount.toLocaleString()} |</p>
+                  </div>
+                  <div className="dislike-button" onClick={handleDislike}>
+                    <BiDislike className={`icon ${disliked ? "active" : ""}`} />
+                  </div>
+                </div>
                 <h3 className="title">{blogState?.title}</h3>
                 <p dangerouslySetInnerHTML={{ __html: blogState?.description }}></p>
                 <Link to="/blog" className='d-flex align-items-center gap-10'><IoMdArrowBack className='fs-5' /> Trở lại blog</Link>

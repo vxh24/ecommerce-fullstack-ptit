@@ -18,7 +18,7 @@ const addToCartController = asyncHandler(async (req, res) => {
 
     res.status(200).json({
       EC: 0,
-      data: result,
+      cart: result,
     });
   } catch (error) {
     throw new Error(error);

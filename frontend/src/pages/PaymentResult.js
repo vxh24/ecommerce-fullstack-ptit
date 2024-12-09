@@ -7,28 +7,19 @@ import { useDispatch } from "react-redux";
 import moment from "moment";
 import { momoOrderUser } from "../features/user/userSlice";
 import { toast } from "react-toastify";
+
 const PaymentResult = () => {
   const location = useLocation();
   const dispatch = useDispatch();
 
-  const [paymentDetails, setPaymentDetails] = useState({
-    partnerCode: "",
-    orderId: "",
-    amount: 0,
-    orderInfo: "",
-    transId: "",
-    resultCode: "",
-    message: "",
-    responseTime: "",
-  });
-
-  const [loading, setLoading] = useState(false);
+  const [paymentDetails, setPaymentDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
 
-    setPaymentDetails({
+    const details = {
       partnerCode: params.get("partnerCode"),
       orderId: params.get("orderId"),
       amount: params.get("amount"),
@@ -37,10 +28,13 @@ const PaymentResult = () => {
       resultCode: params.get("resultCode"),
       message: params.get("message"),
       responseTime: params.get("responseTime"),
-    });
+    };
 
-    if (params.get("resultCode") === "0") {
-      handlePaymentCallback();
+    setPaymentDetails(details);
+    setLoading(false);
+
+    if (details.resultCode === "0") {
+      handlePaymentCallback(details);
     }
   }, [location.search]);
 
@@ -55,15 +49,15 @@ const PaymentResult = () => {
     }).format(amount);
   };
 
-  const handlePaymentCallback = async () => {
+  const handlePaymentCallback = async (details) => {
     const paymentData = {
-      orderId: paymentDetails.orderId,
-      amount: paymentDetails.amount,
-      resultCode: paymentDetails.resultCode,
-      message: paymentDetails.message,
-      transId: paymentDetails.transId,
-      partnerCode: paymentDetails.partnerCode,
-      responseTime: paymentDetails.responseTime,
+      orderId: details.orderId,
+      amount: details.amount,
+      resultCode: details.resultCode,
+      message: details.message,
+      transId: details.transId,
+      partnerCode: details.partnerCode,
+      responseTime: details.responseTime,
     };
 
     setLoading(true);
@@ -79,6 +73,14 @@ const PaymentResult = () => {
       setLoading(false);
     }
   };
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (!paymentDetails) {
+    return <p>Không có dữ liệu thanh toán.</p>;
+  }
 
   return (
     <>

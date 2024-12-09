@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { RiCoupon3Line } from "react-icons/ri";
 import { FcShipped } from "react-icons/fc";
 import { useDispatch, useSelector } from 'react-redux';
-import { applyCouponSlice, cashOrderUser, getAddressSlice, getUserCart } from '../features/user/userSlice';
+import { applyCouponSlice, cashOrderUser, getAddressSlice, getUserCart, momoOrderUser, paymentMoMoSlice } from '../features/user/userSlice';
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { MdOutlineKeyboardReturn } from "react-icons/md";
 import VoucherModal from '../components/VoucherModal';
@@ -32,9 +32,23 @@ const Checkout = () => {
   const [totalpayment, setTotalpayment] = useState(false);
   const [address, setAddress] = useState([]);
   const [addressSelect, setAddressSelect] = useState(null);
+  const [getAddress, setGetAddress] = useState(null);
   const addressState = useSelector(state => state?.auth?.address?.data?.address);
   const couponState = useSelector(state => state?.coupon?.coupons?.data);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [payurl, setPayurl] = useState(authState?.momo?.data?.payUrl);
+  useEffect(() => {
+    if (addressSelect !== null) {
+
+
+      const fullAddress = `${addressSelect.specificAddress}, ${addressSelect.commune}, ${addressSelect.district}, ${addressSelect.city}`;
+      setGetAddress(fullAddress);
+    }
+    else {
+      const fullAddress = `${address?.specificAddress}, ${address?.commune}, ${address?.district}, ${address?.city}`;
+      setGetAddress(fullAddress);
+    }
+  }, [addressSelect, address])
   useEffect(() => {
     let sum = Number(totalAmount) * Number(coupon) / 100;
     setTotalcoupoon(sum);
@@ -57,11 +71,11 @@ const Checkout = () => {
   useEffect(() => {
     let Address = addressState?.find((item) => item.isDefault === true);
     setAddress(Address)
-  }, [addressState])
+  }, [addressState, address])
   useEffect(() => {
-    setTimeout(() => {
-      dispatch(getUserCart())
-    }, 100)
+    // setTimeout(() => {
+    //   dispatch(getUserCart())
+    // }, 200)
     dispatch(getUserCart());
   }, [])
   useEffect(() => {
@@ -73,26 +87,25 @@ const Checkout = () => {
   }, [userCartState])
   const createOrder = () => {
     if (payment === 1) {
-      dispatch(cashOrderUser({ COD: true, couponApplied: false }));
+      dispatch(cashOrderUser({ totalAmount: totalpayment, orderAddress: getAddress }));
       setTimeout(() => {
         dispatch(getUserCart())
         navigate("/my-orders");
       }, 200)
-      // if (authState.user !== null && authState?.order?.message === "success") {
-      //   navigate("/my-orders");
-      // }
+    }
+    if (payment === 2) {
+      dispatch(paymentMoMoSlice({ totalAmount: totalpayment, orderAddress: getAddress }));
     }
   }
   useEffect(() => {
     if (authState.user === null && authState.isSuccess !== true) {
       navigate("/login");
     }
-  }, [authState])
-  // useEffect(() => {
-  //   if (authState.user !== null && authState?.order?.message === "success") {
-  //     navigate("/my-orders");
-  //   }
-  // }, [authState])
+    if (payurl !== undefined) {
+      window.location.href = authState.momo.data.payUrl;
+    }
+    setPayurl(authState?.momo?.data?.payUrl);
+  }, [authState, payurl])
   const handleAddressChange = (address) => {
     setAddressSelect(address);
   };
@@ -123,7 +136,9 @@ const Checkout = () => {
                       <div className="address-item" key={addressSelect?._id}>
                         <div className="address-details">
 
-                          <strong className="address-name">{addressSelect?.name}</strong>
+                          <strong className="address-name">
+                            {addressSelect?.name && addressSelect?.name.charAt(0).toUpperCase() + addressSelect?.name.slice(1)}
+                          </strong>
                           <span className="address-phone">- {addressSelect?.phone}</span>
                           <p className="address">{addressSelect?.specificAddress}<br />{addressSelect?.commune}, {addressSelect?.district}, {addressSelect?.city}</p>
                           <div className='d-flex align-items-center'>
@@ -148,7 +163,9 @@ const Checkout = () => {
                         <div className="address-item" key={address?._id}>
                           <div className="address-details">
 
-                            <strong className="address-name">{address?.name}</strong>
+                            <strong className="address-name">
+                              {address?.name && address?.name.charAt(0).toUpperCase() + address?.name.slice(1)}
+                            </strong>
                             <span className="address-phone">- {address?.phone}</span>
                             <p className="address">{address?.specificAddress}<br />{address?.commune}, {address?.district}, {address?.city}</p>
                             <div className='d-flex align-items-center'>
@@ -176,9 +193,11 @@ const Checkout = () => {
                         .sort((a, b) => b.isDefault - a.isDefault)?.map((address) => (
 
                           <div className="form-check">
-                            <input value={address} onChange={() => handleAddressChange(address)} className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
+                            <input value={address} onChange={() => handleAddressChange(address)} className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2"
+                              checked={address._id === addressSelect?._id}
+                            />
                             <label className="form-check-label" for="flexRadioDefault2">
-                              {address.name}- {address.phone}, {address.specificAddress}, {address.commune}, {address.district}, {address.city}
+                              {address?.name && address?.name.charAt(0).toUpperCase() + address?.name.slice(1)}- {address.phone}, {address.specificAddress}, {address.commune}, {address.district}, {address.city}
                             </label>
                           </div>
                         ))}
@@ -310,7 +329,7 @@ const Checkout = () => {
                 </div>
               </div>
               <div className='d-flex justify-content-between py-3'>
-                <Link to="/product" className='d-flex text-dark align-items-center'><MdOutlineKeyboardReturn className='me-2' />Continue Shopping</Link>
+                <Link to="/product" className='d-flex text-dark align-items-center'><MdOutlineKeyboardReturn className='me-2' />Trở lại</Link>
                 <button className='button border-0' onClick={createOrder}>
                   Đặt hàng
                 </button>

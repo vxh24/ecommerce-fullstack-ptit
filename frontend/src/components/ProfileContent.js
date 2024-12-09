@@ -5,14 +5,11 @@ import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllCoupon } from '../features/counpons/couponSlice';
 import moment from "moment";
-import { FaCamera } from "react-icons/fa";
-import { changePassSlice, createAdd, getAddressSlice, getProfileSlice, removeAddressSlice, updateAddressSlice } from '../features/user/userSlice';
+import { changePassSlice, createAdd, getAddressSlice, getProfileSlice, removeAddressSlice, updateAddressSlice, updateProfleSlice } from '../features/user/userSlice';
 import AddAddressForm from './AddAddressForm';
 const profileSchema = yup.object({
   name: yup.string().required("Name is Require"),
-  email: yup.string().nullable().email("Email should be valid"),
   phone: yup.string().required("Mobie no is Required"),
-  address: yup.string().required("address is Required")
 });
 const ChangeSchema = yup.object({
   password: yup.string()
@@ -31,19 +28,38 @@ const ProfileContent = ({ active }) => {
     dispatch(getProfileSlice());
   }, [])
   const profileState = useSelector(state => state?.auth?.profile?.data);
-  const userState = useSelector(state => state?.auth?.user?.user)
+  const userState = useSelector(state => state?.auth?.user?.user);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [images, setImages] = useState(null);
   const formik = useFormik({
-    enableReinitialize: true,
     initialValues: {
-      name: userState?.name,
-      email: userState?.email,
-      phone: profileState?.phone,
+      name: profileState?.name || "",
+      phone: profileState?.phone || "",
+      image: [],
     },
     validationSchema: profileSchema,
     onSubmit: (values) => {
-      // dispatch(createUser(values));
+      const formData = new FormData();
+      formData.append("name", formik.values.name);
+      formData.append("phone", formik.values.phone);
+      console.log(images);
+      formData.append("image", images);
+
+      dispatch(updateProfleSlice({ id: profileState._id, data: formData }));
+      setTimeout(() => {
+        dispatch(getProfileSlice());
+      })
     },
   });
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    console.log(file);
+    if (file) {
+      setImages(file);
+      setImagePreview(URL.createObjectURL(file)); // Hiển thị ảnh preview
+    }
+  };
+
   return (
     // <div className='w-100'>
     <>
@@ -51,52 +67,65 @@ const ProfileContent = ({ active }) => {
         <>
           <div className='d-flex mt-4'>
             <div className="profile-card justify-center-between mt-0">
-              <form onSubmit={formik.handleSubmit} className='d-flex flex-column gap-15'>
-                <div className="mb-3">
-                  <label for="exampleInputEmail1" className="form-label">Tên</label>
-                  <input name="name" type="name" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                    value={formik.values.name}
-                    onChange={formik.handleChange("name")}
-                    onBlur={formik.handleBlur("name")}
-                  />
-                  <div className="error">
-                    {formik.touched.name && formik.errors.name}
-                  </div>
-                </div>
-                <div className="mb-3">
-                  <label for="exampleInputEmail1" className="form-label">Địa chỉ email</label>
-                  <input name="email" type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                    value={formik.values.email}
-                    onChange={formik.handleChange("email")}
-                    onBlur={formik.handleBlur("email")}
-                  />
-                  <div className="error">
-                    {formik.touched.email && formik.errors.email}
-                  </div>
-                </div>
-                <div className="mb-3">
-                  <label for="exampleInputEmail1" className="form-label">Số điện thoại</label>
-                  <input name="phone" type="phone" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                    value={formik.values.phone}
-                    onChange={formik.handleChange("phone")}
-                    onBlur={formik.handleBlur("phone")}
-                  />
-                  <div className="error">
-                    {formik.touched.phone && formik.errors.phone}
-                  </div>
+              <form onSubmit={formik.handleSubmit} className='d-flex flex-column'>
+                <div className='d-flex gap-30'>
+                  <div className='w-75 d-flex flex-column gap-30'>
+                    <div className="mb-3">
+                      <label for="exampleInputEmail1" className="form-label">Tên</label>
+                      <input name="name" type="name" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                        value={formik.values.name}
+                        onChange={formik.handleChange("name")}
+                        onBlur={formik.handleBlur("name")}
+                      />
+                      <div className="error">
+                        {formik.touched.name && formik.errors.name}
+                      </div>
+                    </div>
+                    <div className="mb-3">
+                      <label for="exampleInputEmail1" className="form-label">Số điện thoại</label>
+                      <input name="phone" type="phone" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                        value={formik.values.phone}
+                        onChange={formik.handleChange("phone")}
+                        onBlur={formik.handleBlur("phone")}
+                      />
+                      <div className="error">
+                        {formik.touched.phone && formik.errors.phone}
+                      </div>
 
+                    </div>
+                    <button type="submit" className="btn btn-primary">Lưu thay đổi</button>
+                  </div>
+                  <div className='d-flex justify-content-center'>
+                    <div className="profile-img-container text-center">
+                      <div className="profile-img">
+                        <img
+                          src={imagePreview || profileState?.avatar}
+                          alt="Avatar"
+                          className="avatar-img"
+                        />
+                      </div>
+                      <div className="upload-data">
+                        <label htmlFor="avatar" className="btn btn-primary">Chọn Ảnh</label>
+                        <input
+                          type="file"
+                          id="avatar"
+                          name="image"
+                          onChange={handleFileChange}
+                          className="file-input"
+                        />
+                        {formik.touched.image && formik.errors.image && (
+                          <div className="error">{formik.errors.image}</div>
+                        )}
+                      </div>
+                      <div className="file-info">
+                        <p>Dung lượng file tối đa 1 MB</p>
+                        <p>Định dạng: .JPEG, .PNG</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <button type="submit" className="btn btn-primary">Lưu thay đổi</button>
+
               </form>
-            </div>
-            <div className='profile-img d-flex justify-content-between'>
-              <div className=' position-relative text-center'>
-                <img src="https://png.pngtree.com/png-clipart/20230927/original/pngtree-man-avatar-image-for-profile-png-image_13001882.png" className='imgs' alt="" />
-                <div className="upload-data file camera-icon">
-                  <FaCamera className="fs-3 " /><p className="mb-0"></p>
-                  <input className='cursor-pointer' type="file" name="file" />
-                </div>
-              </div>
             </div>
           </div>
 
@@ -249,7 +278,8 @@ const Address = () => {
   const [address, setAddress] = useState(null);
   const [formData, setFormData] = useState({
     isDefault: true,
-    id: '',
+    name: address?.name,
+    id: address?._id,
   });
   const handleSetDefault = (id) => {
     dispatch(updateAddressSlice(
@@ -327,7 +357,6 @@ const Address = () => {
     </div>
   );
 }
-
 const UpdateAddressForm = ({ onClose, data }) => {
   const address = data;
   const dispatch = useDispatch();
@@ -340,10 +369,10 @@ const UpdateAddressForm = ({ onClose, data }) => {
   const [formData, setFormData] = useState({
     name: address.name,
     phone: address.phone,
-    city: '',
-    district: '',
-    commune: '',
-    specificAddress: '',
+    city: address.city,
+    district: address.district,
+    commune: address.commune,
+    specificAddress: address.specificAddress,
     isDefault: address.isDefault,
     id: address._id,
   });
@@ -353,24 +382,23 @@ const UpdateAddressForm = ({ onClose, data }) => {
       .then((response) => setProvinces(response.data))
       .catch((error) => console.error("Error fetching provinces:", error));
   }, []);
+
   useEffect(() => {
-    if (selectedProvince) {
-      axios.get(`https://esgoo.net/api-tinhthanh/2/${selectedProvince}.htm`, {
-        params: { province_code: selectedProvince }
-      })
+    if (selectedProvince && selectedProvince !== address.city) {
+      axios.get(`https://esgoo.net/api-tinhthanh/2/${selectedProvince}.htm`)
         .then((response) => setDistricts(response.data))
         .catch((error) => console.error("Error fetching districts:", error));
     }
   }, [selectedProvince]);
+
   useEffect(() => {
-    if (selectedDistrict) {
-      axios.get(`https://esgoo.net/api-tinhthanh/3/${selectedDistrict}.htm`, {
-        params: { district_code: selectedDistrict }
-      })
+    if (selectedDistrict && selectedDistrict !== address.district) {
+      axios.get(`https://esgoo.net/api-tinhthanh/3/${selectedDistrict}.htm`)
         .then((response) => setWards(response.data))
         .catch((error) => console.error("Error fetching wards:", error));
     }
   }, [selectedDistrict]);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -381,21 +409,17 @@ const UpdateAddressForm = ({ onClose, data }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(updateAddressSlice(
-
-      formData
-
-    ));
+    dispatch(updateAddressSlice(formData));
     setTimeout(() => {
       dispatch(getAddressSlice());
-    }, 200);
+    }, 1000);
     onClose(); // Close the form modal
   };
 
   return (
     <div className="modal">
       <div className="modal-content">
-        <h2 className='mb-3'>Địa chỉ mới</h2>
+        <h2 className="mb-3">Địa chỉ mới</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <input
@@ -415,77 +439,78 @@ const UpdateAddressForm = ({ onClose, data }) => {
               required
             />
           </div>
-          {/* <div className="input-group rounded">
-            <input value={"abc"} type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
-          </div> */}
-          <div className="form-group">
-            <select name="city" onChange={(e) => {
-              const selectedCityId = e.target.value;
-              const selectedCityName = provinces?.data?.find(
-                (province) => province.id === selectedCityId
-              )?.name;
-              setSelectedProvince(e.target.value)
-              setFormData((prev) => ({
-                ...prev,
-                city: selectedCityName || '',
-              }));
-            }} required>
 
-              <option>{selectedProvince}</option>
+          <div className="form-group">
+            <select
+              name="city"
+              value={selectedProvince}
+              onChange={(e) => {
+                const selectedCityId = e.target.value;
+                const selectedCityName = provinces?.data?.find(
+                  (province) => province.id === selectedCityId
+                )?.name;
+
+                setSelectedProvince(selectedCityId);
+                setFormData((prev) => ({
+                  ...prev,
+                  city: selectedCityName || prev.city,
+                }));
+              }}
+              required
+            >
+              <option value={address.city}>{address.city}</option>
               {provinces?.data.map((province) => (
-                <option key={province.id} value={province.id} >
+                <option key={province.id} value={province.id}>
                   {province.name}
                 </option>
               ))}
             </select>
-            <select name="district" onChange={(e) => {
-              const selectedDistrictId = e.target.value;
-              const selectedDistrictName = districts?.data?.find(
-                (district) => district.id === selectedDistrictId
-              )?.name;
-              setSelectedDistrict(selectedDistrictId);
-              setFormData((prev) => ({
-                ...prev,
-                district: selectedDistrictName || '',
-              }));
-            }}
-              required
-              disabled={!selectedProvince}>
-              {
-                selectedProvince === address.city ? (
-                  <option value="">{address.district}</option>
-                ) : (
-                  <option value="">Quận/Huyện</option>
-                )
-              }
 
+            <select
+              name="district"
+              value={selectedDistrict}
+              onChange={(e) => {
+                const selectedDistrictId = e.target.value;
+                const selectedDistrictName = districts?.data?.find(
+                  (district) => district.id === selectedDistrictId
+                )?.name;
+
+                setSelectedDistrict(selectedDistrictId);
+                setFormData((prev) => ({
+                  ...prev,
+                  district: selectedDistrictName || prev.district,
+                }));
+              }}
+              required
+              disabled={!selectedProvince}
+            >
+              <option value={address.district}>{address.district}</option>
               {districts?.data.map((district) => (
                 <option key={district.id} value={district.id}>
                   {district.name}
                 </option>
               ))}
             </select>
-            <select name="ward" onChange={(e) => {
-              const selectedWardId = e.target.value;
-              const selectedWardsName = wards?.data?.find(
-                (ward) => ward.id === selectedWardId
-              )?.name;
-              setSelectedWard(selectedWardId);
-              setFormData((prev) => ({
-                ...prev,
-                commune: selectedWardsName || '',
-              }));
-            }}
 
+            <select
+              name="ward"
+              value={selectedWard}
+              onChange={(e) => {
+                const selectedWardId = e.target.value;
+                const selectedWardsName = wards?.data?.find(
+                  (ward) => ward.id === selectedWardId
+                )?.name;
+
+                setSelectedWard(selectedWardId);
+                setFormData((prev) => ({
+                  ...prev,
+                  commune: selectedWardsName || prev.commune,
+                }));
+              }}
               required
-              disabled={!selectedDistrict}>
-              {
-                selectedDistrict === address.district && selectedProvince === address.city ? (
-                  <option >{address.commune}</option>
-                ) : (
-                  <option >Phường/Xã</option>
-                )
-              }
+              disabled={!selectedDistrict}
+            >
+              <option value={address.commune}>{address.commune}</option>
               {wards?.data.map((ward) => (
                 <option key={ward.id} value={ward.id}>
                   {ward.name}
@@ -493,6 +518,7 @@ const UpdateAddressForm = ({ onClose, data }) => {
               ))}
             </select>
           </div>
+
           <div className="form-group">
             <input
               type="text"
@@ -503,6 +529,7 @@ const UpdateAddressForm = ({ onClose, data }) => {
               required
             />
           </div>
+
           <div className="form-group">
             <label>
               <input
@@ -514,6 +541,7 @@ const UpdateAddressForm = ({ onClose, data }) => {
               Đặt làm địa chỉ mặc định
             </label>
           </div>
+
           <div className="d-flex justify-content-between">
             <button type="button" className="cancel-button" onClick={onClose}>
               Hủy
@@ -527,4 +555,5 @@ const UpdateAddressForm = ({ onClose, data }) => {
     </div>
   );
 };
+
 export default ProfileContent;

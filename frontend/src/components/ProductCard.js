@@ -55,7 +55,7 @@ const ProductCard = (props) => {
                 <ReactStars
                   count={5}
                   size={24}
-                  value={item.totalRatings}
+                  value={parseInt(item.totalRatings, 10)}
                   edit={false}
                   activeColor="#ffd700"
                 />

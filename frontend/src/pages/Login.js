@@ -5,8 +5,9 @@ import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
-import { googlelogin, handleLogin } from "../features/user/userSlice";
+import { googlelogin, handleLogin, resetState1 } from "../features/user/userSlice";
 import { GoogleLogin } from "@react-oauth/google";
+import { resetState } from "../features/products/productSlice";
 
 const LoginSchema = yup.object({
   email: yup

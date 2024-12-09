@@ -1,7 +1,6 @@
 import React from 'react'
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom'
-
 const BlogCard = (props) => {
   const { id, title, description, image, date } = props;
   // console.log(data);

@@ -23,19 +23,6 @@ const Cart = () => {
     dispatch(getUserCart());
     dispatch(getAllProducts());
   }, []);
-  // useEffect(() => {
-  //   let sum = 0;
-  //   for (let index = 0; index < userCartState?.products?.length; index++) {
-  //     sum =
-  //       sum +
-  //       Number(userCartState.products[index].count) *
-  //       userCartState.products[index].price;
-  //     setTotalAmount(sum);
-  //   }
-  //   setTimeout(() => {
-  //     setTotalAmount(sum);
-  //   }, 200);
-  // }, [userCartState]);
   const deleteproduct = (id, color) => {
     dispatch(deleteProductfromCart({ productId: id, color }));
     setTimeout(() => {
@@ -44,7 +31,7 @@ const Cart = () => {
   };
   const updatecount = (id, color, newquantity) => {
     dispatch(
-      updatecountCart({ productId: id, color: color._id, newQuantity: newquantity })
+      updatecountCart({ productId: id, colorId: color._id, newQuantity: newquantity })
     );
     setTimeout(() => {
       dispatch(getUserCart());
@@ -147,7 +134,7 @@ const Cart = () => {
                 <> */}
               <div className="d-flex justify-content-end mb-3">
                 <div>
-                  <h4 className="price">Tổng tiền: {userCartState?.cartTotal} <span className='currency'>đ</span></h4>
+                  <h4 className="price">Tổng tiền: {userCartState?.cartTotal ? userCartState?.cartTotal : 0} <span className='currency'>đ</span></h4>
                 </div>
               </div>
               <div className="d-flex justify-content-between align-items-center">
@@ -155,7 +142,7 @@ const Cart = () => {
                   <MdOutlineKeyboardReturn className="me-2" />
                   Tiếp tục mua sắm
                 </Link>
-                {userCartState !== null ? (
+                {userCartState?.cartTotal ? (
                   <Link to="/checkout" className="button">
                     Thanh toán
                   </Link>

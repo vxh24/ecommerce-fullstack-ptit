@@ -1,11 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import moment from "moment";
 import ProductReview from '../components/ProductReview';
 import { useNavigate } from "react-router";
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllColors } from '../features/color/colorSlice';
+import { FaMapMarkerAlt } from "react-icons/fa";
 const OrderDetailCard = ({ order }) => {
   const [open, setOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const colorState = useSelector(state => state?.color?.colors?.data);
+  useEffect(() => {
+    dispatch(getAllColors());
+  }, [])
   const handleOpenReviewProduct = (product) => {
     setSelectedOrder(product);
     setOpen(true);
@@ -18,6 +26,7 @@ const OrderDetailCard = ({ order }) => {
   return (
     <div>
       <h4 className='mb-4'>Chi tiết đơn hàng</h4>
+      <p><strong>Địa chỉ:  </strong> {order.orderAddress}</p>
       <p><strong>Mã đơn hàng:</strong> {order._id}</p>
       <p><strong>Tổng tiền:</strong> {order.paymentIndent.amount}</p>
       <p><strong>Ngày đặt hàng:</strong> {moment(order.created_at).format('DD-MM-YYYY')}</p>
@@ -37,6 +46,9 @@ const OrderDetailCard = ({ order }) => {
         </div>
         {
           order?.products && order?.products?.map((item, index) => {
+            const color = colorState?.find(
+              (productItem) => productItem?._id === item?.color
+            );
             return (
               <div key={index} className="cart-data py-3 d-flex justify-content-between align-items-center">
                 <div className='cart-col-1 gap-15 d-flex justify-content-between align-items-center'>
@@ -45,9 +57,9 @@ const OrderDetailCard = ({ order }) => {
                   </div>
                   <div className='w-75'>
                     <p>{item?.product?.name}</p>
-                    <p className="d-flex gap-15">Color:
+                    <p className="d-flex gap-15">Màu:
                       <ul className='colors ps-0'>
-                        <li style={{ backgroundColor: item?.color }}></li>
+                        <li style={{ backgroundColor: color?.title }}></li>
                       </ul>
                     </p>
 
