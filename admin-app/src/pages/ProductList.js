@@ -4,11 +4,8 @@ import { BiEdit } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteAProduct, getProducts } from "../features/product/productSlice";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import CustomModal from "../components/CustomModal";
-import AddProduct from "./AddProduct";
-import { useFormik } from "formik";
-import CustomInput from "../components/CustomInput";
 
 const columns = [
   {
@@ -49,10 +46,7 @@ const ProductList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const [click, setClick] = useState(false);
-  const [click1, setClick1] = useState(false);
   const [productId, setProductId] = useState("");
-  const [product, setProduct] = useState(false);
 
   const showModal = (e) => {
     setOpen(true);
@@ -76,12 +70,6 @@ const ProductList = () => {
     }).format(price);
 
   const data1 = [];
-
-  useEffect(() => {
-    if (click) {
-      navigate("/admin/product");
-    }
-  }, [click]);
 
   if (productState && productState.length) {
     for (let i = 0; i < productState.length; i++) {
@@ -108,15 +96,14 @@ const ProductList = () => {
         price: formattedPrice(productState[i].price),
         action: (
           <>
-            <Link
+            <button
+              className="ms-3 fs-3 text-danger bg-transparent border-0"
               onClick={() => {
-                setClick1(true);
-                setProduct(productState[i]);
+                navigate(`/admin/edit-product/${productState[i]._id}`);
               }}
-              className=" fs-3 text-danger"
             >
               <BiEdit />
-            </Link>
+            </button>
             <button
               className="ms-3 fs-3 text-danger bg-transparent border-0"
               onClick={() => showModal(productState[i]._id)}
@@ -158,28 +145,6 @@ const ProductList = () => {
           title="Bạn có chắc chắn muốn xóa sản phẩm này không?"
         />
       </div>
-      {click && (
-        <div className="modal">
-          <div className="modal-content">
-            <button className="close-model" onClick={() => setClick(false)}>
-              ✖
-            </button>
-            <h3 className="mb-3 title">Thêm sản phẩm</h3>
-            <AddProduct />
-          </div>
-        </div>
-      )}
-      {click1 && (
-        <div className="modal">
-          <div className="modal-content">
-            <button className="close-model" onClick={() => setClick1(false)}>
-              ✖
-            </button>
-            <h3 className="mb-3 title">Edit Product</h3>
-            <AddProduct product={product} />
-          </div>
-        </div>
-      )}
     </>
   );
 };

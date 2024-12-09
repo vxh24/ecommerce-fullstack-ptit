@@ -24,6 +24,7 @@ import CouponList from "./pages/CouponList";
 import AddCoupon from "./pages/AddCoupon";
 import ViewEnquiry from "./pages/ViewEnquiry";
 import ViewOrder from "./pages/ViewOrder";
+import EditProduct from "./pages/EditProduct";
 
 function App() {
   return (
@@ -59,6 +60,7 @@ function App() {
           <Route path="brand/:id" element={<AddBrand />} />
           <Route path="list-product" element={<ProductList />} />
           <Route path="product" element={<AddProduct />} />
+          <Route path="edit-product/:id" element={<EditProduct />} />
         </Route>
       </Routes>
     </Router>

@@ -67,7 +67,7 @@ const getAProduct = asyncHandler(async (id) => {
 
 const getAllProducts = asyncHandler(
   async (queryObj, sortBy, fields, page, limit) => {
-    let query = Product.find(queryObj);
+    let query = Product.find(queryObj).populate("colors");
 
     //sorting
     if (sortBy) {
@@ -112,12 +112,57 @@ const getAllProducts = asyncHandler(
   }
 );
 
-const updateProduct = asyncHandler(async (id, productData) => {
+const updateProduct = asyncHandler(async (id, productData, files) => {
   validateMongodbId(id);
-  const result = await Product.findByIdAndUpdate(id, productData, {
-    new: true,
-  });
-  return result;
+
+  const product = await Product.findById(id);
+
+  if (!product) {
+    throw new Error("Product not found.");
+  }
+
+  let uploadedImages = product.images;
+  if (files && files.length > 0) {
+    const uploadResults = await uploadMultipleFiles(files, "products");
+    uploadedImages = uploadResults.detail.map((result) => ({
+      public_id: result.public_id,
+      url: result.cloudinaryUrl,
+    }));
+  }
+
+  let colorIds = productData.colors;
+  if (!Array.isArray(colorIds)) {
+    colorIds = [colorIds];
+  }
+
+  const existingColors = await Color.find({ _id: { $in: colorIds } }).select(
+    "_id"
+  );
+  const existingColorIds = existingColors.map((color) => color._id.toString());
+
+  const notFoundColors = colorIds.filter(
+    (id) => !existingColorIds.includes(id)
+  );
+
+  if (notFoundColors.length > 0) {
+    throw new Error(
+      `One or more colors do not exist: ${notFoundColors.join(", ")}`
+    );
+  }
+
+  product.images = uploadedImages;
+  product.name = productData.name || product.name;
+  product.description = productData.description || product.description;
+  product.price = productData.price || product.price;
+  product.category = productData.category || product.category;
+  product.brand = productData.brand || product.brand;
+  product.quantity = productData.quantity || product.quantity;
+  product.colors = colorIds;
+  product.tags = productData.tags || product.tags;
+
+  const updatedProduct = await product.save();
+
+  return updatedProduct.populate("colors");
 });
 
 const deleteProduct = asyncHandler(async (id) => {

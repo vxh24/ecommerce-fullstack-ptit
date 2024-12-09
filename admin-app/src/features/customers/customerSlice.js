@@ -76,7 +76,7 @@ export const customerSlice = createSlice({
 
         const updatedUsers = state.customers?.data.map((user) =>
           user._id === action.payload
-            ? { ...user, deleted: !user.deleted }
+            ? { ...user, isBlock: !user.isBlock }
             : user
         );
         state.customers.data = updatedUsers;
@@ -98,7 +98,7 @@ export const customerSlice = createSlice({
 
         const updatedUsers = state.customers?.data.map((user) =>
           user._id === action.payload
-            ? { ...user, deleted: !user.deleted }
+            ? { ...user, isBlock: !user.isBlock }
             : user
         );
         state.customers.data = updatedUsers;
