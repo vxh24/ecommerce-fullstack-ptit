@@ -171,8 +171,9 @@ const handlePaymentCallback = asyncHandler(
     const timestamp = Number(responseTime);
     const date = new Date(timestamp);
 
-    const formattedDate = `${date.getDate()}/${date.getMonth() + 1
-      }/${date.getFullYear()}`;
+    const formattedDate = `${date.getDate()}/${
+      date.getMonth() + 1
+    }/${date.getFullYear()}`;
 
     if (resultCode === "0") {
       const order = new Order({
