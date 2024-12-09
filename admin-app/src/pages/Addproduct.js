@@ -126,8 +126,6 @@ const AddProduct = () => {
         formData.append("images", image);
       });
 
-      console.log(formik.values.colors);
-
       dispatch(createProducts(formData));
 
       formik.resetForm();
