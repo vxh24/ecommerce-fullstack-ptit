@@ -1,39 +1,61 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
-const Pagination = ({ productsPerPage, totalProducts, paginate, currentPage }) => {
-  const pageNumbers = [];
-  const totalPages = Math.ceil(totalProducts / productsPerPage);
-  for (let i = 1; i <= Math.ceil(totalProducts / productsPerPage); i++) {
-    pageNumbers.push(i);
-  }
-  const handleNext = () => {
-    if (currentPage < totalPages) paginate(currentPage + 1);
+const Pagination = ({ totalItems, limit, currentPage, onPageChange }) => {
+  const [maxVisiblePages] = useState(5); // Số lượng trang hiển thị tối đa
+  const totalPages = Math.ceil(totalItems / limit); // Tổng số trang
+  const getPageNumbers = () => {
+    const pages = [];
+    const startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+
+    return pages;
   };
-
-  const handlePrevious = () => {
-    if (currentPage > 1) paginate(currentPage - 1);
+  const handlePageClick = (page) => {
+    if (page !== currentPage) {
+      onPageChange(page);
+    }
   };
   return (
     <>
-      <nav aria-label="Page navigation example">
-        <ul class="pagination">
-          <li class="page-item">
-            <button onClick={handlePrevious} disabled={currentPage === 1} class="page-link" href="#" aria-label="Previous">
-              <span aria-hidden="true">&laquo;</span>
-            </button>
-          </li>
-          {pageNumbers.map((number) => (
-            <li key={number} className={number === currentPage ? 'page-item active' : 'page-item'}>
-              <button onClick={() => paginate(number)}>{number}</button>
-            </li>
-          ))}
-          <li class="page-item">
-            <button onClick={handleNext} disabled={currentPage === totalPages} class="page-link" href="#" aria-label="Next">
-              <span aria-hidden="true">&raquo;</span>
-            </button>
-          </li>
-        </ul>
-      </nav>
+      <div className="pagination">
+        {/* Nút Previous */}
+        <button
+          className="pagination-button"
+          disabled={currentPage === 1}
+          onClick={() => handlePageClick(currentPage - 1)}
+        >
+          &lt;
+        </button>
+
+        {/* Các trang hiển thị */}
+        {getPageNumbers().map((page) => (
+          <button
+            key={page}
+            className={`pagination-button ${currentPage === page ? "active" : ""}`}
+            onClick={() => handlePageClick(page)}
+          >
+            {page}
+          </button>
+        ))}
+
+        {/* Nút Ellipsis (nếu cần) */}
+        {getPageNumbers().length < totalPages && currentPage < totalPages - Math.floor(maxVisiblePages / 2) && (
+          <span className="pagination-ellipsis">...</span>
+        )}
+
+        {/* Nút Next */}
+        <button
+          className="pagination-button"
+          disabled={currentPage === totalPages}
+          onClick={() => handlePageClick(currentPage + 1)}
+        >
+          &gt;
+        </button>
+      </div>
     </>
   );
 };

@@ -5,7 +5,6 @@ import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllCoupon } from '../features/counpons/couponSlice';
 import moment from "moment";
-import { FaCamera } from "react-icons/fa";
 import { changePassSlice, createAdd, getAddressSlice, getProfileSlice, removeAddressSlice, updateAddressSlice, updateProfleSlice } from '../features/user/userSlice';
 import AddAddressForm from './AddAddressForm';
 const profileSchema = yup.object({
@@ -36,36 +35,26 @@ const ProfileContent = ({ active }) => {
     initialValues: {
       name: profileState?.name || "",
       phone: profileState?.phone || "",
-      image: null, // Khởi tạo null để lưu file ảnh
+      image: [],
     },
     validationSchema: profileSchema,
     onSubmit: (values) => {
       const formData = new FormData();
-
-      // Thêm dữ liệu vào FormData
       formData.append("name", formik.values.name);
       formData.append("phone", formik.values.phone);
       console.log(images);
-      formData.append("image", images); // Thêm file ảnh
+      formData.append("image", images);
 
-      // Dispatch action với FormData
       dispatch(updateProfleSlice({ id: profileState._id, data: formData }));
+      setTimeout(() => {
+        dispatch(getProfileSlice());
+      })
     },
   });
   const handleFileChange = (event) => {
     const file = event.target.files[0];
+    console.log(file);
     if (file) {
-      // Kiểm tra định dạng và kích thước file
-      // if (!["image/jpeg", "image/png"].includes(file.type)) {
-      //   alert("Chỉ chấp nhận định dạng .JPEG và .PNG");
-      //   return;
-      // }
-      // if (file.size > 1024 * 1024) {
-      //   alert("Dung lượng file tối đa là 1 MB");
-      //   return;
-      // }
-
-      // Cập nhật vào Formik và hiển thị preview
       setImages(file);
       setImagePreview(URL.createObjectURL(file)); // Hiển thị ảnh preview
     }
@@ -110,7 +99,7 @@ const ProfileContent = ({ active }) => {
                     <div className="profile-img-container text-center">
                       <div className="profile-img">
                         <img
-                          src={imagePreview || "https://png.pngtree.com/png-clipart/20230927/original/pngtree-man-avatar-image-for-profile-png-image_13001882.png"}
+                          src={imagePreview || profileState?.avatar}
                           alt="Avatar"
                           className="avatar-img"
                         />
@@ -138,15 +127,6 @@ const ProfileContent = ({ active }) => {
 
               </form>
             </div>
-            {/* <div className='profile-img d-flex justify-content-between'>
-              <div className=' position-relative text-center'>
-                <img src="https://png.pngtree.com/png-clipart/20230927/original/pngtree-man-avatar-image-for-profile-png-image_13001882.png" className='imgs' alt="" />
-                <div className="upload-data file camera-icon">
-                  <FaCamera className="fs-3 " /><p className="mb-0"></p>
-                  <input className='cursor-pointer' type="file" name="file" />
-                </div>
-              </div>
-            </div> */}
           </div>
 
         </>
@@ -298,7 +278,8 @@ const Address = () => {
   const [address, setAddress] = useState(null);
   const [formData, setFormData] = useState({
     isDefault: true,
-    id: '',
+    name: address?.name,
+    id: address?._id,
   });
   const handleSetDefault = (id) => {
     dispatch(updateAddressSlice(
@@ -431,7 +412,7 @@ const UpdateAddressForm = ({ onClose, data }) => {
     dispatch(updateAddressSlice(formData));
     setTimeout(() => {
       dispatch(getAddressSlice());
-    }, 200);
+    }, 1000);
     onClose(); // Close the form modal
   };
 

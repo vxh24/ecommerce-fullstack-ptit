@@ -113,7 +113,8 @@ const Header = () => {
                     to={authState?.user === null ? "/login" : ""}
                     className="d-flex align-items-center gap-10 text-white"
                   >
-                    <CgProfile className="fs-2" />
+                    <img className="avatar" src={profileState?.avatar} alt="" />
+                    {/* <CgProfile className="fs-2" /> */}
                     {authState?.user === null ? (
                       <p className="mb-0">Đăng nhập</p>
                     ) : (

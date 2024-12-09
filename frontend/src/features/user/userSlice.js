@@ -643,6 +643,7 @@ export const authSlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         state.updateProfile = action.payload;
+        toast.success("Cập nhật thành công");
       })
       .addCase(updateProfleSlice.rejected, (state, action) => {
         state.isLoading = false;

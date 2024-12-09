@@ -314,8 +314,8 @@ const SingleProduct = () => {
               <h4>Mô tả</h4>
               <div className='bg-white p-3'>
 
-                <p  >
-                  {productState?.description}
+                <p dangerouslySetInnerHTML={{ __html: productState?.description }} >
+                  {/* {productState?.description} */}
                 </p>
               </div>
             </div>
@@ -440,7 +440,7 @@ const SingleProduct = () => {
                             edit={true}
                             activeColor="#ffd700"
                           />
-                          <p className="description d-block">{item.product.description}
+                          <p className="description d-block" dangerouslySetInnerHTML={{ __html: item.product.description?.substr(0, 40) + "...", }}>
                           </p>
                           <p className='price'>${item.product.price}</p>
                         </div>

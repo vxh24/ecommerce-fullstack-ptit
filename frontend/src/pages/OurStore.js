@@ -1,35 +1,30 @@
-
 import React, { useEffect, useState } from 'react'
 import BreadCrumb from '../components/BreadCrumb'
+import axios from "axios";
 import Meta from '../components/Meta';
 import ReactStars from "react-rating-stars-component";
 import ProductCard from '../components/ProductCard';
-import Color from '../components/Color';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllProducts } from '../features/products/productSlice';
-import { getAllColors } from '../features/color/colorSlice';
-import { toast } from 'react-toastify';
 import Pagination from '../components/Pagination';
+import { getBrands } from '../features/brand/brandSlice';
+import { getCategories } from '../features/category/categorySlice';
 const OurStore = () => {
   const [grid, setGrid] = useState(4);
   const productState = useSelector((state) => state?.product?.products?.data);
+  const brandState = useSelector(state => state?.brand?.brands?.data);
+  const categoryState = useSelector(state => state?.category?.Categories?.data);
   const dispatch = useDispatch();
-  const [brands, setBrand] = useState([]);
   const [categories, setCategories] = useState([]);
   const [tags, setTags] = useState(new Set());
-  const [sortedProducts, setSortedProducts] = useState([]);
-  const [filterProducts, setFilterProducts] = useState([]);
-  const [filertags, setFilerTags] = useState([]);
-  const [filerbrands, setFilerBrands] = useState([]);
-  const [minPrice, setMinPrice] = useState([]);
-  const [maxPrice, setMaxPrice] = useState([]);
+  const [minPrice, setMinPrice] = useState(null);
+  const [maxPrice, setMaxPrice] = useState(null);
   const colors = useSelector(state => state?.color?.colors?.data);
-  const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 10; // Số sản phẩm trên mỗi trang
-  const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = productState?.slice(indexOfFirstProduct, indexOfLastProduct);
   const [randomProducts, setRandomProducts] = useState([]);
+  const [selectedTag, setSelectedTag] = useState("");
+  const [selectedBrand, setSelectedBrand] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     if (productState?.length > 2) {
@@ -41,67 +36,95 @@ const OurStore = () => {
   }, [productState]);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   useEffect(() => {
-    getProducts();
-    getColors();
+    dispatch(getAllProducts());
+    dispatch(getBrands())
+    dispatch(getCategories());
   }, []);
-  const getColors = () => {
-    dispatch(getAllColors());
-  }
   useEffect(() => {
-    let newbrands = [];
     let category = [];
     let newtags = new Set();
     for (let index = 0; index < productState?.length; index++) {
       const element = productState[index];
-      newbrands.push(element.brand);
       category.push(element.category);
       element.tags.forEach((tag) => newtags.add(tag))
     }
-    setBrand(newbrands);
     setCategories(category);
     setTags(newtags);
   }, [productState])
-  const getProducts = () => {
-    dispatch(getAllProducts());
+
+  useEffect(() => {
+    let newtags = new Set();
+    for (let index = 0; index < productState?.length; index++) {
+      const element = productState[index];
+      const parsedTags = JSON.parse(element.tags);
+      parsedTags.forEach((tag) => newtags.add(tag))
+
+
+      setTags(newtags);
+    }
+  }, [productState]);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [click, setClick] = useState(false);
+  const [totalItems, setTotalItems] = useState(0);
+  const [pagination, setPagination] = useState({ page: 1, limit: 10 });
+  const [filters, setFilters] = useState({ sort: "", fields: "" });
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [name]: value,
+    }));
+  };
+  const fetchProducts = async () => {
+    setLoading(true);
+    try {
+      const query = new URLSearchParams({
+        ...filters,
+        page: pagination.page,
+        limit: pagination.limit,
+        ...(minPrice && { "price[gte]": minPrice }),
+        ...(maxPrice && { "price[lte]": maxPrice }),
+        ...(selectedBrand && { "brand": selectedBrand }),
+        ...(selectedCategory && { "category": selectedCategory }),
+      }).toString();
+      const response = await axios.get(`http://localhost:5000/v1/api/product?${query}`);
+      setProducts(response.data.data);
+      setTotalItems(response.data.data.length);
+    } catch (err) {
+      setError("Đã xảy ra lỗi khi tải sản phẩm");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (click === true) {
+      fetchProducts();
+      setClick(false);
+      return;
+    }
+    fetchProducts();
+  }, [pagination.page, filters, click, selectedBrand, selectedCategory]);
+  const clearAll = () => {
+    setMinPrice(null);
+    setMaxPrice(null);
+    setSelectedTag("");
+    setSelectedBrand("");
+    setSelectedCategory("");
+    fetchProducts();
+
   }
-  const handleSortChange = (e) => {
-    const sortValue = e.target.value;
-    let sorted = [...productState];
-
-    if (sortValue === "price-ascending") {
-      sorted = sorted.sort((a, b) => a.price - b.price);
-    }
-    else if (sortValue === "price-descending") {
-      sorted = sorted.sort((a, b) => b.price - a.price);
-    }
-    else if (sortValue === "created-ascending") {
-      sorted = sorted.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-    }
-    else if (sortValue === "created-descending") {
-      sorted = sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    }
-    else if (sortValue === "title-ascending") {
-      sorted = sorted.sort((a, b) => a.title - b.title);
-    }
-    else if (sortValue === "title-descending") {
-      sorted = sorted.sort((a, b) => b.title - a.title);
-    }
-    setSortedProducts(sorted);
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    setPagination({ ...pagination, page: page });
+    console.log(`Chuyển sang trang ${page}`);
   };
-  const handlePriceFilter = () => {
-    if (minPrice === "" && maxPrice === "") {
-      toast.info("Vui lòng điền khoảng giá phù hợp")
-    }
-    else {
-      const min = parseFloat(minPrice) || 0;
-      const max = parseFloat(maxPrice) || Infinity;
 
-      const filteredProducts = productState?.filter((product) => {
-        return product.price >= min && product.price <= max;
-      });
-      setFilterProducts(filteredProducts);
-    }
-  };
+  if (loading) return <div>Đang tải sản phẩm...</div>;
+  if (error) return <div>{error}</div>;
+
   return (
     <>
       <Meta title={"Cửa hàng"} />
@@ -114,12 +137,16 @@ const OurStore = () => {
                 <h3 className="filter-title">
                   Danh mục sản phẩm
                 </h3>
-                <div>
+                <div className=' filter-cat'>
                   <ul className='ps-0'>
                     {
-                      categories && [...new Set(categories)]?.map((item, index) => {
+                      categoryState && categoryState?.map((item, index) => {
                         return (
-                          <li className='mb-2' key={index}>{item}</li>
+                          <li
+                            onClick={() => setSelectedCategory(item.title)}
+                            // className='mb-2' 
+                            className={selectedCategory === item.title ? "mb-2 text-red" : "mb-2"}
+                            key={index}>{item.title}</li>
                         )
                       })
                     }
@@ -150,16 +177,16 @@ const OurStore = () => {
                     </div>
                   </div>
                   <div className='d-flex align-items-center mt-3 justify-content-center'>
-                    <button className='button-filter form-control' onClick={handlePriceFilter}>
+                    <button className='button-filter form-control' onClick={() => setClick(true)}>
                       ÁP DỤNG
                     </button>
                   </div>
 
-                  <h5 className="sub-title">
+                  {/* <h5 className="sub-title">
                     Đánh giá
-                  </h5>
+                  </h5> */}
 
-                  <div>
+                  {/* <div>
                     <ReactStars
                       count={5}
                       size={24}
@@ -195,41 +222,58 @@ const OurStore = () => {
                       edit={false}
                       activeColor="#ffd700"
                     />
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <div className='filter-card mb-3'>
-                <h3 className="filter-title">
-                  Nhãn sản phẩm
-                </h3>
-                <div>
-                  <div className="product-tags d-flex align-items-center flex-wrap gap-10">
-                    {
-                      tags && [...new Set(tags)]?.map((item, index) => {
-                        return (
-                          <span onClick={() => setFilerTags(item)} className="text-capitalize badge bg-light text-secondary py-2 px-3 rounded-3" key={index} >{item}</span>
-                        )
-                      })
-                    }
+                <div class="filter-section">
+                  <h3 className="filter-title">
+                    Nhãn sản phẩm
+                  </h3>
+                  <div>
+                    <div className="checkbox-group">
+                      {
+                        tags && [...new Set(tags)]?.map((item, index) => {
+                          return (
+                            <label key={index} className="">
+                              <input type="checkbox"
+                                checked={selectedTag === item}
+                                onChange={() => setSelectedTag(item)}
+                                value="Shopee Mall" />{item}
+                            </label>
+                          )
+                        })
+                      }
+                    </div>
                   </div>
                 </div>
               </div>
 
               <div className='filter-card mb-3'>
-                <h3 className="filter-title">
-                  Thương hiệu
-                </h3>
-                <div>
-                  <div className="product-tags d-flex align-items-center flex-wrap gap-10">
+                <div class="filter-section">
+                  <h3 className="filter-title">
+                    Thương hiệu
+                  </h3>
+                  <div class="checkbox-group">
                     {
-                      brands && [...new Set(brands)]?.map((item, index) => {
+                      brandState && brandState.map((item, index) => {
                         return (
-                          <span onClick={() => setFilerBrands(item)} className="text-capitalize badge bg-light text-secondary py-2 px-3 rounded-3" key={index} >{item}</span>
+                          <label key={index} >
+                            <input
+                              checked={selectedBrand === item.title}
+                              onChange={() => setSelectedBrand(item.title)}
+                              type="checkbox" value="Shopee Mall" />{item.title}
+                          </label>
                         )
                       })
                     }
                   </div>
                 </div>
+              </div>
+              <div className='d-flex align-items-center mt-3 justify-content-center'>
+                <button className='button-filter form-control' onClick={clearAll}>
+                  Xóa tất cả
+                </button>
               </div>
               <div className='filter-card mb-3'>
                 <h3 className="filter-title">
@@ -247,7 +291,7 @@ const OurStore = () => {
                           <ReactStars
                             count={5}
                             size={24}
-                            value={3}
+                            value={parseInt(item.totalRatings, 10)}
                             edit={false}
                             activeColor="#ffd700"
                           />
@@ -264,23 +308,18 @@ const OurStore = () => {
                 <div className="d-flex justify-content-between align-items-center">
                   <div className="d-flex align-items-center gap-10">
                     <p className='mb-0 d-block' style={{ "width": "100px" }}>Sort By:</p>
-                    <select style={{ "width": "200px" }} name="manual" id="" className="form-control form-select"
-                      onChange={handleSortChange}
-                    >
-                      <option value="manual">Tất cả</option>
-                      <option value="best-selilng">
-                        Bán chạy
-                      </option>
-                      <option value="title-ascending">Theo thứ tự, A-Z</option>
-                      <option value="title-descending">Theo thứ tự, Z-A</option>
-                      <option value="price-ascending">Giá, thấp đến cao</option>
-                      <option value="price-descending">Giá, cao đến thấp</option>
-                      <option value="created-ascending">Date, old to new</option>
-                      <option value="created-descending" >Date, new to old</option>
-                    </select>
+                    <div>
+                      <select name="sort" onChange={handleFilterChange} value={filters.sort}>
+                        <option value="">Sắp xếp</option>
+                        <option value="name-asc">Tên A-Z</option>
+                        <option value="name-desc">Tên Z-A</option>
+                        <option value="price-asc">Giá tăng dần</option>
+                        <option value="price-desc">Giá giảm dần</option>
+                      </select>
+                    </div>
                   </div>
                   <div className='d-flex align-items-center gap-10'>
-                    <p className='totalproducts mb-0'>{productState?.length} Sản phẩm</p>
+                    <p className='totalproducts mb-0'>{products?.length} Sản phẩm</p>
                     <div className="d-flex align-items-center gap-10 grid">
                       <img onClick={() => { setGrid(3); }} src="images/gr4.svg" className="d-block img-fluid" alt="grid" />
                       <img onClick={() => { setGrid(4); }} src="images/gr3.svg" className="d-block img-fluid" alt="grid" />
@@ -292,17 +331,12 @@ const OurStore = () => {
               </div>
               <div className="products-list pb-5">
                 <div className="d-flex gap-10 flex-wrap">
-                  {
-                    sortedProducts && sortedProducts?.length > 0 ? (
-                      <ProductCard data={sortedProducts} grid={grid} />
-                    ) : filterProducts && filterProducts?.length > 0 ? (
-                      <ProductCard data={filterProducts} grid={grid} />
-                    ) : productState && currentProducts?.length > 0 ? (
-                      <ProductCard data={productState} grid={grid} />
-                    ) : (
-                      <p>No products found</p>
-                    )
-                  }
+                  {products && products?.length > 0 ? (
+                    <ProductCard data={products} grid={grid} />
+                  )
+                    : (
+                      <p>No product</p>
+                    )}
 
                 </div>
               </div>
@@ -310,10 +344,10 @@ const OurStore = () => {
             </div>
             <div className='d-flex justify-content-end'>
               <Pagination
-                productsPerPage={productsPerPage}
-                totalProducts={productState?.length}
-                paginate={paginate}
+                totalItems={totalItems}
+                limit={pagination.limit}
                 currentPage={currentPage}
+                onPageChange={handlePageChange}
               />
             </div>
           </div>
