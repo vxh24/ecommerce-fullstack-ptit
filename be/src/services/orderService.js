@@ -244,9 +244,6 @@ const updateOrderStatus = asyncHandler(async (id, status) => {
     id,
     {
       orderStatus: status,
-      paymentIndent: {
-        status: status,
-      },
     },
     { new: true }
   );
