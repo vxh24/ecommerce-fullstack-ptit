@@ -10,6 +10,7 @@ const {
   getOrderByIdController,
   createPaymentController,
   paymentCallbackController,
+  cancelOrderController,
 } = require("../controllers/orderController");
 
 const router = express.Router();
@@ -26,5 +27,6 @@ router.put(
   isAdmin,
   updateOrderStatusController
 );
+router.put("/cancel-order/:orderId", authMiddleware, cancelOrderController);
 
 module.exports = router;

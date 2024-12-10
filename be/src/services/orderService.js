@@ -250,6 +250,29 @@ const updateOrderStatus = asyncHandler(async (id, status) => {
   return updateOrderStatus;
 });
 
+const cancelOrder = asyncHandler(async (userId, orderId) => {
+  validateMongodbId(userId);
+  validateMongodbId(orderId);
+
+  const order = await Order.findById(orderId);
+  if (!order) {
+    throw new Error("Order not found");
+  }
+
+  if (order.orderBy.toString() !== userId.toString()) {
+    throw new Error("You are not authorized to cancel this order");
+  }
+
+  if (order.orderStatus !== "Chờ xác nhận") {
+    throw new Error(
+      "Order cannot be canceled because it's not in 'Chờ xác nhận' status"
+    );
+  }
+
+  order.orderStatus = "Hủy";
+  await order.save();
+});
+
 module.exports = {
   createOrderByCOD,
   getAllOrders,
@@ -258,4 +281,5 @@ module.exports = {
   getOrderUserById,
   createPaymentService,
   handlePaymentCallback,
+  cancelOrder,
 };
