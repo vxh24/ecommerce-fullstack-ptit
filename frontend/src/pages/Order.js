@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import Meta from '../components/Meta';
-import BreadCrumb from '../components/BreadCrumb';
-import { useDispatch, useSelector } from 'react-redux';
-import { getOrderUser } from '../features/user/userSlice';
+import React, { useEffect, useState } from "react";
+import Meta from "../components/Meta";
+import BreadCrumb from "../components/BreadCrumb";
+import { useDispatch, useSelector } from "react-redux";
+import { getOrderUser } from "../features/user/userSlice";
 import moment from "moment";
-import {
-  AiOutlineEye,
-} from "react-icons/ai";
-import OrderDetailCard from '../components/OrderDetailCard';
+import { AiOutlineEye } from "react-icons/ai";
+import OrderDetailCard from "../components/OrderDetailCard";
 const Order = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
@@ -15,8 +13,8 @@ const Order = () => {
   const [statusCounts, setStatusCounts] = useState({});
   useEffect(() => {
     dispatch(getOrderUser());
-  }, [])
-  const orderState = useSelector(state => state?.auth?.orders?.data);
+  }, []);
+  const orderState = useSelector((state) => state?.auth?.orders?.data);
   console.log(orderState);
   useEffect(() => {
     if (orderState?.length > 0) {
@@ -33,7 +31,13 @@ const Order = () => {
     setSelectedOrder(null);
   };
   const [activeTab, setActiveTab] = useState(0);
-  const status = ["Tất cả", "Chờ xác nhận", "Chờ giao hàng", "Hoàn thành", "Đã hủy"];
+  const status = [
+    "Tất cả",
+    "Chờ xác nhận",
+    "Chờ giao hàng",
+    "Hoàn thành",
+    "Đã hủy",
+  ];
   useEffect(() => {
     if (orderState?.length > 0) {
       const counts = orderState.reduce((acc, order) => {
@@ -58,6 +62,14 @@ const Order = () => {
       );
     }
   };
+
+  const formatPrice = (amount) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
   return (
     <>
       <Meta title={"Đơn hàng"} />
@@ -66,33 +78,42 @@ const Order = () => {
         <div className="container-xxl">
           <div className="row">
             <div className="col-12">
-              <div style={{ "margin-left": "0" }} className='tabs d-flex justify-content-center '>
-                {
-                  status.map((item, index) => (
-                    <div key={index} className="tab-container">
-                      <button
-                        className={activeTab === index ? "tab active" : "tab"}
-                        onClick={() => handleTabChange(index)}
-                      >
-                        {item}
-                        <span className={statusCounts[item] ? "statusCount" : ""}>
-                          {statusCounts[item]}
-                        </span>
-                      </button>
-                    </div>
-                  ))
-                }
+              <div
+                style={{ "margin-left": "0" }}
+                className="tabs d-flex justify-content-center "
+              >
+                {status.map((item, index) => (
+                  <div key={index} className="tab-container">
+                    <button
+                      className={activeTab === index ? "tab active" : "tab"}
+                      onClick={() => handleTabChange(index)}
+                    >
+                      {item}
+                      <span className={statusCounts[item] ? "statusCount" : ""}>
+                        {statusCounts[item]}
+                      </span>
+                    </button>
+                  </div>
+                ))}
               </div>
             </div>
             <div className="col-12 mt-3">
               <table class="table caption-top">
                 <thead>
                   <tr>
-                    <th scope="col" className='col-3'>Mã đơn hàng</th>
-                    <th scope="col" className='col-2'>Tổng tiền</th>
-                    <th scope="col" className='col-3'>Ngày đặt hàng </th>
-                    <th scope="col" className='col-2'>Trạng thái</th>
-                    <th scope="col" className='col-2'></th>
+                    <th scope="col" className="col-3">
+                      Mã đơn hàng
+                    </th>
+                    <th scope="col" className="col-2">
+                      Tổng tiền
+                    </th>
+                    <th scope="col" className="col-3">
+                      Ngày đặt hàng{" "}
+                    </th>
+                    <th scope="col" className="col-2">
+                      Trạng thái
+                    </th>
+                    <th scope="col" className="col-2"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -100,24 +121,27 @@ const Order = () => {
                     filterstatus.map((item, index) => (
                       <tr key={index}>
                         <th scope="row">{item?._id}</th>
-                        <td className='price'>{item?.paymentIndent?.amount}<span className='currency'>đ</span></td>
-                        <td>{moment(item?.createdAt).format('DD/MM/YYYY')}</td>
+                        <td className="price">
+                          {formatPrice(item?.paymentIndent?.amount)}
+                        </td>
+                        <td>{moment(item?.createdAt).format("DD/MM/YYYY")}</td>
                         <td>{item?.orderStatus}</td>
                         <td>
-                          <div className='d-flex gap-10 align-items-center'>
+                          <div className="d-flex gap-10 align-items-center">
                             <AiOutlineEye
                               size={22}
                               className="cursor-pointer ms-2"
                               onClick={() => handleOpenOrderDetail(item)}
                               title="Quick view"
                             />
-                            {
-                              item?.orderStatus === "Chờ xác nhận" && (
-                                <button onClick={() => handleOpenOrderDetail(item)} className="btn btn-primary btn-sm">
-                                  Hủy đơn
-                                </button>
-                              )
-                            }
+                            {item?.orderStatus === "Chờ xác nhận" && (
+                              <button
+                                onClick={() => handleOpenOrderDetail(item)}
+                                className="btn btn-primary btn-sm"
+                              >
+                                Hủy đơn
+                              </button>
+                            )}
                           </div>
                         </td>
                       </tr>
@@ -130,24 +154,23 @@ const Order = () => {
                     </tr>
                   )}
                 </tbody>
-
               </table>
             </div>
           </div>
         </div>
       </div>
-      {
-        open && selectedOrder && (
-          <div className="model-container">
-            <div className="model-content">
-              <button className="close-model" onClick={handleCloseOrderDetail}>✖</button>
-              <OrderDetailCard order={selectedOrder} />
-            </div>
+      {open && selectedOrder && (
+        <div className="model-container">
+          <div className="model-content">
+            <button className="close-model" onClick={handleCloseOrderDetail}>
+              ✖
+            </button>
+            <OrderDetailCard order={selectedOrder} />
           </div>
-        )
-      }
+        </div>
+      )}
     </>
-  )
-}
+  );
+};
 
-export default Order
+export default Order;
