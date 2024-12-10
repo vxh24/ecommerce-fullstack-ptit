@@ -175,7 +175,7 @@ a {
   position: absolute;
   top: 70px;
   right: 0;
-  width: 300px;
+  width: 350px;
   background-color: #ffffff;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   padding: 20px;
@@ -260,7 +260,6 @@ a {
   background-color: #0056b3;
 }
 
-
 /*end header */
 
 /* footer */
@@ -299,7 +298,6 @@ footer .input-group-text {
   margin: 0 0 12px;
   letter-spacing: 0.3px;
   text-transform: uppercase;
-
 }
 
 .main-banner-content h5 {
@@ -330,7 +328,6 @@ footer .input-group-text {
   margin: 0 0 12px;
   letter-spacing: 0.3px;
   text-transform: uppercase;
-
 }
 
 .small-banner-content h5 {
@@ -365,32 +362,32 @@ footer .input-group-text {
   padding: 15px;
 }
 
-.categories>div {
+.categories > div {
   width: 25%;
   padding: 10px 10px 10px 20x;
 }
 
-.categories>div>div {
+.categories > div > div {
   width: 60%;
   padding-left: 20px;
 }
 
-.categories>div:nth-child(1),
-.categories>div:nth-child(2),
-.categories>div:nth-child(3),
-.categories>div:nth-child(4) {
+.categories > div:nth-child(1),
+.categories > div:nth-child(2),
+.categories > div:nth-child(3),
+.categories > div:nth-child(4) {
   border-bottom: 1px solid var(--color-ededed);
 }
 
-.categories>div:nth-child(1),
-.categories>div:nth-child(2),
-.categories>div:nth-child(3) {
+.categories > div:nth-child(1),
+.categories > div:nth-child(2),
+.categories > div:nth-child(3) {
   border-right: 1px solid var(--color-ededed);
 }
 
-.categories>div:nth-child(7),
-.categories>div:nth-child(5),
-.categories>div:nth-child(6) {
+.categories > div:nth-child(7),
+.categories > div:nth-child(5),
+.categories > div:nth-child(6) {
   border-right: 1px solid var(--color-ededed);
 }
 
@@ -452,11 +449,11 @@ footer .input-group-text {
 .blog-sidebar {
   margin-top: 24px;
   padding: 10px;
-  background-color: #F0F0F0;
+  background-color: #f0f0f0;
 }
 
 .blog-featured {
-  background-color: #F0F0F0;
+  background-color: #f0f0f0;
   padding: 15px;
 }
 
@@ -511,23 +508,21 @@ footer .input-group-text {
   object-fit: contain;
 }
 
-.product-card .product-image>img:last-child {
+.product-card .product-image > img:last-child {
   display: none;
   transition: 0.3s;
 }
 
-.product-card:hover .product-image>img:nth-child(1) {
+.product-card:hover .product-image > img:nth-child(1) {
   display: none;
 }
 
-.product-card:hover .product-image>img:last-child {
+.product-card:hover .product-image > img:last-child {
   display: block;
 }
 
-
 .product-card:hover .action-bar {
   right: 15px;
-
 }
 
 .product-card .product-details h6 {
@@ -575,16 +570,13 @@ footer .input-group-text {
 
 /* product card end */
 
-
 /* special product */
-
 
 .special-product-card {
   padding: 20px 10px;
   border-radius: 10px;
   background: white;
 }
-
 
 /* special product end here */
 /* famous  */
@@ -769,7 +761,7 @@ footer .input-group-text {
   gap: 15px;
 }
 
-.contact-inner-wrapper>div {
+.contact-inner-wrapper > div {
   width: 48%;
 }
 
@@ -961,7 +953,6 @@ footer .input-group-text {
 
 /* changepass end*/
 
-
 /* detail product */
 .main-product-image {
   background-color: white;
@@ -989,21 +980,20 @@ footer .input-group-text {
 }
 
 .other-product-images img {
-  width: 200px;
-  height: 150px;
-  object-fit: cover;
+  width: 70px;
+  height: 70px;
 }
 
-.other-product-images>div {
+.other-product-images > div {
   padding: 10px;
   width: 48%;
 }
 
-.main-product-image>div {
+.main-product-image > div {
   border: 1px solid rgba(0, 0, 0, 0.25);
 }
 
-.other-product-images>div .active {
+.other-product-images > div .active {
   border: 1px solid red;
 }
 
@@ -1104,7 +1094,6 @@ footer .input-group-text {
 
 .review:not(:last-child) {
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-
 }
 
 .nav-button {
@@ -1284,7 +1273,6 @@ footer .input-group-text {
   width: 100%;
   position: relative;
 }
-
 
 /* orderDetail end*/
 
@@ -1561,7 +1549,7 @@ h2 {
   gap: 10px;
 }
 
-input[type='text'],
+input[type="text"],
 select {
   width: 100%;
   padding: 10px;
@@ -1570,8 +1558,8 @@ select {
   font-size: 0.9rem;
 }
 
-input[type='radio'],
-input[type='checkbox'] {
+input[type="radio"],
+input[type="checkbox"] {
   margin-right: 5px;
 }
 
@@ -1802,7 +1790,6 @@ input[type='checkbox'] {
 
 /* banner slide end*/
 
-
 /* Product Review */
 .review-modal {
   width: 100%;
@@ -1829,7 +1816,6 @@ input[type='checkbox'] {
   margin-bottom: 20px;
 }
 
-
 .review-input textarea {
   width: 100%;
   border: 1px solid #ccc;
@@ -1848,7 +1834,6 @@ input[type='checkbox'] {
   font-size: 50px;
   opacity: 0;
 }
-
 
 /* Product Review end*/
 

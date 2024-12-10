@@ -59,7 +59,7 @@ const createOrderByCOD = asyncHandler(
   }
 );
 
-const createPaymentService = asyncHandler(async (totalAmount) => {
+const createPaymentService = asyncHandler(async (totalAmount, orderAddress) => {
   var orderInfo = "Thanh toán qua ví Momo";
   var redirectUrl = "http://localhost:3000/payment-result";
   var ipnUrl = "http://localhost:3000/payment-result";
@@ -67,7 +67,7 @@ const createPaymentService = asyncHandler(async (totalAmount) => {
   var amount = totalAmount;
   var orderId = partnerCode + new Date().getTime();
   var requestId = orderId;
-  var extraData = "";
+  var extraData = JSON.stringify({ orderAddress });
   var orderGroupId = "";
   var autoCapture = true;
   var lang = "vi";
@@ -93,9 +93,11 @@ const createPaymentService = asyncHandler(async (totalAmount) => {
     requestId +
     "&requestType=" +
     requestType;
+
   //puts raw signature
   console.log("--------------------RAW SIGNATURE----------------");
   console.log(rawSignature);
+
   //signature
   var signature = crypto
     .createHmac("sha256", secretKey)
@@ -143,76 +145,77 @@ const createPaymentService = asyncHandler(async (totalAmount) => {
   }
 });
 
-const handlePaymentCallback = asyncHandler(
-  async (userId, callbackData, orderAddress) => {
-    validateMongodbId(userId);
-    const user = await User.findById(userId);
+const handlePaymentCallback = asyncHandler(async (userId, callbackData) => {
+  validateMongodbId(userId);
+  const user = await User.findById(userId);
 
-    if (!user) {
-      throw new Error("User not found");
-    }
-
-    let userCart = await Cart.findOne({ orderBy: user._id });
-
-    if (!userCart) {
-      throw new Error("Cart not found");
-    }
-
-    const {
-      orderId,
-      amount,
-      resultCode,
-      message,
-      transId,
-      partnerCode,
-      responseTime,
-    } = callbackData;
-
-    const timestamp = Number(responseTime);
-    const date = new Date(timestamp);
-
-    const formattedDate = `${date.getDate()}/${
-      date.getMonth() + 1
-    }/${date.getFullYear()}`;
-
-    if (resultCode === "0") {
-      const order = new Order({
-        products: userCart.products,
-        paymentIndent: {
-          orderId,
-          amount,
-          method: partnerCode,
-          created: formattedDate,
-          responseTime,
-          transId,
-          message,
-        },
-        orderAddress,
-        orderBy: user._id,
-        orderStatus: "Chờ xác nhận",
-      });
-
-      await order.save();
-
-      let update = userCart.products.map((item) => {
-        return {
-          updateOne: {
-            filter: { _id: item.product._id },
-            update: { $inc: { quantity: -item.count, sold: +item.count } },
-          },
-        };
-      });
-
-      await Product.bulkWrite(update, {});
-
-      await Cart.findByIdAndDelete(userCart._id);
-
-      return order;
-    } else {
-      throw new Error(`Payment failed: ${message}`);
-    }
+  if (!user) {
+    throw new Error("User not found");
   }
-);
+
+  let userCart = await Cart.findOne({ orderBy: user._id });
+
+  if (!userCart) {
+    throw new Error("Cart not found");
+  }
+
+  const {
+    orderId,
+    amount,
+    resultCode,
+    message,
+    transId,
+    partnerCode,
+    responseTime,
+    extraData,
+  } = callbackData;
+
+  const timestamp = Number(responseTime);
+  const date = new Date(timestamp);
+
+  const formattedDate = `${date.getDate()}/${
+    date.getMonth() + 1
+  }/${date.getFullYear()}`;
+
+  const { orderAddress } = JSON.parse(extraData || "{}");
+
+  if (resultCode === "0") {
+    const order = new Order({
+      products: userCart.products,
+      paymentIndent: {
+        orderId,
+        amount,
+        method: partnerCode,
+        created: formattedDate,
+        responseTime,
+        transId,
+        message,
+      },
+      orderAddress,
+      orderBy: user._id,
+      orderStatus: "Chờ xác nhận",
+    });
+
+    await order.save();
+
+    let update = userCart.products.map((item) => {
+      return {
+        updateOne: {
+          filter: { _id: item.product._id },
+          update: { $inc: { quantity: -item.count, sold: +item.count } },
+        },
+      };
+    });
+
+    await Product.bulkWrite(update, {});
+
+    await Cart.findByIdAndDelete(userCart._id);
+
+    return order;
+  } else {
+    throw new Error(`Payment failed: ${message}`);
+  }
+});
 
 const getOrderByUID = asyncHandler(async (userID) => {
   const orderUser = await Order.find({ orderBy: userID })
@@ -250,6 +253,29 @@ const updateOrderStatus = asyncHandler(async (id, status) => {
   return updateOrderStatus;
 });
 
+const cancelOrder = asyncHandler(async (userId, orderId) => {
+  validateMongodbId(userId);
+  validateMongodbId(orderId);
+
+  const order = await Order.findById(orderId);
+  if (!order) {
+    throw new Error("Order not found");
+  }
+
+  if (order.orderBy.toString() !== userId.toString()) {
+    throw new Error("You are not authorized to cancel this order");
+  }
+
+  if (order.orderStatus !== "Chờ xác nhận") {
+    throw new Error(
+      "Order cannot be canceled because it's not in 'Chờ xác nhận' status"
+    );
+  }
+
+  order.orderStatus = "Hủy";
+  await order.save();
+});
+
 module.exports = {
   createOrderByCOD,
   getAllOrders,
@@ -258,4 +284,5 @@ module.exports = {
   getOrderUserById,
   createPaymentService,
   handlePaymentCallback,
+  cancelOrder,
 };

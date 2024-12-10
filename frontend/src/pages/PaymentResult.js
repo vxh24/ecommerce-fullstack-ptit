@@ -28,6 +28,7 @@ const PaymentResult = () => {
       resultCode: params.get("resultCode"),
       message: params.get("message"),
       responseTime: params.get("responseTime"),
+      extraData: params.get("extraData"),
     };
 
     setPaymentDetails(details);
@@ -58,6 +59,7 @@ const PaymentResult = () => {
       transId: details.transId,
       partnerCode: details.partnerCode,
       responseTime: details.responseTime,
+      extraData: details.extraData,
     };
 
     setLoading(true);
@@ -99,7 +101,7 @@ const PaymentResult = () => {
                     <tbody>
                       <tr>
                         <td>
-                          <strong> Mã giao dịch của bạn là</strong>
+                          <strong>Mã giao dịch của bạn</strong>
                         </td>
                         <td>{paymentDetails.transId}</td>
                       </tr>
@@ -120,6 +122,12 @@ const PaymentResult = () => {
                           <strong>Ngày giao dịch</strong>
                         </td>
                         <td>{formatDate(paymentDetails.responseTime)}</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Địa chỉ</strong>
+                        </td>
+                        <td>{paymentDetails.extraData}</td>
                       </tr>
                     </tbody>
                   </table>

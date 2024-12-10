@@ -37,5 +37,5 @@ export const productService = {
   addToWishlist,
   getAProducts,
   rateProduct,
-  searchProduct
+  searchProduct,
 }

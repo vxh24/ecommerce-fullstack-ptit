@@ -10,7 +10,11 @@ import { CgProfile } from "react-icons/cg";
 import { GiShoppingCart } from "react-icons/gi";
 import { BiCategory } from "react-icons/bi";
 import { googleLogout } from "@react-oauth/google";
-import { getProfileSlice, getUserCart, logoutSlice } from "../features/user/userSlice";
+import {
+  getProfileSlice,
+  getUserCart,
+  logoutSlice,
+} from "../features/user/userSlice";
 const Header = () => {
   const profileState = useSelector((state) => state?.auth?.profile?.data);
   useEffect(() => {
@@ -21,7 +25,7 @@ const Header = () => {
     // dispatch(logoutSlice());
     googleLogout();
     localStorage.clear();
-    window.location.reload()
+    window.location.reload();
   };
   const authState = useSelector((state) => state?.auth);
   const [paginate, setPaginate] = useState(true);
@@ -52,6 +56,14 @@ const Header = () => {
     dispatch(searchProductSlice(searchTerm));
     navigate(`/product`);
   }
+  const formatPrice = (amount) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
   return (
     <>
       <header className="header-top-strip py-3">
@@ -77,7 +89,13 @@ const Header = () => {
           <div className="row align-items-center">
             <div className="col-2">
               <h1>
-                <Link className="text-white">PTIT.</Link>
+                <Link
+                  to="/"
+                  className="text-white"
+                  style={{ fontSize: "35px", cursor: "pointer" }}
+                >
+                  PTIT SHOP
+                </Link>
               </h1>
             </div>
             <div className="col-5">
@@ -129,7 +147,19 @@ const Header = () => {
                     to={authState?.user === null ? "/login" : ""}
                     className="d-flex align-items-center gap-10 text-white"
                   >
-                    <img className="avatar" src={profileState?.avatar} alt="" />
+                    {profileState?.avatar ? (
+                      <img
+                        className="avatar"
+                        src={profileState?.avatar}
+                        alt=""
+                      />
+                    ) : (
+                      <img
+                        className="avatar"
+                        src="https://t4.ftcdn.net/jpg/05/49/98/39/360_F_549983970_bRCkYfk0P6PP5fKbMhZMIb07mCJ6esXL.jpg"
+                        alt=""
+                      />
+                    )}
                     {/* <CgProfile className="fs-2" /> */}
                     {authState?.user === null ? (
                       <p className="mb-0">Đăng nhập</p>
@@ -143,7 +173,7 @@ const Header = () => {
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
                           >
-                            {authState?.user?.user?.name.toUpperCase()}
+                            {profileState?.name.toUpperCase()}
                           </button>
                           <ul
                             className="dropdown-menu"
@@ -193,7 +223,8 @@ const Header = () => {
                     )}
                   </Link>
                 </div>
-                <div className="cart-icon-container"
+                <div
+                  className="cart-icon-container"
                   onMouseEnter={() => setShowCartDropdown(true)}
                   onMouseLeave={() => setShowCartDropdown(false)}
                 >
@@ -201,11 +232,21 @@ const Header = () => {
                     to="/cart"
                     className="d-flex align-items-center gap-10 text-white"
                   >
-                    <GiShoppingCart className="fs-1" />
-                    <span className="cart-badge bg-white text-dark">
-                      {
-                        cartlengt ? cartlengt : 0
-                      }
+                    <div>
+                      <GiShoppingCart className="fs-1" />
+                      <span
+                        className="cart-badge bg-white text-dark"
+                        style={{
+                          position: "relative",
+                          right: "10px",
+                          top: "-10px",
+                        }}
+                      >
+                        {cartlengt ? cartlengt : 0}
+                      </span>
+                    </div>
+                    <span style={{ marginLeft: "-15px", fontSize: "16px" }}>
+                      Giỏ hàng
                     </span>
                   </Link>
                   {showCartDropdown && (
@@ -215,7 +256,8 @@ const Header = () => {
                           <ul className="cart-items">
                             {userCartState.products.map((item, index) => {
                               const product = productState?.find(
-                                (productItem) => productItem?._id === item?.product
+                                (productItem) =>
+                                  productItem?._id === item?.product
                               );
                               return (
                                 <li key={index} className="cart-item">
@@ -225,20 +267,26 @@ const Header = () => {
                                     className="cart-item-image"
                                   />
                                   <div className="cart-item-info">
-                                    <p className="cart-item-name">{product?.name}</p>
-                                    <p className="cart-item-quantity">Số lượng: {item?.count}</p>
+                                    <p className="cart-item-name">
+                                      {product?.name}
+                                    </p>
+                                    <p className="cart-item-quantity">
+                                      Số lượng: {item?.count}
+                                    </p>
                                   </div>
                                   <p className="cart-item-price">
-                                    {product?.price.toLocaleString()}₫
+                                    {formatPrice(product?.price * item?.count)}
                                   </p>
                                 </li>
-                              )
+                              );
                             })}
                           </ul>
                         </>
                       ) : (
                         <ul className="cart-items">
-                          <p className="text-center mb-0 bold-text">Chưa có sản phẩm</p>
+                          <p className="text-center mb-0 bold-text">
+                            Chưa có sản phẩm
+                          </p>
                         </ul>
                       )}
                     </div>
@@ -263,14 +311,11 @@ const Header = () => {
                     aria-expanded="false"
                   >
                     <BiCategory className="fs-3" />
-                    <span >
+                    <span style={{ fontWeight: "bold", fontSize: "17px" }}>
                       Danh mục sản phẩm
                     </span>
                   </button>
-                  <ul
-                    className="dropdown-menu"
-                    aria-labelledby="dropdownMenu2"
-                  >
+                  <ul className="dropdown-menu" aria-labelledby="dropdownMenu2">
                     {categories &&
                       categories?.map((item, index) => {
                         return (
@@ -285,10 +330,18 @@ const Header = () => {
                 </div>
                 <div className="menu-links">
                   <div className="d-flex align-items-center gap-30">
-                    <NavLink to="/">Trang chủ</NavLink>
-                    <NavLink to="/product">Cửa hàng</NavLink>
-                    <NavLink to="/blog">Blog</NavLink>
-                    <NavLink to="/contact">Liên hệ</NavLink>
+                    <NavLink to="/" style={{ fontWeight: "bold" }}>
+                      Trang chủ
+                    </NavLink>
+                    <NavLink to="/product" style={{ fontWeight: "bold" }}>
+                      Cửa hàng
+                    </NavLink>
+                    <NavLink to="/blog" style={{ fontWeight: "bold" }}>
+                      Blog
+                    </NavLink>
+                    <NavLink to="/contact" style={{ fontWeight: "bold" }}>
+                      Liên hệ
+                    </NavLink>
                   </div>
                 </div>
               </div>

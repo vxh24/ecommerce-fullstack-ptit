@@ -31,7 +31,11 @@ const Cart = () => {
   };
   const updatecount = (id, color, newquantity) => {
     dispatch(
-      updatecountCart({ productId: id, colorId: color._id, newQuantity: newquantity })
+      updatecountCart({
+        productId: id,
+        colorId: color._id,
+        newQuantity: newquantity,
+      })
     );
     setTimeout(() => {
       dispatch(getUserCart());
@@ -42,6 +46,14 @@ const Cart = () => {
       navigate("/login");
     }
   }, [authState]);
+
+  const formatPrice = (amount) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
   return (
     <>
       <Meta title={"Giỏ hàng"} />
@@ -76,15 +88,18 @@ const Cart = () => {
                         </div>
                         <div className="w-75">
                           <p>{product?.name}</p>
-                          <p className="d-flex gap-15">Màu sắc:
-                            <ul className='colors ps-0'>
-                              <li style={{ backgroundColor: item?.color?.title }}></li>
+                          <p className="d-flex gap-15">
+                            Màu sắc:
+                            <ul className="colors ps-0">
+                              <li
+                                style={{ backgroundColor: item?.color?.title }}
+                              ></li>
                             </ul>
                           </p>
                         </div>
                       </div>
                       <div className="cart-col-2">
-                        <h5 className="price">{item?.price}<span className='currency'>đ</span></h5>
+                        <h5 className="price">{formatPrice(item?.price)}</h5>
                       </div>
                       <div className="cart-col-3 d-flex align-items-center gap-15">
                         <div className="">
@@ -123,7 +138,9 @@ const Cart = () => {
                         </div>
                       </div>
                       <div className="cart-col-4">
-                        <h5 className="price">{item?.price * item?.count}<span className='currency'>đ</span></h5>
+                        <h5 className="price">
+                          {formatPrice(item?.price * item?.count)}
+                        </h5>
                       </div>
                     </div>
                   );
@@ -134,7 +151,12 @@ const Cart = () => {
                 <> */}
               <div className="d-flex justify-content-end mb-3">
                 <div>
-                  <h4 className="price">Tổng tiền: {userCartState?.cartTotal ? userCartState?.cartTotal : 0} <span className='currency'>đ</span></h4>
+                  <h4 className="price">
+                    Tổng tiền:
+                    {userCartState?.cartTotal
+                      ? formatPrice(userCartState?.cartTotal)
+                      : formatPrice(0)}
+                  </h4>
                 </div>
               </div>
               <div className="d-flex justify-content-between align-items-center">

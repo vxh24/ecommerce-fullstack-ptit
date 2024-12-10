@@ -8,6 +8,7 @@ const {
   getOrderUserById,
   createPaymentService,
   handlePaymentCallback,
+  cancelOrder,
 } = require("../services/orderService");
 
 const createOrderByCODController = asyncHandler(async (req, res) => {
@@ -22,8 +23,8 @@ const createOrderByCODController = asyncHandler(async (req, res) => {
 });
 
 const createPaymentController = asyncHandler(async (req, res) => {
-  const { totalAmount } = req.body;
-  const result = await createPaymentService(totalAmount);
+  const { totalAmount, orderAddress } = req.body;
+  const result = await createPaymentService(totalAmount, orderAddress);
   res.json({
     EC: 0,
     data: result,
@@ -104,6 +105,19 @@ const updateOrderStatusController = asyncHandler(async (req, res) => {
   }
 });
 
+const cancelOrderController = asyncHandler(async (req, res) => {
+  const { orderId } = req.params;
+  const { _id } = req.user;
+
+  const canceledOrder = await cancelOrder(_id, orderId);
+
+  res.status(200).json({
+    EC: 0,
+    message: "Order canceled successfully",
+    data: canceledOrder,
+  });
+});
+
 module.exports = {
   createOrderByCODController,
   getAllOrdersController,
@@ -112,4 +126,5 @@ module.exports = {
   getOrderByIdController,
   createPaymentController,
   paymentCallbackController,
+  cancelOrderController,
 };

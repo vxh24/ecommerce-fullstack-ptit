@@ -33,7 +33,7 @@ export const RatingProduct = createAsyncThunk("products/rate", async (data, thun
 })
 export const searchProductSlice = createAsyncThunk("products/search", async (name, thunkAPI) => {
   try {
-    return await productService.searchProduct(name);
+    return await productService.rateProduct(name);
   } catch (error) {
     return thunkAPI.rejectWithValue(error)
   }
