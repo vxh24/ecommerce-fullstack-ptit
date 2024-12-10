@@ -31,6 +31,13 @@ export const RatingProduct = createAsyncThunk("products/rate", async (data, thun
     return thunkAPI.rejectWithValue(error)
   }
 })
+export const searchProductSlice = createAsyncThunk("products/search", async (name, thunkAPI) => {
+  try {
+    return await productService.searchProduct(name);
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error)
+  }
+})
 export const resetState = createAction("Reset_all");
 const productState = {
   products: "",
@@ -95,6 +102,19 @@ export const productSlice = createSlice({
           toast.success("Đánh giá thành công");
         }
       }).addCase(RatingProduct.rejected, (state, action) => {
+        state.isError = true;
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.message = action.error;
+      })
+      .addCase(searchProductSlice.pending, (state) => {
+        state.isLoading = true;
+      }).addCase(searchProductSlice.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.search = action.payload;
+      }).addCase(searchProductSlice.rejected, (state, action) => {
         state.isError = true;
         state.isLoading = false;
         state.isSuccess = false;

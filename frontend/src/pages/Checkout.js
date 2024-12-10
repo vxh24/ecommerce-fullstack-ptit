@@ -91,7 +91,7 @@ const Checkout = () => {
       setTimeout(() => {
         dispatch(getUserCart())
         navigate("/my-orders");
-      }, 200)
+      }, 500)
     }
     if (payment === 2) {
       dispatch(paymentMoMoSlice({ totalAmount: totalpayment, orderAddress: getAddress }));

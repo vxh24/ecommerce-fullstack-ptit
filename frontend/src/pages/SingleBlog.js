@@ -5,9 +5,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import BlogCard from "../components/BlogCard"
 import { IoMdArrowBack } from "react-icons/io";
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllBlog, getBlog } from '../features/blogs/blogSlice';
+import { dislikeSlice, getAllBlog, getBlog, likeSlice } from '../features/blogs/blogSlice';
 import moment from "moment";
-import { BiLike, BiDislike } from "react-icons/bi";
+import { AiFillLike, AiFillDislike } from "react-icons/ai";
 const SingleBlog = () => {
   const blogState = useSelector((state) => state?.blog?.singleblog?.data);
   const blogState1 = useSelector((state) => state?.blog?.blogs?.data);
@@ -16,33 +16,18 @@ const SingleBlog = () => {
   const getBlogId = location.pathname.split("/")[2];
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [likeCount, setLikeCount] = useState(1800);
-  const [liked, setLiked] = useState(false);
-  const [disliked, setDisliked] = useState(false);
-
-  const handleLike = () => {
-    if (liked) {
-      setLikeCount(likeCount - 1);
-      setLiked(false);
-    } else {
-      setLikeCount(likeCount + 1);
-      if (disliked) {
-        setDisliked(false);
-      }
-      setLiked(true);
-    }
+  const handleLike = (id) => {
+    dispatch(likeSlice({ blogId: id }));
+    setTimeout(() => {
+      dispatch(getBlog(getBlogId));
+    }, 200);
   };
 
-  const handleDislike = () => {
-    if (disliked) {
-      setDisliked(false);
-    } else {
-      if (liked) {
-        setLikeCount(likeCount - 1);
-        setLiked(false);
-      }
-      setDisliked(true);
-    }
+  const handleDislike = (id) => {
+    dispatch(dislikeSlice({ blogId: id }));
+    setTimeout(() => {
+      dispatch(getBlog(getBlogId));
+    }, 200)
   };
   useEffect(() => {
     getblog();
@@ -62,12 +47,11 @@ const SingleBlog = () => {
               <div className="single-blog-card">
                 <img src={blogState?.image} className='img-fluid w-100 my-4' alt="blog" />
                 <div className="like-dislike-container">
-                  <div className="like-button" onClick={handleLike}>
-                    <BiLike className={`icon ${liked ? "active" : ""}`} />
-                    <p className="count">{likeCount.toLocaleString()} |</p>
+                  <div className="like-button" onClick={() => { handleLike(blogState?._id) }}>
+                    <AiFillLike className={`icon ${blogState?.isLiked ? "active" : ""}`} />
                   </div>
-                  <div className="dislike-button" onClick={handleDislike}>
-                    <BiDislike className={`icon ${disliked ? "active" : ""}`} />
+                  <div className="dislike-button" onClick={() => { handleDislike(blogState?._id) }}>
+                    <AiFillDislike className={`icon ${blogState?.isDisliked ? "active" : ""}`} />
                   </div>
                 </div>
                 <h3 className="title">{blogState?.title}</h3>

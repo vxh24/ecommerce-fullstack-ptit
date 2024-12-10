@@ -66,7 +66,7 @@ const getAProduct = asyncHandler(async (id) => {
 });
 
 const getAllProducts = asyncHandler(
-  async (queryObj, sortBy, fields, page, limit) => {
+  async (queryObj, sortBy, fields) => {
     let query = Product.find(queryObj).populate("colors");
 
     //sorting
@@ -100,12 +100,12 @@ const getAllProducts = asyncHandler(
     }
 
     //paginating
-    const skip = (page - 1) * limit;
-    query = query.skip(skip).limit(limit);
-    if (page) {
-      const productCount = await Product.countDocuments();
-      if (skip >= productCount) throw new Error("This page does not exists");
-    }
+    // const skip = (page - 1) * limit;
+    // query = query.skip(skip).limit(limit);
+    // if (page) {
+    //   const productCount = await Product.countDocuments();
+    //   if (skip >= productCount) throw new Error("This page does not exists");
+    // }
 
     const products = await query;
     return products;

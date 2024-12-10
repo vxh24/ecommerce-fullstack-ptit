@@ -4,7 +4,7 @@ import { BsSearch } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import { Typeahead } from "react-bootstrap-typeahead";
 import "react-bootstrap-typeahead/css/Typeahead.css";
-import { getAProducts } from "../features/products/productSlice";
+import { getAProducts, searchProductSlice } from "../features/products/productSlice";
 import { FaHeart } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
 import { GiShoppingCart } from "react-icons/gi";
@@ -47,7 +47,11 @@ const Header = () => {
   useEffect(() => {
     setCartlengt(userCartState?.products?.length);
   }, [userCartState])
-
+  const [searchTerm, setSearchTerm] = useState("");
+  const handleSearch = async () => {
+    dispatch(searchProductSlice(searchTerm));
+    navigate(`/product`);
+  }
   return (
     <>
       <header className="header-top-strip py-3">
@@ -77,7 +81,7 @@ const Header = () => {
               </h1>
             </div>
             <div className="col-5">
-              <div className="input-group">
+              {/* <div className="input-group">
                 <Typeahead
                   id="pagination-example"
                   onPaginate={() => console.log("Results paginated")}
@@ -90,7 +94,19 @@ const Header = () => {
                   labelKey={"name"}
                   placeholder="Tìm kiếm sản phẩm ở đây..."
                 />
-                <span className="input-group-text p-3" id="basic-addon2">
+                <span className="input-group-text p-3" id="basic-addon2" role="button" >
+                  <BsSearch className="fs-6" />
+                </span>
+              </div> */}
+              <div className="input-group" style={{ padding: "20px" }}>
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Nhập tên sản phẩm"
+                  style={{ padding: "10px", width: "400px", marginRight: "10px" }}
+                />
+                <span onClick={handleSearch} className="input-group-text p-3" id="basic-addon2" role="button" >
                   <BsSearch className="fs-6" />
                 </span>
               </div>

@@ -13,8 +13,22 @@ const getABlog = async (id) => {
     return response.data
   }
 }
+const like = async (id) => {
+  const response = await axios.put(`${base_url}blog/likes`, id, config);
+  if (response.data) {
+    return response.data
+  }
+}
+const dislike = async (id) => {
+  const response = await axios.put(`${base_url}blog/dislikes`, id, config);
+  if (response.data) {
+    return response.data
+  }
+}
 
 export const blogService = {
   getAllBlogs,
   getABlog,
+  like,
+  dislike,
 }

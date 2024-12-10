@@ -9,20 +9,21 @@ import { getAllProducts } from '../features/products/productSlice';
 import Pagination from '../components/Pagination';
 import { getBrands } from '../features/brand/brandSlice';
 import { getCategories } from '../features/category/categorySlice';
+import { useNavigate } from 'react-router-dom';
 const OurStore = () => {
   const [grid, setGrid] = useState(4);
   const productState = useSelector((state) => state?.product?.products?.data);
   const brandState = useSelector(state => state?.brand?.brands?.data);
   const categoryState = useSelector(state => state?.category?.Categories?.data);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const [tags, setTags] = useState(new Set());
   const [minPrice, setMinPrice] = useState(null);
   const [maxPrice, setMaxPrice] = useState(null);
-  const colors = useSelector(state => state?.color?.colors?.data);
   const [randomProducts, setRandomProducts] = useState([]);
   const [selectedTag, setSelectedTag] = useState("");
-  const [selectedBrand, setSelectedBrand] = useState("");
+  const [selectedBrand, setSelectedBrand] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -34,9 +35,7 @@ const OurStore = () => {
       setRandomProducts(productState);
     }
   }, [productState]);
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
   useEffect(() => {
-    dispatch(getAllProducts());
     dispatch(getBrands())
     dispatch(getCategories());
   }, []);
@@ -63,6 +62,14 @@ const OurStore = () => {
       setTags(newtags);
     }
   }, [productState]);
+  const productSearch = useSelector(state => state?.product?.search?.data);
+  const [productSearch1, setProductSearch1] = useState(productSearch);
+  useEffect(() => {
+    if (productSearch) {
+      setProducts(null);
+      setProductSearch1(productSearch);
+    }
+  }, [productSearch]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -70,6 +77,9 @@ const OurStore = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [pagination, setPagination] = useState({ page: 1, limit: 10 });
   const [filters, setFilters] = useState({ sort: "", fields: "" });
+  const indexOfLastProduct = currentPage * pagination.limit;
+  const indexOfFirstProduct = indexOfLastProduct - pagination.limit;
+  const currentProducts = products?.slice(indexOfFirstProduct, indexOfLastProduct);
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters((prevFilters) => ({
@@ -81,15 +91,16 @@ const OurStore = () => {
     setLoading(true);
     try {
       const query = new URLSearchParams({
-        ...filters,
-        page: pagination.page,
-        limit: pagination.limit,
+        ...(filters.sort !== "" && { "sort": filters.sort }),
         ...(minPrice && { "price[gte]": minPrice }),
         ...(maxPrice && { "price[lte]": maxPrice }),
-        ...(selectedBrand && { "brand": selectedBrand }),
+        ...(selectedBrand && selectedBrand.length > 0 && {
+          "brand": selectedBrand.join("&brand=")
+        }),
         ...(selectedCategory && { "category": selectedCategory }),
       }).toString();
-      const response = await axios.get(`http://localhost:5000/v1/api/product?${query}`);
+      const finalQuery = query.replace(/%26/g, "&").replace(/%3D/g, "=");
+      const response = await axios.get(`http://localhost:5000/v1/api/product?${finalQuery}`);
       setProducts(response.data.data);
       setTotalItems(response.data.data.length);
     } catch (err) {
@@ -105,17 +116,33 @@ const OurStore = () => {
       setClick(false);
       return;
     }
-    fetchProducts();
-  }, [pagination.page, filters, click, selectedBrand, selectedCategory]);
+    else if (selectedBrand) {
+      fetchProducts();
+      return;
+    }
+    else if (filters) {
+      fetchProducts();
+      return;
+    }
+  }, [filters, click, selectedBrand, selectedCategory]);
   const clearAll = () => {
     setMinPrice(null);
     setMaxPrice(null);
     setSelectedTag("");
-    setSelectedBrand("");
+    setSelectedBrand([]);
     setSelectedCategory("");
     fetchProducts();
 
   }
+  const handleBrandChange = (brand) => {
+    setSelectedBrand(prevState => {
+      if (prevState.includes(brand)) {
+        return prevState.filter(item => item !== brand);
+      } else {
+        return [...prevState, brand];
+      }
+    });
+  };
   const handlePageChange = (page) => {
     setCurrentPage(page);
     setPagination({ ...pagination, page: page });
@@ -225,7 +252,7 @@ const OurStore = () => {
                   </div> */}
                 </div>
               </div>
-              <div className='filter-card mb-3'>
+              {/* <div className='filter-card mb-3'>
                 <div class="filter-section">
                   <h3 className="filter-title">
                     Nhãn sản phẩm
@@ -247,7 +274,7 @@ const OurStore = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               <div className='filter-card mb-3'>
                 <div class="filter-section">
@@ -260,8 +287,8 @@ const OurStore = () => {
                         return (
                           <label key={index} >
                             <input
-                              checked={selectedBrand === item.title}
-                              onChange={() => setSelectedBrand(item.title)}
+                              checked={selectedBrand.includes(item.title)}
+                              onChange={() => handleBrandChange(item.title)}
                               type="checkbox" value="Shopee Mall" />{item.title}
                           </label>
                         )
@@ -331,12 +358,16 @@ const OurStore = () => {
               </div>
               <div className="products-list pb-5">
                 <div className="d-flex gap-10 flex-wrap">
-                  {products && products?.length > 0 ? (
-                    <ProductCard data={products} grid={grid} />
+                  {currentProducts && currentProducts?.length > 0 ? (
+                    <ProductCard data={currentProducts} grid={grid} />
                   )
-                    : (
-                      <p>No product</p>
-                    )}
+
+                    : productSearch1 && productSearch1.length > 0 ? (
+                      <ProductCard data={productSearch1} grid={grid} />
+                    )
+                      : (
+                        <p>No product</p>
+                      )}
 
                 </div>
               </div>

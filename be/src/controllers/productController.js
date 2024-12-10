@@ -49,7 +49,7 @@ const getProductByIdController = asyncHandler(async (req, res) => {
 const getAllProductsController = asyncHandler(async (req, res) => {
   //filtering
   const queryObj = { ...req.query };
-  const excludeFields = ["page", "sort", "limit", "fields"];
+  const excludeFields = ["sort", "fields"];
   excludeFields.forEach((el) => delete queryObj[el]);
   let queryStr = JSON.stringify(queryObj);
   queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
@@ -59,15 +59,15 @@ const getAllProductsController = asyncHandler(async (req, res) => {
   const fields = req.query.fields;
 
   //paginating
-  const page = req.query.page;
-  const limit = req.query.limit;
+  // const page = req.query.page;
+  // const limit = req.query.limit;
 
   let products = await getAllProducts(
     JSON.parse(queryStr),
     sortBy,
     fields,
-    page,
-    limit
+    // page,
+    // limit
   );
 
   res.status(200).json({

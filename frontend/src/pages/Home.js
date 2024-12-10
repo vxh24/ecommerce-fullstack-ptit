@@ -68,21 +68,21 @@ const Home = () => {
           <div className="row">
             <div className='col-8'>
               <div className="banner">
-                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                <div id="carouselExampleIndicators" className="carousel slide" data-bs-ride="carousel">
                   <div className="carousel-indicators">
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" className="active" aria-current="true" aria-label="Slide 1"></button>
                     <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
                     <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
                   </div>
                   <div className="carousel-inner">
-                    <div class="carousel-item active">
-                      <img src="https://img.lazcdn.com/us/domino/2b311bc1-5d74-447c-80fb-58a5959862f0_VN-1976-688.jpg_2200x2200q80.jpg_.avif" class="d-block w-100" alt="..." />
+                    <div className="carousel-item active">
+                      <img src="https://img.lazcdn.com/us/domino/2b311bc1-5d74-447c-80fb-58a5959862f0_VN-1976-688.jpg_2200x2200q80.jpg_.avif" className="d-block w-100" alt="..." />
                     </div>
                     <div className="carousel-item">
-                      <img src="https://img.lazcdn.com/us/domino/45a52818-c6fb-4997-abde-537071143f4a_VN-1976-688.jpg_2200x2200q80.jpg_.avif" class="d-block w-100" alt="..." />
+                      <img src="https://img.lazcdn.com/us/domino/45a52818-c6fb-4997-abde-537071143f4a_VN-1976-688.jpg_2200x2200q80.jpg_.avif" className="d-block w-100" alt="..." />
                     </div>
                     <div className="carousel-item">
-                      <img src="https://cf.shopee.vn/file/vn-11134258-7ras8-m2t71qmtks6yfb_xxhdpi" class="d-block w-100" alt="..." />
+                      <img src="https://cf.shopee.vn/file/vn-11134258-7ras8-m2t71qmtks6yfb_xxhdpi" className="d-block w-100" alt="..." />
                     </div>
                   </div>
                   <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
