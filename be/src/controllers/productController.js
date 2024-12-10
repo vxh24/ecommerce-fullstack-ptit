@@ -8,6 +8,7 @@ const {
   addToWishlist,
   rating,
   recommendProducts,
+  searchProductsByName,
 } = require("../services/productService");
 const { deleteToCloudinary } = require("../utils/cloudinary");
 
@@ -140,6 +141,17 @@ const deleteImagesController = asyncHandler(async (req, res) => {
   }
 });
 
+const searchProductsController = asyncHandler(async (req, res) => {
+  const { name } = req.query;
+
+  const products = await searchProductsByName(name);
+  res.status(200).json({
+    EC: 0,
+    message: "Search completed",
+    data: products,
+  });
+});
+
 module.exports = {
   createProductController,
   getProductByIdController,
@@ -149,4 +161,5 @@ module.exports = {
   addToWishlistController,
   ratingController,
   deleteImagesController,
+  searchProductsController,
 };

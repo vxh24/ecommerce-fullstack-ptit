@@ -11,12 +11,14 @@ const {
   addToWishlistController,
   ratingController,
   deleteImagesController,
+  searchProductsController,
 } = require("../controllers/productController");
 
 const router = express.Router();
 
 router.post("/", authMiddleware, isAdmin, createProductController);
 router.get("/", getAllProductsController);
+router.get("/search", searchProductsController);
 router.put("/wishlist", authMiddleware, addToWishlistController);
 router.put("/rating", authMiddleware, ratingController);
 router.delete(

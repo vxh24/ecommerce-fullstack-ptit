@@ -340,6 +340,18 @@ const recommendProducts = async (productId) => {
   return recommendedProducts.slice(0, 4); // Trả về top 5 sản phẩm gợi ý
 };
 
+const searchProductsByName = asyncHandler(async (name) => {
+  if (!name) {
+    throw new Error("Searc query 'name' is required");
+  }
+
+  const products = await Product.find({
+    name: { $regex: name, $options: "i" },
+  });
+
+  return products;
+});
+
 module.exports = {
   createProduct,
   getAProduct,
@@ -349,4 +361,5 @@ module.exports = {
   addToWishlist,
   rating,
   recommendProducts,
+  searchProductsByName,
 };
