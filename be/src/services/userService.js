@@ -22,17 +22,16 @@ const getUserById = asyncHandler(async (id) => {
 const updateAUser = asyncHandler(async (id, userData, file) => {
   validateMongodbId(id);
 
-  const uploadResult = await uploadSingleFile(file);
+  const updateData = {};
+  if (userData.name) updateData.name = userData.name;
+  if (userData.phone) updateData.phone = userData.phone;
 
-  const result = await User.findByIdAndUpdate(
-    id,
-    {
-      name: userData.name,
-      phone: userData.phone,
-      avatar: uploadResult.cloudinaryUrl,
-    },
-    { new: true }
-  );
+  if (file) {
+    const uploadResult = await uploadSingleFile(file);
+    updateData.avatar = uploadResult.cloudinaryUrl;
+  }
+
+  const result = await User.findByIdAndUpdate(id, updateData, { new: true });
   return result;
 });
 

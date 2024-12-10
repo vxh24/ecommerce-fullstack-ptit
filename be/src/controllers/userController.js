@@ -36,10 +36,10 @@ const getUserByIdController = asyncHandler(async (req, res) => {
 
 const updateAUserController = asyncHandler(async (req, res) => {
   const schema = Joi.object({
-    name: Joi.string().min(3).max(30).required(),
+    name: Joi.string().min(3).max(30).optional(),
     phone: Joi.string()
       .pattern(/^[0-9]{10}$/)
-      .required()
+      .optional()
       .messages({
         "string.pattern.base": "Phone number must contain exactly 10 digits",
       }),
@@ -56,10 +56,6 @@ const updateAUserController = asyncHandler(async (req, res) => {
       EC: 1,
       message: error.details[0].message,
     });
-  }
-
-  if (!file || file.length === 0) {
-    throw new Error("No images uploaded");
   }
 
   const updatedUser = await updateAUser(_id, { name, phone }, file);
