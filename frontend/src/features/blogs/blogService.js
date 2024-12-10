@@ -6,6 +6,12 @@ const getAllBlogs = async () => {
     return response.data
   }
 }
+const getAllBlogCat = async () => {
+  const response = await axios.get(`${base_url}blog-category/`);
+  if (response.data) {
+    return response.data
+  }
+}
 
 const getABlog = async (id) => {
   const response = await axios.get(`${base_url}blog/${id}`);
@@ -31,4 +37,5 @@ export const blogService = {
   getABlog,
   like,
   dislike,
+  getAllBlogCat,
 }

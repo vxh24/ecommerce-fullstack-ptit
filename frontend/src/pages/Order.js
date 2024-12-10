@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Meta from "../components/Meta";
 import BreadCrumb from "../components/BreadCrumb";
 import { useDispatch, useSelector } from "react-redux";
-import { getOrderUser } from "../features/user/userSlice";
+import { cancelOrderSlice, getOrderUser } from "../features/user/userSlice";
 import moment from "moment";
 import { AiOutlineEye } from "react-icons/ai";
 import OrderDetailCard from "../components/OrderDetailCard";
@@ -62,7 +62,16 @@ const Order = () => {
       );
     }
   };
+  const handleCancel = (id) => {
+    const isConfirmed = window.confirm("Bạn có chắc chắn muốn hủy đơn hàng này không?");
 
+    if (isConfirmed) {
+      dispatch(cancelOrderSlice(id));
+      setTimeout(() => {
+        dispatch(getOrderUser())
+      }, 500)
+    }
+  }
   const formatPrice = (amount) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -89,8 +98,8 @@ const Order = () => {
                       onClick={() => handleTabChange(index)}
                     >
                       {item}
-                      <span className={statusCounts[item] ? "statusCount" : ""}>
-                        {statusCounts[item]}
+                      <span className={statusCounts[item] && item !== "Đã hủy" ? "statusCount" : ""}>
+                        {item === "Đã hủy" ? "" : statusCounts[item]}
                       </span>
                     </button>
                   </div>
@@ -136,7 +145,7 @@ const Order = () => {
                             />
                             {item?.orderStatus === "Chờ xác nhận" && (
                               <button
-                                onClick={() => handleOpenOrderDetail(item)}
+                                onClick={() => handleCancel(item?._id)}
                                 className="btn btn-primary btn-sm"
                               >
                                 Hủy đơn

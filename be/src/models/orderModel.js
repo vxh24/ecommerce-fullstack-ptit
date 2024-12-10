@@ -20,7 +20,7 @@ const orderSchema = new mongoose.Schema(
     orderStatus: {
       type: String,
       default: "Chờ xác nhận",
-      enum: ["Chờ xác nhận", "Chờ giao hàng", "Hoàn thành", "Hủy"],
+      enum: ["Chờ xác nhận", "Chờ giao hàng", "Hoàn thành", "Đã hủy"],
     },
     orderBy: {
       type: mongoose.Schema.Types.ObjectId,

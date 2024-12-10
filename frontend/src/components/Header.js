@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { BsSearch } from "react-icons/bs";
+import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Typeahead } from "react-bootstrap-typeahead";
 import "react-bootstrap-typeahead/css/Typeahead.css";
@@ -10,6 +11,7 @@ import { CgProfile } from "react-icons/cg";
 import { GiShoppingCart } from "react-icons/gi";
 import { BiCategory } from "react-icons/bi";
 import { googleLogout } from "@react-oauth/google";
+import { getCategories } from '../features/category/categorySlice';
 import {
   getProfileSlice,
   getUserCart,
@@ -17,9 +19,11 @@ import {
 } from "../features/user/userSlice";
 const Header = () => {
   const profileState = useSelector((state) => state?.auth?.profile?.data);
+  const categoryState = useSelector(state => state?.category?.Categories?.data);
   useEffect(() => {
     dispatch(getProfileSlice());
     dispatch(getUserCart());
+    dispatch(getCategories());
   }, []);
   const handleLogout = () => {
     // dispatch(logoutSlice());
@@ -28,26 +32,24 @@ const Header = () => {
     window.location.reload();
   };
   const authState = useSelector((state) => state?.auth);
-  const [paginate, setPaginate] = useState(true);
   const dispatch = useDispatch();
   const productState = useSelector((state) => state?.product?.products?.data);
   const userCartState = useSelector((state) => state?.auth?.cartUser?.cart);
-  const [productOpt, setProductOpt] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [cartlengt, setCartlengt] = useState();
   const [showCartDropdown, setShowCartDropdown] = useState(false);
   const navigate = useNavigate();
+  const [products, setProducts] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [totalItems, setTotalItems] = useState(0);
+  const [error, setError] = useState(null);
   useEffect(() => {
-    let data = [];
-    let category = new Set();
-    for (let index = 0; index < productState?.length; index++) {
-      const element = productState[index];
-      data.push({ id: index, prod: element?._id, name: element?.name });
-      category.add(element?.category);
+    if (selectedCategory) {
+      // fetchProducts();
+      // navigate('/product')
+      navigate("/product", { state: { category: selectedCategory } });
     }
-    setProductOpt(data);
-    setCategories([...category]);
-  }, [productState]);
+    // fetchProducts();
+  }, [selectedCategory]);
   useEffect(() => {
     setCartlengt(userCartState?.products?.length);
   }, [userCartState])
@@ -99,23 +101,6 @@ const Header = () => {
               </h1>
             </div>
             <div className="col-5">
-              {/* <div className="input-group">
-                <Typeahead
-                  id="pagination-example"
-                  onPaginate={() => console.log("Results paginated")}
-                  options={productOpt}
-                  onChange={(selected) => {
-                    navigate(`product/${selected[0]?.prod}`);
-                    dispatch(getAProducts(selected[0]?.prod));
-                  }}
-                  paginate={paginate}
-                  labelKey={"name"}
-                  placeholder="Tìm kiếm sản phẩm ở đây..."
-                />
-                <span className="input-group-text p-3" id="basic-addon2" role="button" >
-                  <BsSearch className="fs-6" />
-                </span>
-              </div> */}
               <div className="input-group" style={{ padding: "20px" }}>
                 <input
                   type="text"
@@ -316,12 +301,12 @@ const Header = () => {
                     </span>
                   </button>
                   <ul className="dropdown-menu" aria-labelledby="dropdownMenu2">
-                    {categories &&
-                      categories?.map((item, index) => {
+                    {categoryState &&
+                      categoryState?.map((item, index) => {
                         return (
                           <li key={index} className="mt-0">
-                            <button className="dropdown-item text-dark bold-text">
-                              {item}
+                            <button className="dropdown-item text-dark bold-text" onClick={() => setSelectedCategory(item.title)}>
+                              {item.title}
                             </button>
                           </li>
                         );

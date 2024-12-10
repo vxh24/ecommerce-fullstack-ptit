@@ -9,8 +9,11 @@ import { getAllProducts } from '../features/products/productSlice';
 import Pagination from '../components/Pagination';
 import { getBrands } from '../features/brand/brandSlice';
 import { getCategories } from '../features/category/categorySlice';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 const OurStore = () => {
+  const location = useLocation();
+  const message = location.state || {};
+  // console.log(message.category)
   const [grid, setGrid] = useState(4);
   const productState = useSelector((state) => state?.product?.products?.data);
   const brandState = useSelector(state => state?.brand?.brands?.data);
@@ -62,6 +65,7 @@ const OurStore = () => {
       setTags(newtags);
     }
   }, [productState]);
+  // console.log(tags);
   const productSearch = useSelector(state => state?.product?.search?.data);
   const [productSearch1, setProductSearch1] = useState(productSearch);
   useEffect(() => {
@@ -75,7 +79,7 @@ const OurStore = () => {
   const [error, setError] = useState(null);
   const [click, setClick] = useState(false);
   const [totalItems, setTotalItems] = useState(0);
-  const [pagination, setPagination] = useState({ page: 1, limit: 10 });
+  const [pagination, setPagination] = useState({ page: 1, limit: 8 });
   const [filters, setFilters] = useState({ sort: "", fields: "" });
   const indexOfLastProduct = currentPage * pagination.limit;
   const indexOfFirstProduct = indexOfLastProduct - pagination.limit;
@@ -109,7 +113,13 @@ const OurStore = () => {
       setLoading(false);
     }
   };
-
+  useEffect(() => {
+    setTimeout(() => {
+      if (message) {
+        setSelectedCategory(message.category)
+      }
+    }, 100)
+  }, [])
   useEffect(() => {
     if (click === true) {
       fetchProducts();
@@ -124,7 +134,13 @@ const OurStore = () => {
       fetchProducts();
       return;
     }
+    else if (selectedCategory) {
+      fetchProducts();
+      return;
+    }
+
   }, [filters, click, selectedBrand, selectedCategory]);
+  console.log(selectedCategory);
   const clearAll = () => {
     setMinPrice(null);
     setMaxPrice(null);
@@ -146,10 +162,15 @@ const OurStore = () => {
   const handlePageChange = (page) => {
     setCurrentPage(page);
     setPagination({ ...pagination, page: page });
-    console.log(`Chuyển sang trang ${page}`);
   };
 
-  if (loading) return <div>Đang tải sản phẩm...</div>;
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-text">Đang tải sản phẩm...</div>
+      </div>
+    );
+  }
   if (error) return <div>{error}</div>;
 
   return (
@@ -277,7 +298,7 @@ const OurStore = () => {
               </div> */}
 
               <div className='filter-card mb-3'>
-                <div class="filter-section">
+                <div className="filter-section">
                   <h3 className="filter-title">
                     Thương hiệu
                   </h3>

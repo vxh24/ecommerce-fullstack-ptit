@@ -173,9 +173,8 @@ const handlePaymentCallback = asyncHandler(async (userId, callbackData) => {
   const timestamp = Number(responseTime);
   const date = new Date(timestamp);
 
-  const formattedDate = `${date.getDate()}/${
-    date.getMonth() + 1
-  }/${date.getFullYear()}`;
+  const formattedDate = `${date.getDate()}/${date.getMonth() + 1
+    }/${date.getFullYear()}`;
 
   const { orderAddress } = JSON.parse(extraData || "{}");
 
@@ -272,7 +271,7 @@ const cancelOrder = asyncHandler(async (userId, orderId) => {
     );
   }
 
-  order.orderStatus = "Hủy";
+  order.orderStatus = "Đã hủy";
   await order.save();
 });
 
