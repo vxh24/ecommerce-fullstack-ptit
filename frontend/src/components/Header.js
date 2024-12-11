@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { NavLink, Link, useNavigate } from "react-router-dom";
+import { NavLink, Link, useNavigate, useLocation } from "react-router-dom";
 import { BsSearch } from "react-icons/bs";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -33,6 +33,7 @@ const Header = () => {
   };
   const authState = useSelector((state) => state?.auth);
   const dispatch = useDispatch();
+  const location = useLocation();
   const productState = useSelector((state) => state?.product?.products?.data);
   const userCartState = useSelector((state) => state?.auth?.cartUser?.cart);
   const [cartlengt, setCartlengt] = useState();
@@ -46,6 +47,7 @@ const Header = () => {
     if (selectedCategory) {
       // fetchProducts();
       // navigate('/product')
+      navigate(location.pathname, { replace: true, state: null });
       navigate("/product", { state: { category: selectedCategory } });
     }
     // fetchProducts();
@@ -55,8 +57,9 @@ const Header = () => {
   }, [userCartState])
   const [searchTerm, setSearchTerm] = useState("");
   const handleSearch = async () => {
-    dispatch(searchProductSlice(searchTerm));
-    navigate(`/product`);
+    // dispatch(searchProductSlice(searchTerm));
+    navigate(location?.pathname, { replace: true, state: null });
+    navigate("/product", { state: { message: searchTerm } });
   }
   const formatPrice = (amount) => {
     return new Intl.NumberFormat("vi-VN", {

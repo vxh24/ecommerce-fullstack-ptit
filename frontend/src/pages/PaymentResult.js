@@ -77,7 +77,11 @@ const PaymentResult = () => {
   };
 
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <div className="loading-container">
+        <div className="loading-text">Đang tạo đơn hàng...</div>
+      </div>
+    );
   }
 
   if (!paymentDetails) {
@@ -127,7 +131,7 @@ const PaymentResult = () => {
                         <td>
                           <strong>Địa chỉ</strong>
                         </td>
-                        <td>{paymentDetails.extraData}</td>
+                        <td>{paymentDetails.extraData.slice(17, paymentDetails.extraData.length - 2)}</td>
                       </tr>
                     </tbody>
                   </table>

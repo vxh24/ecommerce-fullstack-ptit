@@ -5,7 +5,7 @@ import Meta from '../components/Meta';
 import ReactStars from "react-rating-stars-component";
 import ProductCard from '../components/ProductCard';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllProducts } from '../features/products/productSlice';
+import { getAllProducts, searchProductSlice } from '../features/products/productSlice';
 import Pagination from '../components/Pagination';
 import { getBrands } from '../features/brand/brandSlice';
 import { getCategories } from '../features/category/categorySlice';
@@ -13,7 +13,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 const OurStore = () => {
   const location = useLocation();
   const message = location.state || {};
-  // console.log(message.category)
   const [grid, setGrid] = useState(4);
   const productState = useSelector((state) => state?.product?.products?.data);
   const brandState = useSelector(state => state?.brand?.brands?.data);
@@ -27,7 +26,7 @@ const OurStore = () => {
   const [randomProducts, setRandomProducts] = useState([]);
   const [selectedTag, setSelectedTag] = useState("");
   const [selectedBrand, setSelectedBrand] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(message.category || "");
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
@@ -115,11 +114,23 @@ const OurStore = () => {
   };
   useEffect(() => {
     setTimeout(() => {
-      if (message) {
+      if (message.category) {
         setSelectedCategory(message.category)
       }
     }, 100)
-  }, [])
+  }, [message.category])
+  useEffect(() => {
+    setTimeout(() => {
+      if (message.message) {
+        setSelectedCategory("");
+        dispatch(searchProductSlice(message.message));
+      }
+      // setSelectedCategory("");
+    }, 100)
+    setTimeout(() => {
+      navigate(location.pathname, { replace: true, state: null });
+    }, 800)
+  }, [message.message, selectedCategory])
   useEffect(() => {
     if (click === true) {
       fetchProducts();
@@ -138,7 +149,6 @@ const OurStore = () => {
       fetchProducts();
       return;
     }
-
   }, [filters, click, selectedBrand, selectedCategory]);
   console.log(selectedCategory);
   const clearAll = () => {
@@ -191,7 +201,12 @@ const OurStore = () => {
                       categoryState && categoryState?.map((item, index) => {
                         return (
                           <li
-                            onClick={() => setSelectedCategory(item.title)}
+                            onClick={() => {
+                              setSelectedCategory(item.title); setProductSearch1(null);
+                              if (message.message !== null) {
+                                navigate(location.pathname, { replace: true, state: null });
+                              }
+                            }}
                             // className='mb-2' 
                             className={selectedCategory === item.title ? "mb-2 text-red" : "mb-2"}
                             key={index}>{item.title}</li>
@@ -367,7 +382,7 @@ const OurStore = () => {
                     </div>
                   </div>
                   <div className='d-flex align-items-center gap-10'>
-                    <p className='totalproducts mb-0'>{products?.length} Sản phẩm</p>
+                    <p className='totalproducts mb-0'>{productSearch1 ? productSearch1.length : products?.length} Sản phẩm</p>
                     <div className="d-flex align-items-center gap-10 grid">
                       <img onClick={() => { setGrid(3); }} src="images/gr4.svg" className="d-block img-fluid" alt="grid" />
                       <img onClick={() => { setGrid(4); }} src="images/gr3.svg" className="d-block img-fluid" alt="grid" />

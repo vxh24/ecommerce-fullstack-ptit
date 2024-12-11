@@ -104,7 +104,7 @@ const Checkout = () => {
       setTimeout(() => {
         dispatch(getUserCart());
         navigate("/my-orders");
-      }, 500)
+      }, 1000)
     }
     if (payment === 2) {
       dispatch(

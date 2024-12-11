@@ -8,7 +8,7 @@ const Order = require("../models/orderModel");
 const uniqid = require("uniqid");
 const axios = require("axios");
 const crypto = require("crypto");
-
+const { sendEmail, sendOrderConfirmationEmail } = require("./emailService");
 var accessKey = process.env.ACCESS_KEY;
 var secretKey = process.env.SECRET_KEY_MOMO;
 var partnerCode = process.env.PARTNER_CODE;
@@ -23,7 +23,11 @@ const createOrderByCOD = asyncHandler(
       throw new Error("User not found");
     }
 
-    let userCart = await Cart.findOne({ orderBy: user._id });
+    let userCart = await Cart.findOne({ orderBy: user._id })
+      .populate({
+        path: "products.product",
+        select: "name images",
+      });
 
     if (!userCart) {
       throw new Error("Cart not found");
@@ -54,7 +58,7 @@ const createOrderByCOD = asyncHandler(
     await Product.bulkWrite(update, {});
 
     await Cart.findByIdAndDelete(userCart._id);
-
+    await sendOrderConfirmationEmail(user, newOrder, userCart, "COD");
     return newOrder;
   }
 );
@@ -153,7 +157,11 @@ const handlePaymentCallback = asyncHandler(async (userId, callbackData) => {
     throw new Error("User not found");
   }
 
-  let userCart = await Cart.findOne({ orderBy: user._id });
+  let userCart = await Cart.findOne({ orderBy: user._id })
+    .populate({
+      path: "products.product",
+      select: "name images",
+    });
 
   if (!userCart) {
     throw new Error("Cart not found");
@@ -209,7 +217,7 @@ const handlePaymentCallback = asyncHandler(async (userId, callbackData) => {
     await Product.bulkWrite(update, {});
 
     await Cart.findByIdAndDelete(userCart._id);
-
+    await sendOrderConfirmationEmail(user, order, userCart, "MONO");
     return order;
   } else {
     throw new Error(`Payment failed: ${message}`);

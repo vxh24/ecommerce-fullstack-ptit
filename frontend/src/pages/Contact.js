@@ -8,6 +8,7 @@ import * as yup from "yup";
 import { useFormik } from "formik";
 import { useDispatch } from 'react-redux';
 import { createQuery } from "../features/contact/contactSlice"
+import { toast } from 'react-toastify';
 const contactSchema = yup.object({
   name: yup.string().required("Name is Require"),
   email: yup.string().nullable().email("Email should be valid"),
@@ -27,7 +28,7 @@ const Contact = () => {
     validationSchema: contactSchema,
     onSubmit: (values) => {
       dispatch(createQuery(values));
-      // alert(JSON.stringify(values, null, 2));
+      toast.success("Gửi phản hồi thành công");
     },
   });
   return (
