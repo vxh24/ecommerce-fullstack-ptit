@@ -13,6 +13,7 @@ const createEnquiryController = asyncHandler(async (req, res) => {
     res.status(200).json({
       EC: 0,
       data: result,
+      message: "Enquiry created and email sent to admin",
     });
   } catch (error) {
     throw new Error(error);

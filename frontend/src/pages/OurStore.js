@@ -5,25 +5,28 @@ import Meta from '../components/Meta';
 import ReactStars from "react-rating-stars-component";
 import ProductCard from '../components/ProductCard';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllProducts } from '../features/products/productSlice';
+import { getAllProducts, searchProductSlice } from '../features/products/productSlice';
 import Pagination from '../components/Pagination';
 import { getBrands } from '../features/brand/brandSlice';
 import { getCategories } from '../features/category/categorySlice';
+import { useLocation, useNavigate } from 'react-router-dom';
 const OurStore = () => {
+  const location = useLocation();
+  const message = location.state || {};
   const [grid, setGrid] = useState(4);
   const productState = useSelector((state) => state?.product?.products?.data);
   const brandState = useSelector(state => state?.brand?.brands?.data);
   const categoryState = useSelector(state => state?.category?.Categories?.data);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const [tags, setTags] = useState(new Set());
   const [minPrice, setMinPrice] = useState(null);
   const [maxPrice, setMaxPrice] = useState(null);
-  const colors = useSelector(state => state?.color?.colors?.data);
   const [randomProducts, setRandomProducts] = useState([]);
   const [selectedTag, setSelectedTag] = useState("");
-  const [selectedBrand, setSelectedBrand] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedBrand, setSelectedBrand] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(message.category || "");
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
@@ -34,9 +37,7 @@ const OurStore = () => {
       setRandomProducts(productState);
     }
   }, [productState]);
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
   useEffect(() => {
-    dispatch(getAllProducts());
     dispatch(getBrands())
     dispatch(getCategories());
   }, []);
@@ -63,13 +64,25 @@ const OurStore = () => {
       setTags(newtags);
     }
   }, [productState]);
+  // console.log(tags);
+  const productSearch = useSelector(state => state?.product?.search?.data);
+  const [productSearch1, setProductSearch1] = useState(productSearch);
+  useEffect(() => {
+    if (productSearch) {
+      setProducts(null);
+      setProductSearch1(productSearch);
+    }
+  }, [productSearch]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [click, setClick] = useState(false);
   const [totalItems, setTotalItems] = useState(0);
-  const [pagination, setPagination] = useState({ page: 1, limit: 10 });
+  const [pagination, setPagination] = useState({ page: 1, limit: 8 });
   const [filters, setFilters] = useState({ sort: "", fields: "" });
+  const indexOfLastProduct = currentPage * pagination.limit;
+  const indexOfFirstProduct = indexOfLastProduct - pagination.limit;
+  const currentProducts = products?.slice(indexOfFirstProduct, indexOfLastProduct);
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters((prevFilters) => ({
@@ -81,15 +94,16 @@ const OurStore = () => {
     setLoading(true);
     try {
       const query = new URLSearchParams({
-        ...filters,
-        page: pagination.page,
-        limit: pagination.limit,
+        ...(filters.sort !== "" && { "sort": filters.sort }),
         ...(minPrice && { "price[gte]": minPrice }),
         ...(maxPrice && { "price[lte]": maxPrice }),
-        ...(selectedBrand && { "brand": selectedBrand }),
+        ...(selectedBrand && selectedBrand.length > 0 && {
+          "brand": selectedBrand.join("&brand=")
+        }),
         ...(selectedCategory && { "category": selectedCategory }),
       }).toString();
-      const response = await axios.get(`http://localhost:5000/v1/api/product?${query}`);
+      const finalQuery = query.replace(/%26/g, "&").replace(/%3D/g, "=");
+      const response = await axios.get(`http://localhost:5000/v1/api/product?${finalQuery}`);
       setProducts(response.data.data);
       setTotalItems(response.data.data.length);
     } catch (err) {
@@ -98,31 +112,75 @@ const OurStore = () => {
       setLoading(false);
     }
   };
-
+  useEffect(() => {
+    setTimeout(() => {
+      if (message.category) {
+        setSelectedCategory(message.category)
+      }
+    }, 100)
+  }, [message.category])
+  useEffect(() => {
+    setTimeout(() => {
+      if (message.message) {
+        setSelectedCategory("");
+        dispatch(searchProductSlice(message.message));
+      }
+      // setSelectedCategory("");
+    }, 100)
+    setTimeout(() => {
+      navigate(location.pathname, { replace: true, state: null });
+    }, 800)
+  }, [message.message, selectedCategory])
   useEffect(() => {
     if (click === true) {
       fetchProducts();
       setClick(false);
       return;
     }
-    fetchProducts();
-  }, [pagination.page, filters, click, selectedBrand, selectedCategory]);
+    else if (selectedBrand) {
+      fetchProducts();
+      return;
+    }
+    else if (filters) {
+      fetchProducts();
+      return;
+    }
+    else if (selectedCategory) {
+      fetchProducts();
+      return;
+    }
+  }, [filters, click, selectedBrand, selectedCategory]);
+  console.log(selectedCategory);
   const clearAll = () => {
     setMinPrice(null);
     setMaxPrice(null);
     setSelectedTag("");
-    setSelectedBrand("");
+    setSelectedBrand([]);
     setSelectedCategory("");
     fetchProducts();
 
   }
+  const handleBrandChange = (brand) => {
+    setSelectedBrand(prevState => {
+      if (prevState.includes(brand)) {
+        return prevState.filter(item => item !== brand);
+      } else {
+        return [...prevState, brand];
+      }
+    });
+  };
   const handlePageChange = (page) => {
     setCurrentPage(page);
     setPagination({ ...pagination, page: page });
-    console.log(`Chuyển sang trang ${page}`);
   };
 
-  if (loading) return <div>Đang tải sản phẩm...</div>;
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-text">Đang tải sản phẩm...</div>
+      </div>
+    );
+  }
   if (error) return <div>{error}</div>;
 
   return (
@@ -143,7 +201,12 @@ const OurStore = () => {
                       categoryState && categoryState?.map((item, index) => {
                         return (
                           <li
-                            onClick={() => setSelectedCategory(item.title)}
+                            onClick={() => {
+                              setSelectedCategory(item.title); setProductSearch1(null);
+                              if (message.message !== null) {
+                                navigate(location.pathname, { replace: true, state: null });
+                              }
+                            }}
                             // className='mb-2' 
                             className={selectedCategory === item.title ? "mb-2 text-red" : "mb-2"}
                             key={index}>{item.title}</li>
@@ -225,7 +288,7 @@ const OurStore = () => {
                   </div> */}
                 </div>
               </div>
-              <div className='filter-card mb-3'>
+              {/* <div className='filter-card mb-3'>
                 <div class="filter-section">
                   <h3 className="filter-title">
                     Nhãn sản phẩm
@@ -247,10 +310,10 @@ const OurStore = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               <div className='filter-card mb-3'>
-                <div class="filter-section">
+                <div className="filter-section">
                   <h3 className="filter-title">
                     Thương hiệu
                   </h3>
@@ -260,8 +323,8 @@ const OurStore = () => {
                         return (
                           <label key={index} >
                             <input
-                              checked={selectedBrand === item.title}
-                              onChange={() => setSelectedBrand(item.title)}
+                              checked={selectedBrand.includes(item.title)}
+                              onChange={() => handleBrandChange(item.title)}
                               type="checkbox" value="Shopee Mall" />{item.title}
                           </label>
                         )
@@ -319,7 +382,7 @@ const OurStore = () => {
                     </div>
                   </div>
                   <div className='d-flex align-items-center gap-10'>
-                    <p className='totalproducts mb-0'>{products?.length} Sản phẩm</p>
+                    <p className='totalproducts mb-0'>{productSearch1 ? productSearch1.length : products?.length} Sản phẩm</p>
                     <div className="d-flex align-items-center gap-10 grid">
                       <img onClick={() => { setGrid(3); }} src="images/gr4.svg" className="d-block img-fluid" alt="grid" />
                       <img onClick={() => { setGrid(4); }} src="images/gr3.svg" className="d-block img-fluid" alt="grid" />
@@ -331,12 +394,16 @@ const OurStore = () => {
               </div>
               <div className="products-list pb-5">
                 <div className="d-flex gap-10 flex-wrap">
-                  {products && products?.length > 0 ? (
-                    <ProductCard data={products} grid={grid} />
+                  {currentProducts && currentProducts?.length > 0 ? (
+                    <ProductCard data={currentProducts} grid={grid} />
                   )
-                    : (
-                      <p>No product</p>
-                    )}
+
+                    : productSearch1 && productSearch1.length > 0 ? (
+                      <ProductCard data={productSearch1} grid={grid} />
+                    )
+                      : (
+                        <p>No product</p>
+                      )}
 
                 </div>
               </div>

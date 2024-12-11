@@ -92,7 +92,7 @@ const Checkout = () => {
       sum =
         sum +
         Number(userCartState.products[index].count) *
-          userCartState.products[index].price;
+        userCartState.products[index].price;
       setTotalAmount(sum);
     }
   }, [userCartState]);
@@ -104,7 +104,7 @@ const Checkout = () => {
       setTimeout(() => {
         dispatch(getUserCart());
         navigate("/my-orders");
-      }, 200);
+      }, 1000)
     }
     if (payment === 2) {
       dispatch(
@@ -174,7 +174,7 @@ const Checkout = () => {
                         <strong className="address-name">
                           {addressSelect?.name &&
                             addressSelect?.name.charAt(0).toUpperCase() +
-                              addressSelect?.name.slice(1)}
+                            addressSelect?.name.slice(1)}
                         </strong>
                         <span className="address-phone">
                           - {addressSelect?.phone}
@@ -200,7 +200,7 @@ const Checkout = () => {
                         <strong className="address-name">
                           {address?.name &&
                             address?.name.charAt(0).toUpperCase() +
-                              address?.name.slice(1)}
+                            address?.name.slice(1)}
                         </strong>
                         <span className="address-phone">
                           - {address?.phone}
@@ -243,7 +243,7 @@ const Checkout = () => {
                           >
                             {address?.name &&
                               address?.name.charAt(0).toUpperCase() +
-                                address?.name.slice(1)}
+                              address?.name.slice(1)}
                             - {address.phone}, {address.specificAddress},{" "}
                             {address.commune}, {address.district},{" "}
                             {address.city}

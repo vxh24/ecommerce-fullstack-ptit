@@ -28,9 +28,6 @@ export const contactSlice = createSlice({
       state.isError = false;
       state.isSuccess = true;
       state.contacts = action.payload;
-      if (state.isSuccess === true) {
-        toast.success("Contact Form Submitted Successfully!!!")
-      }
     }).addCase(createQuery.rejected, (state, action) => {
       state.isError = true;
       state.isLoading = false;

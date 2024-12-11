@@ -109,6 +109,7 @@ export const momoOrderUser = createAsyncThunk(
       transId,
       partnerCode,
       responseTime,
+      extraData
     },
     thunkAPI
   ) => {
@@ -121,6 +122,7 @@ export const momoOrderUser = createAsyncThunk(
         transId,
         partnerCode,
         responseTime,
+        extraData,
       });
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
@@ -246,6 +248,16 @@ export const updateProfleSlice = createAsyncThunk(
   async ({ id, data }, thunkAPI) => {
     try {
       return await authService.updateProfileUser({ id, data });
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+export const cancelOrderSlice = createAsyncThunk(
+  "order/update",
+  async (id, thunkAPI) => {
+    try {
+      return await authService.cancelOrder(id);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -646,6 +658,22 @@ export const authSlice = createSlice({
         toast.success("Cập nhật thành công");
       })
       .addCase(updateProfleSlice.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+      })
+      .addCase(cancelOrderSlice.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(cancelOrderSlice.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.cancel = action.payload;
+        toast.success("Đã hủy thành công");
+      })
+      .addCase(cancelOrderSlice.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;

@@ -79,7 +79,7 @@ const Couponlist = () => {
         expiry: moment(couponState[i].expiry).format("DD/MM/YYYY"),
         action: (
           <>
-            <div>
+            <div className="d-flex align-items-center gap-10">
               <Link
                 // to={`/admin/coupon/${couponState[i]._id}`}
                 onClick={() => {

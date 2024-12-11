@@ -12,40 +12,6 @@ import moment from "moment";
 import { getAllProducts } from "../features/products/productSlice";
 import Chat from "../components/Chat";
 const Home = () => {
-  const banners = [
-    { id: 1, image: "/images/main-banner-1.jpg" },
-    { id: 2, image: "/images/main-banner.jpg" },
-    { id: 3, image: "/images/catbanner-01.jpg" },
-    { id: 3, image: "/images/catbanner-02.jpg" },
-    { id: 3, image: "/images/catbanner-03.jpg" },
-  ];
-
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [direction, setDirection] = useState("next");
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (direction === "next") {
-        setCurrentIndex((prevIndex) => {
-          if (prevIndex === banners.length - 1) {
-            setDirection("prev");
-            return prevIndex - 1;
-          }
-          return prevIndex + 1;
-        });
-      } else {
-        setCurrentIndex((prevIndex) => {
-          if (prevIndex === 0) {
-            setDirection("next");
-            return prevIndex + 1;
-          }
-          return prevIndex - 1;
-        });
-      }
-    }, 2000);
-
-    return () => clearInterval(interval);
-  }, [direction]);
   const blogState = useSelector((state) => state?.blog?.blogs?.data);
   const firstFourBlogs = blogState?.slice(0, 4) || [];
   const productState = useSelector((state) => state?.product?.products?.data);
@@ -290,7 +256,8 @@ const Home = () => {
             <div className="row">
               {productState &&
                 productState?.map((item, index) => {
-                  if (item?.tags?.includes("featured")) {
+                  const parsedTags = JSON.parse(item.tags);
+                  if (parsedTags.includes("featured")) {
                     return (
                       <FeaturedProduct
                         key={index}
@@ -323,7 +290,8 @@ const Home = () => {
           <div className="row">
             {productState &&
               productState?.map((item, index) => {
-                if (item?.tags?.includes("special")) {
+                const parsedTags = JSON.parse(item.tags);
+                if (parsedTags.includes("special")) {
                   return (
                     <SpecialProduct
                       key={index}
@@ -334,6 +302,7 @@ const Home = () => {
                       sold={item?.sold}
                       quantity={item?.quantity}
                       id={item?._id}
+                      image={item?.images}
                     />
                   );
                 }
@@ -352,7 +321,8 @@ const Home = () => {
             <div className="row">
               {productState &&
                 productState?.map((item, index) => {
-                  if (item?.tags?.includes("popular")) {
+                  const parsedTags = JSON.parse(item.tags);
+                  if (parsedTags.includes("popular")) {
                     return (
                       <PopularProduct
                         key={index}

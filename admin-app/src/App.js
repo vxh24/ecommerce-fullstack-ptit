@@ -25,6 +25,7 @@ import AddCoupon from "./pages/AddCoupon";
 import ViewEnquiry from "./pages/ViewEnquiry";
 import ViewOrder from "./pages/ViewOrder";
 import EditProduct from "./pages/EditProduct";
+import ChatMain from "./pages/ChatMain";
 
 function App() {
   return (
@@ -61,6 +62,7 @@ function App() {
           <Route path="list-product" element={<ProductList />} />
           <Route path="product" element={<AddProduct />} />
           <Route path="edit-product/:id" element={<EditProduct />} />
+          <Route path="messages" element={<ChatMain />} />
         </Route>
       </Routes>
     </Router>

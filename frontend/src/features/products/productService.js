@@ -25,10 +25,17 @@ const rateProduct = async (data) => {
     return response.data
   }
 }
+const searchProduct = async (name) => {
+  const response = await axios.get(`${base_url}product/search?name=${name}`, config);
+  if (response.data) {
+    return response.data
+  }
+}
 
 export const productService = {
   getAllProducts,
   addToWishlist,
   getAProducts,
-  rateProduct
+  rateProduct,
+  searchProduct,
 }

@@ -99,6 +99,7 @@ const momoOrder = async ({
   transId,
   partnerCode,
   responseTime,
+  extraData,
 }) => {
   const response = await axios.post(
     `${base_url}order/payment-callback`,
@@ -110,6 +111,7 @@ const momoOrder = async ({
       transId,
       partnerCode,
       responseTime,
+      extraData,
     },
     config
   );
@@ -218,6 +220,15 @@ const updateProfileUser = async ({ id, data }) => {
     return response.data;
   }
 };
+const cancelOrder = async (id) => {
+  const response = await axios.put(
+    `${base_url}order/cancel-order/${id}`, { data: {} },
+    config
+  );
+  if (response.data) {
+    return response.data;
+  }
+};
 
 export const authService = {
   createUser,
@@ -242,5 +253,6 @@ export const authService = {
   momoOrder,
   applyCoupon,
   createPayment,
-  updateProfileUser
+  updateProfileUser,
+  cancelOrder
 };

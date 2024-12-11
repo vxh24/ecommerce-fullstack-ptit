@@ -37,7 +37,7 @@ const Login = () => {
       navigate("/");
       setTimeout(() => {
         window.location.reload();
-      }, 500);
+      }, 1000);
     }
   }, [authState]);
   const handleSuccess = async (credentialResponse) => {
@@ -46,7 +46,7 @@ const Login = () => {
       navigate("/");
       setTimeout(() => {
         window.location.reload();
-      }, 500);
+      }, 1000);
     } catch (error) {
       console.error("Google login failed:", error);
     }

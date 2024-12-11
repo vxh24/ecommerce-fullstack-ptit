@@ -77,22 +77,26 @@ const BlogList = () => {
 
         action: (
           <>
-            <Link
-              // to={`/admin/blog/${getBlogState[i].id}`}
-              onClick={() => {
-                setClick1(true);
-                setBlog(getBlogState[i]);
-              }}
-              className=" fs-3 text-danger border-0 bg-transparent"
-            >
-              <BiEdit />
-            </Link>
-            <button
-              className="ms-3 fs-3 text-danger bg-transparent border-0"
-              onClick={() => showModal(getBlogState[i]._id)}
-            >
-              <AiFillDelete />
-            </button>
+            <div className="d-flex align-items-center gap-10">
+
+
+              <Link
+                // to={`/admin/blog/${getBlogState[i].id}`}
+                onClick={() => {
+                  setClick1(true);
+                  setBlog(getBlogState[i]);
+                }}
+                className=" fs-3 text-danger border-0 bg-transparent"
+              >
+                <BiEdit />
+              </Link>
+              <button
+                className="ms-3 fs-3 text-danger bg-transparent border-0"
+                onClick={() => showModal(getBlogState[i]._id)}
+              >
+                <AiFillDelete />
+              </button>
+            </div>
           </>
         ),
       });
