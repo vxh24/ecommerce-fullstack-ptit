@@ -7,6 +7,7 @@ import {
   AiOutlineBgColors,
 } from "react-icons/ai";
 import { RiCouponLine } from "react-icons/ri";
+import { BiMessageAltDetail } from "react-icons/bi";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Link, useLocation } from "react-router-dom";
@@ -89,6 +90,11 @@ const MainLayout = () => {
       key: "enquiries",
       icon: <FaClipboardList className="fs-4" />,
       label: "Quản lý khảo sát khách hàng",
+    },
+    {
+      key: "messages",
+      icon: <BiMessageAltDetail className="fs-4" />,
+      label: "Quản lý tin nhắn",
     },
   ];
 
