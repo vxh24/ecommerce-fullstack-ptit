@@ -14,6 +14,7 @@ const colorRoute = require("./src/routes/colorRoute");
 const couponRoute = require("./src/routes/couponRoute");
 const enquiryRoute = require("./src/routes/enquiryRoute");
 const orderRoute = require("./src/routes/orderRoute");
+const messageRoute = require("./src/routes/messageRoute");
 
 const { notFound, errorHandler } = require("./src/middlewares/errorHandler");
 const fileUpload = require("express-fileupload");
@@ -22,8 +23,8 @@ const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const cors = require("cors");
 const { initAdminAccount } = require("./src/services/authService");
+const { app, server } = require("./src/socket/socket");
 
-const app = express();
 const port = process.env.PORT || 4000;
 
 app.use(cors());
@@ -54,6 +55,7 @@ app.use("/v1/api/color", colorRoute);
 app.use("/v1/api/coupon", couponRoute);
 app.use("/v1/api/enquiry", enquiryRoute);
 app.use("/v1/api/order", orderRoute);
+app.use("/v1/api/message", messageRoute);
 
 app.use(notFound);
 app.use(errorHandler);
@@ -64,7 +66,7 @@ app.use(errorHandler);
     //using mongoose
     await connection();
 
-    app.listen(port, () => {
+    server.listen(port, () => {
       console.log(`Backend Nodejs App listening on port ${port}`);
       initAdminAccount();
     });

@@ -62,6 +62,7 @@ const handleLogin = asyncHandler(async (email, password) => {
         access_token,
         refresh_token,
         user: {
+          id: user._id,
           email: user.email,
           name: user.name,
         },
