@@ -1,8 +1,6 @@
-import React, { useEffect, useState, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
 import Marquee from "react-fast-marquee";
 import BlogCard from "../components/BlogCard";
-import ProductCard from "../components/ProductCard";
 import SpecialProduct from "../components/SpecialProduct";
 import PopularProduct from "../components/PopularProduct";
 import FeaturedProduct from "../components/FeaturedProduct";
@@ -10,13 +8,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllBlog } from "../features/blogs/blogSlice";
 import moment from "moment";
 import { getAllProducts } from "../features/products/productSlice";
-import Chat from "../components/Chat";
 const Home = () => {
   const blogState = useSelector((state) => state?.blog?.blogs?.data);
   const firstFourBlogs = blogState?.slice(0, 4) || [];
   const productState = useSelector((state) => state?.product?.products?.data);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   useEffect(() => {
     getBlogs();
     getProducts();
@@ -27,6 +23,15 @@ const Home = () => {
   const getProducts = () => {
     dispatch(getAllProducts());
   };
+
+  const formatPrice = (amount) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
   return (
     <>
       <section className="home-wraper-1 py-5">
@@ -36,7 +41,7 @@ const Home = () => {
               <div className="banner">
                 <div
                   id="carouselExampleIndicators"
-                  class="carousel slide"
+                  className="carousel slide"
                   data-bs-ride="carousel"
                 >
                   <div className="carousel-indicators">
@@ -44,7 +49,7 @@ const Home = () => {
                       type="button"
                       data-bs-target="#carouselExampleIndicators"
                       data-bs-slide-to="0"
-                      class="active"
+                      className="active"
                       aria-current="true"
                       aria-label="Slide 1"
                     ></button>
@@ -62,24 +67,24 @@ const Home = () => {
                     ></button>
                   </div>
                   <div className="carousel-inner">
-                    <div class="carousel-item active">
+                    <div className="carousel-item active">
                       <img
                         src="https://img.lazcdn.com/us/domino/2b311bc1-5d74-447c-80fb-58a5959862f0_VN-1976-688.jpg_2200x2200q80.jpg_.avif"
-                        class="d-block w-100"
+                        className="d-block w-100"
                         alt="..."
                       />
                     </div>
                     <div className="carousel-item">
                       <img
                         src="https://img.lazcdn.com/us/domino/45a52818-c6fb-4997-abde-537071143f4a_VN-1976-688.jpg_2200x2200q80.jpg_.avif"
-                        class="d-block w-100"
+                        className="d-block w-100"
                         alt="..."
                       />
                     </div>
                     <div className="carousel-item">
                       <img
                         src="https://cf.shopee.vn/file/vn-11134258-7ras8-m2t71qmtks6yfb_xxhdpi"
-                        class="d-block w-100"
+                        className="d-block w-100"
                         alt="..."
                       />
                     </div>
@@ -263,7 +268,7 @@ const Home = () => {
                         key={index}
                         title={item?.title}
                         brand={item?.brand}
-                        price={item?.price}
+                        price={formatPrice(item?.price)}
                         totalRating={item?.totalRatings.toString()}
                         sold={item?.sold}
                         quantity={item?.quantity}

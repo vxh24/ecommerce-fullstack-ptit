@@ -1,29 +1,20 @@
 require("dotenv").config();
 const asyncHandler = require("express-async-handler");
-const Conversation = require("../models/conversationModel");
-const Message = require("../models/messageModel");
 const { getReceiverSocketId, io } = require("../socket/socket");
+const {
+  findOrCreateConversation,
+  createMessage,
+  getMessagesFromConversation,
+} = require("../services/messageService");
 
 const sendMessageController = asyncHandler(async (req, res) => {
   const { message } = req.body;
   const { id: receiverId } = req.params;
-  const { _id } = req.user;
+  const { _id: senderId } = req.user;
 
-  let conversation = await Conversation.findOne({
-    participants: { $all: [_id, receiverId] },
-  });
+  const conversation = await findOrCreateConversation(senderId, receiverId);
 
-  if (!conversation) {
-    conversation = await Conversation.create({
-      participants: [_id, receiverId],
-    });
-  }
-
-  const newMessage = new Message({
-    senderId: _id,
-    receiverId,
-    message,
-  });
+  const newMessage = await createMessage(senderId, receiverId, message);
 
   if (newMessage) {
     conversation.messages.push(newMessage._id);
@@ -42,15 +33,9 @@ const sendMessageController = asyncHandler(async (req, res) => {
 
 const getMessages = asyncHandler(async (req, res) => {
   const { id: userToChatId } = req.params;
-  const { _id } = req.user;
+  const { _id: userId } = req.user;
 
-  const conversation = await Conversation.findOne({
-    participants: { $all: [_id, userToChatId] },
-  }).populate("messages");
-
-  if (!conversation) return res.status(200).json([]);
-
-  const messages = conversation.messages;
+  const messages = await getMessagesFromConversation(userId, userToChatId);
 
   res.status(200).json(messages);
 });

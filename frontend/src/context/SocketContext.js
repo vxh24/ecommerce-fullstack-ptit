@@ -16,7 +16,7 @@ export const SocketContextProvider = ({ children }) => {
     ? JSON.parse(localStorage.getItem("customer"))
     : null;
 
-  console.log(getCustomerfromLocalStorage);
+  // console.log(getCustomerfromLocalStorage);
 
   useEffect(() => {
     if (getCustomerfromLocalStorage) {

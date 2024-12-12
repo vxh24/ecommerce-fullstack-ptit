@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useDispatch, useSelector } from 'react-redux';
-import { createAdd, getAddressSlice } from '../features/user/userSlice';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { createAdd, getAddressSlice } from "../features/user/userSlice";
 const AddAddressForm = ({ onClose }) => {
   const dispatch = useDispatch();
   const [provinces, setProvinces] = useState();
@@ -11,34 +11,37 @@ const AddAddressForm = ({ onClose }) => {
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedWard, setSelectedWard] = useState("");
   const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    city: '',
-    district: '',
-    commune: '',
-    specificAddress: '',
+    name: "",
+    phone: "",
+    city: "",
+    district: "",
+    commune: "",
+    specificAddress: "",
     isDefault: false,
   });
-  console.log(formData);
+  // console.log(formData);
   useEffect(() => {
-    axios.get("https://esgoo.net/api-tinhthanh/1/0.htm")
+    axios
+      .get("https://esgoo.net/api-tinhthanh/1/0.htm")
       .then((response) => setProvinces(response.data))
       .catch((error) => console.error("Error fetching provinces:", error));
   }, []);
   useEffect(() => {
     if (selectedProvince) {
-      axios.get(`https://esgoo.net/api-tinhthanh/2/${selectedProvince}.htm`, {
-        params: { province_code: selectedProvince }
-      })
+      axios
+        .get(`https://esgoo.net/api-tinhthanh/2/${selectedProvince}.htm`, {
+          params: { province_code: selectedProvince },
+        })
         .then((response) => setDistricts(response.data))
         .catch((error) => console.error("Error fetching districts:", error));
     }
   }, [selectedProvince]);
   useEffect(() => {
     if (selectedDistrict) {
-      axios.get(`https://esgoo.net/api-tinhthanh/3/${selectedDistrict}.htm`, {
-        params: { district_code: selectedDistrict }
-      })
+      axios
+        .get(`https://esgoo.net/api-tinhthanh/3/${selectedDistrict}.htm`, {
+          params: { district_code: selectedDistrict },
+        })
         .then((response) => setWards(response.data))
         .catch((error) => console.error("Error fetching wards:", error));
     }
@@ -47,7 +50,7 @@ const AddAddressForm = ({ onClose }) => {
     const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 
@@ -63,7 +66,7 @@ const AddAddressForm = ({ onClose }) => {
   return (
     <div className="modal">
       <div className="modal-content">
-        <h2 className='mb-3'>Địa chỉ mới</h2>
+        <h2 className="mb-3">Địa chỉ mới</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <input
@@ -84,37 +87,44 @@ const AddAddressForm = ({ onClose }) => {
             />
           </div>
           <div className="form-group">
-            <select name="city" onChange={(e) => {
-              const selectedCityId = e.target.value;
-              const selectedCityName = provinces?.data?.find(
-                (province) => province.id === selectedCityId
-              )?.name;
-              setSelectedProvince(e.target.value)
-              setFormData((prev) => ({
-                ...prev,
-                city: selectedCityName || '',
-              }));
-            }} required>
-              <option >Tỉnh/Thành phố</option>
+            <select
+              name="city"
+              onChange={(e) => {
+                const selectedCityId = e.target.value;
+                const selectedCityName = provinces?.data?.find(
+                  (province) => province.id === selectedCityId
+                )?.name;
+                setSelectedProvince(e.target.value);
+                setFormData((prev) => ({
+                  ...prev,
+                  city: selectedCityName || "",
+                }));
+              }}
+              required
+            >
+              <option>Tỉnh/Thành phố</option>
               {provinces?.data.map((province) => (
-                <option key={province.id} value={province.id} >
+                <option key={province.id} value={province.id}>
                   {province.name}
                 </option>
               ))}
             </select>
-            <select name="district" onChange={(e) => {
-              const selectedDistrictId = e.target.value;
-              const selectedDistrictName = districts?.data?.find(
-                (district) => district.id === selectedDistrictId
-              )?.name;
-              setSelectedDistrict(selectedDistrictId);
-              setFormData((prev) => ({
-                ...prev,
-                district: selectedDistrictName || '',
-              }));
-            }}
+            <select
+              name="district"
+              onChange={(e) => {
+                const selectedDistrictId = e.target.value;
+                const selectedDistrictName = districts?.data?.find(
+                  (district) => district.id === selectedDistrictId
+                )?.name;
+                setSelectedDistrict(selectedDistrictId);
+                setFormData((prev) => ({
+                  ...prev,
+                  district: selectedDistrictName || "",
+                }));
+              }}
               required
-              disabled={!selectedProvince}>
+              disabled={!selectedProvince}
+            >
               <option value="">Quận/Huyện</option>
               {districts?.data.map((district) => (
                 <option key={district.id} value={district.id}>
@@ -122,20 +132,22 @@ const AddAddressForm = ({ onClose }) => {
                 </option>
               ))}
             </select>
-            <select name="ward" onChange={(e) => {
-              const selectedWardId = e.target.value;
-              const selectedWardsName = wards?.data?.find(
-                (ward) => ward.id === selectedWardId
-              )?.name;
-              setSelectedWard(selectedWardId);
-              setFormData((prev) => ({
-                ...prev,
-                commune: selectedWardsName || '',
-              }));
-            }}
-
+            <select
+              name="ward"
+              onChange={(e) => {
+                const selectedWardId = e.target.value;
+                const selectedWardsName = wards?.data?.find(
+                  (ward) => ward.id === selectedWardId
+                )?.name;
+                setSelectedWard(selectedWardId);
+                setFormData((prev) => ({
+                  ...prev,
+                  commune: selectedWardsName || "",
+                }));
+              }}
               required
-              disabled={!selectedDistrict}>
+              disabled={!selectedDistrict}
+            >
               <option value="">Phường/Xã</option>
               {wards?.data.map((ward) => (
                 <option key={ward.id} value={ward.id}>
@@ -179,4 +191,4 @@ const AddAddressForm = ({ onClose }) => {
   );
 };
 
-export default AddAddressForm
+export default AddAddressForm;

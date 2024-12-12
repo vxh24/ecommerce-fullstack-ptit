@@ -5,13 +5,16 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Typeahead } from "react-bootstrap-typeahead";
 import "react-bootstrap-typeahead/css/Typeahead.css";
-import { getAProducts, searchProductSlice } from "../features/products/productSlice";
+import {
+  getAProducts,
+  searchProductSlice,
+} from "../features/products/productSlice";
 import { FaHeart } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
 import { GiShoppingCart } from "react-icons/gi";
 import { BiCategory } from "react-icons/bi";
 import { googleLogout } from "@react-oauth/google";
-import { getCategories } from '../features/category/categorySlice';
+import { getCategories } from "../features/category/categorySlice";
 import {
   getProfileSlice,
   getUserCart,
@@ -19,7 +22,9 @@ import {
 } from "../features/user/userSlice";
 const Header = () => {
   const profileState = useSelector((state) => state?.auth?.profile?.data);
-  const categoryState = useSelector(state => state?.category?.Categories?.data);
+  const categoryState = useSelector(
+    (state) => state?.category?.Categories?.data
+  );
   useEffect(() => {
     dispatch(getProfileSlice());
     dispatch(getUserCart());
@@ -54,13 +59,13 @@ const Header = () => {
   }, [selectedCategory]);
   useEffect(() => {
     setCartlengt(userCartState?.products?.length);
-  }, [userCartState])
+  }, [userCartState]);
   const [searchTerm, setSearchTerm] = useState("");
   const handleSearch = async () => {
     // dispatch(searchProductSlice(searchTerm));
     navigate(location?.pathname, { replace: true, state: null });
     navigate("/product", { state: { message: searchTerm } });
-  }
+  };
   const formatPrice = (amount) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -110,9 +115,14 @@ const Header = () => {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Nhập tên sản phẩm"
-                  style={{ padding: "10px", width: "400px", marginRight: "10px" }}
+                  style={{ padding: "10px", width: "400px" }}
                 />
-                <span onClick={handleSearch} className="input-group-text p-3" id="basic-addon2" role="button" >
+                <span
+                  onClick={handleSearch}
+                  className="input-group-text p-3"
+                  id="basic-addon2"
+                  role="button"
+                >
                   <BsSearch className="fs-6" />
                 </span>
               </div>
@@ -308,7 +318,10 @@ const Header = () => {
                       categoryState?.map((item, index) => {
                         return (
                           <li key={index} className="mt-0">
-                            <button className="dropdown-item text-dark bold-text" onClick={() => setSelectedCategory(item.title)}>
+                            <button
+                              className="dropdown-item text-dark bold-text"
+                              onClick={() => setSelectedCategory(item.title)}
+                            >
                               {item.title}
                             </button>
                           </li>

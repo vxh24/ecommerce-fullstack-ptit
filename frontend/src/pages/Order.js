@@ -62,15 +62,17 @@ const Order = () => {
     }
   };
   const handleCancel = (id) => {
-    const isConfirmed = window.confirm("Bạn có chắc chắn muốn hủy đơn hàng này không?");
+    const isConfirmed = window.confirm(
+      "Bạn có chắc chắn muốn hủy đơn hàng này không?"
+    );
 
     if (isConfirmed) {
       dispatch(cancelOrderSlice(id));
       setTimeout(() => {
-        dispatch(getOrderUser())
-      }, 500)
+        dispatch(getOrderUser());
+      }, 500);
     }
-  }
+  };
   const formatPrice = (amount) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -98,7 +100,13 @@ const Order = () => {
                       onClick={() => handleTabChange(index)}
                     >
                       {item}
-                      <span className={statusCounts[item] && item !== "Đã hủy" ? "statusCount" : ""}>
+                      <span
+                        className={
+                          statusCounts[item] && item !== "Đã hủy"
+                            ? "statusCount"
+                            : ""
+                        }
+                      >
                         {item === "Đã hủy" ? "" : statusCounts[item]}
                       </span>
                     </button>
@@ -107,7 +115,7 @@ const Order = () => {
               </div>
             </div>
             <div className="col-12 mt-3">
-              <table class="table caption-top">
+              <table className="table caption-top">
                 <thead>
                   <tr>
                     <th scope="col" className="col-3">

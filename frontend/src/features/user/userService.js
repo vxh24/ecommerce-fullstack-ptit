@@ -210,19 +210,16 @@ const createPayment = async ({ totalAmount, orderAddress }) => {
   }
 };
 const updateProfileUser = async ({ id, data }) => {
-  console.log(data);
-  const response = await axios.put(
-    `${base_url}user/${id}`,
-    data,
-    config
-  );
+  // console.log(data);
+  const response = await axios.put(`${base_url}user/${id}`, data, config);
   if (response.data) {
     return response.data;
   }
 };
 const cancelOrder = async (id) => {
   const response = await axios.put(
-    `${base_url}order/cancel-order/${id}`, { data: {} },
+    `${base_url}order/cancel-order/${id}`,
+    { data: {} },
     config
   );
   if (response.data) {
@@ -254,5 +251,5 @@ export const authService = {
   applyCoupon,
   createPayment,
   updateProfileUser,
-  cancelOrder
+  cancelOrder,
 };
