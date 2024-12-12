@@ -5,6 +5,8 @@ import { AiFillDelete } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CustomInput from "../components/CustomInput";
+import { Typeahead } from "react-bootstrap-typeahead";
+import "react-bootstrap-typeahead/css/Typeahead.css";
 import {
   deleteAProductCategory,
   getCategories,
@@ -43,6 +45,9 @@ const CategoryList = () => {
   const [click, setClick] = useState(false);
   const [click1, setClick1] = useState(false);
   const [category, setCategory] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredCategories, setFilteredCategories] = useState([]);
   const showModal = (e) => {
     setOpen(true);
     setpCatId(e);
@@ -58,9 +63,41 @@ const CategoryList = () => {
   }, []);
 
   const pCatStat = useSelector((state) => state.pCategory.pCategories.data);
-
+  useEffect(() => {
+    if (searchTerm) {
+      const results = pCatStat?.filter((cat) =>
+        cat.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredCategories(results || []);
+    } else {
+      setFilteredCategories(pCatStat || []);
+    }
+  }, [searchTerm, pCatStat]);
   const data1 = [];
-
+  const data2 = filteredCategories?.map((cat) => ({
+    key: cat._id,
+    name: cat.title,
+    action: (
+      <>
+        <button
+          // to={`/admin/category/${pCatStat[i]._id}`}
+          onClick={() => {
+            setClick1(true);
+            setCategory(cat);
+          }}
+          className=" fs-3 text-danger border-0 bg-transparent"
+        >
+          <BiEdit />
+        </button>
+        <button
+          className="ms-3 fs-3 text-danger bg-transparent border-0"
+          onClick={() => showModal(cat._id)}
+        >
+          <AiFillDelete />
+        </button>
+      </>
+    ),
+  }))
   if (pCatStat && pCatStat.length) {
     for (let i = 0; i < pCatStat.length; i++) {
       data1.push({
@@ -106,7 +143,22 @@ const CategoryList = () => {
           <button onClick={() => setClick(true)}>Thêm danh mục</button>
         </div>
         <div>
-          <Table columns={columns} dataSource={data1} />
+          <Typeahead
+            id="search-orders"
+            onChange={(selected) => {
+              if (selected.length > 0) {
+                setSearchTerm(selected[0]);
+              } else {
+                setSearchTerm("");
+              }
+            }}
+            options={pCatStat?.map((cat) => cat.title) || []}
+            placeholder="Tìm kiếm theo tên..."
+            selected={searchResults}
+            onInputChange={(text) => setSearchTerm(text)}
+            className="mt-3"
+          />
+          <Table columns={columns} dataSource={data2} />
         </div>
         <CustomModal
           hideModal={hideModal}

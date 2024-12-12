@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Table } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -6,7 +6,8 @@ import {
   getUsers,
   unBlockAUser,
 } from "../features/customers/customerSlice";
-
+import { Typeahead } from "react-bootstrap-typeahead";
+import "react-bootstrap-typeahead/css/Typeahead.css";
 const columns = [
   {
     title: "STT",
@@ -33,7 +34,9 @@ const columns = [
 
 const Customers = () => {
   const dispatch = useDispatch();
-
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredCustomers, setFilteredCustomers] = useState([]);
   useEffect(() => {
     dispatch(getUsers());
   }, []);
@@ -47,8 +50,60 @@ const Customers = () => {
   };
 
   const customerState = useSelector((state) => state.customer.customers?.data);
-
+  useEffect(() => {
+    if (searchTerm) {
+      const results = customerState?.filter((cus) =>
+        cus.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredCustomers(results || []);
+    } else {
+      setFilteredCustomers(customerState || []);
+    }
+  }, [searchTerm, customerState]);
   const data1 = [];
+  const data2 = filteredCustomers?.map((cus) => ({
+    key: cus._id,
+    name: cus.name,
+    email: cus.email,
+    status:
+      cus.isBlock === false ? (
+        <>
+          <span style={{ color: "green", fontWeight: "bold" }}>
+            Hoạt động
+          </span>
+        </>
+      ) : (
+        <>
+          <span style={{ color: "red", fontWeight: "bold" }}>
+            Tài khoản bị khóa
+          </span>
+        </>
+      ),
+    action:
+      cus.isBlock === false ? (
+        <>
+          <button
+            type="button"
+            className="btn btn-danger"
+            style={{ width: "100px" }}
+            onClick={() => handleBlock(cus._id)}
+          >
+            Khóa
+          </button>
+        </>
+      ) : (
+        <>
+          <button
+            type="button"
+            className="btn btn-success"
+            style={{ width: "100px" }}
+            onClick={() => handleUnblock(cus._id)}
+          >
+            Mở khóa
+          </button>
+        </>
+      ),
+  }))
   if (customerState && customerState.length) {
     for (let i = 0; i < customerState.length; i++) {
       if (customerState[i].role !== "admin") {
@@ -103,7 +158,22 @@ const Customers = () => {
     <div>
       <h3 className="mb-4 title">Danh sách người dùng</h3>
       <div>
-        <Table columns={columns} dataSource={data1} />
+        <Typeahead
+          id="search-orders"
+          onChange={(selected) => {
+            if (selected.length > 0) {
+              setSearchTerm(selected[0]);
+            } else {
+              setSearchTerm("");
+            }
+          }}
+          options={customerState?.map((cus) => cus.name) || []}
+          placeholder="Tìm kiếm theo tên..."
+          selected={searchResults}
+          onInputChange={(text) => setSearchTerm(text)}
+          className="mt-3"
+        />
+        <Table columns={columns} dataSource={data2} />
       </div>
     </div>
   );

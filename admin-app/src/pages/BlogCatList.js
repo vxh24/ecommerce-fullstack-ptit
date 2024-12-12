@@ -8,6 +8,8 @@ import CustomInput from "../components/CustomInput";
 import { Link } from "react-router-dom";
 import * as yup from "yup";
 import { useFormik } from "formik";
+import { Typeahead } from "react-bootstrap-typeahead";
+import "react-bootstrap-typeahead/css/Typeahead.css";
 import {
   deleteABlogCat,
   getCategories,
@@ -43,7 +45,9 @@ const BlogCatList = () => {
   const [click, setClick] = useState(false);
   const [click1, setClick1] = useState(false);
   const [blogcat, setBlogcat] = useState(false);
-
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredBlogCats, setFilteredBlogCats] = useState([]);
   const showModal = (e) => {
     setOpen(true);
     setblogCatId(e);
@@ -61,37 +65,68 @@ const BlogCatList = () => {
   }, []);
 
   const bCatState = useSelector((state) => state.bCategory.bCategories.data);
-
-  const data1 = [];
-
-  if (bCatState && bCatState.length) {
-    for (let i = 0; i < bCatState.length; i++) {
-      data1.push({
-        key: i + 1,
-        name: bCatState[i].title,
-        action: (
-          <>
-            <button
-              // to={`/admin/blog-category/${bCatState[i]._id}`}
-              onClick={() => {
-                setClick1(true);
-                setBlogcat(bCatState[i]);
-              }}
-              className="fs-3 text-danger border-0 bg-transparent"
-            >
-              <BiEdit />
-            </button>
-            <button
-              className="ms-3 fs-3 text-danger bg-transparent border-0"
-              onClick={() => showModal(bCatState[i]._id)}
-            >
-              <AiFillDelete />
-            </button>
-          </>
-        ),
-      });
+  useEffect(() => {
+    if (searchTerm) {
+      const results = bCatState?.filter((blog) =>
+        blog.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredBlogCats(results || []);
+    } else {
+      setFilteredBlogCats(bCatState || []);
     }
-  }
+  }, [searchTerm, bCatState]);
+  const data1 = [];
+  const data2 = filteredBlogCats?.map((bCat) => ({
+    key: bCat._id,
+    name: bCat.title,
+    action: (
+      <>
+        <button
+          onClick={() => {
+            setClick1(true);
+            setBlogcat(bCat);
+          }}
+          className="fs-3 text-danger border-0 bg-transparent"
+        >
+          <BiEdit />
+        </button>
+        <button
+          className="ms-3 fs-3 text-danger bg-transparent border-0"
+          onClick={() => showModal(bCat._id)}
+        >
+          <AiFillDelete />
+        </button>
+      </>
+    ),
+  }))
+  // if (bCatState && bCatState.length) {
+  //   for (let i = 0; i < bCatState.length; i++) {
+  //     data1.push({
+  //       key: i + 1,
+  //       name: bCatState[i].title,
+  //       action: (
+  //         <>
+  //           <button
+  //             // to={`/admin/blog-category/${bCatState[i]._id}`}
+  //             onClick={() => {
+  //               setClick1(true);
+  //               setBlogcat(bCatState[i]);
+  //             }}
+  //             className="fs-3 text-danger border-0 bg-transparent"
+  //           >
+  //             <BiEdit />
+  //           </button>
+  //           <button
+  //             className="ms-3 fs-3 text-danger bg-transparent border-0"
+  //             onClick={() => showModal(bCatState[i]._id)}
+  //           >
+  //             <AiFillDelete />
+  //           </button>
+  //         </>
+  //       ),
+  //     });
+  //   }
+  // }
 
   const deleteBlogCategory = (e) => {
     dispatch(deleteABlogCat(e));
@@ -109,7 +144,22 @@ const BlogCatList = () => {
           <button onClick={() => setClick(true)}>Thêm danh mục</button>
         </div>
         <div>
-          <Table columns={columns} dataSource={data1} />
+          <Typeahead
+            id="search-orders"
+            onChange={(selected) => {
+              if (selected.length > 0) {
+                setSearchTerm(selected[0]);
+              } else {
+                setSearchTerm("");
+              }
+            }}
+            options={bCatState?.map((bCat) => bCat.title) || []}
+            placeholder="Tìm kiếm theo chủ đề..."
+            selected={searchResults}
+            onInputChange={(text) => setSearchTerm(text)}
+            className="mt-3"
+          />
+          <Table columns={columns} dataSource={data2} />
         </div>
         <CustomModal
           hideModal={hideModal}

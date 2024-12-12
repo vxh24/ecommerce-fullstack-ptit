@@ -10,7 +10,8 @@ import CustomInput from "../components/CustomInput";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { createColor, updateAColor } from "../features/color/colorSlice";
-
+import { Typeahead } from "react-bootstrap-typeahead";
+import "react-bootstrap-typeahead/css/Typeahead.css";
 let schema = yup.object().shape({
   title: yup.string().required("Color is Required"),
 });
@@ -53,7 +54,9 @@ const ColorList = () => {
   const [click, setClick] = useState(false);
   const [click1, setClick1] = useState(false);
   const [color, setColor] = useState(false);
-
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredColors, setFilteredColors] = useState([]);
   const showModal = (e) => {
     setOpen(true);
     setcolorId(e);
@@ -69,9 +72,43 @@ const ColorList = () => {
   }, []);
 
   const colorState = useSelector((state) => state.color.colors.data);
-
+  useEffect(() => {
+    if (searchTerm) {
+      const results = colorState?.filter((color) =>
+        color.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredColors(results || []);
+    } else {
+      setFilteredColors(colorState || []);
+    }
+  }, [searchTerm, colorState]);
   const data1 = [];
-
+  const data2 = filteredColors?.map((color) => ({
+    key: color._id,
+    name: color.title,
+    color: color.title,
+    action: (
+      <>
+        <div className="d-flex align-items-center gap-10">
+          <Link
+            onClick={() => {
+              setClick1(true);
+              setColor(color);
+            }}
+            className=" fs-3 text-danger"
+          >
+            <BiEdit />
+          </Link>
+          <button
+            className="ms-3 fs-3 text-danger bg-transparent border-0"
+            onClick={() => showModal(color._id)}
+          >
+            <AiFillDelete />
+          </button>
+        </div>
+      </>
+    ),
+  }))
   if (colorState && colorState.length) {
     for (let i = 0; i < colorState.length; i++) {
       data1.push({
@@ -120,7 +157,22 @@ const ColorList = () => {
           <button onClick={() => setClick(true)}>Thêm màu</button>
         </div>
         <div>
-          <Table columns={columns} dataSource={data1} />
+          <Typeahead
+            id="search-orders"
+            onChange={(selected) => {
+              if (selected.length > 0) {
+                setSearchTerm(selected[0]);
+              } else {
+                setSearchTerm("");
+              }
+            }}
+            options={colorState?.map((color) => color.title) || []}
+            placeholder="Tìm kiếm theo tên..."
+            selected={searchResults}
+            onInputChange={(text) => setSearchTerm(text)}
+            className="mt-3"
+          />
+          <Table columns={columns} dataSource={data2} />
         </div>
         <CustomModal
           hideModal={hideModal}

@@ -10,7 +10,8 @@ import {
 import { AiFillDelete, AiOutlineEye } from "react-icons/ai";
 import CustomModal from "../components/CustomModal";
 import ViewEnquiry from "./ViewEnquiry";
-
+import { Typeahead } from "react-bootstrap-typeahead";
+import "react-bootstrap-typeahead/css/Typeahead.css";
 const columns = [
   {
     title: "STT",
@@ -46,7 +47,9 @@ const Enquiries = () => {
   const [enqId, setenqId] = useState("");
   const [click, setClick] = useState(false);
   const [enquiry, setEnquiry] = useState(false);
-
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredEnquiries, setFilteredEnquiries] = useState([]);
   const showModal = (e) => {
     setOpen(true);
     setenqId(e);
@@ -61,9 +64,64 @@ const Enquiries = () => {
   }, []);
 
   const enqState = useSelector((state) => state.enquiry.enquiries.data);
-
+  useEffect(() => {
+    if (searchTerm) {
+      const results = enqState?.filter((enq) =>
+        enq.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredEnquiries(results || []);
+    } else {
+      setFilteredEnquiries(enqState || []);
+    }
+  }, [searchTerm, enqState]);
   const data1 = [];
-
+  const data2 = filteredEnquiries?.map((enq) => ({
+    key: enq._id,
+    name: enq.name,
+    email: enq.email,
+    phone: enq.phone,
+    status: (
+      <>
+        <select
+          value={enq.status}
+          name=""
+          defaultValue={
+            enq.status ? enq.status : "Submitted"
+          }
+          className="form-control form-select"
+          id=""
+          onChange={(e) =>
+            setEnquiryStatus(e.target.value, enq._id)
+          }
+        >
+          <option value="Submitted">Submitted</option>
+          <option value="Contacted">Contacted</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Resolved">Resolved</option>
+        </select>
+      </>
+    ),
+    action: (
+      <>
+        <button
+          className="ms-3 fs-3 text-danger border-0 bg-transparent"
+          // to={`/admin/enquiries/${enqState[i]._id}`}
+          onClick={() => {
+            setClick(true);
+            setEnquiry(enq);
+          }}
+        >
+          <AiOutlineEye />
+        </button>
+        <button
+          className="ms-3 fs-3 text-danger bg-transparent border-0"
+          onClick={() => showModal(enq._id)}
+        >
+          <AiFillDelete />
+        </button>
+      </>
+    ),
+  }))
   if (enqState && enqState.length) {
     for (let i = 0; i < enqState.length; i++) {
       data1.push({
@@ -138,7 +196,22 @@ const Enquiries = () => {
       <div>
         <h3 className="mb-4 title">Danh sách khảo sát</h3>
         <div>
-          <Table columns={columns} dataSource={data1} />
+          <Typeahead
+            id="search-orders"
+            onChange={(selected) => {
+              if (selected.length > 0) {
+                setSearchTerm(selected[0]);
+              } else {
+                setSearchTerm("");
+              }
+            }}
+            options={enqState?.map((enq) => enq.name) || []}
+            placeholder="Tìm kiếm theo tên..."
+            selected={searchResults}
+            onInputChange={(text) => setSearchTerm(text)}
+            className="mt-3"
+          />
+          <Table columns={columns} dataSource={data2} />
         </div>
         <CustomModal
           hideModal={hideModal}
