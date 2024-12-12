@@ -468,8 +468,8 @@ const EditProduct = () => {
               images[(photoIndex + images.length - 1) % images.length].url
                 ? images[(photoIndex + images.length - 1) % images.length].url
                 : URL.createObjectURL(
-                    images[(photoIndex + images.length - 1) % images.length]
-                  )
+                  images[(photoIndex + images.length - 1) % images.length]
+                )
             }
             onCloseRequest={() => setLightboxOpen(false)}
             onMovePrevRequest={() =>

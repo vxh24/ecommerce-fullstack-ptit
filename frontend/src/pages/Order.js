@@ -15,7 +15,6 @@ const Order = () => {
     dispatch(getOrderUser());
   }, []);
   const orderState = useSelector((state) => state?.auth?.orders?.data);
-  console.log(orderState);
   useEffect(() => {
     if (orderState?.length > 0) {
       setStatus(orderState);
@@ -79,6 +78,7 @@ const Order = () => {
       maximumFractionDigits: 0,
     }).format(amount);
   };
+
   return (
     <>
       <Meta title={"Đơn hàng"} />

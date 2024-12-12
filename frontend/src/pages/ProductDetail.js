@@ -128,7 +128,7 @@ const ProductDetail = () => {
       setTimeout(() => {
         // navigate("/cart");
         dispatch(getUserCart());
-      }, 300);
+      }, 700);
     }
   };
 
@@ -213,9 +213,8 @@ const ProductDetail = () => {
                       key={index}
                       src={image.url}
                       alt={`Thumbnail ${index + 1}`}
-                      className={`img-fluid ${
-                        currentIndex === image.url ? "active" : ""
-                      }`}
+                      className={`img-fluid ${currentIndex === image.url ? "active" : ""
+                        }`}
                       onClick={() => setCurrentIndex(index)}
                     />
                   </div>

@@ -35,7 +35,7 @@ const Chat = () => {
           )}
         </div>
       </div>
-      {}
+      { }
       {getCustomerfromLocalStorage ? (
         <>
           {!isMinimized && (

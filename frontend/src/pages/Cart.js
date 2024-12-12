@@ -27,7 +27,7 @@ const Cart = () => {
     dispatch(deleteProductfromCart({ productId: id, color }));
     setTimeout(() => {
       dispatch(getUserCart());
-    }, 300);
+    }, 600);
   };
   const updatecount = (id, color, newquantity) => {
     dispatch(
@@ -39,7 +39,7 @@ const Cart = () => {
     );
     setTimeout(() => {
       dispatch(getUserCart());
-    }, 200);
+    }, 600);
   };
   useEffect(() => {
     if (authState.user === null && authState.isSuccess !== true) {
