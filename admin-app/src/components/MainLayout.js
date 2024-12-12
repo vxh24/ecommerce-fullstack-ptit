@@ -94,7 +94,7 @@ const MainLayout = () => {
     {
       key: "messages",
       icon: <BiMessageAltDetail className="fs-4" />,
-      label: "Quản lý tin nhắn",
+      label: "Quản lý tin nhắn khách hàng",
     },
   ];
 
