@@ -8,6 +8,8 @@ import { toast } from "react-toastify";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import CustomInput from "../components/CustomInput";
+import { Typeahead } from "react-bootstrap-typeahead";
+import "react-bootstrap-typeahead/css/Typeahead.css";
 import {
   deleteABrand,
   getBrands,
@@ -41,6 +43,9 @@ const Brandlist = () => {
   const [brand, setBrand] = useState(false);
   const [open, setOpen] = useState(false);
   const [brandId, setbrandId] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredBrands, setFilteredBrands] = useState([]);
   const showModal = (e) => {
     setOpen(true);
     setbrandId(e);
@@ -56,9 +61,40 @@ const Brandlist = () => {
   }, []);
 
   const brandState = useSelector((state) => state.brand.brands.data);
-
+  useEffect(() => {
+    if (searchTerm) {
+      const results = brandState?.filter((brand) =>
+        brand.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredBrands(results || []);
+    } else {
+      setFilteredBrands(brandState || []);
+    }
+  }, [searchTerm, brandState]);
   const data1 = [];
-
+  const data2 = filteredBrands?.map((brand) => ({
+    key: brand._id,
+    name: brand.title,
+    action: (
+      <>
+        <button
+          onClick={() => {
+            setClick1(true);
+            setBrand(brand);
+          }}
+          className=" fs-3 text-danger border-0 bg-transparent "
+        >
+          <BiEdit />
+        </button>
+        <button
+          className="ms-3 fs-3 text-danger bg-transparent border-0"
+          onClick={() => showModal(brand._id)}
+        >
+          <AiFillDelete />
+        </button>
+      </>
+    ),
+  }))
   if (brandState && brandState.length) {
     for (let i = 0; i < brandState.length; i++) {
       data1.push({
@@ -103,7 +139,22 @@ const Brandlist = () => {
           <button onClick={() => setClick(true)}>Thêm thương hiệu</button>
         </div>
         <div>
-          <Table columns={columns} dataSource={data1} />
+          <Typeahead
+            id="search-orders"
+            onChange={(selected) => {
+              if (selected.length > 0) {
+                setSearchTerm(selected[0]);
+              } else {
+                setSearchTerm("");
+              }
+            }}
+            options={brandState?.map((brand) => brand.title) || []}
+            placeholder="Tìm kiếm theo tên..."
+            selected={searchResults}
+            onInputChange={(text) => setSearchTerm(text)}
+            className="mt-3"
+          />
+          <Table columns={columns} dataSource={data2} />
         </div>
         <CustomModal
           hideModal={hideModal}

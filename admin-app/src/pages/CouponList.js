@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import CustomModal from "../components/CustomModal";
 import CustomInput from "../components/CustomInput";
+import { Typeahead } from "react-bootstrap-typeahead";
+import "react-bootstrap-typeahead/css/Typeahead.css";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import {
@@ -23,7 +25,7 @@ let schema = yup.object().shape({
 });
 const columns = [
   {
-    title: "STT",
+    title: "Mã giảm giá",
     dataIndex: "key",
   },
   {
@@ -51,6 +53,9 @@ const Couponlist = () => {
   const [click, setClick] = useState(false);
   const [click1, setClick1] = useState(false);
   const [coupon, setCoupon] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredCoupon, setFilteredCoupon] = useState([]);
   const showModal = (e) => {
     setOpen(true);
     setcouponId(e);
@@ -67,42 +72,47 @@ const Couponlist = () => {
   }, []);
 
   const couponState = useSelector((state) => state.coupon.coupons.data);
-
-  const data1 = [];
-
-  if (couponState && couponState.length) {
-    for (let i = 0; i < couponState.length; i++) {
-      data1.push({
-        key: i + 1,
-        name: couponState[i].name,
-        discount: couponState[i].discount,
-        expiry: moment(couponState[i].expiry).format("DD/MM/YYYY"),
-        action: (
-          <>
-            <div className="d-flex align-items-center gap-10">
-              <Link
-                // to={`/admin/coupon/${couponState[i]._id}`}
-                onClick={() => {
-                  setClick1(true);
-                  setCoupon(couponState[i]);
-                }}
-                className=" fs-3 text-danger border-0 bg-transparent"
-              >
-                <BiEdit />
-              </Link>
-              <button
-                className="ms-3 fs-3 text-danger bg-transparent border-0"
-                onClick={() => showModal(couponState[i]._id)}
-              >
-                <AiFillDelete />
-              </button>
-            </div>
-          </>
-        ),
-      });
+  useEffect(() => {
+    if (searchTerm) {
+      const results = couponState?.filter((coupon) =>
+        coupon.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredCoupon(results || []);
     }
-  }
+    else {
+      setFilteredCoupon(couponState || []);
+    }
+  }, [searchTerm, couponState])
+  const data1 = [];
+  const data2 = filteredCoupon?.map((coupon) => ({
+    key: coupon._id,
+    name: coupon.name,
+    discount: coupon.discount,
+    expiry: moment(coupon.expiry).format("DD/MM/YYYY"),
+    action: (
+      <>
+        <div className="d-flex align-items-center gap-10">
+          <Link
+            // to={`/admin/coupon/${couponState[i]._id}`}
+            onClick={() => {
+              setClick1(true);
+              setCoupon(coupon);
+            }}
+            className=" fs-3 text-danger border-0 bg-transparent"
+          >
+            <BiEdit />
+          </Link>
+          <button
+            className="ms-3 fs-3 text-danger bg-transparent border-0"
+            onClick={() => showModal(coupon._id)}
+          >
+            <AiFillDelete />
+          </button>
+        </div>
+      </>
+    ),
 
+  }))
   const deleteCoupon = (e) => {
     dispatch(deleteACoupon(e));
 
@@ -120,7 +130,22 @@ const Couponlist = () => {
           <button onClick={() => setClick(true)}>Thêm mã giảm giá</button>
         </div>
         <div>
-          <Table columns={columns} dataSource={data1} />
+          <Typeahead
+            id="search-orders"
+            onChange={(selected) => {
+              if (selected.length > 0) {
+                setSearchTerm(selected[0]);
+              } else {
+                setSearchTerm("");
+              }
+            }}
+            options={couponState?.map((coupon) => coupon.name) || []}
+            placeholder="Tìm kiếm theo tên..."
+            selected={searchResults}
+            onInputChange={(text) => setSearchTerm(text)}
+            className="mt-3"
+          />
+          <Table columns={columns} dataSource={data2} />
         </div>
         <CustomModal
           hideModal={hideModal}

@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Table } from "antd";
-import { BiEdit } from "react-icons/bi";
+import { BiEdit, BiLogo500Px } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import CustomModal from "../components/CustomModal";
 import CustomInput from "../components/CustomInput";
+import { Typeahead } from "react-bootstrap-typeahead";
+import "react-bootstrap-typeahead/css/Typeahead.css";
 import {
   deleteABlog,
   getBlogs,
@@ -48,6 +50,9 @@ const BlogList = () => {
   const [click, setClick] = useState(false);
   const [click1, setClick1] = useState(false);
   const [blog, setBlog] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredBlogs, setFilteredBlogs] = useState([]);
   const showModal = (e) => {
     setOpen(true);
     setblogId(e);
@@ -65,9 +70,46 @@ const BlogList = () => {
   }, []);
 
   const getBlogState = useSelector((state) => state.blogs.blogs.data);
-
+  useEffect(() => {
+    if (searchTerm) {
+      const results = getBlogState?.filter((blog) =>
+        blog.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredBlogs(results || []);
+    } else {
+      setFilteredBlogs(getBlogState || []);
+    }
+  }, [searchTerm, getBlogState]);
   const data1 = [];
+  const data2 = filteredBlogs?.map((blog) => ({
+    key: blog._id,
+    name: blog.title,
+    category: blog.category,
+    action: (
+      <>
+        <div className="d-flex align-items-center gap-10">
 
+
+          <Link
+            // to={`/admin/blog/${getBlogState[i].id}`}
+            onClick={() => {
+              setClick1(true);
+              setBlog(blog);
+            }}
+            className=" fs-3 text-danger border-0 bg-transparent"
+          >
+            <BiEdit />
+          </Link>
+          <button
+            className="ms-3 fs-3 text-danger bg-transparent border-0"
+            onClick={() => showModal(blog._id)}
+          >
+            <AiFillDelete />
+          </button>
+        </div>
+      </>
+    ),
+  }));
   if (getBlogState && getBlogState.length) {
     for (let i = 0; i < getBlogState.length; i++) {
       data1.push({
@@ -120,7 +162,22 @@ const BlogList = () => {
           <button onClick={() => setClick(true)}>Thêm bài viết</button>
         </div>
         <div>
-          <Table columns={columns} dataSource={data1} />
+          <Typeahead
+            id="search-orders"
+            onChange={(selected) => {
+              if (selected.length > 0) {
+                setSearchTerm(selected[0]);
+              } else {
+                setSearchTerm("");
+              }
+            }}
+            options={getBlogState?.map((blog) => blog.title) || []}
+            placeholder="Tìm kiếm theo chủ đề..."
+            selected={searchResults}
+            onInputChange={(text) => setSearchTerm(text)}
+            className="mt-3"
+          />
+          <Table columns={columns} dataSource={data2} />
         </div>
         <CustomModal
           hideModal={hideModal}

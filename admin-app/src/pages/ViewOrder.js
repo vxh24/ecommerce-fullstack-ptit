@@ -61,12 +61,12 @@ const ViewOrder = () => {
     for (let i = 0; i < orderState.length; i++) {
       data1.push({
         key: i + 1,
-        name: orderState[i].product.title,
-        brand: orderState[i].product.brand,
+        name: orderState[i].product?.name,
+        brand: orderState[i].product?.brand,
         count: orderState[i].count,
         color: orderState[i].color,
-        price: orderState[i].product.price,
-        date: new Date(orderState[i].product.createdAt).toLocaleString(),
+        price: orderState[i].product?.price,
+        date: new Date(orderState[i].product?.createdAt).toLocaleString(),
         action: (
           <>
             <Link to="/" className=" fs-3 text-danger">

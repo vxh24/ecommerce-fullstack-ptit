@@ -6,7 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { deleteAProduct, getProducts } from "../features/product/productSlice";
 import { useNavigate } from "react-router-dom";
 import CustomModal from "../components/CustomModal";
-
+import { Typeahead } from "react-bootstrap-typeahead";
+import "react-bootstrap-typeahead/css/Typeahead.css";
 const columns = [
   {
     title: "STT",
@@ -47,7 +48,9 @@ const ProductList = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [productId, setProductId] = useState("");
-
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const showModal = (e) => {
     setOpen(true);
     setProductId(e);
@@ -62,7 +65,16 @@ const ProductList = () => {
   }, []);
 
   const productState = useSelector((state) => state.product.products.data);
-
+  useEffect(() => {
+    if (searchTerm) {
+      const results = productState?.filter((pro) =>
+        pro.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredProducts(results || []);
+    } else {
+      setFilteredProducts(productState || []);
+    }
+  }, [searchTerm, productState]);
   const formattedPrice = (price) =>
     new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -70,7 +82,46 @@ const ProductList = () => {
     }).format(price);
 
   const data1 = [];
-
+  const data2 = filteredProducts?.map((pro) => ({
+    key: pro._id,
+    name: pro.name,
+    brand: pro.brand,
+    category: pro.category,
+    colors: pro.colors.map((color) => (
+      <div
+        key={color._id}
+        style={{
+          display: "inline-block",
+          width: "20px",
+          height: "20px",
+          backgroundColor: color.title,
+          borderRadius: "50%",
+          border: "1px solid #ccc",
+          marginRight: "5px",
+        }}
+      ></div>
+    )),
+    quantity: pro.quantity,
+    price: formattedPrice(pro.price),
+    action: (
+      <>
+        <button
+          className="ms-3 fs-3 text-danger bg-transparent border-0"
+          onClick={() => {
+            navigate(`/admin/edit-product/${pro._id}`);
+          }}
+        >
+          <BiEdit />
+        </button>
+        <button
+          className="ms-3 fs-3 text-danger bg-transparent border-0"
+          onClick={() => showModal(pro._id)}
+        >
+          <AiFillDelete />
+        </button>
+      </>
+    ),
+  }))
   if (productState && productState.length) {
     for (let i = 0; i < productState.length; i++) {
       data1.push({
@@ -136,7 +187,22 @@ const ProductList = () => {
           </button>
         </div>
         <div>
-          <Table columns={columns} dataSource={data1} />
+          <Typeahead
+            id="search-orders"
+            onChange={(selected) => {
+              if (selected.length > 0) {
+                setSearchTerm(selected[0]);
+              } else {
+                setSearchTerm("");
+              }
+            }}
+            options={productState?.map((pro) => pro.name) || []}
+            placeholder="Tìm kiếm theo tên..."
+            selected={searchResults}
+            onInputChange={(text) => setSearchTerm(text)}
+            className="mt-3"
+          />
+          <Table columns={columns} dataSource={data2} />
         </div>
         <CustomModal
           hideModal={hideModal}
