@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { sendMessage } from "../features/messages/messageSlice";
 import { ADMIN_ID } from "../utils/config";
+import useMessages from "../zustand/useMessages";
 
 const Chat = () => {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ const Chat = () => {
   const { messages, loading } = useSelector((state) => state.message);
   const [isMinimized, setIsMinimized] = useState(true);
   const [message, setMessage] = useState("");
-
+  const { message1, setMessage1 } = useMessages();
   const toggleMinimized = () => {
     setIsMinimized(!isMinimized);
   };
@@ -45,7 +46,8 @@ const Chat = () => {
       })
     )
       .unwrap()
-      .then(() => {
+      .then((data) => {
+        setMessage1([...message1, data])
         setMessage("");
       })
       .catch((error) => toast.error(error));
