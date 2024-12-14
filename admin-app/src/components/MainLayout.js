@@ -19,10 +19,18 @@ import { BiCategoryAlt } from "react-icons/bi";
 import { Layout, Menu, theme } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import Notification from "./Notification";
+import useListenOrder from "../zustand/useListenOrder";
+import useConversation from "../zustand/useConversation";
+import { RiLogoutBoxRLine } from "react-icons/ri";
 const { Header, Sider, Content } = Layout;
 const MainLayout = () => {
+  useListenOrder();
+  const { selectedOrder } = useConversation();
+  console.log(selectedOrder)
   const [collapsed, setCollapsed] = useState(false);
   const [selectedKey, setSelectedKey] = useState("");
+  const [click, setClick] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -30,7 +38,6 @@ const MainLayout = () => {
     const path = location.pathname.split("/")[2] || "";
     setSelectedKey(path);
   }, [location]);
-
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -97,9 +104,19 @@ const MainLayout = () => {
       label: "Quản lý tin nhắn khách hàng",
     },
   ];
-
-  const { user } = useSelector((state) => state.auth.user);
-
+  const user = JSON.parse(localStorage.getItem("user")) || [];
+  console.log(user);
+  const authState = useSelector((state) => state?.auth);
+  const handleLogout = () => {
+    navigate("/")
+    localStorage.removeItem("user");
+    window.location.reload();
+  };
+  useEffect(() => {
+    if (authState.user === null && authState.isSuccess !== true) {
+      navigate("/");
+    }
+  }, [authState]);
   return (
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
@@ -139,13 +156,17 @@ const MainLayout = () => {
             }
           )}
           <div className="d-flex gap-4 align-items-center">
-            <div className="position-relative">
+            <div className="position-relative" onClick={() => { setClick(!click) }}>
               <IoIosNotifications className="fs-4" />
               <span className="badge bg-warning rounded-circle p-1 position-absolute">
-                3
+                {selectedOrder.length}
               </span>
             </div>
-
+            {click && (
+              <>
+                <Notification data={selectedOrder} />
+              </>
+            )}
             <div className="d-flex gap-3 align-items-center dropdown">
               <div>
                 <img
@@ -161,24 +182,22 @@ const MainLayout = () => {
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                <h5 className="mb-0">{user.name}</h5>
-                <p className="mb-0">{user.email}</p>
+                <h5 className="mb-0">{user.user?.name}</h5>
+                <p className="mb-0">{user.user?.email}</p>
               </div>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
                 <li>
                   <Link
                     className="dropdown-item py-1 mb-1"
                     style={{ height: "auto", lineHeight: "20px" }}
-                    to="/"
                   >
                     Profile
                   </Link>
                 </li>
                 <li>
                   <Link
-                    className="dropdown-item py-1 mb-1"
+                    className="dropdown-item py-1 mb-1" onClick={handleLogout}
                     style={{ height: "auto", lineHeight: "20px" }}
-                    to="/"
                   >
                     Logout
                   </Link>

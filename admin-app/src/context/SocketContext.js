@@ -11,6 +11,7 @@ export const userSocketContext = () => {
 export const SocketContextProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [newOrder, setNewOrder] = useState(null);
 
   const getCustomerfromLocalStorage = localStorage.getItem("user")
     ? JSON.parse(localStorage.getItem("user"))
@@ -31,7 +32,10 @@ export const SocketContextProvider = ({ children }) => {
       socket.on("getOnlineUsers", (users) => {
         setOnlineUsers(users);
       });
-
+      // socket.on("new-order-notification", (orderData) => {
+      //   console.log("New order received:", orderData);
+      //   setNewOrder(orderData);
+      // });
       return () => {
         socket.close();
       };

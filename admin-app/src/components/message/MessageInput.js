@@ -9,9 +9,7 @@ const MessageInput = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const { messages, setMessages, selectedConversation } = useConversation();
-  console.log(messages);
   const [message, setMessage] = useState("");
-  console.log(message);
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!message) {

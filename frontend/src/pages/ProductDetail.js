@@ -22,6 +22,7 @@ import { FaFacebookSquare } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { FcNext, FcPrevious } from "react-icons/fc";
 import ReactImageZoom from "react-image-zoom";
+import ImageDetails from "../components/ImageDetails";
 const ProductDetail = () => {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -73,12 +74,6 @@ const ProductDetail = () => {
     colorIds?.includes(color?._id)
   );
   const [currentIndex, setCurrentIndex] = useState(0);
-  const props = {
-    width: 600,
-    height: 600,
-    zoomWidth: 600,
-    img: productState?.images[currentIndex]?.url,
-  };
   const wishlist = useSelector(
     (state) => state?.auth?.wishlist?.data?.wishlist
   );
@@ -131,7 +126,6 @@ const ProductDetail = () => {
       }, 700);
     }
   };
-
   const getColors = () => {
     dispatch(getAllColors());
   };
@@ -187,7 +181,16 @@ const ProductDetail = () => {
       maximumFractionDigits: 0,
     }).format(amount);
   };
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const openLightbox = (index) => {
+    setCurrentIndex(index);
+    setIsLightboxOpen(true);
+  };
 
+  // Đóng Lightbox
+  const closeLightbox = () => {
+    setIsLightboxOpen(false);
+  };
   return (
     <>
       <Meta title={"Product Name"} />
@@ -197,24 +200,24 @@ const ProductDetail = () => {
           <div className="row">
             <div className="col-6">
               <div className="main-product-image">
-                <div>
-                  {productState?.images?.[currentIndex]?.url && (
-                    <ReactImageZoom {...props} />
-                  )}
+                <div className="abc" onClick={() => openLightbox(currentIndex)}>
+                  <img src={productState?.images?.[currentIndex]?.url} alt="" />
                 </div>
               </div>
-              <div className="other-product-images d-flex gap-10">
+              <div className="other-product-images d-flex gap-30">
                 <button className="nav-button" onClick={handlePrevious}>
                   <FcPrevious />
                 </button>
                 {productState?.images?.map((image, index) => (
-                  <div>
+
+                  <div className="image-d">
                     <img
                       key={index}
                       src={image.url}
-                      alt={`Thumbnail ${index + 1}`}
-                      className={`img-fluid ${currentIndex === image.url ? "active" : ""
+                      alt={`Thumbnail ${index}`}
+                      className={`image-detail ${currentIndex === index ? "active" : ""
                         }`}
+                      // className="image-d"
                       onClick={() => setCurrentIndex(index)}
                     />
                   </div>
@@ -223,6 +226,14 @@ const ProductDetail = () => {
                   <FcNext />
                 </button>
               </div>
+              {isLightboxOpen && (
+                <ImageDetails
+                  images={productState?.images}
+                  currentIndex={currentIndex}
+                  onClose={closeLightbox}
+                  setCurrentIndex={setCurrentIndex}
+                />
+              )}
             </div>
             <div className="col-6">
               <div className="main-product-details">

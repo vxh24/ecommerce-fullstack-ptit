@@ -85,7 +85,7 @@ main::-webkit-scrollbar {
 }
 
 .ant-layout-header div .badge {
-  top: 16px;
+  top: -7px;
   right: -6px;
 }
 

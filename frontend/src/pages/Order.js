@@ -115,63 +115,68 @@ const Order = () => {
               </div>
             </div>
             <div className="col-12 mt-3">
-              <table className="table caption-top">
-                <thead>
-                  <tr>
-                    <th scope="col" className="col-3">
-                      Mã đơn hàng
-                    </th>
-                    <th scope="col" className="col-2">
-                      Tổng tiền
-                    </th>
-                    <th scope="col" className="col-3">
-                      Ngày đặt hàng{" "}
-                    </th>
-                    <th scope="col" className="col-2">
-                      Trạng thái
-                    </th>
-                    <th scope="col" className="col-2"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filterstatus?.length > 0 ? (
-                    filterstatus.map((item, index) => (
-                      <tr key={index}>
-                        <th scope="row">{item?._id}</th>
-                        <td className="price">
-                          {formatPrice(item?.paymentIndent?.amount)}
-                        </td>
-                        <td>{moment(item?.createdAt).format("DD/MM/YYYY")}</td>
-                        <td>{item?.orderStatus}</td>
-                        <td>
-                          <div className="d-flex gap-10 align-items-center">
-                            <AiOutlineEye
-                              size={22}
-                              className="cursor-pointer ms-2"
-                              onClick={() => handleOpenOrderDetail(item)}
-                              title="Quick view"
-                            />
-                            {item?.orderStatus === "Chờ xác nhận" && (
-                              <button
-                                onClick={() => handleCancel(item?._id)}
-                                className="btn btn-primary btn-sm"
-                              >
-                                Hủy đơn
-                              </button>
-                            )}
-                          </div>
+              <div className="order-list">
+                <table className="table caption-top">
+                  <thead>
+                    <tr>
+                      <th scope="col" className="col-3">
+                        Mã đơn hàng
+                      </th>
+                      <th scope="col" className="col-2">
+                        Tổng tiền
+                      </th>
+                      <th scope="col" className="col-3">
+                        Ngày đặt hàng{" "}
+                      </th>
+                      <th scope="col" className="col-2">
+                        Trạng thái
+                      </th>
+                      <th scope="col" className="col-2"></th>
+                    </tr>
+                  </thead>
+
+                  <tbody >
+
+                    {filterstatus?.length > 0 ? (
+                      filterstatus.map((item, index) => (
+                        <tr key={index}>
+                          <th scope="row">{item?._id}</th>
+                          <td className="price">
+                            {formatPrice(item?.paymentIndent?.amount)}
+                          </td>
+                          <td>{moment(item?.createdAt).format("DD/MM/YYYY")}</td>
+                          <td>{item?.orderStatus}</td>
+                          <td>
+                            <div className="d-flex gap-10 align-items-center">
+                              <AiOutlineEye
+                                size={22}
+                                className="cursor-pointer ms-2"
+                                onClick={() => handleOpenOrderDetail(item)}
+                                title="Quick view"
+                              />
+                              {item?.orderStatus === "Chờ xác nhận" && (
+                                <button
+                                  onClick={() => handleCancel(item?._id)}
+                                  className="btn btn-primary btn-sm"
+                                >
+                                  Hủy đơn
+                                </button>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="5" className="text-center">
+                          Không có đơn hàng nào phù hợp.
                         </td>
                       </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="5" className="text-center">
-                        Không có đơn hàng nào phù hợp.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+                    )}
+
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>

@@ -991,6 +991,8 @@ footer .input-group-text {
 .other-product-images {
   background-color: white;
   padding: 20px;
+  align-items: center;
+  justify-content: center;
 }
 
 .other-product-images img {
@@ -998,17 +1000,13 @@ footer .input-group-text {
   height: 70px;
 }
 
-.other-product-images>div {
-  padding: 10px;
-  width: 48%;
+.image-d img {
+  border-radius: 5px;
 }
 
-.main-product-image>div {
-  border: 1px solid rgba(0, 0, 0, 0.25);
-}
-
-.other-product-images>div .active {
-  border: 1px solid red;
+.image-d img.active,
+.image-d img:hover {
+  border: 2px solid #007bff;
 }
 
 .main-product-details {
@@ -1288,6 +1286,20 @@ footer .input-group-text {
   position: relative;
 }
 
+.order-list {
+  max-height: 700px !important;
+  overflow-y: auto !important;
+  width: 100%;
+}
+
+
+.order-list thead {
+  position: sticky;
+  top: 0;
+  background-color: #f8f9fa;
+  z-index: 2;
+}
+
 /* orderDetail end*/
 
 /* Profile */
@@ -1380,12 +1392,10 @@ footer .input-group-text {
   width: 150px;
   height: 150px;
   object-fit: cover;
-  /* Thay cho object-cover */
 }
 
 .custom-border-color {
   border-color: #3ad132;
-  /* Màu xanh lá tùy chỉnh */
 }
 
 .profile-content-poiner {
@@ -1706,25 +1716,17 @@ input[type="checkbox"] {
 
 /* voucher end*/
 /* banner slide */
-
-/* Điều khiển (Controls) */
 .carousel-control {
   color: white;
-  /* Màu điều khiển */
   width: 15%;
-  /* Chiều rộng điều khiển */
   opacity: 0.5;
-  /* Độ mờ mặc định */
   transition: opacity 0.15s ease;
-  /* Hiệu ứng hover */
 }
 
 .carousel-control:hover {
   opacity: 0.9;
-  /* Độ mờ khi hover */
 }
 
-/* Icon điều khiển (Mũi tên trái/phải) */
 .carousel-control-prev-icon {
   background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='white'><path d='M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z'/></svg>");
   width: 2rem;
@@ -1740,58 +1742,43 @@ input[type="checkbox"] {
   transition: transform 0.6s ease-in-out;
 }
 
-/* Indicator */
 .carousel-indicator {
   width: 30px;
-  /* Chiều rộng */
   height: 3px;
-  /* Chiều cao */
   background-color: rgba(255, 255, 255, 0.5);
-  /* Độ mờ */
   transition: opacity 0.6s ease;
   margin: 3px;
-  /* Khoảng cách giữa các indicators */
 }
 
 .carousel-indicator.active {
   background-color: white;
-  /* Màu khi active */
   opacity: 1;
 }
 
-/* Caption */
 .carousel-caption {
   width: 70%;
   color: white;
-  /* Màu chữ của caption */
   padding: 1.25rem 0;
-  /* Padding theo chiều dọc */
 }
 
-/* Phiên bản tối (Dark Mode) */
 .carousel-dark-indicator-active-bg {
   background-color: black;
-  /* Màu nền khi active ở dark mode */
 }
 
 .carousel-dark-caption {
   color: black;
-  /* Màu caption trong dark mode */
 }
 
 .carousel-dark-control-icon {
   filter: invert(1) grayscale(100);
-  /* Biến icon thành màu tối */
 }
 
 .carousel {
   height: 350px;
-  /* Thay 500px bằng chiều cao mong muốn */
 }
 
 .carousel-inner {
   height: 100%;
-  /* Đảm bảo chiều cao của các item con */
 }
 
 .carousel-inner img {
@@ -2103,7 +2090,6 @@ input[type="checkbox"] {
   font-size: 18px;
   padding: 0 10px;
 
-  /* Đảm bảo có khoảng cách cho dấu cộng */
 }
 
 .chat-body {
@@ -2221,3 +2207,110 @@ input[type="checkbox"] {
   @tailwind components;
   @tailwind utilities;
 }
+
+/* image-detail-product */
+/* Lightbox Overlay */
+.image-detail-overlay {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 80%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Lightbox Container */
+.image-detail-container {
+  display: flex;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  max-width: 80%;
+  max-height: 90%;
+}
+
+/* Ảnh lớn */
+.image-detail-main-image {
+  position: relative;
+  flex: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+}
+
+.image-detail-main-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.nav-button1 {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.3);
+  color: #000;
+  font-size: 30px;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  transition: background 0.3s ease;
+}
+
+.nav-button1.left {
+  left: 10px;
+}
+
+.nav-button1.right {
+  right: 10px;
+}
+
+.nav-button1:hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.image-detail-thumbnails {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  background: #f5f5f5;
+  padding: 10px;
+}
+
+.image-detail-thumbnails img {
+  width: 80px;
+  height: 80px;
+  margin: 5px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 5px;
+  transition: border 0.3s ease;
+}
+
+.image-detail-thumbnails img.active,
+.image-detail-thumbnails img:hover {
+  border: 2px solid #007bff;
+}
+
+/* Nút đóng */
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  color: white;
+  font-size: 30px;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+}
+
+/* image-detail-product end */
