@@ -65,7 +65,7 @@ const getAllProductsController = asyncHandler(async (req, res) => {
   let products = await getAllProducts(
     JSON.parse(queryStr),
     sortBy,
-    fields,
+    fields
     // page,
     // limit
   );
@@ -80,6 +80,8 @@ const updateProductController = asyncHandler(async (req, res) => {
   const id = req.params.id;
   const productData = req.body;
   const files = req.files ? req.files.images : [];
+
+  console.log(req.body);
 
   const result = await updateProduct(id, productData, files);
   res.status(200).json({

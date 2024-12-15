@@ -21,10 +21,21 @@ const getOrderById = async (id) => {
 
   return response.data;
 };
+
 const updateOrderStatus = async ({ id, status }) => {
   console.log(status);
   console.log(id);
-  const response = await axios.put(`${base_url}order/update-order/${id}`, { status }, getConfig);
+  const response = await axios.put(
+    `${base_url}order/update-order/${id}`,
+    { status },
+    getConfig
+  );
+
+  return response.data;
+};
+
+const getRevenue = async () => {
+  const response = await axios.get(`${base_url}order/get-revenue`, getConfig);
 
   return response.data;
 };
@@ -34,6 +45,7 @@ const authService = {
   getOrders,
   getOrderById,
   updateOrderStatus,
+  getRevenue,
 };
 
 export default authService;

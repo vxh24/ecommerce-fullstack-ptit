@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Table } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { BiEdit } from "react-icons/bi";
-import { AiFillDelete } from "react-icons/ai";
-import { Link } from "react-router-dom";
 import { Typeahead } from "react-bootstrap-typeahead";
-import { getOrderById, getOrders, updateOrderStatusSlice } from "../features/auth/authSlice";
+import {
+  getOrderById,
+  getOrders,
+  updateOrderStatusSlice,
+} from "../features/auth/authSlice";
 import { FaEye } from "react-icons/fa";
 import { getColors } from "../features/color/colorSlice";
 import "react-bootstrap-typeahead/css/Typeahead.css";
@@ -24,16 +25,12 @@ const columns = [
     dataIndex: "status",
   },
   {
-    title: "Amount",
-    dataIndex: "amount",
-  },
-  {
     title: "Ngày đặt hàng",
     dataIndex: "date",
   },
 
   {
-    title: "Hành động",
+    title: "Thao tác",
     dataIndex: "action",
   },
 ];
@@ -69,7 +66,13 @@ const Orders = () => {
     action: (
       <>
         <div className="d-flex align-items-center">
-          <button className="ms-3 fs-3 text-info" onClick={() => { setOpen(true); setOrder(order) }}>
+          <button
+            className="ms-3 fs-3 text-info"
+            onClick={() => {
+              setOpen(true);
+              setOrder(order);
+            }}
+          >
             <FaEye />
           </button>
         </div>
@@ -82,12 +85,17 @@ const Orders = () => {
         key: orderState[i]._id,
         name: orderState[i].orderBy?.name,
         status: orderState[i].orderStatus,
-        amount: orderState[i].paymentIndent.amount,
         date: new Date(orderState[i].createdAt).toLocaleString(),
         action: (
           <>
             <div className="d-flex align-items-center">
-              <button className="ms-3 fs-3 text-info" onClick={() => { setOpen(true); setOrder(orderState[i]) }}>
+              <button
+                className="ms-3 fs-3 text-info"
+                onClick={() => {
+                  setOpen(true);
+                  setOrder(orderState[i]);
+                }}
+              >
                 <FaEye />
               </button>
             </div>
@@ -100,7 +108,12 @@ const Orders = () => {
   return (
     <>
       <div>
-        <h3 className="mb-4 title">Orders</h3>
+        <h3
+          className="mb-4 title"
+          style={{ fontSize: "30px", fontWeight: "bold" }}
+        >
+          Danh sách đơn hàng
+        </h3>
         {/* Search Input */}
         <Typeahead
           id="search-orders"
@@ -121,7 +134,10 @@ const Orders = () => {
       {open && (
         <div className="modal-order">
           <div className="modal-content-order">
-            <button className="close-model-order" onClick={() => setOpen(false)}>
+            <button
+              className="close-model-order"
+              onClick={() => setOpen(false)}
+            >
               ✖
             </button>
             <ViewOrder orderState={order} />
@@ -168,15 +184,21 @@ const columns1 = [
   },
 ];
 
+const formattedPrice = (price) =>
+  new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(price);
+
 const ViewOrder = (orderState) => {
   const order = orderState.orderState;
   const dispatch = useDispatch();
-  const orderStatus1 = useSelector(state => state?.auth?.orderbyuser?.data);
+  const orderStatus1 = useSelector((state) => state?.auth?.orderbyuser?.data);
   const data1 = [];
   useEffect(() => {
     dispatch(getColors());
     dispatch(getOrderById(order._id));
-  }, [])
+  }, []);
   const [selectedStatus, setSelectedStatus] = useState(order.orderStatus);
   const handleStatusChange = (event) => {
     const newStatus = event.target.value;
@@ -185,9 +207,9 @@ const ViewOrder = (orderState) => {
     setTimeout(() => {
       dispatch(getOrders());
       dispatch(getOrderById(order._id));
-    }, 300)
+    }, 300);
   };
-  const colorData = useSelector(state => state.color.colors.data);
+  const colorData = useSelector((state) => state.color.colors.data);
   if (order.products && order.products.length) {
     for (let i = 0; i < order.products.length; i++) {
       const color = colorData?.find(
@@ -199,21 +221,35 @@ const ViewOrder = (orderState) => {
         brand: order.products[i].product.brand,
         count: order.products[i].count,
         color: color,
-        price: (order.products[i].product.price * order.products[i].count),
+        price: formattedPrice(
+          order.products[i].product.price * order.products[i].count
+        ),
       });
     }
   }
 
   return (
     <div className="order-detail">
-      <h4 className="mb-4 title">Chi tiết order</h4>
-      <ul >
-        <li><strong>Mã đơn hàng:</strong> {order.paymentIndent.orderId}</li>
-        <li><strong>Ngày tạo:</strong>{moment(order.created_at).format("DD-MM-YYYY")}</li>
-        <li><strong>Tổng số tiền:</strong> {order.paymentIndent.amount} VNĐ</li>
-        <li><strong>Địa chỉ giao hàng:</strong> {order.orderAddress}</li>
+      <h4 className="mb-4 title">Chi tiết đơn hàng</h4>
+      <ul>
+        <li>
+          <strong>Mã đơn hàng:</strong> {order.paymentIndent.orderId}
+        </li>
+        <li>
+          <strong>Ngày tạo:</strong>
+          {moment(order.created_at).format("DD-MM-YYYY")}
+        </li>
+        <li>
+          <strong>Tổng số tiền:</strong>{" "}
+          {formattedPrice(order.paymentIndent.amount)}
+        </li>
+        <li>
+          <strong>Địa chỉ giao hàng:</strong> {order.orderAddress}
+        </li>
         <div className="d-flex align-items-center gap-10">
-          <li><strong>Trạng thái đơn hàng:</strong> {orderStatus1?.orderStatus}</li>
+          <li>
+            <strong>Trạng thái đơn hàng:</strong> {orderStatus1?.orderStatus}
+          </li>
           <select value={selectedStatus} onChange={handleStatusChange}>
             <option value="Chờ xác nhận">Chờ xác nhận</option>
             <option value="Chờ giao hàng">Chờ giao hàng</option>
