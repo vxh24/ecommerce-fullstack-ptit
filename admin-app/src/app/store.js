@@ -1,4 +1,4 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, createReducer } from "@reduxjs/toolkit";
 import authReducer from "../features/auth/authSlice";
 import enquiryReducer from "../features/enquiry/enquirySlice";
 import blogReducer from "../features/blogs/blogSlice";
@@ -10,6 +10,7 @@ import brandReducer from "../features/brand/brandSlice";
 import productReducer from "../features/product/productSlice";
 import uploadReducer from "../features/upload/uploadSlice";
 import couponReducer from "../features/coupon/couponSlice";
+import cartReducer from "../features/cart/CartSlice"
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -23,5 +24,6 @@ export const store = configureStore({
     pCategory: pCategoryReducer,
     product: productReducer,
     upload: uploadReducer,
+    cart: cartReducer,
   },
 });

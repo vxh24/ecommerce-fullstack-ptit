@@ -23,6 +23,7 @@ import Notification from "./Notification";
 import useListenOrder from "../zustand/useListenOrder";
 import useConversation from "../zustand/useConversation";
 import { RiLogoutBoxRLine } from "react-icons/ri";
+import { CiShop } from "react-icons/ci";
 const { Header, Sider, Content } = Layout;
 const MainLayout = () => {
   useListenOrder();
@@ -139,6 +140,12 @@ const MainLayout = () => {
           }}
           items={menuItems}
         />
+
+        <Link to="/counter">
+          <div className="counter">
+            <CiShop className="fs-4" /> <p>Bán hàng tại quầy</p>
+          </div>
+        </Link>
       </Sider>
       <Layout className="site-layout">
         <Header

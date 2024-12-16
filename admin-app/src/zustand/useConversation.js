@@ -6,5 +6,7 @@ const useConversation = create((set) => ({
   setSelectedOrder: (selectedOrder) => set({ selectedOrder }),
   messages: [],
   setMessages: (messages) => set({ messages }),
+  voucherChecked: null,
+  setVoucherChecked: (voucherChecked) => set({ voucherChecked }),
 }))
 export default useConversation;
