@@ -22,11 +22,8 @@ import { useSelector } from "react-redux";
 import Notification from "./Notification";
 import useListenOrder from "../zustand/useListenOrder";
 import useConversation from "../zustand/useConversation";
-<<<<<<< HEAD
 import { RiLogoutBoxRLine } from "react-icons/ri";
 import { CiShop } from "react-icons/ci";
-=======
->>>>>>> 52e753e9874ab6ba8099f21b4c082354cf6ad96d
 const { Header, Sider, Content } = Layout;
 const MainLayout = () => {
   useListenOrder();

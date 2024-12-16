@@ -6,31 +6,23 @@ import { getOrders, getRevenue } from "../features/auth/authSlice";
 
 const columns = [
   {
-    title: "SNo",
+    title: "Mã Đơn hàng",
     dataIndex: "key",
   },
   {
-    title: "Name",
+    title: "Tên",
     dataIndex: "name",
   },
   {
-    title: "Product",
-    dataIndex: "product",
+    title: "Ngày đặt",
+    dataIndex: "date",
   },
   {
-    title: "Status",
-    dataIndex: "staus",
+    title: "Trạng thái",
+    dataIndex: "status",
   },
 ];
 const data1 = [];
-for (let i = 0; i < 46; i++) {
-  data1.push({
-    key: i,
-    name: `Edward King ${i}`,
-    product: 32,
-    staus: `London, Park Lane no. ${i}`,
-  });
-}
 const Dashboard = () => {
   const data = [
     {
@@ -124,14 +116,22 @@ const Dashboard = () => {
     dispatch(getRevenue());
   }, []);
   const orderState = useSelector((state) => state.auth.orders.data);
-  const totalRevenue = useSelector((state) => state.auth.totalRevenue.data);
-
+  const totalRevenue = useSelector((state) => state?.auth?.totalRevenue?.data);
+  if (orderState && orderState.length) {
+    for (let i = orderState.length - 1; i >= 0; i--) {
+      data1.push({
+        key: orderState[i]._id,
+        name: orderState[i].orderBy?.name,
+        status: orderState[i].orderStatus,
+        date: new Date(orderState[i].createdAt).toLocaleString(),
+      });
+    }
+  }
   console.log(totalRevenue);
 
   const pendingOrdersCount = orderState
     ? orderState.filter((order) => order.orderStatus === "Chờ xác nhận").length
     : 0;
-
   return (
     <div>
       <h3
@@ -187,7 +187,7 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="mt-4">
-        <h3 className="mb-5 title">Recent Orders</h3>
+        <h3 className="mb-5 title">Đơn hàng gần đây</h3>
         <div>
           <Table columns={columns} dataSource={data1} />
         </div>

@@ -70,6 +70,7 @@ const ProductDetail = () => {
     (state) => state?.product?.product?.data?.colors
   );
   const colors = useSelector((state) => state?.color?.colors?.data);
+  console.log(colorIds);
   const matchedColors = colors?.filter((color) =>
     colorIds?.includes(color?._id)
   );
@@ -320,7 +321,7 @@ const ProductDetail = () => {
                         >
                           Màu sắc:
                         </h3>
-                        <Color setColor={setColor} colorData={matchedColors} />
+                        <Color setColor={setColor} colorData={colorIds} />
                       </div>
                     </>
                   )}
