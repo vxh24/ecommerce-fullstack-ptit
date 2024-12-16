@@ -23,11 +23,10 @@ const createOrderByCOD = asyncHandler(
       throw new Error("User not found");
     }
 
-    let userCart = await Cart.findOne({ orderBy: user._id })
-      .populate({
-        path: "products.product",
-        select: "name images",
-      });
+    let userCart = await Cart.findOne({ orderBy: user._id }).populate({
+      path: "products.product",
+      select: "name images",
+    });
 
     if (!userCart) {
       throw new Error("Cart not found");
@@ -157,11 +156,10 @@ const handlePaymentCallback = asyncHandler(async (userId, callbackData) => {
     throw new Error("User not found");
   }
 
-  let userCart = await Cart.findOne({ orderBy: user._id })
-    .populate({
-      path: "products.product",
-      select: "name images",
-    });
+  let userCart = await Cart.findOne({ orderBy: user._id }).populate({
+    path: "products.product",
+    select: "name images",
+  });
 
   if (!userCart) {
     throw new Error("Cart not found");
@@ -181,8 +179,9 @@ const handlePaymentCallback = asyncHandler(async (userId, callbackData) => {
   const timestamp = Number(responseTime);
   const date = new Date(timestamp);
 
-  const formattedDate = `${date.getDate()}/${date.getMonth() + 1
-    }/${date.getFullYear()}`;
+  const formattedDate = `${date.getDate()}/${
+    date.getMonth() + 1
+  }/${date.getFullYear()}`;
 
   const { orderAddress } = JSON.parse(extraData || "{}");
 
@@ -283,6 +282,25 @@ const cancelOrder = asyncHandler(async (userId, orderId) => {
   await order.save();
 });
 
+const handleRevenueCalculation = asyncHandler(async () => {
+  const allOrders = await getAllOrders();
+
+  const completedOrders = allOrders.filter(
+    (order) => order.orderStatus === "Hoàn thành"
+  );
+
+  // return completedOrders;
+
+  let totalRevenue = 0;
+  for (const order of completedOrders) {
+    for (const product of order.products) {
+      totalRevenue += product.product.price * product.count;
+    }
+  }
+
+  return totalRevenue;
+});
+
 module.exports = {
   createOrderByCOD,
   getAllOrders,
@@ -292,4 +310,5 @@ module.exports = {
   createPaymentService,
   handlePaymentCallback,
   cancelOrder,
+  handleRevenueCalculation,
 };

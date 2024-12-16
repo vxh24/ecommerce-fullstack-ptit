@@ -61,61 +61,59 @@ const createProduct = asyncHandler(async (productData, files) => {
 
 const getAProduct = asyncHandler(async (id) => {
   validateMongodbId(id);
-  const result = await Product.findById(id);
+  const result = await Product.findById(id).populate("colors");
   return result;
 });
 
-const getAllProducts = asyncHandler(
-  async (queryObj, sortBy, fields) => {
-    let query = Product.find(queryObj).populate("colors");
+const getAllProducts = asyncHandler(async (queryObj, sortBy, fields) => {
+  let query = Product.find(queryObj).populate("colors");
 
-    //sorting
-    if (sortBy) {
-      switch (sortBy) {
-        case "name-asc": // A-Z
-          query = query.sort("name");
-          break;
-        case "name-desc": // Z-A
-          query = query.sort("-name");
-          break;
-        case "price-asc": // tang dan
-          query = query.sort("price");
-          break;
-        case "price-desc": // giam dan
-          query = query.sort("-price");
-          break;
-        default:
-          query = query.sort("-createdAt"); // ngay tao
-      }
-    } else {
-      query = query.sort("-createdAt"); // ngay tao
+  //sorting
+  if (sortBy) {
+    switch (sortBy) {
+      case "name-asc": // A-Z
+        query = query.sort("name");
+        break;
+      case "name-desc": // Z-A
+        query = query.sort("-name");
+        break;
+      case "price-asc": // tang dan
+        query = query.sort("price");
+        break;
+      case "price-desc": // giam dan
+        query = query.sort("-price");
+        break;
+      default:
+        query = query.sort("-createdAt"); // ngay tao
     }
-
-    //limiting the fields
-    if (fields) {
-      const fieldList = fields.split(",").join(" ");
-      query = query.select(fieldList);
-    } else {
-      query = query.select("-__v");
-    }
-
-    //paginating
-    // const skip = (page - 1) * limit;
-    // query = query.skip(skip).limit(limit);
-    // if (page) {
-    //   const productCount = await Product.countDocuments();
-    //   if (skip >= productCount) throw new Error("This page does not exists");
-    // }
-
-    const products = await query;
-    return products;
+  } else {
+    query = query.sort("-createdAt"); // ngay tao
   }
-);
+
+  //limiting the fields
+  if (fields) {
+    const fieldList = fields.split(",").join(" ");
+    query = query.select(fieldList);
+  } else {
+    query = query.select("-__v");
+  }
+
+  //paginating
+  // const skip = (page - 1) * limit;
+  // query = query.skip(skip).limit(limit);
+  // if (page) {
+  //   const productCount = await Product.countDocuments();
+  //   if (skip >= productCount) throw new Error("This page does not exists");
+  // }
+
+  const products = await query;
+  return products;
+});
 
 const updateProduct = asyncHandler(async (id, productData, files) => {
   validateMongodbId(id);
 
-  const product = await Product.findById(id);
+  const product = await getAProduct(id);
 
   if (!product) {
     throw new Error("Product not found.");

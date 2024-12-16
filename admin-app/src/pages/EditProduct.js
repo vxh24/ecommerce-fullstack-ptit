@@ -40,37 +40,30 @@ let schema = yup.object().shape({
 
 const EditProduct = () => {
   const { id } = useParams();
-
-  // console.log(id);
-
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getProductById(id));
-  }, []);
-
-  const productState = useSelector((state) => state.product.product?.data);
-
-  // console.log(productState);
-
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [photoIndex, setPhotoIndex] = useState(0);
-
   const navigate = useNavigate();
 
   useEffect(() => {
+    dispatch(getProductById(id));
     dispatch(getBrands());
     dispatch(getCategories());
     dispatch(getColors());
   }, []);
 
+  const productState = useSelector((state) => state.product.product?.data);
   const brandState = useSelector((state) => state.brand.brands?.data);
   const catState = useSelector((state) => state.pCategory.pCategories?.data);
   const colorState = useSelector((state) => state.color.colors?.data);
 
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [photoIndex, setPhotoIndex] = useState(0);
+
+  const [images, setImages] = useState(productState?.images || []);
+  const [fileInputKey, setFileInputKey] = useState(0);
+
   useEffect(() => {
     if (productState?.images) {
-      setImages(productState?.images); // Cập nhật images nếu có
+      setImages(productState?.images);
     }
   }, [productState]);
 
@@ -97,8 +90,6 @@ const EditProduct = () => {
     });
   }
 
-  // console.log(productState?.images);
-
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -108,7 +99,9 @@ const EditProduct = () => {
       price: productState?.price || "",
       category: productState?.category || "",
       brand: productState?.brand || "",
-      colors: productState?.colors || [],
+      colors: Array.isArray(productState?.colors)
+        ? productState?.colors.map((color) => color._id)
+        : [],
       quantity: productState?.quantity || "",
       tags: productState?.tags
         ? Array.isArray(productState?.tags)
@@ -117,30 +110,32 @@ const EditProduct = () => {
         : [],
     },
     validationSchema: schema,
-    onSubmit: () => {
+    onSubmit: (values) => {
       const formData = new FormData();
-      formData.append("name", formik.values.name);
-      formData.append("description", formik.values.description);
-      formData.append("price", formik.values.price);
-      formData.append("category", formik.values.category);
-      formData.append("brand", formik.values.brand);
-      formData.append("quantity", formik.values.quantity);
+      formData.append("name", values.name);
+      formData.append("description", values.description);
+      formData.append("price", values.price);
+      formData.append("category", values.category);
+      formData.append("brand", values.brand);
+      formData.append("quantity", values.quantity);
       formik.values.colors.forEach((color) => {
-        formData.append("colors", color); // Đảm bảo gửi đúng dạng mảng
+        formData.append("colors", color);
       });
-      formData.append("tags", JSON.stringify(formik.values.tags));
+      // formData.append("colors", JSON.stringify(values.colors));
+      formData.append("tags", JSON.stringify(values.tags));
 
       images.forEach((image) => {
-        formData.append("images", image); // Đảm bảo hình ảnh được thêm vào FormData
+        formData.append("images", image);
       });
 
-      dispatch(updateProduct(id, formData)); // Gửi formData thay vì 'images' riêng biệt
-      navigate("/admin/list-product");
+      for (const [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+      }
+
+      dispatch(updateProduct(id, formData));
+      // navigate("/admin/list-product");
     },
   });
-
-  const [images, setImages] = useState(productState?.images || []);
-  const [fileInputKey, setFileInputKey] = useState(0);
 
   const onFileUploadHandler = (e) => {
     const newImages = [...e.target.files];
@@ -406,6 +401,7 @@ const EditProduct = () => {
                 placeholder="Chọn màu..."
                 value={formik.values.colors}
                 onChange={(e) => {
+                  console.log("Selected colors:", e);
                   formik.setFieldValue("colors", e);
                 }}
                 options={coloropt}
@@ -458,7 +454,7 @@ const EditProduct = () => {
               images[photoIndex].url
                 ? images[photoIndex].url
                 : URL.createObjectURL(images[photoIndex])
-            } // Use `URL.createObjectURL` for local images
+            }
             nextSrc={
               images[(photoIndex + 1) % images.length].url
                 ? images[(photoIndex + 1) % images.length].url
@@ -468,8 +464,8 @@ const EditProduct = () => {
               images[(photoIndex + images.length - 1) % images.length].url
                 ? images[(photoIndex + images.length - 1) % images.length].url
                 : URL.createObjectURL(
-                  images[(photoIndex + images.length - 1) % images.length]
-                )
+                    images[(photoIndex + images.length - 1) % images.length]
+                  )
             }
             onCloseRequest={() => setLightboxOpen(false)}
             onMovePrevRequest={() =>

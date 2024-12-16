@@ -22,13 +22,16 @@ import { useSelector } from "react-redux";
 import Notification from "./Notification";
 import useListenOrder from "../zustand/useListenOrder";
 import useConversation from "../zustand/useConversation";
+<<<<<<< HEAD
 import { RiLogoutBoxRLine } from "react-icons/ri";
 import { CiShop } from "react-icons/ci";
+=======
+>>>>>>> 52e753e9874ab6ba8099f21b4c082354cf6ad96d
 const { Header, Sider, Content } = Layout;
 const MainLayout = () => {
   useListenOrder();
   const { selectedOrder } = useConversation();
-  console.log(selectedOrder)
+  // console.log(selectedOrder)
   const [collapsed, setCollapsed] = useState(false);
   const [selectedKey, setSelectedKey] = useState("");
   const [click, setClick] = useState(false);
@@ -106,10 +109,10 @@ const MainLayout = () => {
     },
   ];
   const user = JSON.parse(localStorage.getItem("user")) || [];
-  console.log(user);
+  // console.log(user);
   const authState = useSelector((state) => state?.auth);
   const handleLogout = () => {
-    navigate("/")
+    navigate("/");
     localStorage.removeItem("user");
     window.location.reload();
   };
@@ -163,7 +166,12 @@ const MainLayout = () => {
             }
           )}
           <div className="d-flex gap-4 align-items-center">
-            <div className="position-relative" onClick={() => { setClick(!click) }}>
+            <div
+              className="position-relative"
+              onClick={() => {
+                setClick(!click);
+              }}
+            >
               <IoIosNotifications className="fs-4" />
               <span className="badge bg-warning rounded-circle p-1 position-absolute">
                 {selectedOrder.length}
@@ -203,7 +211,8 @@ const MainLayout = () => {
                 </li>
                 <li>
                   <Link
-                    className="dropdown-item py-1 mb-1" onClick={handleLogout}
+                    className="dropdown-item py-1 mb-1"
+                    onClick={handleLogout}
                     style={{ height: "auto", lineHeight: "20px" }}
                   >
                     Logout

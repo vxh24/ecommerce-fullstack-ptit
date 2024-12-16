@@ -10,6 +10,7 @@ const {
   createPaymentService,
   handlePaymentCallback,
   cancelOrder,
+  handleRevenueCalculation,
 } = require("../services/orderService");
 
 const createOrderByCODController = asyncHandler(async (req, res) => {
@@ -22,12 +23,17 @@ const createOrderByCODController = asyncHandler(async (req, res) => {
   // }
   if (adminSocketId) {
     const currentTime = new Date();
-    const formattedTime = `${currentTime.getDate().toString().padStart(2, '0')}/${(currentTime.getMonth() + 1).toString().padStart(2, '0')}/${currentTime.getFullYear()}`;
+    const formattedTime = `${currentTime
+      .getDate()
+      .toString()
+      .padStart(2, "0")}/${(currentTime.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}/${currentTime.getFullYear()}`;
     io.emit("new-order-notification", {
       title: "Đơn hàng mới đã được tạo",
       message: `Người dùng với ID ${_id} đã đặt hàng.`,
       userId: _id,
-      timestamp: formattedTime
+      timestamp: formattedTime,
     });
   }
   res.json({
@@ -133,6 +139,18 @@ const cancelOrderController = asyncHandler(async (req, res) => {
   });
 });
 
+const handleRevenueCalculationController = asyncHandler(async (req, res) => {
+  try {
+    const result = await handleRevenueCalculation();
+    res.json({
+      EC: 0,
+      data: result,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 module.exports = {
   createOrderByCODController,
   getAllOrdersController,
@@ -142,4 +160,5 @@ module.exports = {
   createPaymentController,
   paymentCallbackController,
   cancelOrderController,
+  handleRevenueCalculationController,
 };

@@ -1,25 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, Link, useNavigate, useLocation } from "react-router-dom";
 import { BsSearch } from "react-icons/bs";
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { Typeahead } from "react-bootstrap-typeahead";
 import "react-bootstrap-typeahead/css/Typeahead.css";
-import {
-  getAProducts,
-  searchProductSlice,
-} from "../features/products/productSlice";
 import { FaHeart } from "react-icons/fa";
-import { CgProfile } from "react-icons/cg";
 import { GiShoppingCart } from "react-icons/gi";
 import { BiCategory } from "react-icons/bi";
 import { googleLogout } from "@react-oauth/google";
 import { getCategories } from "../features/category/categorySlice";
-import {
-  getProfileSlice,
-  getUserCart,
-  logoutSlice,
-} from "../features/user/userSlice";
+import { getProfileSlice, getUserCart } from "../features/user/userSlice";
 const Header = () => {
   const profileState = useSelector((state) => state?.auth?.profile?.data);
   const categoryState = useSelector(
@@ -31,7 +20,6 @@ const Header = () => {
     dispatch(getCategories());
   }, []);
   const handleLogout = () => {
-    // dispatch(logoutSlice());
     googleLogout();
     localStorage.clear();
     window.location.reload();
@@ -209,7 +197,7 @@ const Header = () => {
                             <li>
                               <button
                                 onClick={handleLogout}
-                                className=" dropdown-item"
+                                className="dropdown-item"
                                 type="button"
                               >
                                 Đăng xuất
