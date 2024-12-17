@@ -96,10 +96,11 @@ const Checkout = () => {
       setTotalAmount(sum);
     }
   }, [userCartState]);
+  const user = JSON.parse(localStorage.getItem("customer"));
   const createOrder = () => {
     if (payment === 1) {
       dispatch(
-        cashOrderUser({ totalAmount: totalpayment, orderAddress: getAddress })
+        cashOrderUser({ userId: user.user.id, totalAmount: totalpayment, orderAddress: getAddress })
       );
       setTimeout(() => {
         dispatch(getUserCart());
@@ -109,6 +110,7 @@ const Checkout = () => {
     if (payment === 2) {
       dispatch(
         paymentMoMoSlice({
+          userId: user.user.id,
           totalAmount: totalpayment,
           orderAddress: getAddress,
         })

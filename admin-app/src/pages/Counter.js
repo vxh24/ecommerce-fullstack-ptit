@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { GoHome } from "react-icons/go";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { BsQrCodeScan } from "react-icons/bs";
 import { ToastContainer } from "react-toastify";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -16,17 +16,26 @@ import {
   cashOrderUser,
   deleteProductfromCart,
   paymentMoMoSlice,
+  printOrderSlice,
   updatecountCart,
 } from "../features/cart/CartSlice";
 import { toast } from "react-toastify";
 const Counter = () => {
+  const location = useLocation();
+  const message = location.state || {};
+  console.log(message);
   const [products, setProducts] = useState([]);
-  const [customers, setCustomers] = useState([]);
+  const [customers, setCustomers] = useState(null);
+  const [infor, setInfor] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [click, setClick] = useState(false);
   const [total, setTotal] = useState();
   const [totalAmount, setTotalAmount] = useState();
   const [coupon, setCoupon] = useState();
   const [change, setChange] = useState(null);
   const [payment, setPayment] = useState(null);
+  const [customerName, setCustomerName] = useState("");
   const dispatch = useDispatch();
   const [searchResults, setSearchResults] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -39,12 +48,10 @@ const Counter = () => {
       JSON.parse(localStorage.getItem("selectedProducts")) || [];
     const updatedProducts = selectedProducts.map((product) => {
       if (product._id === productId) {
-        const co = product.colors.find(
-          (item) => item.title === product.selectedColor
-        );
-        dispatch(
-          deleteProductfromCart({ productId: product._id, color: co._id })
-        );
+        if (product.selectedColor) {
+          const co = product.colors.find((item) => item.title === product.selectedColor)
+          dispatch(deleteProductfromCart({ productId: product._id, color: co._id }))
+        }
       }
       return product;
     });
@@ -64,6 +71,7 @@ const Counter = () => {
   const userState = useSelector((state) => state.customer.customers.data);
   const couponState = useSelector((state) => state.coupon.coupons.data);
   const cartState = useSelector((state) => state.cart);
+  const printState = useSelector((state) => state?.cart?.print?.data);
   const [payurl, setPayurl] = useState(cartState?.momo?.data?.payUrl);
   useEffect(() => {
     if (searchTerm) {
@@ -147,31 +155,36 @@ const Counter = () => {
       JSON.parse(localStorage.getItem("selectedProducts")) || [];
     const updatedProducts = storedProducts.map((product) => {
       if (product._id === productId) {
-        product["count"] = newCount;
-        const co = product.colors.find(
-          (item) => item.title === product.selectedColor
-        );
-        dispatch(
-          updatecountCart({
-            productId: product._id,
-            newQuantity: newCount,
-            colorId: co._id,
-          })
-        );
+        if (product.selectedColor) {
+          product["count"] = newCount;
+          const co = product.colors.find(
+            (item) => item.title === product.selectedColor
+          );
+          dispatch(
+            updatecountCart({
+              productId: product._id,
+              newQuantity: newCount,
+              colorId: co._id,
+            })
+          );
+        }
+        else {
+          toast.info("Vui lòng chọn màu");
+        }
       }
       return product;
     });
     localStorage.setItem("selectedProducts", JSON.stringify(updatedProducts));
     setProducts(updatedProducts);
   };
-  console.log(total);
   useEffect(() => {
     let sum = 0;
     for (let index = 0; index < products.length; index++) {
       sum = sum + Number(products[index].price * products[index].count);
       setTotal(sum);
     }
-  }, [products]);
+    setTotal(sum)
+  }, [products, total]);
   const [showModal, setShowModal] = useState(false);
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
@@ -203,32 +216,118 @@ const Counter = () => {
       setChange(null);
     }
   }, [totalAmount, value]);
-  const createOrder = () => {
+  const [loading, setLoading] = useState();
+  const createOrder = async () => {
+    if (infor.length <= 3) {
+      toast.info("Vui lòng thêm thông tin khách hàng");
+      return;
+    }
     if (value === "" && payment === "off") {
       toast.info("Vui lòng nhập tiền khách đưa");
-      console.log("Vui lòng nhập tiền khách đưa");
       return;
     }
     if (payment === "off") {
-      dispatch(
-        cashOrderUser({ totalAmount: totalAmount, orderAddress: "Trực tiếp" })
-      );
+      try {
+        setLoading(true);
+        const response = await dispatch(
+          cashOrderUser({ userId: process.env.AdminId, totalAmount: totalAmount, orderAddress: infor })
+        );
+        localStorage.setItem("orderId", response.payload.data._id);
+      } catch (error) {
+        console.error("Lỗi khi dispatch:", error);
+      }
+      finally {
+        setLoading(false);
+        setIsDisabled(false);
+      }
     }
     if (payment === "on") {
       dispatch(
         paymentMoMoSlice({
+          userId: process.env.AdminId,
           totalAmount: totalAmount,
-          orderAddress: "",
+          orderAddress: infor,
         })
       );
     }
   };
+  const printInvoice = () => {
+    const orderId = localStorage.getItem("orderId");
+    dispatch(printOrderSlice({ orderId: orderId, customerName: name, phone: phone }));
+    localStorage.removeItem("orderId");
+    localStorage.removeItem("selectedProducts");
+    setProducts([]);
+    setIsDisabled(true);
+    setValue("");
+    setChange(null);
+  }
+  const [isDisabled, setIsDisabled] = useState(true);
+  useEffect(() => {
+    if (printState?.orderId && printState?.date && isDisabled === false) {
+      const newWindow = window.open("", "_blank", "width=1000,height=1200");
+
+      // Kiểm tra xem cửa sổ có mở thành công không
+      if (newWindow) {
+        newWindow.document.write(`
+          <html>
+            <head>
+              <title>Hóa Đơn</title>
+            </head>
+            <body>
+              <h2 style="text-align:center;">Hóa Đơn Thanh Toán</h2>
+              <p><strong>Mã đơn hàng:</strong> ${printState.orderId}</p>
+              <p><strong>Ngày:</strong> ${printState.date}</p>
+              <p><strong>Tên:</strong> ${printState.customerName}</p>
+              <p><strong>Số điện thoại:</strong> ${printState.phone}</p>
+              <hr />
+              <table style="width:100%; border-collapse:collapse;">
+                <tr>
+                  <th style="border:1px solid black; padding:5px;">Tên sản phẩm</th>
+                  <th style="border:1px solid black; padding:5px;">Số lượng</th>
+                  <th style="border:1px solid black; padding:5px;">Giá</th>
+                </tr>
+                <!-- Bạn có thể lặp qua danh sách sản phẩm của bạn ở đây -->
+                ${printState.items?.map(product => `
+                  <tr>
+                    <td style="border:1px solid black; padding:5px;">${product.product.name}</td>
+                    <td style="border:1px solid black; padding:5px;">${product.count}</td>
+                    <td style="border:1px solid black; padding:5px;">${product.product.price * product.count}</td>
+                  </tr>
+                `).join('')}
+              </table>
+              <hr />
+            </body>
+          </html>
+        `);
+        newWindow.document.close();
+        newWindow.print();
+      }
+    } else {
+      console.error("Dữ liệu không hợp lệ: printState");
+    }
+  }, [printState, isDisabled]);
   useEffect(() => {
     if (payurl !== undefined) {
       window.location.href = cartState.momo.data.payUrl;
     }
     setPayurl(cartState?.momo?.data?.payUrl);
   }, [cartState, payurl]);
+  console.log(message.message);
+  useEffect(() => {
+    if (message.message === "false") {
+      setIsDisabled(false);
+    }
+  }, [message.message])
+  useEffect(() => {
+    if (customers) {
+      setName(customers.name)
+      setPhone(customers.phone)
+    }
+    const str = `${name} - ${phone}`;
+    setInfor(str);
+    // const newCustomer = { name, phone }; // Tạo object customer mới
+    // setKhachle(newCustomer); // Thêm vào mảng customers 
+  }, [name, phone, customers])
   return (
     <>
       <ToastContainer
@@ -243,6 +342,13 @@ const Counter = () => {
         pauseOnHover
         theme="light"
       />
+      {
+        loading && (
+          <div className="loading-container">
+            <div className="loading-text">Đang tạo đơn hàng...</div>
+          </div>
+        )
+      }
       <div className="counter-container">
         {/* Header */}
         <div className="counter-header">
@@ -251,23 +357,33 @@ const Counter = () => {
               id="search-orders"
               onChange={(selected) => {
                 if (selected.length > 0) {
-                  const selectedProductName = selected[0];
-                  const selectedProduct = productState.find(
-                    (pro) => pro.name === selectedProductName
-                  );
-                  if (selectedProduct) {
-                    setSearchTerm(selectedProduct.name);
-                    handleAddProduct(selectedProduct);
-                  }
+                  const selectedProduct = selected[0];
+                  setSearchTerm(selectedProduct.name);
+                  handleAddProduct(selectedProduct);
                 } else {
                   setSearchTerm("");
                 }
               }}
-              options={productState?.map((pro) => pro.name) || []}
+              options={productState || []}
+              labelKey={(option) => option.name}
               placeholder="🔍 Tìm kiếm sản phẩm..."
               selected={searchResults}
               onInputChange={(text) => setSearchTerm(text)}
               className="typehead"
+              renderMenuItemChildren={(option) => (
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <img
+                    src={option.images[0].url}
+                    alt={option.name}
+                    style={{ width: 50, height: 50, marginRight: 10, objectFit: "cover" }}
+                  />
+                  <div className='d-flex gap-10'>
+                    <div style={{ fontWeight: "bold" }}>{option.name}</div>
+                    <div style={{ color: "green" }}>{option.price} VNĐ</div>
+                    <div> Còn lại: {option.quantity}</div>
+                  </div>
+                </div>
+              )}
             />
             <Link to="/admin">
               <GoHome className="fs-3" />
@@ -368,7 +484,7 @@ const Counter = () => {
           </div>
           {/* Order Summary */}
           <div className="counter-order-summary">
-            <div className="summary-header d-flex align-items-center gap-10">
+            <div className="summary-header d-flex align-items-center gap-10 position-relative">
               <Typeahead
                 id="search-orders"
                 onChange={(selected) => {
@@ -379,7 +495,6 @@ const Counter = () => {
                     );
                     if (selectCustomer) {
                       setSearchTerm1(selectCustomer.name);
-                      // handleAddProduct(selectedProduct);
                       setCustomers(selectCustomer);
                     }
                   } else {
@@ -387,22 +502,46 @@ const Counter = () => {
                   }
                 }}
                 options={userState?.map((pro) => pro.name) || []}
-                placeholder="🔍 Tìm kiếm khách hàng..."
+                placeholder="🔍 Tìm kiếm hoặc thêm khách hàng..."
                 selected={searchResults1}
                 onInputChange={(text) => setSearchTerm(text)}
                 className="typehead"
               />
+              <button className="add-customer position-absolute" onClick={() => setClick(!click)}>+</button>
               {/* <input type="text" placeholder="Tìm kiếm hoặc thêm khách hàng" className='' /> */}
             </div>
-            {customers && (
+            {customers ? (
               <div className="customer-order d-flex align-items-center justify-content-between">
                 <div className="d-flex align-items-center gap-10 tw-w-96">
                   <h3>{customers.name}</h3>
                   <p>- {customers.phone}</p>
                 </div>
-                <button onClick={() => setCustomers(null)}>x</button>
+                <button onClick={() => setCustomers("")}>x</button>
               </div>
-            )}
+            ) : (
+
+              click &&
+              <div className="customer-order d-flex align-items-center justify-content-between">
+                <div className="d-flex align-items-center gap-10 tw-w-96">
+                  <input
+                    type="text"
+                    placeholder="Nhập tên"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="tw-bg-white"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Nhập số điện thoại"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="tw-bg-white"
+                  />
+                </div>
+                <button onClick={() => { setName(""); setPhone(""); setClick(!click) }}>x</button>
+              </div>
+            )
+            }
 
             <hr />
             <div className="total">
@@ -498,7 +637,14 @@ const Counter = () => {
             </button>
             <button
               className="counter-pay-btn"
-              style={{ background: "green", marginTop: "10px" }}
+              style={{
+                background: "green",
+                marginTop: "10px",
+                opacity: isDisabled ? 0.5 : 1,
+                cursor: isDisabled ? "not-allowed" : "",
+              }}
+              disabled={isDisabled}
+              onClick={printInvoice}
             >
               HOÀN THÀNH
             </button>

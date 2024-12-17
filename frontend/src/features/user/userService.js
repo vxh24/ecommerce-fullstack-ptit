@@ -80,10 +80,10 @@ const changePass = async (password) => {
     return response.data;
   }
 };
-const cashOrder = async ({ totalAmount, orderAddress }) => {
+const cashOrder = async ({ userId, totalAmount, orderAddress }) => {
   const response = await axios.post(
     `${base_url}user/cart/cash-order`,
-    { totalAmount, orderAddress },
+    { userId, totalAmount, orderAddress },
     config
   );
   if (response.data) {
@@ -199,10 +199,10 @@ const applyCoupon = async (counpon) => {
     return response.data;
   }
 };
-const createPayment = async ({ totalAmount, orderAddress }) => {
+const createPayment = async ({ userId, totalAmount, orderAddress }) => {
   const response = await axios.post(
     `${base_url}order/create-payment`,
-    { totalAmount, orderAddress },
+    { userId, totalAmount, orderAddress },
     config
   );
   if (response.data) {

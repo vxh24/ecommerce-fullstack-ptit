@@ -39,9 +39,19 @@ export const deleteProductfromCart = createAsyncThunk(
 );
 export const cashOrderUser = createAsyncThunk(
   "user/cart/order",
-  async ({ totalAmount, orderAddress }, thunkAPI) => {
+  async ({ useId, totalAmount, orderAddress }, thunkAPI) => {
     try {
-      return await CartService.cashOrder({ totalAmount, orderAddress });
+      return await CartService.cashOrder({ useId, totalAmount, orderAddress });
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+export const printOrderSlice = createAsyncThunk(
+  "user/print/order",
+  async ({ orderId, customerName, phone }, thunkAPI) => {
+    try {
+      return await CartService.creatPrint({ orderId, customerName, phone });
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -80,9 +90,9 @@ export const momoOrderUser = createAsyncThunk(
 );
 export const paymentMoMoSlice = createAsyncThunk(
   "order/paymentmomo",
-  async ({ totalAmount, orderAddress }, thunkAPI) => {
+  async ({ userId, totalAmount, orderAddress }, thunkAPI) => {
     try {
-      return await CartService.createPayment({ totalAmount, orderAddress });
+      return await CartService.createPayment({ userId, totalAmount, orderAddress });
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -155,6 +165,7 @@ export const cartSlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         state.cashOrder = action.payload;
+        toast.success("Thanh toán thành công!!!")
       })
       .addCase(cashOrderUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -187,6 +198,21 @@ export const cartSlice = createSlice({
         state.momo = action.payload;
       })
       .addCase(paymentMoMoSlice.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+      })
+      .addCase(printOrderSlice.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(printOrderSlice.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.print = action.payload;
+      })
+      .addCase(printOrderSlice.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;

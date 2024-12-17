@@ -121,7 +121,7 @@ const Dashboard = () => {
   const data1 = [];
 
   if (orderState && orderState.length) {
-    for (let i = orderState.length - 1; i >= 0; i--) {
+    for (let i = 0; i < orderState.length; i++) {
       data1.push({
         key: orderState[i]._id,
         name: orderState[i].orderBy?.name,

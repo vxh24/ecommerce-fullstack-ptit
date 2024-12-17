@@ -28,8 +28,8 @@ const createOrderByCODController = asyncHandler(async (req, res) => {
       .getDate()
       .toString()
       .padStart(2, "0")}/${(currentTime.getMonth() + 1)
-      .toString()
-      .padStart(2, "0")}/${currentTime.getFullYear()}`;
+        .toString()
+        .padStart(2, "0")}/${currentTime.getFullYear()}`;
     io.emit("new-order-notification", {
       title: "Đơn hàng mới đã được tạo",
       message: `Người dùng với ID ${_id} đã đặt hàng.`,
@@ -157,10 +157,10 @@ const handleRevenueCalculationController = asyncHandler(async (req, res) => {
 });
 
 const handlePrintInvoiceController = asyncHandler(async (req, res) => {
-  const { orderId, customerName } = req.body;
+  const { orderId, customerName, phone } = req.body;
 
   try {
-    const result = await printInvoice(orderId, customerName);
+    const result = await printInvoice(orderId, customerName, phone);
 
     res.json({
       EC: 0,
