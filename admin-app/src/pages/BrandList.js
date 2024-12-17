@@ -94,7 +94,7 @@ const Brandlist = () => {
         </button>
       </>
     ),
-  }))
+  }));
   if (brandState && brandState.length) {
     for (let i = 0; i < brandState.length; i++) {
       data1.push({
@@ -135,7 +135,12 @@ const Brandlist = () => {
     <>
       <div>
         <div className="product-list d-flex justify-content-between align-items-center">
-          <h3 className="mb-4 title">Danh sách thương hiệu</h3>
+          <h3
+            className="mb-4 title"
+            style={{ fontSize: "18px", fontWeight: "bold" }}
+          >
+            Danh sách thương hiệu
+          </h3>
           <button onClick={() => setClick(true)}>Thêm thương hiệu</button>
         </div>
         <div>

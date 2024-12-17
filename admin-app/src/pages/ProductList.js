@@ -121,7 +121,7 @@ const ProductList = () => {
         </button>
       </>
     ),
-  }))
+  }));
   if (productState && productState.length) {
     for (let i = 0; i < productState.length; i++) {
       data1.push({
@@ -181,7 +181,12 @@ const ProductList = () => {
     <>
       <div>
         <div className="product-list d-flex justify-content-between align-items-center">
-          <h3 className="mb-4 title">Danh sách sản phẩm</h3>
+          <h3
+            className="mb-4 title"
+            style={{ fontSize: "18px", fontWeight: "bold" }}
+          >
+            Danh sách sản phẩm
+          </h3>
           <button onClick={() => navigate("/admin/product")}>
             Thêm sản phẩm
           </button>

@@ -44,6 +44,11 @@ const MainLayout = () => {
   } = theme.useToken();
 
   const menuItems = [
+    // {
+    //   key: "counter",
+    //   icon: <CiShop className="fs-4" />,
+    //   label: "Bán hàng tại quầy",
+    // },
     {
       key: "",
       icon: <AiOutlineDashboard className="fs-4" />,
@@ -106,7 +111,6 @@ const MainLayout = () => {
     },
   ];
   const user = JSON.parse(localStorage.getItem("user")) || [];
-  // console.log(user);
   const authState = useSelector((state) => state?.auth);
   const handleLogout = () => {
     navigate("/");
@@ -124,9 +128,18 @@ const MainLayout = () => {
         <div className="logo">
           <h2 className="text-white fs-5 text-center py-3 mb-0">
             <span className="sm-logo">DP</span>
-            <span className="lg-logo">Dev PTIT</span>
+            <span className="lag-logo">Dev PTIT</span>
           </h2>
         </div>
+
+        <Link to="/counter">
+          <div className="counter" style={{ marginTop: "10px" }}>
+            <CiShop className="fs-4" /> <p>Bán hàng tại quầy</p>
+          </div>
+        </Link>
+
+        <hr style={{ border: "0.5px solid white", margin: "10px 0" }} />
+
         <Menu
           theme="dark"
           mode="inline"
@@ -140,12 +153,6 @@ const MainLayout = () => {
           }}
           items={menuItems}
         />
-
-        <Link to="/counter">
-          <div className="counter">
-            <CiShop className="fs-4" /> <p>Bán hàng tại quầy</p>
-          </div>
-        </Link>
       </Sider>
       <Layout className="site-layout">
         <Header

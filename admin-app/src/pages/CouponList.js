@@ -78,11 +78,10 @@ const Couponlist = () => {
         coupon.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setFilteredCoupon(results || []);
-    }
-    else {
+    } else {
       setFilteredCoupon(couponState || []);
     }
-  }, [searchTerm, couponState])
+  }, [searchTerm, couponState]);
   const data1 = [];
   const data2 = filteredCoupon?.map((coupon) => ({
     key: coupon._id,
@@ -111,8 +110,7 @@ const Couponlist = () => {
         </div>
       </>
     ),
-
-  }))
+  }));
   const deleteCoupon = (e) => {
     dispatch(deleteACoupon(e));
 
@@ -126,7 +124,12 @@ const Couponlist = () => {
     <>
       <div>
         <div className="product-list d-flex justify-content-between align-items-center">
-          <h3 className="mb-4 title">Coupon</h3>
+          <h3
+            className="mb-4 title"
+            style={{ fontSize: "18px", fontWeight: "bold" }}
+          >
+            Mã giảm giá
+          </h3>
           <button onClick={() => setClick(true)}>Thêm mã giảm giá</button>
         </div>
         <div>
@@ -269,7 +272,12 @@ const EditCoupon = ({ coupon }) => {
 
   return (
     <div>
-      <h3 className="mb-4 title">Cập nhật mã</h3>
+      <h3
+        className="mb-4 title"
+        style={{ fontSize: "18px", fontWeight: "bold" }}
+      >
+        Cập nhật mã
+      </h3>
       <div>
         <form action="" onSubmit={formik.handleSubmit}>
           <CustomInput

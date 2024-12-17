@@ -85,14 +85,10 @@ const Enquiries = () => {
         <select
           value={enq.status}
           name=""
-          defaultValue={
-            enq.status ? enq.status : "Submitted"
-          }
+          defaultValue={enq.status ? enq.status : "Submitted"}
           className="form-control form-select"
           id=""
-          onChange={(e) =>
-            setEnquiryStatus(e.target.value, enq._id)
-          }
+          onChange={(e) => setEnquiryStatus(e.target.value, enq._id)}
         >
           <option value="Submitted">Submitted</option>
           <option value="Contacted">Contacted</option>
@@ -121,7 +117,7 @@ const Enquiries = () => {
         </button>
       </>
     ),
-  }))
+  }));
   if (enqState && enqState.length) {
     for (let i = 0; i < enqState.length; i++) {
       data1.push({
@@ -194,7 +190,12 @@ const Enquiries = () => {
   return (
     <>
       <div>
-        <h3 className="mb-4 title">Danh sách khảo sát</h3>
+        <h3
+          className="mb-4 title"
+          style={{ fontSize: "18px", fontWeight: "bold" }}
+        >
+          Danh sách khảo sát
+        </h3>
         <div>
           <Typeahead
             id="search-orders"
@@ -228,7 +229,12 @@ const Enquiries = () => {
             <button className="close-model" onClick={() => setClick(false)}>
               ✖
             </button>
-            <h3 className="mb-3 title">Xem khảo sát</h3>
+            <h3
+              className="mb-3 title"
+              style={{ fontSize: "18px", fontWeight: "bold" }}
+            >
+              Xem khảo sát
+            </h3>
             <ViewEnquiry enquiry={enquiry} />
           </div>
         </div>

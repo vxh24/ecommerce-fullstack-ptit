@@ -68,9 +68,7 @@ const Customers = () => {
     status:
       cus.isBlock === false ? (
         <>
-          <span style={{ color: "green", fontWeight: "bold" }}>
-            Hoạt động
-          </span>
+          <span style={{ color: "green", fontWeight: "bold" }}>Hoạt động</span>
         </>
       ) : (
         <>
@@ -103,7 +101,7 @@ const Customers = () => {
           </button>
         </>
       ),
-  }))
+  }));
   if (customerState && customerState.length) {
     for (let i = 0; i < customerState.length; i++) {
       if (customerState[i].role !== "admin") {
@@ -156,7 +154,12 @@ const Customers = () => {
 
   return (
     <div>
-      <h3 className="mb-4 title">Danh sách người dùng</h3>
+      <h3
+        className="mb-4 title"
+        style={{ fontSize: "18px", fontWeight: "bold" }}
+      >
+        Danh sách người dùng
+      </h3>
       <div>
         <Typeahead
           id="search-orders"

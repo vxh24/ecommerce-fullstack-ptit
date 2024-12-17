@@ -97,7 +97,7 @@ const CategoryList = () => {
         </button>
       </>
     ),
-  }))
+  }));
   if (pCatStat && pCatStat.length) {
     for (let i = 0; i < pCatStat.length; i++) {
       data1.push({
@@ -139,7 +139,12 @@ const CategoryList = () => {
     <>
       <div>
         <div className="product-list d-flex justify-content-between align-items-center">
-          <h3 className="mb-4 title">Danh sách danh mục sản phẩm</h3>
+          <h3
+            className="mb-4 title"
+            style={{ fontSize: "18px", fontWeight: "bold" }}
+          >
+            Danh sách danh mục sản phẩm
+          </h3>
           <button onClick={() => setClick(true)}>Thêm danh mục</button>
         </div>
         <div>

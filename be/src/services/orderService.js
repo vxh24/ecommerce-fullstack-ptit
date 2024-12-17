@@ -42,7 +42,7 @@ const createOrderByCOD = asyncHandler(
       },
       orderAddress,
       orderBy: user._id,
-      orderStatus: "Chờ xác nhận",
+      orderStatus: user.role === "user" ? "Chờ xác nhận" : "Hoàn thành",
     }).save();
 
     let update = userCart.products.map((item) => {
@@ -199,7 +199,7 @@ const handlePaymentCallback = asyncHandler(async (userId, callbackData) => {
       },
       orderAddress,
       orderBy: user._id,
-      orderStatus: "Chờ xác nhận",
+      orderStatus: user.role === "user" ? "Chờ xác nhận" : "Hoàn thành",
     });
 
     await order.save();

@@ -127,11 +127,12 @@ const Dashboard = () => {
       });
     }
   }
-  console.log(totalRevenue);
+  // console.log(totalRevenue);
 
   const pendingOrdersCount = orderState
     ? orderState.filter((order) => order.orderStatus === "Chờ xác nhận").length
     : 0;
+
   return (
     <div>
       <h3
@@ -187,7 +188,12 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="mt-4">
-        <h3 className="mb-5 title">Đơn hàng gần đây</h3>
+        <h3
+          className="mb-5 title"
+          style={{ fontSize: "18px", fontWeight: "bold" }}
+        >
+          Đơn hàng gần đây
+        </h3>
         <div>
           <Table columns={columns} dataSource={data1} />
         </div>
