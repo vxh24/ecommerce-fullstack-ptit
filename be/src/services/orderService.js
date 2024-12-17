@@ -42,7 +42,7 @@ const createOrderByCOD = asyncHandler(
       },
       orderAddress,
       orderBy: user._id,
-      orderStatus: "Chờ xác nhận",
+      orderStatus: user.role === "user" ? "Chờ xác nhận" : "Hoàn thành",
     }).save();
 
     let update = userCart.products.map((item) => {
@@ -198,7 +198,7 @@ const handlePaymentCallback = asyncHandler(async (userId, callbackData) => {
       },
       orderAddress,
       orderBy: user._id,
-      orderStatus: "Chờ xác nhận",
+      orderStatus: user.role === "user" ? "Chờ xác nhận" : "Hoàn thành",
     });
 
     await order.save();
@@ -301,6 +301,22 @@ const handleRevenueCalculation = asyncHandler(async () => {
   return totalRevenue;
 });
 
+const printInvoice = asyncHandler(async (orderId, customerName, phone) => {
+  validateMongodbId(orderId);
+
+  const order = getOrderUserById(orderId);
+  console.log(order.products);
+  const receiptData = {
+    orderId: orderId,
+    date: new Date().toLocaleString(),
+    items: order.products,
+    customerName: customerName || "Khách lẻ",
+    phone: phone,
+  };
+
+  return receiptData;
+});
+
 module.exports = {
   createOrderByCOD,
   getAllOrders,
@@ -311,4 +327,5 @@ module.exports = {
   handlePaymentCallback,
   cancelOrder,
   handleRevenueCalculation,
+  printInvoice,
 };

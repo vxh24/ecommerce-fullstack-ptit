@@ -37,7 +37,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/counter" element={<Counter />} />
         <Route path="/admin" element={<MainLayout />}>
-          <Route index element={<Dashboard />}></Route>
+          <Route index element={<Dashboard />} />
           <Route path="enquiries" element={<Enquiries />} />
           <Route path="enquiries/:id" element={<ViewEnquiry />} />
           <Route path="blog-list" element={<Bloglist />} />

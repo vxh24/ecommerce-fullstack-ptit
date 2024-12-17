@@ -98,7 +98,7 @@ const BlogCatList = () => {
         </button>
       </>
     ),
-  }))
+  }));
   // if (bCatState && bCatState.length) {
   //   for (let i = 0; i < bCatState.length; i++) {
   //     data1.push({
@@ -140,7 +140,12 @@ const BlogCatList = () => {
     <>
       <div>
         <div className="product-list d-flex justify-content-between align-items-center">
-          <h3 className="mb-4 title">Danh mục bài viết</h3>
+          <h3
+            className="mb-4 title"
+            style={{ fontSize: "18px", fontWeight: "bold" }}
+          >
+            Danh mục bài viết
+          </h3>
           <button onClick={() => setClick(true)}>Thêm danh mục</button>
         </div>
         <div>
@@ -176,7 +181,12 @@ const BlogCatList = () => {
             <button className="close-model" onClick={() => setClick(false)}>
               ✖
             </button>
-            <h3 className="mb-3 title">Thêm danh mục bài viết</h3>
+            <h3
+              className="mb-3 title"
+              style={{ fontSize: "18px", fontWeight: "bold" }}
+            >
+              Thêm danh mục bài viết
+            </h3>
             <AddBlogCat />
           </div>
         </div>
@@ -187,7 +197,12 @@ const BlogCatList = () => {
             <button className="close-model" onClick={() => setClick1(false)}>
               ✖
             </button>
-            <h3 className="mb-3 title">Cập nhật danh mục bài viết</h3>
+            <h3
+              className="mb-3 title"
+              style={{ fontSize: "18px", fontWeight: "bold" }}
+            >
+              Cập nhật danh mục bài viết
+            </h3>
             <EditBlogCat blogcat={blogcat} />
           </div>
         </div>

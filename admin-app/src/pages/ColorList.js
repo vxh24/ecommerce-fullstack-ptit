@@ -108,7 +108,7 @@ const ColorList = () => {
         </div>
       </>
     ),
-  }))
+  }));
   if (colorState && colorState.length) {
     for (let i = 0; i < colorState.length; i++) {
       data1.push({
@@ -153,7 +153,12 @@ const ColorList = () => {
     <>
       <div>
         <div className="product-list d-flex justify-content-between align-items-center">
-          <h3 className="mb-4 title">Danh sách màu sắc</h3>
+          <h3
+            className="mb-4 title"
+            style={{ fontSize: "18px", fontWeight: "bold" }}
+          >
+            Danh sách màu sắc
+          </h3>
           <button onClick={() => setClick(true)}>Thêm màu</button>
         </div>
         <div>
@@ -200,7 +205,7 @@ const ColorList = () => {
             <button className="close-model" onClick={() => setClick1(false)}>
               ✖
             </button>
-            <h3 className="mb-3 title">Cập nhật màu</h3>
+            <h3 className="mb-3 title">Cập nhật</h3>
             <EditColor color={color} />
           </div>
         </div>
@@ -271,7 +276,7 @@ const EditColor = ({ color }) => {
       />
       <div className="error">{formik.touched.title && formik.errors.title}</div>
       <button className="btn btn-success border-0 rounded-3 my-5" type="submit">
-        Edit Color
+        Cập nhật
       </button>
     </form>
   );

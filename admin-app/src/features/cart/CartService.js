@@ -51,6 +51,16 @@ const createPayment = async ({ totalAmount, orderAddress }) => {
     return response.data;
   }
 };
+const creatPrint = async ({ orderId, customerName, phone }) => {
+  const response = await axios.post(
+    `${base_url}order/complete`,
+    { orderId, customerName, phone },
+    getConfig1
+  );
+  if (response.data) {
+    return response.data;
+  }
+};
 const momoOrder = async ({
   orderId,
   amount,
@@ -79,12 +89,14 @@ const momoOrder = async ({
     return response.data;
   }
 };
+
 export const CartService = {
   AddToCart,
   updateCountProduct,
   removePfromCart,
   cashOrder,
   createPayment,
-  momoOrder
+  momoOrder,
+  creatPrint
 };
 

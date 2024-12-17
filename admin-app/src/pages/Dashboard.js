@@ -23,7 +23,6 @@ const columns = [
   },
 ];
 const Dashboard = () => {
-  const data1 = [];
   const data = [
     {
       type: "Jan",
@@ -117,6 +116,9 @@ const Dashboard = () => {
   }, []);
   const orderState = useSelector((state) => state.auth.orders.data);
   const totalRevenue = useSelector((state) => state?.auth?.totalRevenue?.data);
+
+  const data1 = [];
+
   if (orderState && orderState.length) {
     for (let i = 0; i < orderState.length; i++) {
       data1.push({
@@ -127,11 +129,12 @@ const Dashboard = () => {
       });
     }
   }
-  console.log(totalRevenue);
+  // console.log(totalRevenue);
 
   const pendingOrdersCount = orderState
     ? orderState.filter((order) => order.orderStatus === "Chờ xác nhận").length
     : 0;
+
   return (
     <div>
       <h3
@@ -187,7 +190,12 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="mt-4">
-        <h3 className="mb-5 title">Đơn hàng gần đây</h3>
+        <h3
+          className="mb-5 title"
+          style={{ fontSize: "18px", fontWeight: "bold" }}
+        >
+          Đơn hàng gần đây
+        </h3>
         <div>
           <Table columns={columns} dataSource={data1} />
         </div>

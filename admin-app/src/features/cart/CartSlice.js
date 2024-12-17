@@ -47,6 +47,16 @@ export const cashOrderUser = createAsyncThunk(
     }
   }
 );
+export const printOrderSlice = createAsyncThunk(
+  "user/print/order",
+  async ({ orderId, customerName, phone }, thunkAPI) => {
+    try {
+      return await CartService.creatPrint({ orderId, customerName, phone });
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
 export const momoOrderUser = createAsyncThunk(
   "user/cart/momo-order",
   async (
@@ -187,6 +197,21 @@ export const cartSlice = createSlice({
         state.momo = action.payload;
       })
       .addCase(paymentMoMoSlice.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+      })
+      .addCase(printOrderSlice.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(printOrderSlice.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.print = action.payload;
+      })
+      .addCase(printOrderSlice.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;

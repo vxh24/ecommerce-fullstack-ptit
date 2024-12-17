@@ -559,6 +559,10 @@ ul.b {
 .btn-danger:hover {
   background-color: #c82333;
 }
-
+.add-customer{
+  right: 4%;
+  margin-bottom: 9px;
+  font-size: 24px;
+}
 /* voucher end*/
 

@@ -88,8 +88,6 @@ const BlogList = () => {
     action: (
       <>
         <div className="d-flex align-items-center gap-10">
-
-
           <Link
             // to={`/admin/blog/${getBlogState[i].id}`}
             onClick={() => {
@@ -120,8 +118,6 @@ const BlogList = () => {
         action: (
           <>
             <div className="d-flex align-items-center gap-10">
-
-
               <Link
                 // to={`/admin/blog/${getBlogState[i].id}`}
                 onClick={() => {
@@ -158,7 +154,12 @@ const BlogList = () => {
     <>
       <div>
         <div className="product-list d-flex justify-content-between align-items-center">
-          <h3 className="mb-4 title">Danh sách bài viết</h3>
+          <h3
+            className="mb-4 title"
+            style={{ fontSize: "18px", fontWeight: "bold" }}
+          >
+            Danh sách bài viết
+          </h3>
           <button onClick={() => setClick(true)}>Thêm bài viết</button>
         </div>
         <div>
@@ -194,7 +195,12 @@ const BlogList = () => {
             <button className="close-model" onClick={() => setClick(false)}>
               ✖
             </button>
-            <h3 className="mb-3 title">Thêm bài viết</h3>
+            <h3
+              className="mb-3 title"
+              style={{ fontSize: "18px", fontWeight: "bold" }}
+            >
+              Thêm bài viết
+            </h3>
             <AddBlog />
           </div>
         </div>
@@ -205,7 +211,12 @@ const BlogList = () => {
             <button className="close-model" onClick={() => setClick1(false)}>
               ✖
             </button>
-            <h3 className="mb-3 title">Cập nhật bài viết</h3>
+            <h3
+              className="mb-3 title"
+              style={{ fontSize: "18px", fontWeight: "bold" }}
+            >
+              Cập nhật bài viết
+            </h3>
             <EditBlog blog={blog} />
           </div>
         </div>

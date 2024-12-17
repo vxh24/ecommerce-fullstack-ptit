@@ -110,7 +110,7 @@ const Orders = () => {
       <div>
         <h3
           className="mb-4 title"
-          style={{ fontSize: "30px", fontWeight: "bold" }}
+          style={{ fontSize: "18px", fontWeight: "bold" }}
         >
           Danh sách đơn hàng
         </h3>

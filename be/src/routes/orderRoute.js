@@ -12,6 +12,7 @@ const {
   paymentCallbackController,
   cancelOrderController,
   handleRevenueCalculationController,
+  handlePrintInvoiceController,
 } = require("../controllers/orderController");
 
 const router = express.Router();
@@ -27,6 +28,7 @@ router.get(
   isAdmin,
   handleRevenueCalculationController
 );
+router.post("/complete", authMiddleware, isAdmin, handlePrintInvoiceController);
 router.get("/:id", authMiddleware, isAdmin, getOrderByIdController);
 router.put(
   "/update-order/:id",
