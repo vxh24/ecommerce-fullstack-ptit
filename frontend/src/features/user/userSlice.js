@@ -90,9 +90,9 @@ export const getUserCart = createAsyncThunk(
 );
 export const cashOrderUser = createAsyncThunk(
   "user/cart/order",
-  async ({ totalAmount, orderAddress }, thunkAPI) => {
+  async ({ userId, totalAmount, orderAddress }, thunkAPI) => {
     try {
-      return await authService.cashOrder({ totalAmount, orderAddress });
+      return await authService.cashOrder({ userId, totalAmount, orderAddress });
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -235,9 +235,9 @@ export const applyCouponSlice = createAsyncThunk(
 );
 export const paymentMoMoSlice = createAsyncThunk(
   "order/paymentmomo",
-  async ({ totalAmount, orderAddress }, thunkAPI) => {
+  async ({ userId, totalAmount, orderAddress }, thunkAPI) => {
     try {
-      return await authService.createPayment({ totalAmount, orderAddress });
+      return await authService.createPayment({ userId, totalAmount, orderAddress });
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
