@@ -127,12 +127,12 @@ const PaymentResult = () => {
                         </td>
                         <td>{formatDate(paymentDetails.responseTime)}</td>
                       </tr>
-                      <tr>
+                      {/* <tr>
                         <td>
                           <strong>Địa chỉ</strong>
                         </td>
                         <td>{paymentDetails.extraData.slice(17, paymentDetails.extraData.length - 2)}</td>
-                      </tr>
+                      </tr> */}
                     </tbody>
                   </table>
                 </div>

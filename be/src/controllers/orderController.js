@@ -46,7 +46,8 @@ const createOrderByCODController = asyncHandler(async (req, res) => {
 
 const createPaymentController = asyncHandler(async (req, res) => {
   const { totalAmount, orderAddress } = req.body;
-  const result = await createPaymentService(totalAmount, orderAddress);
+  const { _id } = req.user;
+  const result = await createPaymentService(_id, totalAmount, orderAddress);
   res.json({
     EC: 0,
     data: result,
