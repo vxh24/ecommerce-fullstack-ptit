@@ -22,8 +22,8 @@ const columns = [
     dataIndex: "status",
   },
 ];
-const data1 = [];
 const Dashboard = () => {
+  const data1 = [];
   const data = [
     {
       type: "Jan",
@@ -118,7 +118,7 @@ const Dashboard = () => {
   const orderState = useSelector((state) => state.auth.orders.data);
   const totalRevenue = useSelector((state) => state?.auth?.totalRevenue?.data);
   if (orderState && orderState.length) {
-    for (let i = orderState.length - 1; i >= 0; i--) {
+    for (let i = 0; i < orderState.length; i++) {
       data1.push({
         key: orderState[i]._id,
         name: orderState[i].orderBy?.name,

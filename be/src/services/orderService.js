@@ -179,9 +179,8 @@ const handlePaymentCallback = asyncHandler(async (userId, callbackData) => {
   const timestamp = Number(responseTime);
   const date = new Date(timestamp);
 
-  const formattedDate = `${date.getDate()}/${
-    date.getMonth() + 1
-  }/${date.getFullYear()}`;
+  const formattedDate = `${date.getDate()}/${date.getMonth() + 1
+    }/${date.getFullYear()}`;
 
   const { orderAddress } = JSON.parse(extraData || "{}");
 
@@ -243,6 +242,7 @@ const getAllOrders = asyncHandler(async () => {
   const allOrderUser = await Order.find({})
     .populate("products.product")
     .populate("orderBy")
+    .sort({ createdAt: -1 })
     .exec();
   return allOrderUser;
 });

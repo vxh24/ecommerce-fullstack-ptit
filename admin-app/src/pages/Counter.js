@@ -32,8 +32,10 @@ const Counter = () => {
     let selectedProducts = JSON.parse(localStorage.getItem('selectedProducts')) || [];
     const updatedProducts = selectedProducts.map((product) => {
       if (product._id === productId) {
-        const co = product.colors.find((item) => item.title === product.selectedColor)
-        dispatch(deleteProductfromCart({ productId: product._id, color: co._id }))
+        if (product.selectedColor) {
+          const co = product.colors.find((item) => item.title === product.selectedColor)
+          dispatch(deleteProductfromCart({ productId: product._id, color: co._id }))
+        }
       }
       return product;
     });
@@ -217,23 +219,32 @@ const Counter = () => {
               id="search-orders"
               onChange={(selected) => {
                 if (selected.length > 0) {
-                  const selectedProductName = selected[0];
-                  const selectedProduct = productState.find(
-                    (pro) => pro.name === selectedProductName
-                  );
-                  if (selectedProduct) {
-                    setSearchTerm(selectedProduct.name);
-                    handleAddProduct(selectedProduct);
-                  }
+                  const selectedProduct = selected[0];
+                  setSearchTerm(selectedProduct.name);
+                  handleAddProduct(selectedProduct);
                 } else {
                   setSearchTerm("");
                 }
               }}
-              options={productState?.map((pro) => pro.name) || []}
+              options={productState || []}
+              labelKey={(option) => option.name}
               placeholder="🔍 Tìm kiếm sản phẩm..."
               selected={searchResults}
               onInputChange={(text) => setSearchTerm(text)}
               className="typehead"
+              renderMenuItemChildren={(option) => (
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <img
+                    src={option.images[0].url} // Đường dẫn ảnh sản phẩm
+                    alt={option.name}
+                    style={{ width: 50, height: 50, marginRight: 10, objectFit: "cover" }}
+                  />
+                  <div className='d-flex gap-10'>
+                    <div style={{ fontWeight: "bold" }}>{option.name}</div>
+                    <div style={{ color: "green" }}>{option.price} VNĐ</div>
+                  </div>
+                </div>
+              )}
             />
             <Link to="/admin"><GoHome className='fs-3' /></Link>
             <button><BsQrCodeScan className='fs-4 text-dark' /></button>
