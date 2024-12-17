@@ -133,7 +133,6 @@ const EditProduct = () => {
       }
 
       dispatch(updateProduct(id, formData));
-      // navigate("/admin/list-product");
     },
   });
 

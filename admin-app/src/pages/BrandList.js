@@ -103,7 +103,6 @@ const Brandlist = () => {
         action: (
           <>
             <button
-              // to={`/admin/brand/${brandState[i]._id}`}
               onClick={() => {
                 setClick1(true);
                 setBrand(brandState[i]);

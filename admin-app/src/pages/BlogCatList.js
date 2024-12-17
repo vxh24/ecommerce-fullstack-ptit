@@ -5,7 +5,6 @@ import { AiFillDelete } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import CustomModal from "../components/CustomModal";
 import CustomInput from "../components/CustomInput";
-import { Link } from "react-router-dom";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { Typeahead } from "react-bootstrap-typeahead";
@@ -15,7 +14,6 @@ import {
   getCategories,
   resetState,
   createNewblogCat,
-  getABlogCat,
   updateABlogCat,
 } from "../features/bcategory/bcategorySlice";
 let schema = yup.object().shape({
@@ -75,7 +73,6 @@ const BlogCatList = () => {
       setFilteredBlogCats(bCatState || []);
     }
   }, [searchTerm, bCatState]);
-  const data1 = [];
   const data2 = filteredBlogCats?.map((bCat) => ({
     key: bCat._id,
     name: bCat.title,
@@ -99,34 +96,6 @@ const BlogCatList = () => {
       </>
     ),
   }));
-  // if (bCatState && bCatState.length) {
-  //   for (let i = 0; i < bCatState.length; i++) {
-  //     data1.push({
-  //       key: i + 1,
-  //       name: bCatState[i].title,
-  //       action: (
-  //         <>
-  //           <button
-  //             // to={`/admin/blog-category/${bCatState[i]._id}`}
-  //             onClick={() => {
-  //               setClick1(true);
-  //               setBlogcat(bCatState[i]);
-  //             }}
-  //             className="fs-3 text-danger border-0 bg-transparent"
-  //           >
-  //             <BiEdit />
-  //           </button>
-  //           <button
-  //             className="ms-3 fs-3 text-danger bg-transparent border-0"
-  //             onClick={() => showModal(bCatState[i]._id)}
-  //           >
-  //             <AiFillDelete />
-  //           </button>
-  //         </>
-  //       ),
-  //     });
-  //   }
-  // }
 
   const deleteBlogCategory = (e) => {
     dispatch(deleteABlogCat(e));

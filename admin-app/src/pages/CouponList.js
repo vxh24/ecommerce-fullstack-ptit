@@ -92,7 +92,6 @@ const Couponlist = () => {
       <>
         <div className="d-flex align-items-center gap-10">
           <Link
-            // to={`/admin/coupon/${couponState[i]._id}`}
             onClick={() => {
               setClick1(true);
               setCoupon(coupon);

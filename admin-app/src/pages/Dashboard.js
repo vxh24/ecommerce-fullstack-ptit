@@ -114,6 +114,7 @@ const Dashboard = () => {
     dispatch(getOrders());
     dispatch(getRevenue());
   }, []);
+
   const orderState = useSelector((state) => state.auth.orders.data);
   const totalRevenue = useSelector((state) => state?.auth?.totalRevenue?.data);
 

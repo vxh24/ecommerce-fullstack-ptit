@@ -80,7 +80,6 @@ const CategoryList = () => {
     action: (
       <>
         <button
-          // to={`/admin/category/${pCatStat[i]._id}`}
           onClick={() => {
             setClick1(true);
             setCategory(cat);
@@ -106,7 +105,6 @@ const CategoryList = () => {
         action: (
           <>
             <button
-              // to={`/admin/category/${pCatStat[i]._id}`}
               onClick={() => {
                 setClick1(true);
                 setCategory(pCatStat[i]);

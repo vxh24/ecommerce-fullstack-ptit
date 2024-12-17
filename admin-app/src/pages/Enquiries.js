@@ -101,7 +101,6 @@ const Enquiries = () => {
       <>
         <button
           className="ms-3 fs-3 text-danger border-0 bg-transparent"
-          // to={`/admin/enquiries/${enqState[i]._id}`}
           onClick={() => {
             setClick(true);
             setEnquiry(enq);
@@ -151,7 +150,6 @@ const Enquiries = () => {
           <>
             <button
               className="ms-3 fs-3 text-danger border-0 bg-transparent"
-              // to={`/admin/enquiries/${enqState[i]._id}`}
               onClick={() => {
                 setClick(true);
                 setEnquiry(enqState[i]);

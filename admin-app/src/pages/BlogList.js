@@ -18,7 +18,6 @@ import {
 import { getCategories } from "../features/bcategory/bcategorySlice";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { delImg, uploadImg } from "../features/upload/uploadSlice";
 import ReactQuill from "react-quill";
 let schema = yup.object().shape({
   title: yup.string().required("Title is Required"),
@@ -89,7 +88,6 @@ const BlogList = () => {
       <>
         <div className="d-flex align-items-center gap-10">
           <Link
-            // to={`/admin/blog/${getBlogState[i].id}`}
             onClick={() => {
               setClick1(true);
               setBlog(blog);
@@ -119,7 +117,6 @@ const BlogList = () => {
           <>
             <div className="d-flex align-items-center gap-10">
               <Link
-                // to={`/admin/blog/${getBlogState[i].id}`}
                 onClick={() => {
                   setClick1(true);
                   setBlog(getBlogState[i]);

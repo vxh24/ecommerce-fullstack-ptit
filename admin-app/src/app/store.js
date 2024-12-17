@@ -8,9 +8,8 @@ import colorReducer from "../features/color/colorSlice";
 import pCategoryReducer from "../features/pcategory/pCategorySlice";
 import brandReducer from "../features/brand/brandSlice";
 import productReducer from "../features/product/productSlice";
-import uploadReducer from "../features/upload/uploadSlice";
 import couponReducer from "../features/coupon/couponSlice";
-import cartReducer from "../features/cart/CartSlice"
+import cartReducer from "../features/cart/CartSlice";
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -23,7 +22,6 @@ export const store = configureStore({
     enquiry: enquiryReducer,
     pCategory: pCategoryReducer,
     product: productReducer,
-    upload: uploadReducer,
     cart: cartReducer,
   },
 });
