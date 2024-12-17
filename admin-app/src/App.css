@@ -84,10 +84,14 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  text-align: center;
+  margin: 0 auto;
+  padding-top: 10px;
 }
 
 .payment-button:hover {
   background-color: #0056b3;
   box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.2);
 }
+
 /* payment result end */

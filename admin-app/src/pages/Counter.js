@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { GoHome } from "react-icons/go";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { BsQrCodeScan } from "react-icons/bs";
 import { ToastContainer } from "react-toastify";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -21,6 +21,9 @@ import {
 } from "../features/cart/CartSlice";
 import { toast } from "react-toastify";
 const Counter = () => {
+  const location = useLocation();
+  const message = location.state || {};
+  console.log(message);
   const [products, setProducts] = useState([]);
   const [customers, setCustomers] = useState(null);
   const [infor, setInfor] = useState("");
@@ -227,7 +230,7 @@ const Counter = () => {
       try {
         setLoading(true);
         const response = await dispatch(
-          cashOrderUser({ totalAmount: totalAmount, orderAddress: infor })
+          cashOrderUser({ userId: process.env.AdminId, totalAmount: totalAmount, orderAddress: infor })
         );
         localStorage.setItem("orderId", response.payload.data._id);
       } catch (error) {
@@ -241,6 +244,7 @@ const Counter = () => {
     if (payment === "on") {
       dispatch(
         paymentMoMoSlice({
+          userId: process.env.AdminId,
           totalAmount: totalAmount,
           orderAddress: infor,
         })
@@ -250,10 +254,17 @@ const Counter = () => {
   const printInvoice = () => {
     const orderId = localStorage.getItem("orderId");
     dispatch(printOrderSlice({ orderId: orderId, customerName: name, phone: phone }));
+    localStorage.removeItem("orderId");
+    localStorage.removeItem("selectedProducts");
+    setProducts([]);
+    setIsDisabled(true);
+    setValue("");
+    setChange(null);
   }
+  const [isDisabled, setIsDisabled] = useState(true);
   useEffect(() => {
-    if (printState?.orderId && printState?.date) {
-      const newWindow = window.open("", "_blank", "width=600,height=800");
+    if (printState?.orderId && printState?.date && isDisabled === false) {
+      const newWindow = window.open("", "_blank", "width=1000,height=1200");
 
       // Kiểm tra xem cửa sổ có mở thành công không
       if (newWindow) {
@@ -276,11 +287,11 @@ const Counter = () => {
                   <th style="border:1px solid black; padding:5px;">Giá</th>
                 </tr>
                 <!-- Bạn có thể lặp qua danh sách sản phẩm của bạn ở đây -->
-                ${printState.products?.map(product => `
+                ${printState.items?.map(product => `
                   <tr>
-                    <td style="border:1px solid black; padding:5px;">${product.name}</td>
-                    <td style="border:1px solid black; padding:5px;">${product.quantity}</td>
-                    <td style="border:1px solid black; padding:5px;">${product.price}</td>
+                    <td style="border:1px solid black; padding:5px;">${product.product.name}</td>
+                    <td style="border:1px solid black; padding:5px;">${product.count}</td>
+                    <td style="border:1px solid black; padding:5px;">${product.product.price * product.count}</td>
                   </tr>
                 `).join('')}
               </table>
@@ -294,14 +305,19 @@ const Counter = () => {
     } else {
       console.error("Dữ liệu không hợp lệ: printState");
     }
-  }, [printState]);
+  }, [printState, isDisabled]);
   useEffect(() => {
     if (payurl !== undefined) {
       window.location.href = cartState.momo.data.payUrl;
     }
     setPayurl(cartState?.momo?.data?.payUrl);
   }, [cartState, payurl]);
-  const [isDisabled, setIsDisabled] = useState(true);
+  console.log(message.message);
+  useEffect(() => {
+    if (message.message === "false") {
+      setIsDisabled(false);
+    }
+  }, [message.message])
   useEffect(() => {
     if (customers) {
       setName(customers.name)
@@ -326,6 +342,13 @@ const Counter = () => {
         pauseOnHover
         theme="light"
       />
+      {
+        loading && (
+          <div className="loading-container">
+            <div className="loading-text">Đang tạo đơn hàng...</div>
+          </div>
+        )
+      }
       <div className="counter-container">
         {/* Header */}
         <div className="counter-header">

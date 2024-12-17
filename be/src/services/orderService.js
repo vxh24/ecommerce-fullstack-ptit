@@ -57,7 +57,9 @@ const createOrderByCOD = asyncHandler(
     await Product.bulkWrite(update, {});
 
     await Cart.findByIdAndDelete(userCart._id);
-    await sendOrderConfirmationEmail(user, newOrder, userCart, "COD");
+    if (user.role === "user") {
+      await sendOrderConfirmationEmail(user, newOrder, userCart, "COD");
+    }
     return newOrder;
   }
 );
@@ -227,7 +229,9 @@ const handlePaymentCallback = asyncHandler(async (userId, callbackData) => {
     await Product.bulkWrite(update, {});
 
     await Cart.findByIdAndDelete(userCart._id);
-    await sendOrderConfirmationEmail(user, order, userCart, "MONO");
+    if (user.role === "user") {
+      await sendOrderConfirmationEmail(user, order, userCart, "MONO");
+    }
     return order;
   } else {
     throw new Error(`Payment failed: ${message}`);
@@ -316,8 +320,9 @@ const handleRevenueCalculation = asyncHandler(async () => {
 const printInvoice = asyncHandler(async (orderId, customerName, phone) => {
   validateMongodbId(orderId);
 
-  const order = getOrderUserById(orderId);
-  console.log(order.products);
+  const order = await Order.findOne({ _id: orderId }).populate(
+    "products.product"
+  );
   const receiptData = {
     orderId: orderId,
     date: new Date().toLocaleString(),

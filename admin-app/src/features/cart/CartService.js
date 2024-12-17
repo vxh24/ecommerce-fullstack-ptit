@@ -31,20 +31,20 @@ const removePfromCart = async ({ productId, color }) => {
     return response.data;
   }
 };
-const cashOrder = async ({ totalAmount, orderAddress }) => {
+const cashOrder = async ({ useId, totalAmount, orderAddress }) => {
   const response = await axios.post(
     `${base_url}user/cart/cash-order`,
-    { totalAmount, orderAddress },
+    { useId, totalAmount, orderAddress },
     getConfig1
   );
   if (response.data) {
     return response.data;
   }
 };
-const createPayment = async ({ totalAmount, orderAddress }) => {
+const createPayment = async ({ userId, totalAmount, orderAddress }) => {
   const response = await axios.post(
     `${base_url}order/create-payment`,
-    { totalAmount, orderAddress },
+    { userId, totalAmount, orderAddress },
     getConfig1
   );
   if (response.data) {
