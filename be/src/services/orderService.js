@@ -317,7 +317,9 @@ const handleRevenueCalculation = asyncHandler(async () => {
 const printInvoice = asyncHandler(async (orderId, customerName) => {
   validateMongodbId(orderId);
 
-  const order = getOrderUserById(orderId);
+  const order = await Order.findOne({ _id: orderId });
+
+  console.log(order);
 
   const receiptData = {
     orderId: orderId,
