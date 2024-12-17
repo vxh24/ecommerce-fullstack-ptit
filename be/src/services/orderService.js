@@ -62,91 +62,103 @@ const createOrderByCOD = asyncHandler(
   }
 );
 
-const createPaymentService = asyncHandler(async (totalAmount, orderAddress) => {
-  var orderInfo = "Thanh toán qua ví Momo";
-  var redirectUrl = "http://localhost:3000/payment-result";
-  var ipnUrl = "http://localhost:3000/payment-result";
-  var requestType = "payWithMethod";
-  var amount = totalAmount;
-  var orderId = partnerCode + new Date().getTime();
-  var requestId = orderId;
-  var extraData = JSON.stringify({ orderAddress });
-  var orderGroupId = "";
-  var autoCapture = true;
-  var lang = "vi";
+const createPaymentService = asyncHandler(
+  async (userId, totalAmount, orderAddress) => {
+    validateMongodbId(userId);
 
-  var rawSignature =
-    "accessKey=" +
-    accessKey +
-    "&amount=" +
-    amount +
-    "&extraData=" +
-    extraData +
-    "&ipnUrl=" +
-    ipnUrl +
-    "&orderId=" +
-    orderId +
-    "&orderInfo=" +
-    orderInfo +
-    "&partnerCode=" +
-    partnerCode +
-    "&redirectUrl=" +
-    redirectUrl +
-    "&requestId=" +
-    requestId +
-    "&requestType=" +
-    requestType;
+    const user = await User.findById(userId);
 
-  //puts raw signature
-  console.log("--------------------RAW SIGNATURE----------------");
-  console.log(rawSignature);
+    var orderInfo = "Thanh toán qua ví Momo";
+    var redirectUrl =
+      user.role === "user"
+        ? "http://localhost:3000/payment-result"
+        : "http://localhost:3001/payment-result";
+    var ipnUrl =
+      user.role === "user"
+        ? "http://localhost:3000/payment-result"
+        : "http://localhost:3001/payment-result";
+    var requestType = "payWithMethod";
+    var amount = totalAmount;
+    var orderId = partnerCode + new Date().getTime();
+    var requestId = orderId;
+    var extraData = JSON.stringify({ orderAddress });
+    var orderGroupId = "";
+    var autoCapture = true;
+    var lang = "vi";
 
-  //signature
-  var signature = crypto
-    .createHmac("sha256", secretKey)
-    .update(rawSignature)
-    .digest("hex");
-  console.log("--------------------SIGNATURE----------------");
-  console.log(signature);
+    var rawSignature =
+      "accessKey=" +
+      accessKey +
+      "&amount=" +
+      amount +
+      "&extraData=" +
+      extraData +
+      "&ipnUrl=" +
+      ipnUrl +
+      "&orderId=" +
+      orderId +
+      "&orderInfo=" +
+      orderInfo +
+      "&partnerCode=" +
+      partnerCode +
+      "&redirectUrl=" +
+      redirectUrl +
+      "&requestId=" +
+      requestId +
+      "&requestType=" +
+      requestType;
 
-  //json object send to MoMo endpoint
-  const requestBody = JSON.stringify({
-    partnerCode: partnerCode,
-    partnerName: "Test",
-    storeId: "MomoTestStore",
-    requestId: requestId,
-    amount: amount,
-    orderId: orderId,
-    orderInfo: orderInfo,
-    redirectUrl: redirectUrl,
-    ipnUrl: ipnUrl,
-    lang: lang,
-    requestType: requestType,
-    autoCapture: autoCapture,
-    extraData: extraData,
-    orderGroupId: orderGroupId,
-    signature: signature,
-  });
+    //puts raw signature
+    console.log("--------------------RAW SIGNATURE----------------");
+    console.log(rawSignature);
 
-  //option for axios
-  const options = {
-    method: "POST",
-    url: "https://test-payment.momo.vn/v2/gateway/api/create",
-    headers: {
-      "Content-Type": "application/json",
-      "Content-Length": Buffer.byteLength(requestBody),
-    },
-    data: requestBody,
-  };
+    //signature
+    var signature = crypto
+      .createHmac("sha256", secretKey)
+      .update(rawSignature)
+      .digest("hex");
+    console.log("--------------------SIGNATURE----------------");
+    console.log(signature);
 
-  let result;
-  try {
-    result = await axios(options);
-    return result.data;
-  } catch (error) {
-    throw new Error("Payment request failed");
+    //json object send to MoMo endpoint
+    const requestBody = JSON.stringify({
+      partnerCode: partnerCode,
+      partnerName: "Test",
+      storeId: "MomoTestStore",
+      requestId: requestId,
+      amount: amount,
+      orderId: orderId,
+      orderInfo: orderInfo,
+      redirectUrl: redirectUrl,
+      ipnUrl: ipnUrl,
+      lang: lang,
+      requestType: requestType,
+      autoCapture: autoCapture,
+      extraData: extraData,
+      orderGroupId: orderGroupId,
+      signature: signature,
+    });
+
+    //option for axios
+    const options = {
+      method: "POST",
+      url: "https://test-payment.momo.vn/v2/gateway/api/create",
+      headers: {
+        "Content-Type": "application/json",
+        "Content-Length": Buffer.byteLength(requestBody),
+      },
+      data: requestBody,
+    };
+
+    let result;
+    try {
+      result = await axios(options);
+      return result.data;
+    } catch (error) {
+      throw new Error("Payment request failed");
+    }
   }
-});
+);
 
 const handlePaymentCallback = asyncHandler(async (userId, callbackData) => {
   validateMongodbId(userId);

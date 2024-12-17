@@ -27,6 +27,7 @@ import ViewOrder from "./pages/ViewOrder";
 import EditProduct from "./pages/EditProduct";
 import ChatMain from "./pages/ChatMain";
 import Counter from "./pages/Counter";
+import PaymentResult from "./pages/PaymentResult";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/counter" element={<Counter />} />
+        <Route path="/payment-result" element={<PaymentResult />} />
         <Route path="/admin" element={<MainLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="enquiries" element={<Enquiries />} />
