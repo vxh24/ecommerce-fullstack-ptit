@@ -11,6 +11,7 @@ const {
   handlePaymentCallback,
   cancelOrder,
   handleRevenueCalculation,
+  printInvoice,
 } = require("../services/orderService");
 
 const createOrderByCODController = asyncHandler(async (req, res) => {
@@ -130,18 +131,36 @@ const cancelOrderController = asyncHandler(async (req, res) => {
   const { orderId } = req.params;
   const { _id } = req.user;
 
-  const canceledOrder = await cancelOrder(_id, orderId);
-
-  res.status(200).json({
-    EC: 0,
-    message: "Order canceled successfully",
-    data: canceledOrder,
-  });
+  try {
+    const canceledOrder = await cancelOrder(_id, orderId);
+    res.status(200).json({
+      EC: 0,
+      message: "Order canceled successfully",
+      data: canceledOrder,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
 });
 
 const handleRevenueCalculationController = asyncHandler(async (req, res) => {
   try {
     const result = await handleRevenueCalculation();
+    res.json({
+      EC: 0,
+      data: result,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+const handlePrintInvoiceController = asyncHandler(async (req, res) => {
+  const { orderId, customerName } = req.body;
+
+  try {
+    const result = await printInvoice(orderId, customerName);
+
     res.json({
       EC: 0,
       data: result,
@@ -161,4 +180,5 @@ module.exports = {
   paymentCallbackController,
   cancelOrderController,
   handleRevenueCalculationController,
+  handlePrintInvoiceController,
 };

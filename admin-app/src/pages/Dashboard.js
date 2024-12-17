@@ -22,7 +22,6 @@ const columns = [
     dataIndex: "status",
   },
 ];
-const data1 = [];
 const Dashboard = () => {
   const data = [
     {
@@ -117,6 +116,9 @@ const Dashboard = () => {
   }, []);
   const orderState = useSelector((state) => state.auth.orders.data);
   const totalRevenue = useSelector((state) => state?.auth?.totalRevenue?.data);
+
+  const data1 = [];
+
   if (orderState && orderState.length) {
     for (let i = orderState.length - 1; i >= 0; i--) {
       data1.push({

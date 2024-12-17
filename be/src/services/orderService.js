@@ -243,6 +243,7 @@ const getAllOrders = asyncHandler(async () => {
   const allOrderUser = await Order.find({})
     .populate("products.product")
     .populate("orderBy")
+    .sort({ createdAt: -1 })
     .exec();
   return allOrderUser;
 });
@@ -301,6 +302,21 @@ const handleRevenueCalculation = asyncHandler(async () => {
   return totalRevenue;
 });
 
+const printInvoice = asyncHandler(async (orderId, customerName) => {
+  validateMongodbId(orderId);
+
+  const order = getOrderUserById(orderId);
+
+  const receiptData = {
+    orderId: orderId,
+    date: new Date().toLocaleString(),
+    items: order.products,
+    customerName: customerName || "Khách lẻ",
+  };
+
+  return receiptData;
+});
+
 module.exports = {
   createOrderByCOD,
   getAllOrders,
@@ -311,4 +327,5 @@ module.exports = {
   handlePaymentCallback,
   cancelOrder,
   handleRevenueCalculation,
+  printInvoice,
 };
