@@ -8,7 +8,7 @@ const ViewEnquiry = ({ enquiry }) => {
   const enqui = enqState.find((item) => item._id === enquiry._id);
   useEffect(() => {
     dispatch(getEnquiries());
-  }, []);
+  }, [dispatch]);
   const setEnquiryStatus = (e, i) => {
     const data = { id: i, enqData: e };
     dispatch(updateAEnquiry(data));

@@ -3,11 +3,16 @@ import { Table } from "antd";
 import { BiEdit } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteAProduct, getProducts } from "../features/product/productSlice";
+import {
+  deleteAProduct,
+  generateQRCode,
+  getProducts,
+} from "../features/product/productSlice";
 import { useNavigate } from "react-router-dom";
 import CustomModal from "../components/CustomModal";
 import { Typeahead } from "react-bootstrap-typeahead";
 import "react-bootstrap-typeahead/css/Typeahead.css";
+import { BsCloudDownload } from "react-icons/bs";
 const columns = [
   {
     title: "STT",
@@ -41,6 +46,10 @@ const columns = [
     title: "Thao tác",
     dataIndex: "action",
   },
+  {
+    title: "QR Code",
+    dataIndex: "qrcode",
+  },
 ];
 
 const ProductList = () => {
@@ -62,9 +71,13 @@ const ProductList = () => {
 
   useEffect(() => {
     dispatch(getProducts());
-  }, []);
+  }, [dispatch]);
 
   const productState = useSelector((state) => state.product.products.data);
+  const qrCodeURL = useSelector((state) => state.product.qrCodeURL);
+
+  console.log(qrCodeURL);
+
   useEffect(() => {
     if (searchTerm) {
       const results = productState?.filter((pro) =>
@@ -75,13 +88,33 @@ const ProductList = () => {
       setFilteredProducts(productState || []);
     }
   }, [searchTerm, productState]);
+
   const formattedPrice = (price) =>
     new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
     }).format(price);
 
-  const data1 = [];
+  const handleGenerateAndDownloadQRCode = async (productId) => {
+    try {
+      await dispatch(generateQRCode(productId));
+
+      // console.log(qrCodeURL);
+
+      if (qrCodeURL) {
+        const a = document.createElement("a");
+        a.href = qrCodeURL;
+        a.download = `product_${productId}_qr.png`;
+        a.click();
+        console.log("QR Code đã được tải xuống");
+      } else {
+        console.error("Không thể tải QR Code");
+      }
+    } catch (error) {
+      console.error("Lỗi khi tạo và tải QR Code:", error);
+    }
+  };
+
   const data2 = filteredProducts?.map((pro) => ({
     key: pro._id,
     name: pro.name,
@@ -121,7 +154,19 @@ const ProductList = () => {
         </button>
       </>
     ),
+    qrcode: (
+      <>
+        <button
+          className="ms-3 fs-3 text-primary bg-transparent border-0"
+          onClick={() => handleGenerateAndDownloadQRCode(pro._id)}
+        >
+          <BsCloudDownload />
+        </button>
+      </>
+    ),
   }));
+
+  const data1 = [];
   if (productState && productState.length) {
     for (let i = 0; i < productState.length; i++) {
       data1.push({
@@ -160,6 +205,18 @@ const ProductList = () => {
               onClick={() => showModal(productState[i]._id)}
             >
               <AiFillDelete />
+            </button>
+          </>
+        ),
+        qrcode: (
+          <>
+            <button
+              className="ms-3 fs-3 text-primary bg-transparent border-0"
+              onClick={() =>
+                handleGenerateAndDownloadQRCode(productState[i]._id)
+              }
+            >
+              <BsCloudDownload />
             </button>
           </>
         ),

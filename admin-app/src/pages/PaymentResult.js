@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Meta from "../components/Meta";
 import { IoIosCheckmarkCircle } from "react-icons/io";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import moment from "moment";
 import { toast } from "react-toastify";
@@ -17,7 +17,7 @@ const PaymentResult = () => {
   const returnCounter = async () => {
     navigate("/counter", { state: { message: "false" } });
     console.log("ok");
-  }
+  };
   useEffect(() => {
     const params = new URLSearchParams(location.search);
 
@@ -39,7 +39,7 @@ const PaymentResult = () => {
     if (details.resultCode === "0") {
       handlePaymentCallback(details);
     }
-  }, [location.search]);
+  }, []);
 
   const formatDate = (timestamp) => {
     return moment(parseInt(timestamp)).format("DD-MM-YYYY");
@@ -116,7 +116,6 @@ const PaymentResult = () => {
                 >
                   <IoIosCheckmarkCircle className="payment-icon" />
                   <p style={{ fontSize: "30px" }}>{paymentDetails.message}</p>
-                  {/* <p style={{ fontSize: "30px" }}>Thanh Cong</p> */}
                 </div>
                 <div className="d-flex justify-content-center">
                   <table className="payment-table">
@@ -149,7 +148,13 @@ const PaymentResult = () => {
                   </table>
                 </div>
                 <div className="d-flex justify-content-end mt-3"></div>
-                <button onClick={returnCounter} className="payment-button" role="button">Quay lại</button>
+                <button
+                  onClick={returnCounter}
+                  className="payment-button"
+                  type="submit"
+                >
+                  Quay lại
+                </button>
               </div>
             </div>
           </div>

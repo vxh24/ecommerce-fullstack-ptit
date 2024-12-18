@@ -32,12 +32,23 @@ const updateProduct = async (productId, productData) => {
   return response.data;
 };
 
+const generateQRCode = async (productId) => {
+  const response = await axios.get(
+    `${base_url}product/generate-qr/${productId}`,
+    getConfig
+  );
+
+  // console.log("QR code response: ", response.data.data);
+  return response.data;
+};
+
 const productService = {
   getProducts,
   getProductById,
   createProduct,
   deleteAProduct,
   updateProduct,
+  generateQRCode,
 };
 
 export default productService;

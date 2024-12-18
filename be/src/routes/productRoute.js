@@ -12,6 +12,7 @@ const {
   ratingController,
   deleteImagesController,
   searchProductsController,
+  generateQRCodeController,
 } = require("../controllers/productController");
 
 const router = express.Router();
@@ -26,6 +27,12 @@ router.delete(
   authMiddleware,
   isAdmin,
   deleteImagesController
+);
+router.get(
+  "/generate-qr/:id",
+  authMiddleware,
+  isAdmin,
+  generateQRCodeController
 );
 router.get("/:id", getProductByIdController);
 router.put("/:id", authMiddleware, isAdmin, updateProductController);

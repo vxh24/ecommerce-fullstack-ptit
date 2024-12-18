@@ -56,11 +56,25 @@ export const updateProduct = createAsyncThunk(
   }
 );
 
+export const generateQRCode = createAsyncThunk(
+  "product/generateQRCode",
+  async (productId, thunkAPI) => {
+    try {
+      const response = await productService.generateQRCode(productId);
+      console.log("API Response:", response);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 export const resetState = createAction("Reset_all");
 
 const initialState = {
   products: [],
   product: null,
+  qrCodeURL: null,
   isError: false,
   isLoading: false,
   isSuccess: false,
@@ -149,8 +163,20 @@ export const productSlice = createSlice({
         state.isError = true;
         state.message = action.error.message;
       })
-
+      .addCase(generateQRCode.pending, (state) => {
+        state.isLoading = true;
+        state.isError = null;
+      })
+      .addCase(generateQRCode.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.qrCodeURL = action.payload;
+      })
+      .addCase(generateQRCode.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = action.payload;
+      })
       .addCase(resetState, () => initialState);
   },
 });
+
 export default productSlice.reducer;

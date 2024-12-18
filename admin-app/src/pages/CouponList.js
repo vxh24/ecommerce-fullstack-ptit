@@ -82,7 +82,6 @@ const Couponlist = () => {
       setFilteredCoupon(couponState || []);
     }
   }, [searchTerm, couponState]);
-  const data1 = [];
   const data2 = filteredCoupon?.map((coupon) => ({
     key: coupon._id,
     name: coupon.name,

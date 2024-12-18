@@ -9,6 +9,7 @@ const {
   rating,
   recommendProducts,
   searchProductsByName,
+  generateQRCodeProduct,
 } = require("../services/productService");
 const { deleteToCloudinary } = require("../utils/cloudinary");
 
@@ -154,6 +155,20 @@ const searchProductsController = asyncHandler(async (req, res) => {
   });
 });
 
+const generateQRCodeController = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const qrCodeURL = await generateQRCodeProduct(id);
+    res.status(200).json({
+      EC: 0,
+      data: qrCodeURL,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 module.exports = {
   createProductController,
   getProductByIdController,
@@ -164,4 +179,5 @@ module.exports = {
   ratingController,
   deleteImagesController,
   searchProductsController,
+  generateQRCodeController,
 };

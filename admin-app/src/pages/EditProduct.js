@@ -105,8 +105,8 @@ const EditProduct = () => {
       quantity: productState?.quantity || "",
       tags: productState?.tags
         ? Array.isArray(productState?.tags)
-          ? JSON.parse(productState?.tags)
-          : JSON.parse(productState?.tags).split(",")
+          ? productState?.tags
+          : productState?.tags.split(",")
         : [],
     },
     validationSchema: schema,
@@ -191,7 +191,9 @@ const EditProduct = () => {
   return (
     <div className="container mt-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h3 className="title">Cập nhật sản phẩm</h3>
+        <h3 className="title" style={{ fontSize: "18px", fontWeight: "bold" }}>
+          Cập nhật sản phẩm
+        </h3>
         <button
           onClick={() => {
             navigate("/admin/list-product");

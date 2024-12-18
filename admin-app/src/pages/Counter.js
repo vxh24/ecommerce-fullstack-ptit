@@ -35,7 +35,6 @@ const Counter = () => {
   const [coupon, setCoupon] = useState();
   const [change, setChange] = useState(null);
   const [payment, setPayment] = useState(null);
-  const [customerName, setCustomerName] = useState("");
   const dispatch = useDispatch();
   const [searchResults, setSearchResults] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -49,8 +48,12 @@ const Counter = () => {
     const updatedProducts = selectedProducts.map((product) => {
       if (product._id === productId) {
         if (product.selectedColor) {
-          const co = product.colors.find((item) => item.title === product.selectedColor)
-          dispatch(deleteProductfromCart({ productId: product._id, color: co._id }))
+          const co = product.colors.find(
+            (item) => item.title === product.selectedColor
+          );
+          dispatch(
+            deleteProductfromCart({ productId: product._id, color: co._id })
+          );
         }
       }
       return product;
@@ -167,8 +170,7 @@ const Counter = () => {
               colorId: co._id,
             })
           );
-        }
-        else {
+        } else {
           toast.info("Vui lòng chọn màu");
         }
       }
@@ -183,7 +185,7 @@ const Counter = () => {
       sum = sum + Number(products[index].price * products[index].count);
       setTotal(sum);
     }
-    setTotal(sum)
+    setTotal(sum);
   }, [products, total]);
   const [showModal, setShowModal] = useState(false);
   const handleShow = () => setShowModal(true);
@@ -230,13 +232,16 @@ const Counter = () => {
       try {
         setLoading(true);
         const response = await dispatch(
-          cashOrderUser({ userId: process.env.AdminId, totalAmount: totalAmount, orderAddress: infor })
+          cashOrderUser({
+            userId: process.env.AdminId,
+            totalAmount: totalAmount,
+            orderAddress: infor,
+          })
         );
         localStorage.setItem("orderId", response.payload.data._id);
       } catch (error) {
         console.error("Lỗi khi dispatch:", error);
-      }
-      finally {
+      } finally {
         setLoading(false);
         setIsDisabled(false);
       }
@@ -253,20 +258,21 @@ const Counter = () => {
   };
   const printInvoice = () => {
     const orderId = localStorage.getItem("orderId");
-    dispatch(printOrderSlice({ orderId: orderId, customerName: name, phone: phone }));
+    dispatch(
+      printOrderSlice({ orderId: orderId, customerName: name, phone: phone })
+    );
     localStorage.removeItem("orderId");
     localStorage.removeItem("selectedProducts");
     setProducts([]);
     setIsDisabled(true);
     setValue("");
     setChange(null);
-  }
+  };
   const [isDisabled, setIsDisabled] = useState(true);
   useEffect(() => {
     if (printState?.orderId && printState?.date && isDisabled === false) {
       const newWindow = window.open("", "_blank", "width=1000,height=1200");
 
-      // Kiểm tra xem cửa sổ có mở thành công không
       if (newWindow) {
         newWindow.document.write(`
           <html>
@@ -287,13 +293,23 @@ const Counter = () => {
                   <th style="border:1px solid black; padding:5px;">Giá</th>
                 </tr>
                 <!-- Bạn có thể lặp qua danh sách sản phẩm của bạn ở đây -->
-                ${printState.items?.map(product => `
+                ${printState.items
+                  ?.map(
+                    (product) => `
                   <tr>
-                    <td style="border:1px solid black; padding:5px;">${product.product.name}</td>
-                    <td style="border:1px solid black; padding:5px;">${product.count}</td>
-                    <td style="border:1px solid black; padding:5px;">${product.product.price * product.count}</td>
+                    <td style="border:1px solid black; padding:5px;">${
+                      product.product.name
+                    }</td>
+                    <td style="border:1px solid black; padding:5px;">${
+                      product.count
+                    }</td>
+                    <td style="border:1px solid black; padding:5px;">${
+                      product.product.price * product.count
+                    }</td>
                   </tr>
-                `).join('')}
+                `
+                  )
+                  .join("")}
               </table>
               <hr />
             </body>
@@ -317,17 +333,15 @@ const Counter = () => {
     if (message.message === "false") {
       setIsDisabled(false);
     }
-  }, [message.message])
+  }, [message.message]);
   useEffect(() => {
     if (customers) {
-      setName(customers.name)
-      setPhone(customers.phone)
+      setName(customers.name);
+      setPhone(customers.phone);
     }
     const str = `${name} - ${phone}`;
     setInfor(str);
-    // const newCustomer = { name, phone }; // Tạo object customer mới
-    // setKhachle(newCustomer); // Thêm vào mảng customers 
-  }, [name, phone, customers])
+  }, [name, phone, customers]);
   return (
     <>
       <ToastContainer
@@ -342,15 +356,12 @@ const Counter = () => {
         pauseOnHover
         theme="light"
       />
-      {
-        loading && (
-          <div className="loading-container">
-            <div className="loading-text">Đang tạo đơn hàng...</div>
-          </div>
-        )
-      }
+      {loading && (
+        <div className="loading-container">
+          <div className="loading-text">Đang tạo đơn hàng...</div>
+        </div>
+      )}
       <div className="counter-container">
-        {/* Header */}
         <div className="counter-header">
           <div className="w-50 d-flex align-items-center gap-10">
             <Typeahead
@@ -375,9 +386,14 @@ const Counter = () => {
                   <img
                     src={option.images[0].url}
                     alt={option.name}
-                    style={{ width: 50, height: 50, marginRight: 10, objectFit: "cover" }}
+                    style={{
+                      width: 50,
+                      height: 50,
+                      marginRight: 10,
+                      objectFit: "cover",
+                    }}
                   />
-                  <div className='d-flex gap-10'>
+                  <div className="d-flex gap-10">
                     <div style={{ fontWeight: "bold" }}>{option.name}</div>
                     <div style={{ color: "green" }}>{option.price} VNĐ</div>
                     <div> Còn lại: {option.quantity}</div>
@@ -394,9 +410,7 @@ const Counter = () => {
           </div>
         </div>
 
-        {/* Main Content */}
         <div className="counter-main">
-          {/* Product List */}
           <div className="counter-product-list">
             {products.name}
             <table>
@@ -454,7 +468,6 @@ const Counter = () => {
                         </div>
                       </td>
 
-                      {/* <td>{product.selectedColor}</td> */}
                       <td>
                         <input
                           type="number"
@@ -466,7 +479,6 @@ const Counter = () => {
                       </td>
                       <td>{product.price.toLocaleString()} đ</td>
                       <td className="tw-text-blue-600">
-                        {/* {product.total.toLocaleString()}  */}
                         {(product.price * product.count).toLocaleString()}đ
                       </td>
                       <td>
@@ -482,7 +494,6 @@ const Counter = () => {
               </tbody>
             </table>
           </div>
-          {/* Order Summary */}
           <div className="counter-order-summary">
             <div className="summary-header d-flex align-items-center gap-10 position-relative">
               <Typeahead
@@ -507,7 +518,12 @@ const Counter = () => {
                 onInputChange={(text) => setSearchTerm(text)}
                 className="typehead"
               />
-              <button className="add-customer position-absolute" onClick={() => setClick(!click)}>+</button>
+              <button
+                className="add-customer position-absolute"
+                onClick={() => setClick(!click)}
+              >
+                +
+              </button>
               {/* <input type="text" placeholder="Tìm kiếm hoặc thêm khách hàng" className='' /> */}
             </div>
             {customers ? (
@@ -519,29 +535,36 @@ const Counter = () => {
                 <button onClick={() => setCustomers("")}>x</button>
               </div>
             ) : (
-
-              click &&
-              <div className="customer-order d-flex align-items-center justify-content-between">
-                <div className="d-flex align-items-center gap-10 tw-w-96">
-                  <input
-                    type="text"
-                    placeholder="Nhập tên"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="tw-bg-white"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Nhập số điện thoại"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="tw-bg-white"
-                  />
+              click && (
+                <div className="customer-order d-flex align-items-center justify-content-between">
+                  <div className="d-flex align-items-center gap-10 tw-w-96">
+                    <input
+                      type="text"
+                      placeholder="Nhập tên"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="tw-bg-white"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Nhập số điện thoại"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className="tw-bg-white"
+                    />
+                  </div>
+                  <button
+                    onClick={() => {
+                      setName("");
+                      setPhone("");
+                      setClick(!click);
+                    }}
+                  >
+                    x
+                  </button>
                 </div>
-                <button onClick={() => { setName(""); setPhone(""); setClick(!click) }}>x</button>
-              </div>
-            )
-            }
+              )
+            )}
 
             <hr />
             <div className="total">

@@ -6,9 +6,7 @@ const natural = require("natural");
 const { uploadMultipleFiles } = require("./fileService");
 const Color = require("../models/colorModel");
 const tfidf = new natural.TfIdf();
-
-// var TfIdf = require('node-tfidf');
-// var tfidf = new TfIdf();
+const QRCode = require("qrcode");
 
 const createProduct = asyncHandler(async (productData, files) => {
   const uploadResults = await uploadMultipleFiles(files, "products");
@@ -350,6 +348,26 @@ const searchProductsByName = asyncHandler(async (name) => {
   return products;
 });
 
+const generateQRCodeProduct = asyncHandler(async (productId) => {
+  validateMongodbId(productId);
+
+  const product = await Product.findById(productId).populate("colors");
+
+  // console.log(product);
+
+  if (!product) {
+    throw new Error("Product not found");
+  }
+
+  const qrContent = productId; // Chỉ cần ID sản phẩm
+
+  const encodedQRContent = encodeURIComponent(qrContent);
+
+  const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?data=${encodedQRContent}&size=200x200`;
+
+  return qrCodeURL;
+});
+
 module.exports = {
   createProduct,
   getAProduct,
@@ -360,4 +378,5 @@ module.exports = {
   rating,
   recommendProducts,
   searchProductsByName,
+  generateQRCodeProduct,
 };
