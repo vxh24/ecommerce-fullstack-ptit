@@ -6,11 +6,19 @@ import { cancelOrderSlice, getOrderUser } from "../features/user/userSlice";
 import moment from "moment";
 import { AiOutlineEye } from "react-icons/ai";
 import OrderDetailCard from "../components/OrderDetailCard";
+import { useNavigate } from "react-router-dom";
 const Order = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [statusCounts, setStatusCounts] = useState({});
+  const getToken = JSON.parse(localStorage.getItem("customer"));
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (getToken?.access_token === undefined) {
+      navigate("/login", { state: { message: "my-orders" } });
+    }
+  }, [getToken])
   useEffect(() => {
     dispatch(getOrderUser());
   }, []);

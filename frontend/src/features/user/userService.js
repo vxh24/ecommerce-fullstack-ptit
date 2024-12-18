@@ -3,9 +3,9 @@ import { base_url, config } from "../../utils/axiosConfig";
 const createUser = async (userData) => {
   const response = await axios.post(`${base_url}register`, userData);
   if (response.data) {
-    if (response.data) {
-      localStorage.setItem("customer", JSON.stringify(response.data));
-    }
+    // if (response.data) {
+    //   localStorage.setItem("customer", JSON.stringify(response.data));
+    // }
     return response.data;
   }
 };

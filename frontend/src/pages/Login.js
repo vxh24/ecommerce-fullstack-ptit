@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import Meta from "../components/Meta";
 import BreadCrumb from "../components/BreadCrumb";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
@@ -19,6 +19,8 @@ const LoginSchema = yup.object({
 });
 
 const Login = () => {
+  const location = useLocation();
+  const message = location.state || {};
   const authState = useSelector((state) => state?.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -34,7 +36,12 @@ const Login = () => {
   });
   useEffect(() => {
     if (authState.user !== null && authState.isSuccess === true) {
-      navigate("/");
+      if (message.message) {
+        navigate(`/${message.message}`);
+      }
+      else {
+        navigate("/");
+      }
       setTimeout(() => {
         window.location.reload();
       }, 1000);

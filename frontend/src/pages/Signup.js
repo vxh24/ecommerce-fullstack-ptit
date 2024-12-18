@@ -32,7 +32,8 @@ const Signup = () => {
     },
   });
   useEffect(() => {
-    if (authState?.createUser?.data !== null && authState?.isError === false) {
+    console.log(authState?.createUser?.data);
+    if (authState?.createUser?.data !== undefined) {
       navigate("/login");
     }
   }, [authState])

@@ -18,6 +18,7 @@ import { MdOutlineKeyboardReturn } from "react-icons/md";
 import VoucherModal from "../components/VoucherModal";
 import { getAllCoupon } from "../features/counpons/couponSlice";
 import AddAddressForm from "../components/AddAddressForm";
+import { toast } from "react-toastify";
 const Checkout = () => {
   const authState = useSelector((state) => state?.auth);
   const [showModal, setShowModal] = useState(false);
@@ -105,6 +106,7 @@ const Checkout = () => {
       setTimeout(() => {
         dispatch(getUserCart());
         navigate("/my-orders");
+        toast.success("Đơn hàng đã được tạo")
       }, 1000)
     }
     if (payment === 2) {

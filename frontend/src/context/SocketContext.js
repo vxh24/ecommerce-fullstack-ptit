@@ -22,7 +22,7 @@ export const SocketContextProvider = ({ children }) => {
     if (getCustomerfromLocalStorage) {
       const socket = io("http://localhost:5000", {
         query: {
-          userId: getCustomerfromLocalStorage.user.id,
+          userId: getCustomerfromLocalStorage?.user?.id,
         },
       });
 

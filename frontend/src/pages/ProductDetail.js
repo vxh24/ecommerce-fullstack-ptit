@@ -29,6 +29,7 @@ const ProductDetail = () => {
   const productState = useSelector((state) => state?.product?.product?.data);
   const productState1 = useSelector((state) => state?.product);
   const images = productState?.images;
+  const getToken = JSON.parse(localStorage.getItem("customer"));
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
   };
@@ -92,6 +93,9 @@ const ProductDetail = () => {
     (state) => state?.auth?.cartUser?.cart?.products
   );
   const getWishlist = () => {
+    if (getToken?.access_token === undefined) {
+      return;
+    }
     dispatch(getUserProductWishlist());
   };
   useEffect(() => {
@@ -105,12 +109,19 @@ const ProductDetail = () => {
     (wishlistItem) => wishlistItem._id === getProductId
   );
   const addToWish = (id) => {
+    if (getToken?.access_token === undefined) {
+      return;
+    }
     dispatch(addToWishlist(id));
     setTimeout(() => {
       dispatch(getUserProductWishlist());
     }, 200);
   };
   const uploadCart = () => {
+    if (getToken?.access_token === undefined) {
+      navigate("/login", { state: { message: `product/${productState?._id}` } });
+      return;
+    }
     if (productState.quantity <= 0) {
       toast.info("Sản phẩm đã hết hàng");
       return false;
@@ -374,7 +385,7 @@ const ProductDetail = () => {
                           onClick={() => {
                             addToWish(productState?._id);
                           }}
-                          className="fs-5 me-2"
+                          className="fs-5 me-2 cursor-pointer"
                           color={isWishlisted ? "red" : "#333"}
                         />
                       ) : (
@@ -382,7 +393,7 @@ const ProductDetail = () => {
                           onClick={() => {
                             addToWish(productState?._id);
                           }}
-                          className="fs-5 me-2"
+                          className="fs-5 me-2 cursor-pointer"
                           color={isWishlisted ? "red" : "#333"}
                         />
                       )}
@@ -561,7 +572,7 @@ const ProductDetail = () => {
                           <button className="border-0 bg-transparent">
                             {isWishlisted1 ? (
                               <AiFillHeart
-                                className="fs-4"
+                                className="fs-5"
                                 onClick={() => {
                                   addToWish(item.product._id);
                                 }}
@@ -569,7 +580,7 @@ const ProductDetail = () => {
                               />
                             ) : (
                               <AiOutlineHeart
-                                className="fs-4"
+                                className="fs-5"
                                 onClick={() => {
                                   addToWish(item.product._id);
                                 }}
@@ -625,7 +636,7 @@ const ProductDetail = () => {
                               }}
                             >
                               {/* <img src="images/view.svg" alt="view" /> */}
-                              <MdOutlineRemoveRedEye className="text-dark fs-4" />
+                              <MdOutlineRemoveRedEye className="text-dark fs-5" />
                             </Link>
                           </div>
                         </div>

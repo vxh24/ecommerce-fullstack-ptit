@@ -6,7 +6,13 @@ import { TbAddressBook } from "react-icons/tb";
 import { RxPerson } from "react-icons/rx";
 import { useDispatch, useSelector } from "react-redux";
 import { getProfileSlice } from "../features/user/userSlice";
+import { googleLogout } from "@react-oauth/google";
 const ProfileSideBar = ({ setActive, active }) => {
+  const handleLogout = () => {
+    googleLogout();
+    localStorage.clear();
+    window.location.reload();
+  };
   const dispatch = useDispatch();
   const profileState = useSelector((state) => state?.auth?.profile?.data);
   useEffect(() => {
@@ -33,9 +39,8 @@ const ProfileSideBar = ({ setActive, active }) => {
         >
           <RiLockPasswordLine size={20} color={active === 2 ? "red" : ""} />
           <span
-            className={`pl-3 ${
-              active === 2 ? "text-red" : ""
-            } 800px:block hidden`}
+            className={`pl-3 ${active === 2 ? "text-red" : ""
+              } 800px:block hidden`}
           >
             Đổi mật khẩu
           </span>
@@ -47,9 +52,8 @@ const ProfileSideBar = ({ setActive, active }) => {
         >
           <TbAddressBook size={20} color={active === 3 ? "red" : ""} />
           <span
-            className={`pl-3 ${
-              active === 3 ? "text-red" : ""
-            } 800px:block hidden`}
+            className={`pl-3 ${active === 3 ? "text-red" : ""
+              } 800px:block hidden`}
           >
             Địa chỉ
           </span>
@@ -60,20 +64,18 @@ const ProfileSideBar = ({ setActive, active }) => {
         >
           <RiCoupon3Line size={20} color={active === 4 ? "red" : ""} />
           <span
-            className={`pl-3 ${
-              active === 4 ? "text-red" : ""
-            } 800px:block hidden`}
+            className={`pl-3 ${active === 4 ? "text-red" : ""
+              } 800px:block hidden`}
           >
             Kho Voucher
           </span>
         </div>
 
-        <div className="profile-content-poiner d-flex align-items-center w-100 mb-3 gap-10">
+        <div className="profile-content-poiner d-flex align-items-center w-100 mb-3 gap-10" onClick={handleLogout}>
           <AiOutlineLogin size={20} color={active === 5 ? "red" : ""} />
           <span
-            className={`pl-3 ${
-              active === 5 ? "text-red" : ""
-            } 800px:block hidden`}
+            className={`pl-3 ${active === 5 ? "text-red" : ""
+              } 800px:block hidden`}
           >
             Đăng xuất
           </span>

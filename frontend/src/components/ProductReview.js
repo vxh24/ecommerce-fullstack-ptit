@@ -59,7 +59,7 @@ const ProductReview = ({ product }) => {
       <div className="rating-section d-flex align-items-center">
         <h4 className="fs-5 mb-0">Chất lượng sản phẩm</h4>
         <div className="d-flex align-items-center gap-10">
-          <div className="stars ms-4">
+          <div className="stars d-flex align-items-center ms-4">
             {[...Array(5)].map((_, index) => {
               const currentRating = index + 1;
               return (

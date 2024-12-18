@@ -289,7 +289,7 @@ export const authSlice = createSlice({
         state.isSuccess = true;
         state.createUser = action.payload;
         if (state.isSuccess === true) {
-          toast.info("User Create Successfully");
+          toast.info("Tạo tài khoản thành công");
         }
       })
       .addCase(createUser.rejected, (state, action) => {
@@ -439,9 +439,6 @@ export const authSlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         state.order = action.payload;
-        if (state.isSuccess === true) {
-          toast.success("Đơn hàng đã được tạo");
-        }
       })
       .addCase(cashOrderUser.rejected, (state, action) => {
         state.isLoading = false;

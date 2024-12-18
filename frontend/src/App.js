@@ -25,6 +25,7 @@ import Order from "./pages/Order";
 import Profile from "./pages/Profile";
 import PaymentResult from "./pages/PaymentResult";
 import Chat from "./components/Chat";
+import { PrivateRouter } from "./routing/PrivateRouter";
 function App() {
   return (
     <>
