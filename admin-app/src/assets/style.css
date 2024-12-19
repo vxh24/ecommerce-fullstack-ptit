@@ -586,3 +586,25 @@ ul.b {
   color: #555;
   animation: fadeInOut 1.5s infinite;
 }
+
+.qrscan{
+  position: absolute;
+  top: 50%;
+  left: 40%;
+  transform: translate(-50%, -50%);
+  background-color: #f4f4f4; 
+  padding: 20px;
+  border: 1px solid #ccc;
+  width: 30%;
+  z-index: 1000;
+}
+.qrscan button{
+  width: 100%;
+  padding: 10px;
+  background: #007bff;
+  color: white;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+}

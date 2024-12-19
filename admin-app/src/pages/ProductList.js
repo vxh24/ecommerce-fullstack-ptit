@@ -97,15 +97,22 @@ const ProductList = () => {
 
   const handleGenerateAndDownloadQRCode = async (productId) => {
     try {
-      await dispatch(generateQRCode(productId));
+      const results = await dispatch(generateQRCode(productId));
 
-      // console.log(qrCodeURL);
+      console.log(results.payload);
+      if (results.payload) {
+        const response = await fetch(results.payload);
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
 
-      if (qrCodeURL) {
         const a = document.createElement("a");
-        a.href = qrCodeURL;
+        a.href = url;
         a.download = `product_${productId}_qr.png`;
+        document.body.appendChild(a);
         a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
         console.log("QR Code đã được tải xuống");
       } else {
         console.error("Không thể tải QR Code");

@@ -314,22 +314,19 @@ const Counter = () => {
                 </tr>
                 <!-- Bạn có thể lặp qua danh sách sản phẩm của bạn ở đây -->
                 ${printState.items
-                  ?.map(
-                    (product) => `
+            ?.map(
+              (product) => `
                   <tr>
-                    <td style="border:1px solid black; padding:5px;">${
-                      product.product.name
-                    }</td>
-                    <td style="border:1px solid black; padding:5px;">${
-                      product.count
-                    }</td>
-                    <td style="border:1px solid black; padding:5px;">${
-                      product.product.price * product.count
-                    }</td>
+                    <td style="border:1px solid black; padding:5px;">${product.product.name
+                }</td>
+                    <td style="border:1px solid black; padding:5px;">${product.count
+                }</td>
+                    <td style="border:1px solid black; padding:5px;">${product.product.price * product.count
+                }</td>
                   </tr>
                 `
-                  )
-                  .join("")}
+            )
+            .join("")}
               </table>
               <hr />
             </body>
@@ -376,7 +373,31 @@ const Counter = () => {
       setShowScanner(false);
     }
   };
+  useEffect(() => {
+    if (qrData) {
+      const prod = productState.find((item) => item._id === qrData);
+      console.log(prod);
+      let selectedProducts =
+        JSON.parse(localStorage.getItem("selectedProducts")) || [];
 
+      if (
+        !selectedProducts.find((product) => product._id === prod._id)
+      ) {
+        const updatedProduct = {
+          ...prod,
+          selectedColor: "",
+          count: 1,
+        };
+        selectedProducts.push(updatedProduct);
+        localStorage.setItem(
+          "selectedProducts",
+          JSON.stringify(selectedProducts)
+        );
+        setProducts(selectedProducts);
+      }
+    }
+    setQrData("");
+  }, [productState, qrData])
   const handleError = (err) => {
     console.error("QR Scan Error:", err);
   };
@@ -446,25 +467,6 @@ const Counter = () => {
             <button onClick={() => setShowScanner(true)}>
               <BsQrCodeScan className="fs-4 text-dark" />
             </button>
-            {showScanner && (
-              <div>
-                <QrReader
-                  constraints={{ facingMode: "environment" }}
-                  onResult={(result, error) => {
-                    if (result) {
-                      handleScan(result.text);
-                    }
-                    if (error) {
-                      handleError(error);
-                    }
-                  }}
-                  style={{ width: "100%" }}
-                />
-                <button onClick={() => setShowScanner(false)}>
-                  Đóng Camera
-                </button>
-              </div>
-            )}
 
             {qrData && (
               <div>
@@ -558,6 +560,24 @@ const Counter = () => {
                   ))}
               </tbody>
             </table>
+            {showScanner && (
+              <div className="qrscan">
+                <QrReader
+                  constraints={{ facingMode: "environment" }}
+                  onResult={(result, error) => {
+                    if (result) {
+                      handleScan(result.text);
+                    }
+                    if (error) {
+                      handleError(error);
+                    }
+                  }}
+                />
+                <button onClick={() => setShowScanner(false)}>
+                  Đóng Camera
+                </button>
+              </div>
+            )}
           </div>
           <div className="counter-order-summary">
             <div className="summary-header d-flex align-items-center gap-10 position-relative">
