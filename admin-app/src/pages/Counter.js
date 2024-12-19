@@ -20,10 +20,11 @@ import {
   updatecountCart,
 } from "../features/cart/CartSlice";
 import { toast } from "react-toastify";
+import { QrReader } from "react-qr-reader";
+
 const Counter = () => {
   const location = useLocation();
   const message = location.state || {};
-  console.log(message);
   const [products, setProducts] = useState([]);
   const [customers, setCustomers] = useState(null);
   const [infor, setInfor] = useState("");
@@ -42,6 +43,7 @@ const Counter = () => {
   const [searchResults1, setSearchResults1] = useState([]);
   const [searchTerm1, setSearchTerm1] = useState("");
   const [filteredCustomer, setFilteredCustomer] = useState([]);
+
   const handleRemove = (productId) => {
     let selectedProducts =
       JSON.parse(localStorage.getItem("selectedProducts")) || [];
@@ -65,17 +67,20 @@ const Counter = () => {
     localStorage.setItem("selectedProducts", JSON.stringify(selectedProducts));
     setProducts(selectedProducts);
   };
+
   useEffect(() => {
     dispatch(getProducts());
     dispatch(getUsers());
     dispatch(getCoupons());
   }, []);
+
   const productState = useSelector((state) => state.product.products.data);
   const userState = useSelector((state) => state.customer.customers.data);
   const couponState = useSelector((state) => state.coupon.coupons.data);
   const cartState = useSelector((state) => state.cart);
   const printState = useSelector((state) => state?.cart?.print?.data);
   const [payurl, setPayurl] = useState(cartState?.momo?.data?.payUrl);
+
   useEffect(() => {
     if (searchTerm) {
       const results = productState?.filter((pro) =>
@@ -86,6 +91,7 @@ const Counter = () => {
       setFilteredProducts(productState || []);
     }
   }, [searchTerm, productState]);
+
   useEffect(() => {
     if (searchTerm1) {
       const results = userState?.filter((pro) =>
@@ -96,11 +102,13 @@ const Counter = () => {
       setFilteredCustomer(userState || []);
     }
   }, [searchTerm1, userState]);
+
   useEffect(() => {
     const storedProducts =
       JSON.parse(localStorage.getItem("selectedProducts")) || [];
     setProducts(storedProducts);
   }, []);
+
   const handleAddProduct = (selectedProduct) => {
     let selectedProducts =
       JSON.parse(localStorage.getItem("selectedProducts")) || [];
@@ -121,9 +129,11 @@ const Counter = () => {
       setProducts(selectedProducts);
     }
   };
+
   const handleColorChange = (productId, color) => {
     const storedProducts =
       JSON.parse(localStorage.getItem("selectedProducts")) || [];
+
     const updatedProducts1 = storedProducts.map((product) => {
       if (product._id === productId && product.selectedColor) {
         const co = product.colors.find(
@@ -135,6 +145,7 @@ const Counter = () => {
       }
       return product;
     });
+
     const updatedProducts = storedProducts.map((product) => {
       if (product._id === productId) {
         product["selectedColor"] = color;
@@ -153,6 +164,7 @@ const Counter = () => {
     localStorage.setItem("selectedProducts", JSON.stringify(updatedProducts));
     setProducts(updatedProducts);
   };
+
   const handleCountChange = (productId, newCount) => {
     const storedProducts =
       JSON.parse(localStorage.getItem("selectedProducts")) || [];
@@ -179,6 +191,7 @@ const Counter = () => {
     localStorage.setItem("selectedProducts", JSON.stringify(updatedProducts));
     setProducts(updatedProducts);
   };
+
   useEffect(() => {
     let sum = 0;
     for (let index = 0; index < products.length; index++) {
@@ -187,9 +200,11 @@ const Counter = () => {
     }
     setTotal(sum);
   }, [products, total]);
+
   const [showModal, setShowModal] = useState(false);
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
+
   useEffect(() => {
     if (coupon) {
       let sum = Number(total) - (Number(total) * Number(coupon)) / 100;
@@ -210,6 +225,7 @@ const Counter = () => {
     const numericValue = e.target.value.replace(/\D/g, "");
     setValue(numericValue);
   };
+
   useEffect(() => {
     if (value > totalAmount) {
       let sum = Number(value) - Number(totalAmount);
@@ -218,7 +234,9 @@ const Counter = () => {
       setChange(null);
     }
   }, [totalAmount, value]);
+
   const [loading, setLoading] = useState();
+
   const createOrder = async () => {
     if (infor.length <= 3) {
       toast.info("Vui lòng thêm thông tin khách hàng");
@@ -256,6 +274,7 @@ const Counter = () => {
       );
     }
   };
+
   const printInvoice = () => {
     const orderId = localStorage.getItem("orderId");
     dispatch(
@@ -268,6 +287,7 @@ const Counter = () => {
     setValue("");
     setChange(null);
   };
+
   const [isDisabled, setIsDisabled] = useState(true);
   useEffect(() => {
     if (printState?.orderId && printState?.date && isDisabled === false) {
@@ -322,18 +342,22 @@ const Counter = () => {
       console.error("Dữ liệu không hợp lệ: printState");
     }
   }, [printState, isDisabled]);
+
   useEffect(() => {
     if (payurl !== undefined) {
       window.location.href = cartState.momo.data.payUrl;
     }
     setPayurl(cartState?.momo?.data?.payUrl);
   }, [cartState, payurl]);
-  console.log(message.message);
+
+  // console.log(message.message);
+
   useEffect(() => {
     if (message.message === "false") {
       setIsDisabled(false);
     }
   }, [message.message]);
+
   useEffect(() => {
     if (customers) {
       setName(customers.name);
@@ -342,6 +366,21 @@ const Counter = () => {
     const str = `${name} - ${phone}`;
     setInfor(str);
   }, [name, phone, customers]);
+
+  const [showScanner, setShowScanner] = useState(false);
+  const [qrData, setQrData] = useState("");
+
+  const handleScan = (data) => {
+    if (data) {
+      setQrData(data);
+      setShowScanner(false);
+    }
+  };
+
+  const handleError = (err) => {
+    console.error("QR Scan Error:", err);
+  };
+
   return (
     <>
       <ToastContainer
@@ -404,9 +443,35 @@ const Counter = () => {
             <Link to="/admin">
               <GoHome className="fs-3" />
             </Link>
-            <button>
+            <button onClick={() => setShowScanner(true)}>
               <BsQrCodeScan className="fs-4 text-dark" />
             </button>
+            {showScanner && (
+              <div>
+                <QrReader
+                  constraints={{ facingMode: "environment" }}
+                  onResult={(result, error) => {
+                    if (result) {
+                      handleScan(result.text);
+                    }
+                    if (error) {
+                      handleError(error);
+                    }
+                  }}
+                  style={{ width: "100%" }}
+                />
+                <button onClick={() => setShowScanner(false)}>
+                  Đóng Camera
+                </button>
+              </div>
+            )}
+
+            {qrData && (
+              <div>
+                <h3>Kết quả QR Code:</h3>
+                <p>{qrData}</p>
+              </div>
+            )}
           </div>
         </div>
 
