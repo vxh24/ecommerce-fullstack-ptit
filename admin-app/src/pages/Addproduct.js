@@ -27,22 +27,31 @@ let schema = yup.object().shape({
     .min(1, "Ít nhất một thẻ là bắt buộc")
     .of(yup.string().required("Mỗi thẻ phải là một chuỗi"))
     .required("Thẻ là bắt buộc"),
-  colors: yup
-    .array()
-    .min(1, "Chọn ít nhất một màu")
-    .of(yup.string().required("Mỗi màu phải là một chuỗi"))
-    .required("Màu là bắt buộc"),
-  quantity: yup.number().required("Số lượng là bắt buộc"),
 });
 
 const AddProduct = () => {
   const dispatch = useDispatch();
-  const [colors, setColors] = useState([]);
   const [click, setClick] = useState(false);
-
+  const [mau, setMau] = useState("");
+  const [sol, setSol] = useState();
+  const [attributes, setAttributes] = useState([]);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
-
+  const handleAddAttribute = () => {
+    if (mau && sol) {
+      const capitalizedMau = mau.charAt(0).toUpperCase() + mau.slice(1);
+      const newAttribute = { name: capitalizedMau, quantity: Number(sol) };
+      setAttributes([...attributes, newAttribute]);
+      setMau("");
+      setSol("");
+    } else {
+      alert("Vui lòng nhập đầy đủ thông tin màu và số lượng!");
+    }
+  };
+  const handleDeleteAttribute = (index) => {
+    const updatedAttributes = attributes.filter((_, i) => i !== index);
+    setAttributes(updatedAttributes);
+  };
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -59,7 +68,6 @@ const AddProduct = () => {
 
   const brandState = useSelector((state) => state.brand.brands.data);
   const catState = useSelector((state) => state.pCategory.pCategories.data);
-  const colorState = useSelector((state) => state.color.colors.data);
   const newProduct = useSelector((state) => state.product);
   const { isSuccess, isError, isLoading, createdProduct } = newProduct;
 
@@ -72,28 +80,6 @@ const AddProduct = () => {
     }
   }, [isSuccess, isError, isLoading]);
 
-  const coloropt = [];
-  if (Array.isArray(colorState)) {
-    colorState.forEach((i) => {
-      coloropt.push({
-        label: (
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <div
-              style={{
-                width: "20px",
-                height: "20px",
-                backgroundColor: i.title,
-                marginRight: "10px",
-                borderRadius: "50%",
-              }}
-            ></div>
-            {i.title}
-          </div>
-        ),
-        value: i._id,
-      });
-    });
-  }
 
   const formik = useFormik({
     initialValues: {
@@ -103,8 +89,6 @@ const AddProduct = () => {
       price: "",
       category: "",
       brand: "",
-      colors: [],
-      quantity: "",
       tags: [],
     },
     validationSchema: schema,
@@ -116,16 +100,12 @@ const AddProduct = () => {
       formData.append("price", formik.values.price);
       formData.append("category", formik.values.category);
       formData.append("brand", formik.values.brand);
-      formData.append("quantity", formik.values.quantity);
-      formik.values.colors.forEach((color) => {
-        formData.append("colors", color);
-      });
+      formData.append("colors", JSON.stringify(attributes));
       formData.append("tags", JSON.stringify(formik.values.tags));
 
       images.forEach((image) => {
         formData.append("images", image);
       });
-
       dispatch(createProducts(formData));
 
       formik.resetForm();
@@ -137,10 +117,6 @@ const AddProduct = () => {
     },
   });
 
-  const handleColors = (e) => {
-    setColors(e);
-    formik.setFieldValue("colors", e);
-  };
 
   const [images, setImages] = useState([]);
   const [fileInputKey, setFileInputKey] = useState(0);
@@ -327,7 +303,7 @@ const AddProduct = () => {
                 <option value="">Chọn thương hiệu ...</option>
                 {Array.isArray(brandState) &&
                   brandState.map((i, j) => (
-                    <option key={j} value={i.title}>
+                    <option key={j} value={i._id}>
                       {i.title}
                     </option>
                   ))}
@@ -356,7 +332,7 @@ const AddProduct = () => {
                 <option value="">Chọn danh mục ...</option>
                 {Array.isArray(catState) &&
                   catState.map((i, j) => (
-                    <option key={j} value={i.title}>
+                    <option key={j} value={i._id}>
                       {i.title}
                     </option>
                   ))}
@@ -391,51 +367,69 @@ const AddProduct = () => {
                 <div className="error">{formik.errors.tags}</div>
               )}
             </div>
-
-            <div className="form-group mb-4">
+            <div className="w-100">
               <label
-                htmlFor="colors"
+                htmlFor="category"
                 className="form-label"
                 style={{ fontSize: "18px" }}
               >
-                8. Chọn màu:
+                8. Thêm màu và nhập số lượng:
               </label>
-              <Select
-                mode="multiple"
-                allowClear
-                className="w-100"
-                placeholder="Chọn màu..."
-                value={formik.values.colors}
-                onChange={handleColors}
-                options={coloropt}
-              />
-              {formik.touched.colors && formik.errors.colors && (
-                <div className="error">{formik.errors.colors}</div>
+              <div style={{ width: "100%" }}>
+                <input
+                  type="text"
+                  placeholder="Nhập màu"
+                  value={mau}
+                  onChange={(e) => setMau(e.target.value)}
+                  style={{ marginRight: "10px", padding: "10px", background: "white", width: "40%" }}
+                />
+                <input
+                  type="number"
+                  placeholder="Nhập số lượng"
+                  value={sol}
+                  onChange={(e) => setSol(e.target.value)}
+                  style={{ marginRight: "10px", padding: "10px", background: "white", width: "32%" }}
+                />
+                <span onClick={handleAddAttribute}
+                  className="btn btn-success border-0 rounded-3 my-4 w-25"
+                  style={{ width: "20%" }}
+                >Thêm</span>
+              </div>
+            </div>
+            <div>
+              {attributes.length > 0 && (
+                <div className="mt-3">
+                  {attributes.map((attr, index) => (
+                    <div key={index} className="d-flex align-items-center tw-gap-6">
+                      <div className="d-flex align-items-center tw-gap-6"
+                        style={{ width: "30%" }}
+                      >
+                        <div className="add-colorquan">
+                          Màu: <strong className="ms-2">{attr.name}</strong>
+                        </div>
+                        <div className="add-colorquan"> Số lượng:
+                          <strong className="ms-2">{attr.quantity}</strong>
+                        </div>
+                      </div>
+                      <span
+                        onClick={() => handleDeleteAttribute(index)}
+                        style={{
+                          marginLeft: "10px",
+                          padding: "5px",
+                          color: "red",
+                          border: "none",
+                          cursor: "pointer",
+                          width: "6%",
+
+                        }}
+                      >
+                        X
+                      </span>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
-
-            <div className="form-group mb-4">
-              <label
-                htmlFor="quantity"
-                className="form-label"
-                style={{ fontSize: "18px" }}
-              >
-                9. Nhập số lượng sản phẩm:
-              </label>
-              <CustomInput
-                type="number"
-                name="quantity"
-                id="quantity"
-                label="Nhập số lượng..."
-                onChng={formik.handleChange("quantity")}
-                onBlr={formik.handleBlur("quantity")}
-                val={formik.values.quantity}
-              />
-              {formik.touched.quantity && formik.errors.quantity && (
-                <div className="error">{formik.errors.quantity}</div>
-              )}
-            </div>
-
             <button
               className="btn btn-success border-0 rounded-3 my-4 w-100"
               type="submit"
@@ -451,26 +445,28 @@ const AddProduct = () => {
           </div>
         </div>
 
-        {lightboxOpen && (
-          <ReactImageLightbox
-            mainSrc={URL.createObjectURL(images[photoIndex])}
-            nextSrc={URL.createObjectURL(
-              images[(photoIndex + 1) % images.length]
-            )}
-            prevSrc={URL.createObjectURL(
-              images[(photoIndex + images.length - 1) % images.length]
-            )}
-            onCloseRequest={() => setLightboxOpen(false)}
-            onMovePrevRequest={() =>
-              setPhotoIndex((photoIndex + images.length - 1) % images.length)
-            }
-            onMoveNextRequest={() =>
-              setPhotoIndex((photoIndex + 1) % images.length)
-            }
-          />
-        )}
-      </div>
-    </div>
+        {
+          lightboxOpen && (
+            <ReactImageLightbox
+              mainSrc={URL.createObjectURL(images[photoIndex])}
+              nextSrc={URL.createObjectURL(
+                images[(photoIndex + 1) % images.length]
+              )}
+              prevSrc={URL.createObjectURL(
+                images[(photoIndex + images.length - 1) % images.length]
+              )}
+              onCloseRequest={() => setLightboxOpen(false)}
+              onMovePrevRequest={() =>
+                setPhotoIndex((photoIndex + images.length - 1) % images.length)
+              }
+              onMoveNextRequest={() =>
+                setPhotoIndex((photoIndex + 1) % images.length)
+              }
+            />
+          )
+        }
+      </div >
+    </div >
   );
 };
 

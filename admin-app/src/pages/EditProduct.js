@@ -30,12 +30,6 @@ let schema = yup.object().shape({
     .min(1, "Ít nhất một thẻ là bắt buộc")
     .of(yup.string().required("Mỗi thẻ phải là một chuỗi"))
     .required("Thẻ là bắt buộc"),
-  colors: yup
-    .array()
-    .min(1, "Chọn ít nhất một màu")
-    .of(yup.string().required("Mỗi màu phải là một chuỗi"))
-    .required("Màu là bắt buộc"),
-  quantity: yup.number().required("Số lượng là bắt buộc"),
 });
 
 const EditProduct = () => {
@@ -53,14 +47,14 @@ const EditProduct = () => {
   const productState = useSelector((state) => state.product.product?.data);
   const brandState = useSelector((state) => state.brand.brands?.data);
   const catState = useSelector((state) => state.pCategory.pCategories?.data);
+  // const brand = brandState.find((item) => item._id === productState.brand);
+  // console.log(brand);
   const colorState = useSelector((state) => state.color.colors?.data);
-
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
 
   const [images, setImages] = useState(productState?.images || []);
   const [fileInputKey, setFileInputKey] = useState(0);
-
   useEffect(() => {
     if (productState?.images) {
       setImages(productState?.images);
@@ -97,12 +91,14 @@ const EditProduct = () => {
       name: productState?.name || "",
       description: productState?.description || "",
       price: productState?.price || "",
-      category: productState?.category || "",
-      brand: productState?.brand || "",
+      category: productState?.category._id || "",
+      brand: productState?.brand?._id || "",
       colors: Array.isArray(productState?.colors)
-        ? productState?.colors.map((color) => color._id)
+        ? productState?.colors.map((color) => ({
+          name: color.name,
+          quantity: color.quantity,
+        }))
         : [],
-      quantity: productState?.quantity || "",
       tags: productState?.tags
         ? Array.isArray(productState?.tags)
           ? productState?.tags
@@ -117,11 +113,7 @@ const EditProduct = () => {
       formData.append("price", values.price);
       formData.append("category", values.category);
       formData.append("brand", values.brand);
-      formData.append("quantity", values.quantity);
-      formik.values.colors.forEach((color) => {
-        formData.append("colors", color);
-      });
-      // formData.append("colors", JSON.stringify(values.colors));
+      formData.append("colors", JSON.stringify(values.colors));
       formData.append("tags", JSON.stringify(values.tags));
 
       images.forEach((image) => {
@@ -135,7 +127,7 @@ const EditProduct = () => {
       dispatch(updateProduct(id, formData));
     },
   });
-
+  console.log(formik.values);
   const onFileUploadHandler = (e) => {
     const newImages = [...e.target.files];
     if (images.length + newImages.length > 5) {
@@ -322,7 +314,7 @@ const EditProduct = () => {
                 <option value="">Chọn thương hiệu ...</option>
                 {Array.isArray(brandState) &&
                   brandState.map((i, j) => (
-                    <option key={j} value={i.title}>
+                    <option key={j} value={i._id}>
                       {i.title}
                     </option>
                   ))}
@@ -351,7 +343,7 @@ const EditProduct = () => {
                 <option value="">Chọn danh mục ...</option>
                 {Array.isArray(catState) &&
                   catState.map((i, j) => (
-                    <option key={j} value={i.title}>
+                    <option key={j} value={i._id}>
                       {i.title}
                     </option>
                   ))}
@@ -387,7 +379,7 @@ const EditProduct = () => {
               )}
             </div>
 
-            <div className="form-group mb-4">
+            {/* <div className="form-group mb-4">
               <label
                 htmlFor="colors"
                 className="form-label"
@@ -432,8 +424,97 @@ const EditProduct = () => {
               {formik.touched.quantity && formik.errors.quantity && (
                 <div className="error">{formik.errors.quantity}</div>
               )}
-            </div>
-
+            </div> */}
+            {/* {productState.colors && productState.colors.map((item, index) => {
+              return (
+                <div style={{ width: "100%" }}>
+                  <input
+                    type="text"
+                    placeholder="Nhập màu"
+                    value={item.name}
+                    // onChange={(e) => setMau(e.target.value)}
+                    style={{ marginRight: "10px", padding: "10px", background: "white", width: "40%" }}
+                  />
+                  <input
+                    type="number"
+                    placeholder="Nhập số lượng"
+                    value={item.quantity}
+                    // onChange={(e) => setSol(e.target.value)}
+                    style={{ marginRight: "10px", padding: "10px", background: "white", width: "32%" }}
+                  />
+                  <span
+                    // onClick={handleAddAttribute}
+                    className="btn btn-success border-0 rounded-3 my-4 w-25"
+                    style={{ width: "20%" }}
+                  >Sửa</span>
+                </div>
+              )
+            })
+            } */}
+            {formik.values.colors.map((color, index) => (
+              <div key={index} style={{ width: "100%" }}>
+                <input
+                  type="text"
+                  placeholder="Nhập màu"
+                  value={color.name}
+                  onChange={(e) =>
+                    formik.setFieldValue(
+                      `colors[${index}].name`,
+                      e.target.value
+                    )
+                  }
+                  style={{
+                    marginRight: "10px",
+                    padding: "10px",
+                    background: "white",
+                    width: "43%",
+                    marginBottom: "10px"
+                  }}
+                />
+                <input
+                  type="number"
+                  placeholder="Nhập số lượng"
+                  value={color.quantity}
+                  onChange={(e) =>
+                    formik.setFieldValue(
+                      `colors[${index}].quantity`,
+                      e.target.value
+                    )
+                  }
+                  style={{
+                    marginRight: "10px",
+                    padding: "10px",
+                    background: "white",
+                    width: "32%",
+                  }}
+                />
+                <span
+                  type="button"
+                  onClick={() => {
+                    const updatedColors = formik.values.colors.filter(
+                      (_, i) => i !== index
+                    );
+                    formik.setFieldValue("colors", updatedColors);
+                  }}
+                  className="btn btn-danger"
+                  style={{ width: "20%" }}
+                >
+                  Xóa
+                </span>
+              </div>
+            ))}
+            <span
+              type="button"
+              onClick={() =>
+                formik.setFieldValue("colors", [
+                  ...formik.values.colors,
+                  { name: "", quantity: 0 },
+                ])
+              }
+              className="btn btn-primary"
+            >
+              Thêm màu
+            </span>
             <button
               className="btn btn-success border-0 rounded-3 my-4 w-100"
               type="submit"
@@ -465,8 +546,8 @@ const EditProduct = () => {
               images[(photoIndex + images.length - 1) % images.length].url
                 ? images[(photoIndex + images.length - 1) % images.length].url
                 : URL.createObjectURL(
-                    images[(photoIndex + images.length - 1) % images.length]
-                  )
+                  images[(photoIndex + images.length - 1) % images.length]
+                )
             }
             onCloseRequest={() => setLightboxOpen(false)}
             onMovePrevRequest={() =>

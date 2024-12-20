@@ -248,20 +248,20 @@ const Header = () => {
                               return (
                                 <li key={index} className="cart-item">
                                   <img
-                                    src={product?.images[0]?.url}
+                                    src={item?.product?.images[0]?.url}
                                     alt={item?.product?.name}
                                     className="cart-item-image"
                                   />
                                   <div className="cart-item-info">
                                     <p className="cart-item-name">
-                                      {product?.name}
+                                      {item?.product?.name}
                                     </p>
                                     <p className="cart-item-quantity">
                                       Số lượng: {item?.count}
                                     </p>
                                   </div>
                                   <p className="cart-item-price">
-                                    {formatPrice(product?.price * item?.count)}
+                                    {formatPrice(item?.product?.price * item?.count)}
                                   </p>
                                 </li>
                               );

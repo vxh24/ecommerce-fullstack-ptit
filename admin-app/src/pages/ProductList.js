@@ -31,14 +31,6 @@ const columns = [
     dataIndex: "category",
   },
   {
-    title: "Màu sắc",
-    dataIndex: "colors",
-  },
-  {
-    title: "Số lượng",
-    dataIndex: "quantity",
-  },
-  {
     title: "Giá",
     dataIndex: "price",
   },
@@ -75,8 +67,6 @@ const ProductList = () => {
 
   const productState = useSelector((state) => state.product.products.data);
   const qrCodeURL = useSelector((state) => state.product.qrCodeURL);
-
-  console.log(qrCodeURL);
 
   useEffect(() => {
     if (searchTerm) {
@@ -125,23 +115,8 @@ const ProductList = () => {
   const data2 = filteredProducts?.map((pro) => ({
     key: pro._id,
     name: pro.name,
-    brand: pro.brand,
-    category: pro.category,
-    colors: pro.colors.map((color) => (
-      <div
-        key={color._id}
-        style={{
-          display: "inline-block",
-          width: "20px",
-          height: "20px",
-          backgroundColor: color.title,
-          borderRadius: "50%",
-          border: "1px solid #ccc",
-          marginRight: "5px",
-        }}
-      ></div>
-    )),
-    quantity: pro.quantity,
+    brand: pro.brand.title,
+    category: pro.category.title,
     price: formattedPrice(pro.price),
     action: (
       <>
@@ -172,65 +147,6 @@ const ProductList = () => {
       </>
     ),
   }));
-
-  const data1 = [];
-  if (productState && productState.length) {
-    for (let i = 0; i < productState.length; i++) {
-      data1.push({
-        key: i + 1,
-        name: productState[i].name,
-        brand: productState[i].brand,
-        category: productState[i].category,
-        colors: productState[i].colors.map((color) => (
-          <div
-            key={color._id}
-            style={{
-              display: "inline-block",
-              width: "20px",
-              height: "20px",
-              backgroundColor: color.title,
-              borderRadius: "50%",
-              border: "1px solid #ccc",
-              marginRight: "5px",
-            }}
-          ></div>
-        )),
-        quantity: productState[i].quantity,
-        price: formattedPrice(productState[i].price),
-        action: (
-          <>
-            <button
-              className="ms-3 fs-3 text-danger bg-transparent border-0"
-              onClick={() => {
-                navigate(`/admin/edit-product/${productState[i]._id}`);
-              }}
-            >
-              <BiEdit />
-            </button>
-            <button
-              className="ms-3 fs-3 text-danger bg-transparent border-0"
-              onClick={() => showModal(productState[i]._id)}
-            >
-              <AiFillDelete />
-            </button>
-          </>
-        ),
-        qrcode: (
-          <>
-            <button
-              className="ms-3 fs-3 text-primary bg-transparent border-0"
-              onClick={() =>
-                handleGenerateAndDownloadQRCode(productState[i]._id)
-              }
-            >
-              <BsCloudDownload />
-            </button>
-          </>
-        ),
-      });
-    }
-  }
-
   const handleDeleteProduct = async () => {
     try {
       await dispatch(deleteAProduct(productId));
