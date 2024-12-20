@@ -155,9 +155,7 @@ const applyCoupon = asyncHandler(async (id, coupon) => {
   if (validCoupon === null) {
     throw new Error("Invalid Coupon");
   }
-  let { products, cartTotal } = await Cart.findOne({ orderBy: id }).populate(
-    "products.product"
-  );
+  let { cartTotal } = await Cart.findOne({ orderBy: id });
   let totalAfterDiscount = (
     cartTotal -
     (cartTotal * validCoupon.discount) / 100

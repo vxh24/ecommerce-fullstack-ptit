@@ -18,6 +18,7 @@ const createOrderByCODController = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   const { totalAmount, orderAddress } = req.body;
   const result = await createOrderByCOD(_id, totalAmount, orderAddress);
+
   const adminSocketId = getReceiverSocketId("6749f2c34151afc711fc4a8c");
   // if (adminSocketId) {
   //   io.emit("new-order-notification", result);
@@ -28,8 +29,8 @@ const createOrderByCODController = asyncHandler(async (req, res) => {
       .getDate()
       .toString()
       .padStart(2, "0")}/${(currentTime.getMonth() + 1)
-        .toString()
-        .padStart(2, "0")}/${currentTime.getFullYear()}`;
+      .toString()
+      .padStart(2, "0")}/${currentTime.getFullYear()}`;
     io.emit("new-order-notification", {
       title: "Đơn hàng mới đã được tạo",
       message: `Người dùng với ID ${_id} đã đặt hàng.`,
