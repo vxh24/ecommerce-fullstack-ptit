@@ -1,3 +1,4 @@
+const { required } = require("joi");
 const mongoose = require("mongoose");
 
 const cartSchema = new mongoose.Schema(
@@ -10,8 +11,8 @@ const cartSchema = new mongoose.Schema(
         },
         count: Number,
         color: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Color",
+          type: String,
+          required: true,
         },
         price: Number,
       },

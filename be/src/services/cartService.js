@@ -13,36 +13,34 @@ const addToCart = asyncHandler(async (id, cart) => {
   if (!existingCart) {
     existingCart = new Cart({ products: [], cartTotal: 0, orderBy: user._id });
   }
-  for (let i = 0; i < cart.length; i++) {
-    const { _id, count, color_id } = cart[i];
 
-    const product = await Product.findById(_id).populate("colors");
+  for (let i = 0; i < cart.length; i++) {
+    const { _id, count, color } = cart[i];
+
+    const product = await Product.findById(_id).populate("category brand");
     if (!product) {
       throw new Error("Product not found");
     }
 
     const colorExists = product.colors.some(
-      (color) => color._id.toString() === color_id.toString()
+      (productColor) => productColor.name === color
     );
     if (!colorExists) {
-      throw new Error("Color does not exist for this product");
+      throw new Error(`Color "${color}" does not exist for this product`);
     }
 
     const productIndex = existingCart.products.findIndex(
-      (item) =>
-        item.product.toString() === _id &&
-        item.color.toString() === color_id.toString()
+      (item) => item.product.toString() === _id && item.color === color
     );
 
     if (productIndex >= 0) {
-      existingCart.products[productIndex].count += count; // Nếu trùng, tăng số lượng sản phẩm trong giỏ
+      existingCart.products[productIndex].count += count;
     } else {
-      const getPrice = await Product.findById(_id).select("price").exec();
       existingCart.products.push({
         product: _id,
         count,
-        color: color_id,
-        price: getPrice.price,
+        color,
+        price: product.price,
       });
     }
   }
@@ -53,7 +51,10 @@ const addToCart = asyncHandler(async (id, cart) => {
 
   await existingCart.save();
 
-  return existingCart.populate("products.color");
+  return existingCart.populate({
+    path: "products.product",
+    select: "name price",
+  });
 });
 
 const removeProductFromCart = asyncHandler(async (userId, productId, color) => {
@@ -63,16 +64,28 @@ const removeProductFromCart = asyncHandler(async (userId, productId, color) => {
   const user = await User.findById(userId);
   const cart = await Cart.findOne({ orderBy: user._id });
 
+  if (!cart) {
+    throw new Error("Cart not found");
+  }
+
+  const productIndex = cart.products.findIndex(
+    (item) => item.product.toString() === productId && item.color === color
+  );
+
+  if (productIndex === -1) {
+    throw new Error(`Product with color '${color}' not found in the cart`);
+  }
+
   cart.products = cart.products.filter((item) => {
-    if (color === null) {
-      return item.product.toString() !== productId || item.color === null;
-    } else {
-      return (
-        item.product.toString() !== productId ||
-        item.color.toString() !== color.toString()
-      );
+    if (item.product.toString() === productId && item.color === color) {
+      return false;
     }
+    return true;
   });
+
+  if (cart.products.length === 0) {
+    await emptyCart(userId);
+  }
 
   cart.cartTotal = cart.products.reduce(
     (total, item) => total + item.price * item.count,
@@ -80,22 +93,26 @@ const removeProductFromCart = asyncHandler(async (userId, productId, color) => {
   );
 
   await cart.save();
-  return cart;
+  return cart.populate({
+    path: "products.product",
+    select: "name price",
+  });
 });
 
 const updateProductQuantityInCart = asyncHandler(
-  async (userId, productId, colorId, newQuantity) => {
+  async (userId, productId, color, newQuantity) => {
     validateMongodbId(userId);
     validateMongodbId(productId);
-    validateMongodbId(colorId);
 
     const user = await User.findById(userId);
     const cart = await Cart.findOne({ orderBy: user._id });
 
+    if (!cart) {
+      throw new Error("Cart not found");
+    }
+
     const productIndex = cart.products.findIndex(
-      (item) =>
-        item.product.toString() === productId &&
-        item.color.toString() === colorId.toString()
+      (item) => item.product.toString() === productId && item.color === color
     );
 
     if (productIndex === -1) {
@@ -110,13 +127,19 @@ const updateProductQuantityInCart = asyncHandler(
     );
 
     await cart.save();
-    return cart;
+    return cart.populate({
+      path: "products.product",
+      select: "name price",
+    });
   }
 );
 
 const getCartUser = asyncHandler(async (id) => {
   validateMongodbId(id);
-  const cart = await Cart.findOne({ orderBy: id }).populate("products.color");
+  const cart = await Cart.findOne({ orderBy: id }).populate({
+    path: "products.product",
+    select: "name price",
+  });
   return cart;
 });
 

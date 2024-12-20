@@ -42,13 +42,13 @@ const removeProductFromCartController = asyncHandler(async (req, res) => {
 
 const updateProductQuantityController = asyncHandler(async (req, res) => {
   const { _id } = req.user;
-  const { productId, colorId, newQuantity } = req.body;
+  const { productId, color, newQuantity } = req.body;
 
   try {
     const result = await updateProductQuantityInCart(
       _id,
       productId,
-      colorId,
+      color,
       newQuantity
     );
     res.status(200).json({
