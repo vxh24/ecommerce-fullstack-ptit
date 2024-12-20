@@ -4,7 +4,6 @@ const validateMongodbId = require("../utils/validateMongodbId");
 const User = require("../models/userModel");
 const natural = require("natural");
 const { uploadMultipleFiles } = require("./fileService");
-const Color = require("../models/colorModel");
 const tfidf = new natural.TfIdf();
 
 const createProduct = asyncHandler(async (productData, files) => {
@@ -48,12 +47,12 @@ const createProduct = asyncHandler(async (productData, files) => {
 
 const getAProduct = asyncHandler(async (id) => {
   validateMongodbId(id);
-  const result = await Product.findById(id).populate("colors");
+  const result = await Product.findById(id).populate("category brand");
   return result;
 });
 
 const getAllProducts = asyncHandler(async (queryObj, sortBy, fields) => {
-  let query = Product.find(queryObj).populate("colors");
+  let query = Product.find(queryObj).populate("category brand");
 
   //sorting
   if (sortBy) {
@@ -85,14 +84,6 @@ const getAllProducts = asyncHandler(async (queryObj, sortBy, fields) => {
     query = query.select("-__v");
   }
 
-  //paginating
-  // const skip = (page - 1) * limit;
-  // query = query.skip(skip).limit(limit);
-  // if (page) {
-  //   const productCount = await Product.countDocuments();
-  //   if (skip >= productCount) throw new Error("This page does not exists");
-  // }
-
   const products = await query;
   return products;
 });
@@ -115,25 +106,28 @@ const updateProduct = asyncHandler(async (id, productData, files) => {
     }));
   }
 
-  let colorIds = productData.colors;
-  if (!Array.isArray(colorIds)) {
-    colorIds = [colorIds];
+  let colors = productData.colors;
+  if (typeof colors === "string") {
+    try {
+      colors = JSON.parse(colors);
+    } catch (error) {
+      throw new Error("Invalid colors format.");
+    }
   }
 
-  const existingColors = await Color.find({ _id: { $in: colorIds } }).select(
-    "_id"
-  );
-  const existingColorIds = existingColors.map((color) => color._id.toString());
-
-  const notFoundColors = colorIds.filter(
-    (id) => !existingColorIds.includes(id)
-  );
-
-  if (notFoundColors.length > 0) {
-    throw new Error(
-      `One or more colors do not exist: ${notFoundColors.join(", ")}`
-    );
+  if (!Array.isArray(colors)) {
+    throw new Error("Colors must be an array.");
   }
+
+  const validColors = colors.map((color) => {
+    if (!color.name || typeof color.quantity !== "number") {
+      throw new Error(`Invalid color format: ${JSON.stringify(color)}`);
+    }
+    return {
+      name: color.name,
+      quantity: color.quantity,
+    };
+  });
 
   product.images = uploadedImages;
   product.name = productData.name || product.name;
@@ -142,12 +136,12 @@ const updateProduct = asyncHandler(async (id, productData, files) => {
   product.category = productData.category || product.category;
   product.brand = productData.brand || product.brand;
   product.quantity = productData.quantity || product.quantity;
-  product.colors = colorIds;
+  product.colors = validColors;
   product.tags = productData.tags || product.tags;
 
   const updatedProduct = await product.save();
 
-  return updatedProduct.populate("colors");
+  return updatedProduct.populate("category brand");
 });
 
 const deleteProduct = asyncHandler(async (id) => {
@@ -340,13 +334,13 @@ const searchProductsByName = asyncHandler(async (name) => {
 const generateQRCodeProduct = asyncHandler(async (productId) => {
   validateMongodbId(productId);
 
-  const product = await Product.findById(productId).populate("colors");
+  const product = await Product.findById(productId).populate("category brand");
 
   if (!product) {
     throw new Error("Product not found");
   }
 
-  const qrContent = productId; // Chỉ cần ID sản phẩm
+  const qrContent = productId;
 
   const encodedQRContent = encodeURIComponent(qrContent);
 
