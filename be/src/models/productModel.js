@@ -16,16 +16,12 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     category: {
-      type: String,
-      required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ProductCategory",
     },
     brand: {
-      type: String,
-      required: true,
-    },
-    quantity: {
-      type: Number,
-      required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Brand",
     },
     sold: {
       type: Number,
@@ -39,8 +35,16 @@ const productSchema = new mongoose.Schema(
     ],
     colors: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Color",
+        name: {
+          type: String,
+          required: true,
+          unique: true,
+          index: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+        },
       },
     ],
     tags: [],

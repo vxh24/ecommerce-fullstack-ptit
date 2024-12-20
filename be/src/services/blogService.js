@@ -41,7 +41,7 @@ const getAllBlogs = asyncHandler(async () => {
 
 const deleteABlog = asyncHandler(async (id) => {
   validateMongodbId(id);
-  const result = await Blog.deleteById(id);
+  const result = await Blog.deleteOne({ _id: id });
   return result;
 });
 

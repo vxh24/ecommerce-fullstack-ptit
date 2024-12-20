@@ -18,7 +18,7 @@ const updateCategory = asyncHandler(async (id, categoryData) => {
 
 const deleteCategory = asyncHandler(async (id) => {
   validateMongodbId(id);
-  const deletedCategory = await ProductCategory.deleteById(id);
+  const deletedCategory = await ProductCategory.deleteOne({ _id: id });
   return deletedCategory;
 });
 

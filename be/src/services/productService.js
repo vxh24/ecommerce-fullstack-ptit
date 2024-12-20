@@ -6,7 +6,6 @@ const natural = require("natural");
 const { uploadMultipleFiles } = require("./fileService");
 const Color = require("../models/colorModel");
 const tfidf = new natural.TfIdf();
-const QRCode = require("qrcode");
 
 const createProduct = asyncHandler(async (productData, files) => {
   const uploadResults = await uploadMultipleFiles(files, "products");
@@ -54,7 +53,7 @@ const createProduct = asyncHandler(async (productData, files) => {
 
   await newProduct.save();
 
-  return newProduct.populate("colors");
+  return newProduct.populate("colors category brand");
 });
 
 const getAProduct = asyncHandler(async (id) => {
@@ -352,8 +351,6 @@ const generateQRCodeProduct = asyncHandler(async (productId) => {
   validateMongodbId(productId);
 
   const product = await Product.findById(productId).populate("colors");
-
-  // console.log(product);
 
   if (!product) {
     throw new Error("Product not found");

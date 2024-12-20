@@ -12,7 +12,7 @@ import {
   updateAProductCategory,
 } from "../features/pcategory/pCategorySlice";
 let schema = yup.object().shape({
-  title: yup.string().required("Category Name is Required"),
+  title: yup.string().required("Vui lòng nhập tên danh mục"),
 });
 const AddCat = () => {
   const dispatch = useDispatch();

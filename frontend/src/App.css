@@ -31,10 +31,6 @@
   padding: 15px;
 }
 
-body {
-  font-family: "Rubik", sans-serif;
-}
-
 a {
   text-decoration: none;
   display: inline-block;
@@ -362,32 +358,32 @@ footer .input-group-text {
   padding: 15px;
 }
 
-.categories>div {
+.categories > div {
   width: 25%;
   padding: 10px 10px 10px 20x;
 }
 
-.categories>div>div {
+.categories > div > div {
   width: 60%;
   padding-left: 20px;
 }
 
-.categories>div:nth-child(1),
-.categories>div:nth-child(2),
-.categories>div:nth-child(3),
-.categories>div:nth-child(4) {
+.categories > div:nth-child(1),
+.categories > div:nth-child(2),
+.categories > div:nth-child(3),
+.categories > div:nth-child(4) {
   border-bottom: 1px solid var(--color-ededed);
 }
 
-.categories>div:nth-child(1),
-.categories>div:nth-child(2),
-.categories>div:nth-child(3) {
+.categories > div:nth-child(1),
+.categories > div:nth-child(2),
+.categories > div:nth-child(3) {
   border-right: 1px solid var(--color-ededed);
 }
 
-.categories>div:nth-child(7),
-.categories>div:nth-child(5),
-.categories>div:nth-child(6) {
+.categories > div:nth-child(7),
+.categories > div:nth-child(5),
+.categories > div:nth-child(6) {
   border-right: 1px solid var(--color-ededed);
 }
 
@@ -508,16 +504,16 @@ footer .input-group-text {
   object-fit: contain;
 }
 
-.product-card .product-image>img:last-child {
+.product-card .product-image > img:last-child {
   display: none;
   transition: 0.3s;
 }
 
-.product-card:hover .product-image>img:nth-child(1) {
+.product-card:hover .product-image > img:nth-child(1) {
   display: none;
 }
 
-.product-card:hover .product-image>img:last-child {
+.product-card:hover .product-image > img:last-child {
   display: block;
 }
 
@@ -775,7 +771,7 @@ footer .input-group-text {
   gap: 15px;
 }
 
-.contact-inner-wrapper>div {
+.contact-inner-wrapper > div {
   width: 48%;
 }
 
@@ -1292,7 +1288,6 @@ footer .input-group-text {
   width: 100%;
 }
 
-
 .order-list thead {
   position: sticky;
   top: 0;
@@ -1419,7 +1414,7 @@ footer .input-group-text {
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 5px;
-  font-family: Arial, sans-serif;
+  /* font-family: Arial, sans-serif; */
 }
 
 .header {
@@ -2089,7 +2084,6 @@ input[type="checkbox"] {
   cursor: pointer;
   font-size: 18px;
   padding: 0 10px;
-
 }
 
 .chat-body {
@@ -2141,7 +2135,7 @@ input[type="checkbox"] {
 
 /* checkbox */
 .filter-section {
-  font-family: Arial, sans-serif;
+  /* font-family: Arial, sans-serif; */
   margin: 20px;
 }
 
@@ -2191,7 +2185,6 @@ input[type="checkbox"] {
 }
 
 @keyframes fadeInOut {
-
   0%,
   100% {
     opacity: 0.3;

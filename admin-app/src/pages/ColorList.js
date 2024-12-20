@@ -13,7 +13,7 @@ import { createColor, updateAColor } from "../features/color/colorSlice";
 import { Typeahead } from "react-bootstrap-typeahead";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 let schema = yup.object().shape({
-  title: yup.string().required("Color is Required"),
+  title: yup.string().required("Vui lòng chọn màu"),
 });
 
 const columns = [

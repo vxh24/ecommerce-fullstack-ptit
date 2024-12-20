@@ -3,7 +3,6 @@ import { Table } from "antd";
 import { BiEdit } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import CustomInput from "../components/CustomInput";
 import { Typeahead } from "react-bootstrap-typeahead";
 import "react-bootstrap-typeahead/css/Typeahead.css";
@@ -12,14 +11,13 @@ import {
   getCategories,
   resetState,
   createCategory,
-  getAProductCategory,
   updateAProductCategory,
 } from "../features/pcategory/pCategorySlice";
 import CustomModal from "../components/CustomModal";
 import * as yup from "yup";
 import { useFormik } from "formik";
 let schema = yup.object().shape({
-  title: yup.string().required("Category Name is Required"),
+  title: yup.string().required("Vui lòng nhập tên danh mục"),
 });
 
 const columns = [

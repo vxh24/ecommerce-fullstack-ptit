@@ -20,8 +20,8 @@ const enquirySchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      default: "Submitted",
-      enum: ["Submitted", "Contacted", "In Progress", "Resolved"],
+      default: "Đã gửi",
+      enum: ["Đã gửi", "Đã liên hệ", "Đang xử lý", "Đã giải quyết", "Hủy"],
     },
   },
   { timestamps: true }

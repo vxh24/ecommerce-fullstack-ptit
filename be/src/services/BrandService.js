@@ -15,7 +15,7 @@ const updateBrand = asyncHandler(async (id, brandData) => {
 
 const deleteBrand = asyncHandler(async (id) => {
   validateMongodbId(id);
-  const deletedBrand = await Brand.deleteById(id);
+  const deletedBrand = await Brand.deleteOne({ _id: id });
   return deletedBrand;
 });
 

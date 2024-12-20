@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const mongoose_delete = require("mongoose-delete");
 
 const blogSchema = new mongoose.Schema(
   {
@@ -12,8 +11,8 @@ const blogSchema = new mongoose.Schema(
       required: true,
     },
     category: {
-      type: String,
-      required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "BlogCategory",
     },
     numViews: {
       type: Number,
@@ -59,8 +58,6 @@ const blogSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
-blogSchema.plugin(mongoose_delete, { overrideMethods: "all" });
 
 const Blog = mongoose.model("Blog", blogSchema);
 

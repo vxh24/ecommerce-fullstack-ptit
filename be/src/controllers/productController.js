@@ -82,8 +82,6 @@ const updateProductController = asyncHandler(async (req, res) => {
   const productData = req.body;
   const files = req.files ? req.files.images : [];
 
-  console.log(req.body);
-
   const result = await updateProduct(id, productData, files);
   res.status(200).json({
     EC: 0,

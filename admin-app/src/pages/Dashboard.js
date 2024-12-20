@@ -24,62 +24,32 @@ const columns = [
 ];
 const Dashboard = () => {
   const data = [
-    {
-      type: "Jan",
-      sales: 38,
-    },
-    {
-      type: "Feb",
-      sales: 52,
-    },
-    {
-      type: "Mar",
-      sales: 61,
-    },
-    {
-      type: "Apr",
-      sales: 145,
-    },
-    {
-      type: "May",
-      sales: 48,
-    },
-    {
-      type: "Jun",
-      sales: 38,
-    },
-    {
-      type: "July",
-      sales: 38,
-    },
-    {
-      type: "Aug",
-      sales: 38,
-    },
-    {
-      type: "Sept",
-      sales: 38,
-    },
-    {
-      type: "Oct",
-      sales: 38,
-    },
-    {
-      type: "Nov",
-      sales: 38,
-    },
-    {
-      type: "Dec",
-      sales: 38,
-    },
+    { type: "Tháng 1", sales: 38, revenue: 50 },
+    { type: "Tháng 2", sales: 52, revenue: 60 },
+    { type: "Tháng 3", sales: 61, revenue: 70 },
+    { type: "Tháng 4", sales: 145, revenue: 160 },
+    { type: "Tháng 5", sales: 48, revenue: 55 },
+    { type: "Tháng 6", sales: 38, revenue: 40 },
+    { type: "Tháng 7", sales: 38, revenue: 45 },
+    { type: "Tháng 8", sales: 38, revenue: 42 },
+    { type: "Tháng 9", sales: 38, revenue: 50 },
+    { type: "Tháng 10", sales: 38, revenue: 53 },
+    { type: "Tháng 11", sales: 38, revenue: 55 },
+    { type: "Tháng 12", sales: 38, revenue: 60 },
   ];
+
+  const transformedData = data.flatMap((item) => [
+    { type: item.type, value: item.sales, category: "sales" },
+    { type: item.type, value: item.revenue, category: "revenue" },
+  ]);
+
   const config = {
-    data,
+    data: transformedData,
+    isGroup: true,
     xField: "type",
-    yField: "sales",
-    color: ({ type }) => {
-      return "#ffd333";
-    },
+    yField: "value",
+    seriesField: "category",
+    color: ({ category }) => (category === "sales" ? "#1677ff" : "#ffc107"),
     label: {
       position: "middle",
       style: {
@@ -98,7 +68,7 @@ const Dashboard = () => {
         alias: "Month",
       },
       sales: {
-        alias: "Income",
+        alias: "Amount",
       },
     },
   };
@@ -115,8 +85,9 @@ const Dashboard = () => {
     dispatch(getRevenue());
   }, []);
 
-  const orderState = useSelector((state) => state.auth.orders.data);
-  const totalRevenue = useSelector((state) => state?.auth?.totalRevenue?.data);
+  const orderState = useSelector((state) => state?.auth?.orders?.data);
+  const totalRevenue =
+    useSelector((state) => state?.auth?.totalRevenue?.data) || 0;
 
   const data1 = [];
 
@@ -130,7 +101,6 @@ const Dashboard = () => {
       });
     }
   }
-  // console.log(totalRevenue);
 
   const pendingOrdersCount = orderState
     ? orderState.filter((order) => order.orderStatus === "Chờ xác nhận").length

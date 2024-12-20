@@ -82,7 +82,6 @@ const handleAdminLogin = asyncHandler(async (email, password) => {
     //compare password
     const isMatchPassword = await user.isPasswordMatched(password);
     if (isMatchPassword) {
-      //login/create an access token
       const payload = {
         _id: user?._id,
         email: user?.email,

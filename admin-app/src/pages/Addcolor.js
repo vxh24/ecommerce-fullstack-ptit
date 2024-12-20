@@ -13,7 +13,7 @@ import {
 } from "../features/color/colorSlice";
 
 let schema = yup.object().shape({
-  title: yup.string().required("Color is Required"),
+  title: yup.string().required("Vui lòng chọn màu"),
 });
 
 const AddColor = () => {

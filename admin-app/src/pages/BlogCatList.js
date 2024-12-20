@@ -17,7 +17,7 @@ import {
   updateABlogCat,
 } from "../features/bcategory/bcategorySlice";
 let schema = yup.object().shape({
-  title: yup.string().required("Category Name is Required"),
+  title: yup.string().required("Vui lòng nhập tên danh mục"),
 });
 
 const columns = [

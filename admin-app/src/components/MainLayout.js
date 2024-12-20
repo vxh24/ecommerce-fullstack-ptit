@@ -22,7 +22,6 @@ import { useSelector } from "react-redux";
 import Notification from "./Notification";
 import useListenOrder from "../zustand/useListenOrder";
 import useConversation from "../zustand/useConversation";
-import { RiLogoutBoxRLine } from "react-icons/ri";
 import { CiShop } from "react-icons/ci";
 const { Header, Sider, Content } = Layout;
 const MainLayout = () => {
@@ -44,11 +43,6 @@ const MainLayout = () => {
   } = theme.useToken();
 
   const menuItems = [
-    // {
-    //   key: "counter",
-    //   icon: <CiShop className="fs-4" />,
-    //   label: "Bán hàng tại quầy",
-    // },
     {
       key: "",
       icon: <AiOutlineDashboard className="fs-4" />,
@@ -72,7 +66,7 @@ const MainLayout = () => {
     {
       key: "list-category",
       icon: <BiCategoryAlt className="fs-4" />,
-      label: "Quản lý danh mục",
+      label: "Quản lý danh mục sản phẩm",
     },
     {
       key: "list-color",
@@ -128,7 +122,12 @@ const MainLayout = () => {
         <div className="logo">
           <h2 className="text-white fs-5 text-center py-3 mb-0">
             <span className="sm-logo">DP</span>
-            <span className="lag-logo">Dev PTIT</span>
+            <span
+              className="lag-logo"
+              style={{ fontSize: "25px", fontWeight: "bold" }}
+            >
+              DEV PTIT
+            </span>
           </h2>
         </div>
 
@@ -166,7 +165,7 @@ const MainLayout = () => {
             collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
             {
               className: "trigger",
-              onClick: () => setCollapsed(!collapsed),
+              // onClick: () => setCollapsed(!collapsed),
             }
           )}
           <div className="d-flex gap-4 align-items-center">
@@ -177,7 +176,10 @@ const MainLayout = () => {
               }}
             >
               <IoIosNotifications className="fs-4" />
-              <span className="badge bg-warning rounded-circle p-1 position-absolute">
+              <span
+                className="badge rounded-circle p-1 position-absolute"
+                style={{ backgroundColor: "#1677ff" }}
+              >
                 {selectedOrder.length}
               </span>
             </div>
@@ -205,14 +207,6 @@ const MainLayout = () => {
                 <p className="mb-0">{user.user?.email}</p>
               </div>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                <li>
-                  <Link
-                    className="dropdown-item py-1 mb-1"
-                    style={{ height: "auto", lineHeight: "20px" }}
-                  >
-                    Profile
-                  </Link>
-                </li>
                 <li>
                   <Link
                     className="dropdown-item py-1 mb-1"

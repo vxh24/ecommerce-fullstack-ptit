@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const mongoose_delete = require("mongoose-delete");
 
 const productCategorySchema = new mongoose.Schema(
   {
@@ -14,8 +13,6 @@ const productCategorySchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
-productCategorySchema.plugin(mongoose_delete, { overrideMethods: "all" });
 
 const productCategory = mongoose.model(
   "ProductCategory",
