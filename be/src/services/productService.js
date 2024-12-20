@@ -111,12 +111,12 @@ const updateProduct = asyncHandler(async (id, productData, files) => {
     try {
       colors = JSON.parse(colors);
     } catch (error) {
-      throw new Error("Invalid colors format.");
+      throw new Error("Invalid colors format");
     }
   }
 
   if (!Array.isArray(colors)) {
-    throw new Error("Colors must be an array.");
+    throw new Error("Colors must be an array");
   }
 
   const validColors = colors.map((color) => {

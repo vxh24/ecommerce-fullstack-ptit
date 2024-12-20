@@ -8,7 +8,6 @@ import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { getBrands } from "../features/brand/brandSlice";
 import { getCategories } from "../features/pcategory/pCategorySlice";
-import { getColors } from "../features/color/colorSlice";
 import { Select } from "antd";
 import {
   getProductById,
@@ -41,15 +40,11 @@ const EditProduct = () => {
     dispatch(getProductById(id));
     dispatch(getBrands());
     dispatch(getCategories());
-    dispatch(getColors());
   }, []);
 
   const productState = useSelector((state) => state.product.product?.data);
   const brandState = useSelector((state) => state.brand.brands?.data);
   const catState = useSelector((state) => state.pCategory.pCategories?.data);
-  // const brand = brandState.find((item) => item._id === productState.brand);
-  // console.log(brand);
-  const colorState = useSelector((state) => state.color.colors?.data);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
 
@@ -60,29 +55,6 @@ const EditProduct = () => {
       setImages(productState?.images);
     }
   }, [productState]);
-
-  const coloropt = [];
-  if (Array.isArray(colorState)) {
-    colorState.forEach((i) => {
-      coloropt.push({
-        label: (
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <div
-              style={{
-                width: "20px",
-                height: "20px",
-                backgroundColor: i.title,
-                marginRight: "10px",
-                borderRadius: "50%",
-              }}
-            ></div>
-            {i.title}
-          </div>
-        ),
-        value: i._id,
-      });
-    });
-  }
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -95,14 +67,14 @@ const EditProduct = () => {
       brand: productState?.brand?._id || "",
       colors: Array.isArray(productState?.colors)
         ? productState?.colors.map((color) => ({
-          name: color.name,
-          quantity: color.quantity,
-        }))
+            name: color.name,
+            quantity: color.quantity,
+          }))
         : [],
       tags: productState?.tags
         ? Array.isArray(productState?.tags)
-          ? productState?.tags
-          : productState?.tags.split(",")
+          ? JSON.parse(productState?.tags)
+          : JSON.parse(productState?.tags).split(",")
         : [],
     },
     validationSchema: schema,
@@ -127,7 +99,7 @@ const EditProduct = () => {
       dispatch(updateProduct(id, formData));
     },
   });
-  console.log(formik.values);
+
   const onFileUploadHandler = (e) => {
     const newImages = [...e.target.files];
     if (images.length + newImages.length > 5) {
@@ -378,143 +350,79 @@ const EditProduct = () => {
                 <div className="error">{formik.errors.tags}</div>
               )}
             </div>
-
-            {/* <div className="form-group mb-4">
-              <label
-                htmlFor="colors"
-                className="form-label"
-                style={{ fontSize: "18px" }}
-              >
-                8. Chọn màu:
-              </label>
-              <Select
-                mode="multiple"
-                allowClear
-                className="w-100"
-                placeholder="Chọn màu..."
-                value={formik.values.colors}
-                onChange={(e) => {
-                  console.log("Selected colors:", e);
-                  formik.setFieldValue("colors", e);
-                }}
-                options={coloropt}
-              />
-              {formik.touched.colors && formik.errors.colors && (
-                <div className="error">{formik.errors.colors}</div>
-              )}
-            </div>
-
             <div className="form-group mb-4">
               <label
-                htmlFor="quantity"
+                htmlFor="tags"
                 className="form-label"
                 style={{ fontSize: "18px" }}
               >
-                9. Nhập số lượng sản phẩm:
+                8. Thêm màu và nhập số lượng:
               </label>
-              <CustomInput
-                type="number"
-                name="quantity"
-                id="quantity"
-                label="Nhập số lượng..."
-                onChng={formik.handleChange("quantity")}
-                onBlr={formik.handleBlur("quantity")}
-                val={formik.values.quantity}
-              />
-              {formik.touched.quantity && formik.errors.quantity && (
-                <div className="error">{formik.errors.quantity}</div>
-              )}
-            </div> */}
-            {/* {productState.colors && productState.colors.map((item, index) => {
-              return (
-                <div style={{ width: "100%" }}>
+              {formik.values.colors.map((color, index) => (
+                <div key={index} style={{ width: "100%" }}>
                   <input
                     type="text"
                     placeholder="Nhập màu"
-                    value={item.name}
-                    // onChange={(e) => setMau(e.target.value)}
-                    style={{ marginRight: "10px", padding: "10px", background: "white", width: "40%" }}
+                    value={color.name}
+                    onChange={(e) =>
+                      formik.setFieldValue(
+                        `colors[${index}].name`,
+                        e.target.value
+                      )
+                    }
+                    style={{
+                      marginRight: "10px",
+                      padding: "10px",
+                      background: "white",
+                      width: "43%",
+                      marginBottom: "10px",
+                    }}
                   />
                   <input
                     type="number"
                     placeholder="Nhập số lượng"
-                    value={item.quantity}
-                    // onChange={(e) => setSol(e.target.value)}
-                    style={{ marginRight: "10px", padding: "10px", background: "white", width: "32%" }}
+                    value={color.quantity}
+                    onChange={(e) =>
+                      formik.setFieldValue(
+                        `colors[${index}].quantity`,
+                        e.target.value
+                      )
+                    }
+                    style={{
+                      marginRight: "10px",
+                      padding: "10px",
+                      background: "white",
+                      width: "32%",
+                    }}
                   />
                   <span
-                    // onClick={handleAddAttribute}
-                    className="btn btn-success border-0 rounded-3 my-4 w-25"
+                    type="button"
+                    onClick={() => {
+                      const updatedColors = formik.values.colors.filter(
+                        (_, i) => i !== index
+                      );
+                      formik.setFieldValue("colors", updatedColors);
+                    }}
+                    className="btn btn-danger"
                     style={{ width: "20%" }}
-                  >Sửa</span>
+                  >
+                    Xóa
+                  </span>
                 </div>
-              )
-            })
-            } */}
-            {formik.values.colors.map((color, index) => (
-              <div key={index} style={{ width: "100%" }}>
-                <input
-                  type="text"
-                  placeholder="Nhập màu"
-                  value={color.name}
-                  onChange={(e) =>
-                    formik.setFieldValue(
-                      `colors[${index}].name`,
-                      e.target.value
-                    )
-                  }
-                  style={{
-                    marginRight: "10px",
-                    padding: "10px",
-                    background: "white",
-                    width: "43%",
-                    marginBottom: "10px"
-                  }}
-                />
-                <input
-                  type="number"
-                  placeholder="Nhập số lượng"
-                  value={color.quantity}
-                  onChange={(e) =>
-                    formik.setFieldValue(
-                      `colors[${index}].quantity`,
-                      e.target.value
-                    )
-                  }
-                  style={{
-                    marginRight: "10px",
-                    padding: "10px",
-                    background: "white",
-                    width: "32%",
-                  }}
-                />
-                <span
-                  type="button"
-                  onClick={() => {
-                    const updatedColors = formik.values.colors.filter(
-                      (_, i) => i !== index
-                    );
-                    formik.setFieldValue("colors", updatedColors);
-                  }}
-                  className="btn btn-danger"
-                  style={{ width: "20%" }}
-                >
-                  Xóa
-                </span>
-              </div>
-            ))}
-            <span
-              type="button"
-              onClick={() =>
-                formik.setFieldValue("colors", [
-                  ...formik.values.colors,
-                  { name: "", quantity: 0 },
-                ])
-              }
-              className="btn btn-primary"
-            >
-              Thêm màu
-            </span>
+              ))}
+              <span
+                type="button"
+                onClick={() =>
+                  formik.setFieldValue("colors", [
+                    ...formik.values.colors,
+                    { name: "", quantity: 0 },
+                  ])
+                }
+                className="btn btn-primary"
+              >
+                Thêm màu
+              </span>
+            </div>
             <button
               className="btn btn-success border-0 rounded-3 my-4 w-100"
               type="submit"
@@ -546,8 +454,8 @@ const EditProduct = () => {
               images[(photoIndex + images.length - 1) % images.length].url
                 ? images[(photoIndex + images.length - 1) % images.length].url
                 : URL.createObjectURL(
-                  images[(photoIndex + images.length - 1) % images.length]
-                )
+                    images[(photoIndex + images.length - 1) % images.length]
+                  )
             }
             onCloseRequest={() => setLightboxOpen(false)}
             onMovePrevRequest={() =>

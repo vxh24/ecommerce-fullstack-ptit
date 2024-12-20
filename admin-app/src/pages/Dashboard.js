@@ -39,8 +39,8 @@ const Dashboard = () => {
   ];
 
   const transformedData = data.flatMap((item) => [
-    { type: item.type, value: item.sales, category: "sales" },
-    { type: item.type, value: item.revenue, category: "revenue" },
+    { type: item.type, value: item.sales, category: "Đã bán" },
+    { type: item.type, value: item.revenue, category: "Doanh số" },
   ]);
 
   const config = {
@@ -49,7 +49,7 @@ const Dashboard = () => {
     xField: "type",
     yField: "value",
     seriesField: "category",
-    color: ({ category }) => (category === "sales" ? "#1677ff" : "#ffc107"),
+    color: ({ category }) => (category === "Đã bán" ? "#1677ff" : "#ffc107"),
     label: {
       position: "middle",
       style: {

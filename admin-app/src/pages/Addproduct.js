@@ -8,7 +8,6 @@ import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { getBrands } from "../features/brand/brandSlice";
 import { getCategories } from "../features/pcategory/pCategorySlice";
-import { getColors } from "../features/color/colorSlice";
 import { Select } from "antd";
 import { createProducts, resetState } from "../features/product/productSlice";
 import "../assets/style.css";
@@ -57,7 +56,6 @@ const AddProduct = () => {
   useEffect(() => {
     dispatch(getBrands());
     dispatch(getCategories());
-    dispatch(getColors());
   }, []);
 
   useEffect(() => {
@@ -79,7 +77,6 @@ const AddProduct = () => {
       toast.error("Có lỗi xảy ra!!!");
     }
   }, [isSuccess, isError, isLoading]);
-
 
   const formik = useFormik({
     initialValues: {
@@ -112,11 +109,10 @@ const AddProduct = () => {
       setImages([]);
       setTimeout(() => {
         dispatch(resetState());
-        getColors();
+        setAttributes([]);
       }, 3000);
     },
   });
-
 
   const [images, setImages] = useState([]);
   const [fileInputKey, setFileInputKey] = useState(0);
@@ -176,7 +172,9 @@ const AddProduct = () => {
   return (
     <div className="container mt-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h3 className="title">Thêm sản phẩm</h3>
+        <h3 className="title" style={{ fontSize: "20px", fontWeight: "bold" }}>
+          Thêm sản phẩm
+        </h3>
         <button
           onClick={() => setClick(true)}
           className="btn btn-outline-danger"
@@ -381,33 +379,52 @@ const AddProduct = () => {
                   placeholder="Nhập màu"
                   value={mau}
                   onChange={(e) => setMau(e.target.value)}
-                  style={{ marginRight: "10px", padding: "10px", background: "white", width: "40%" }}
+                  style={{
+                    marginRight: "10px",
+                    padding: "10px",
+                    background: "white",
+                    width: "40%",
+                  }}
                 />
                 <input
                   type="number"
                   placeholder="Nhập số lượng"
                   value={sol}
                   onChange={(e) => setSol(e.target.value)}
-                  style={{ marginRight: "10px", padding: "10px", background: "white", width: "32%" }}
+                  style={{
+                    marginRight: "10px",
+                    padding: "10px",
+                    background: "white",
+                    width: "32%",
+                  }}
                 />
-                <span onClick={handleAddAttribute}
+                <span
+                  onClick={handleAddAttribute}
                   className="btn btn-success border-0 rounded-3 my-4 w-25"
                   style={{ width: "20%" }}
-                >Thêm</span>
+                >
+                  Thêm
+                </span>
               </div>
             </div>
             <div>
               {attributes.length > 0 && (
                 <div className="mt-3">
                   {attributes.map((attr, index) => (
-                    <div key={index} className="d-flex align-items-center tw-gap-6">
-                      <div className="d-flex align-items-center tw-gap-6"
+                    <div
+                      key={index}
+                      className="d-flex align-items-center tw-gap-6"
+                    >
+                      <div
+                        className="d-flex align-items-center tw-gap-6"
                         style={{ width: "30%" }}
                       >
                         <div className="add-colorquan">
                           Màu: <strong className="ms-2">{attr.name}</strong>
                         </div>
-                        <div className="add-colorquan"> Số lượng:
+                        <div className="add-colorquan">
+                          {" "}
+                          Số lượng:
                           <strong className="ms-2">{attr.quantity}</strong>
                         </div>
                       </div>
@@ -420,7 +437,6 @@ const AddProduct = () => {
                           border: "none",
                           cursor: "pointer",
                           width: "6%",
-
                         }}
                       >
                         X
@@ -445,28 +461,26 @@ const AddProduct = () => {
           </div>
         </div>
 
-        {
-          lightboxOpen && (
-            <ReactImageLightbox
-              mainSrc={URL.createObjectURL(images[photoIndex])}
-              nextSrc={URL.createObjectURL(
-                images[(photoIndex + 1) % images.length]
-              )}
-              prevSrc={URL.createObjectURL(
-                images[(photoIndex + images.length - 1) % images.length]
-              )}
-              onCloseRequest={() => setLightboxOpen(false)}
-              onMovePrevRequest={() =>
-                setPhotoIndex((photoIndex + images.length - 1) % images.length)
-              }
-              onMoveNextRequest={() =>
-                setPhotoIndex((photoIndex + 1) % images.length)
-              }
-            />
-          )
-        }
-      </div >
-    </div >
+        {lightboxOpen && (
+          <ReactImageLightbox
+            mainSrc={URL.createObjectURL(images[photoIndex])}
+            nextSrc={URL.createObjectURL(
+              images[(photoIndex + 1) % images.length]
+            )}
+            prevSrc={URL.createObjectURL(
+              images[(photoIndex + images.length - 1) % images.length]
+            )}
+            onCloseRequest={() => setLightboxOpen(false)}
+            onMovePrevRequest={() =>
+              setPhotoIndex((photoIndex + images.length - 1) % images.length)
+            }
+            onMoveNextRequest={() =>
+              setPhotoIndex((photoIndex + 1) % images.length)
+            }
+          />
+        )}
+      </div>
+    </div>
   );
 };
 

@@ -69,11 +69,6 @@ const MainLayout = () => {
       label: "Quản lý danh mục sản phẩm",
     },
     {
-      key: "list-color",
-      icon: <AiOutlineBgColors className="fs-4" />,
-      label: "Quản lý màu sắc",
-    },
-    {
       key: "orders",
       icon: <FaClipboardList className="fs-4" />,
       label: "Quản lý đơn hàng",

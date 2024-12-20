@@ -13,9 +13,9 @@ import {
 } from "../features/coupon/couponSlice";
 
 let schema = yup.object().shape({
-  name: yup.string().required("Coupon Name is Required"),
-  expiry: yup.date().required("Expiry Date is Required"),
-  discount: yup.number().required("Discount Percent is Required"),
+  name: yup.string().required("Vui lòng nhập tên mã giảm giá"),
+  expiry: yup.date().required("Vui lòng nhập ngày hết hạn"),
+  discount: yup.number().required("Vui lòng nhập % giảm giá"),
 });
 
 const AddCoupon = () => {

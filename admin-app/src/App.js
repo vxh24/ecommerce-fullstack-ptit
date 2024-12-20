@@ -10,13 +10,11 @@ import Bloglist from "./pages/BlogList";
 import BlogCatList from "./pages/BlogCatList";
 import Orders from "./pages/Orders";
 import Customers from "./pages/Customers";
-import ColorList from "./pages/ColorList";
 import CategoryList from "./pages/CategoryList";
 import BrandList from "./pages/BrandList";
 import ProductList from "./pages/ProductList";
 import AddBlog from "./pages/AddBlog";
 import AddBlogCat from "./pages/AddBlogCat";
-import AddColor from "./pages/AddColor";
 import AddCat from "./pages/AddCat";
 import AddBrand from "./pages/AddBrand";
 import AddProduct from "./pages/AddProduct";
@@ -51,9 +49,6 @@ function App() {
           <Route path="orders" element={<Orders />} />
           <Route path="order/:id" element={<ViewOrder />} />
           <Route path="customers" element={<Customers />} />
-          <Route path="list-color" element={<ColorList />} />
-          <Route path="color" element={<AddColor />} />
-          <Route path="color/:id" element={<AddColor />} />
           <Route path="coupon-list" element={<CouponList />} />
           <Route path="coupon" element={<AddCoupon />} />
           <Route path="coupon/:id" element={<AddCoupon />} />
