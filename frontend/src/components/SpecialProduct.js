@@ -17,7 +17,7 @@ const SpecialProduct = (props) => {
       <div className="special-product-card">
         <div className="d-flex justify-content-between">
           <div>
-            <img src={image[0].url} className="img-fluid" alt="watch" />
+            <img src={image[0]?.url} className="img-fluid" alt="watch" />
           </div>
           <div className="sepcial-product-content">
             <h5 className="brand">{brand}</h5>

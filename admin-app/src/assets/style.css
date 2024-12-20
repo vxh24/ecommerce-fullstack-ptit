@@ -397,6 +397,7 @@ ul.b {
 }
 .select {
   background-color: white;
+  padding: 10px;
 
 }
 
@@ -607,4 +608,7 @@ ul.b {
   font-size: 16px;
   cursor: pointer;
   border-radius: 4px;
+}
+.add-colorquan{
+  font-size: 16px;
 }

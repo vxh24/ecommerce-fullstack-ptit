@@ -266,8 +266,8 @@ const Home = () => {
                     return (
                       <FeaturedProduct
                         key={index}
-                        title={item?.title}
-                        brand={item?.brand}
+                        title={item?.name}
+                        brand={item?.brand.title}
                         price={formatPrice(item?.price)}
                         totalRating={item?.totalRatings.toString()}
                         sold={item?.sold}
@@ -300,8 +300,8 @@ const Home = () => {
                   return (
                     <SpecialProduct
                       key={index}
-                      title={item?.title}
-                      brand={item?.brand}
+                      title={item?.name}
+                      brand={item?.brand.title}
                       price={item?.price}
                       totalRating={item?.totalRatings.toString()}
                       sold={item?.sold}
@@ -331,8 +331,8 @@ const Home = () => {
                     return (
                       <PopularProduct
                         key={index}
-                        title={item?.title}
-                        brand={item?.brand}
+                        title={item?.name}
+                        brand={item?.brand.title}
                         price={item?.price}
                         totalRating={item?.totalRatings.toString()}
                         sold={item?.sold}

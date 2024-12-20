@@ -138,7 +138,7 @@ const getCartUser = asyncHandler(async (id) => {
   validateMongodbId(id);
   const cart = await Cart.findOne({ orderBy: id }).populate({
     path: "products.product",
-    select: "name price",
+    select: "name price images",
   });
   return cart;
 });

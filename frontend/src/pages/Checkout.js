@@ -373,21 +373,20 @@ const Checkout = () => {
                               {item?.count}
                             </span>
                             <img
-                              src={product?.images[0]?.url}
+                              src={item.product?.images[0]?.url}
                               className="img-fluid"
                               alt=""
                             />
                           </div>
                           <div>
-                            <h5 className="total">{product?.name}</h5>
+                            <h5 className="total">{item?.product?.name}</h5>
                             <p className="d-flex gap-15">
                               Màu sắc:
                               <ul className="colors ps-0">
                                 <li
-                                  style={{
-                                    backgroundColor: item?.color?.title,
-                                  }}
-                                ></li>
+                                >
+                                  {item.color}
+                                </li>
                               </ul>
                             </p>
                           </div>

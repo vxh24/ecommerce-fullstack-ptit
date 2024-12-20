@@ -16,6 +16,7 @@
   --color-777777: #777777;
   --color-1c1c1b: #1c1c1b;
   --color-ee4d2d: #ee4d2d;
+  --brand-primary-color: #ee4d2d
 }
 
 .section-heading {
@@ -358,32 +359,32 @@ footer .input-group-text {
   padding: 15px;
 }
 
-.categories > div {
+.categories>div {
   width: 25%;
   padding: 10px 10px 10px 20x;
 }
 
-.categories > div > div {
+.categories>div>div {
   width: 60%;
   padding-left: 20px;
 }
 
-.categories > div:nth-child(1),
-.categories > div:nth-child(2),
-.categories > div:nth-child(3),
-.categories > div:nth-child(4) {
+.categories>div:nth-child(1),
+.categories>div:nth-child(2),
+.categories>div:nth-child(3),
+.categories>div:nth-child(4) {
   border-bottom: 1px solid var(--color-ededed);
 }
 
-.categories > div:nth-child(1),
-.categories > div:nth-child(2),
-.categories > div:nth-child(3) {
+.categories>div:nth-child(1),
+.categories>div:nth-child(2),
+.categories>div:nth-child(3) {
   border-right: 1px solid var(--color-ededed);
 }
 
-.categories > div:nth-child(7),
-.categories > div:nth-child(5),
-.categories > div:nth-child(6) {
+.categories>div:nth-child(7),
+.categories>div:nth-child(5),
+.categories>div:nth-child(6) {
   border-right: 1px solid var(--color-ededed);
 }
 
@@ -504,16 +505,16 @@ footer .input-group-text {
   object-fit: contain;
 }
 
-.product-card .product-image > img:last-child {
+.product-card .product-image>img:last-child {
   display: none;
   transition: 0.3s;
 }
 
-.product-card:hover .product-image > img:nth-child(1) {
+.product-card:hover .product-image>img:nth-child(1) {
   display: none;
 }
 
-.product-card:hover .product-image > img:last-child {
+.product-card:hover .product-image>img:last-child {
   display: block;
 }
 
@@ -666,9 +667,8 @@ footer .input-group-text {
 }
 
 .colors li {
-  width: 20px;
+  width: 100px;
   height: 20px;
-  background-color: red;
   border-radius: 50%;
 }
 
@@ -771,7 +771,7 @@ footer .input-group-text {
   gap: 15px;
 }
 
-.contact-inner-wrapper > div {
+.contact-inner-wrapper>div {
   width: 48%;
 }
 
@@ -964,6 +964,58 @@ footer .input-group-text {
 /* changepass end*/
 
 /* detail product */
+.color-fix {
+  align-items: center;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, .09);
+  border-radius: 2px;
+  box-sizing: border-box;
+  color: rgba(0, 0, 0, .8);
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  margin: 8px 8px 0 0;
+  min-height: 2.5rem;
+  min-width: 5rem;
+  outline: 0;
+  overflow: visible;
+  padding: .5rem;
+  position: relative;
+  text-align: left;
+  word-break: break-word;
+}
+
+.color-fix-active {
+  align-items: center;
+  background: #fff;
+  border: 1px solid var(--brand-primary-color, #ee4d2d);
+  border-radius: 2px;
+  box-sizing: border-box;
+  color: var(--brand-primary-color, #ee4d2d);
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  margin: 8px 8px 0 0;
+  min-height: 2.5rem;
+  min-width: 5rem;
+  outline: 0;
+  overflow: visible;
+  padding: .5rem;
+  position: relative;
+  text-align: left;
+  word-break: break-word;
+}
+
+.color-fix:hover {
+  border-color: var(--brand-primary-color, #ee4d2d);
+  color: var(--brand-primary-color, #ee4d2d);
+}
+
+.color-fix .active {
+  border-color: var(--brand-primary-color, #ee4d2d);
+  color: var(--brand-primary-color, #ee4d2d);
+}
+
 .main-product-image {
   background-color: white;
   padding: 20px;
@@ -2185,6 +2237,7 @@ input[type="checkbox"] {
 }
 
 @keyframes fadeInOut {
+
   0%,
   100% {
     opacity: 0.3;

@@ -47,9 +47,8 @@ const ProductCard = (props) => {
         return (
           <div
             key={index}
-            className={`${
-              location.pathname === "/product" ? `gr-${grid}` : "col-3"
-            }`}
+            className={`${location.pathname === "/product" ? `gr-${grid}` : "col-3"
+              }`}
           >
             <Link className="product-card position-relative">
               <div className="wishlis-icon position-absolute">
@@ -84,7 +83,7 @@ const ProductCard = (props) => {
                 />
               </div>
               <div className="product-details">
-                <h6 className="brand">{item.brand}</h6>
+                <h6 className="brand">{item.brand.title}</h6>
                 <h5 className="product-title">{item.name}</h5>
                 <ReactStars
                   count={5}
@@ -94,9 +93,8 @@ const ProductCard = (props) => {
                   activeColor="#ffd700"
                 />
                 <p
-                  className={`description ${
-                    grid === 12 ? "d-block" : "d-none"
-                  }`}
+                  className={`description ${grid === 12 ? "d-block" : "d-none"
+                    }`}
                 >
                   {item?.description}
                 </p>

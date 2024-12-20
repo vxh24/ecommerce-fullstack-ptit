@@ -19,6 +19,7 @@ const OurStore = () => {
   const categoryState = useSelector(
     (state) => state?.category?.Categories?.data
   );
+  console.log(productState);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
@@ -104,8 +105,8 @@ const OurStore = () => {
         ...(maxPrice && { "price[lte]": maxPrice }),
         ...(selectedBrand &&
           selectedBrand.length > 0 && {
-            brand: selectedBrand.join("&brand="),
-          }),
+          brand: selectedBrand.join("&brand="),
+        }),
         ...(selectedCategory && { category: selectedCategory }),
       }).toString();
       const finalQuery = query.replace(/%26/g, "&").replace(/%3D/g, "=");
@@ -176,7 +177,6 @@ const OurStore = () => {
     setCurrentPage(page);
     setPagination({ ...pagination, page: page });
   };
-
   if (loading) {
     return (
       <div className="loading-container">
@@ -185,7 +185,7 @@ const OurStore = () => {
     );
   }
   if (error) return <div>{error}</div>;
-
+  console.log(currentProducts);
   return (
     <>
       <Meta title={"Cửa hàng"} />
@@ -203,7 +203,7 @@ const OurStore = () => {
                         return (
                           <li
                             onClick={() => {
-                              setSelectedCategory(item.title);
+                              setSelectedCategory(item._id);
                               setProductSearch1(null);
                               if (message.message !== null) {
                                 navigate(location.pathname, {
@@ -214,7 +214,7 @@ const OurStore = () => {
                             }}
                             // className='mb-2'
                             className={
-                              selectedCategory === item.title
+                              selectedCategory === item._id
                                 ? "mb-2 text-red"
                                 : "mb-2"
                             }
@@ -272,8 +272,8 @@ const OurStore = () => {
                         return (
                           <label key={index}>
                             <input
-                              checked={selectedBrand.includes(item.title)}
-                              onChange={() => handleBrandChange(item.title)}
+                              checked={selectedBrand.includes(item._id)}
+                              onChange={() => handleBrandChange(item._id)}
                               type="checkbox"
                               value="Shopee Mall"
                             />

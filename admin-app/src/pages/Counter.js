@@ -137,10 +137,10 @@ const Counter = () => {
     const updatedProducts1 = storedProducts.map((product) => {
       if (product._id === productId && product.selectedColor) {
         const co = product.colors.find(
-          (item) => item.title === product.selectedColor
+          (item) => item.name === product.selectedColor
         );
         dispatch(
-          deleteProductfromCart({ productId: product._id, color: co._id })
+          deleteProductfromCart({ productId: product._id, color: co.name })
         );
       }
       return product;
@@ -149,12 +149,12 @@ const Counter = () => {
     const updatedProducts = storedProducts.map((product) => {
       if (product._id === productId) {
         product["selectedColor"] = color;
-        const co = product.colors.find((item) => item.title === color);
+        const co = product.colors.find((item) => item.name === color);
         dispatch(
           AddProdToCart({
             _id: product._id,
             count: product.count,
-            color_id: co._id,
+            color: co.name,
           })
         );
       }
@@ -444,7 +444,7 @@ const Counter = () => {
               renderMenuItemChildren={(option) => (
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <img
-                    src={option.images[0].url}
+                    src={option.images[0]?.url}
                     alt={option.name}
                     style={{
                       width: 50,
@@ -516,22 +516,13 @@ const Counter = () => {
                             {product.colors.map((item, index) => {
                               return (
                                 <option
-                                  value={item.title}
-                                  style={{ background: item.title }}
-                                ></option>
+                                  value={item.name}
+                                >
+                                  {item.name}
+                                </option>
                               );
                             })}
                           </select>
-                          <span
-                            style={{
-                              backgroundColor: product.selectedColor,
-                              display: "inline-block",
-                              width: "30px",
-                              height: "30px",
-                              border: "1px solid #ccc",
-                              borderRadius: "50%",
-                            }}
-                          ></span>
                         </div>
                       </td>
 

@@ -33,6 +33,7 @@ const ProductDetail = () => {
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
   };
+  console.log(productState);
   useEffect(() => {
     return () => {
       dispatch(resetState());
@@ -53,6 +54,7 @@ const ProductDetail = () => {
     );
   };
   const [color, setColor] = useState(null);
+  console.log(color);
   const [count, setCount] = useState(1);
   const [orderProduct, setorderProduct] = useState(true);
   const [alreadyAdded, setAlreadyAdded] = useState(false);
@@ -71,7 +73,6 @@ const ProductDetail = () => {
     (state) => state?.product?.product?.data?.colors
   );
   const colors = useSelector((state) => state?.color?.colors?.data);
-  console.log(colorIds);
   const matchedColors = colors?.filter((color) =>
     colorIds?.includes(color?._id)
   );
@@ -130,7 +131,7 @@ const ProductDetail = () => {
       return false;
     } else {
       dispatch(
-        AddProdToCart({ _id: productState?._id, count, color_id: color })
+        AddProdToCart({ _id: productState?._id, count, color: color })
       );
       setTimeout(() => {
         // navigate("/cart");
@@ -280,7 +281,7 @@ const ProductDetail = () => {
                     >
                       Thương hiệu:
                     </h3>
-                    <p className="product-data">{productState?.brand}</p>
+                    <p className="product-data">{productState?.brand.title}</p>
                   </div>
                   <div className="d-flex align-items-center gap-10 my-2">
                     <h3
@@ -289,7 +290,7 @@ const ProductDetail = () => {
                     >
                       Danh mục:
                     </h3>
-                    <p className="product-data">{productState?.category}</p>
+                    <p className="product-data">{productState?.category.title}</p>
                   </div>
                   <div className="d-flex align-items-center gap-10 my-2">
                     <h3
@@ -332,7 +333,21 @@ const ProductDetail = () => {
                         >
                           Màu sắc:
                         </h3>
-                        <Color setColor={setColor} colorData={colorIds} />
+                        <div className="d-flex align-items-center flex-wrap gap-10">
+
+                          {productState?.colors?.map((item) => {
+                            return (
+                              <div className={`${color === item.name ? "color-fix-active" : "color-fix"} `}
+                                onClick={() => setColor(item.name)}
+                              >
+
+                                {item.name}
+
+
+                              </div>
+                            )
+                          })}
+                        </div>
                       </div>
                     </>
                   )}

@@ -18,7 +18,6 @@ const Cart = () => {
   const authState = useSelector((state) => state?.auth);
   const userCartState = useSelector((state) => state?.auth?.cartUser?.cart);
   const productState = useSelector((state) => state.product.products.data);
-  const [totalAmount, setTotalAmount] = useState(null);
   useEffect(() => {
     dispatch(getUserCart());
     dispatch(getAllProducts());
@@ -46,7 +45,7 @@ const Cart = () => {
       navigate("/login");
     }
   }, [authState]);
-
+  console.log(userCartState);
   const formatPrice = (amount) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -81,19 +80,20 @@ const Cart = () => {
                       <div className="cart-col-1 gap-15 d-flex justify-content-between align-items-center">
                         <div className="w-25">
                           <img
-                            src={product?.images[0]?.url}
+                            src={item?.product?.images[0]?.url}
                             className="img-fluid"
                             alt=""
                           />
                         </div>
                         <div className="w-75">
-                          <p>{product?.name}</p>
-                          <p className="d-flex gap-15">
+                          <p >{item.product?.name}</p>
+                          <p className="d-flex gap-15 mb-0">
                             Màu sắc:
                             <ul className="colors ps-0">
                               <li
-                                style={{ backgroundColor: item?.color?.title }}
-                              ></li>
+                              >
+                                {item.color}
+                              </li>
                             </ul>
                           </p>
                         </div>
