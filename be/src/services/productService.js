@@ -9,35 +9,25 @@ const tfidf = new natural.TfIdf();
 
 const createProduct = asyncHandler(async (productData, files) => {
   const uploadResults = await uploadMultipleFiles(files, "products");
-
   const uploadedImages = uploadResults.detail.map((result) => ({
     public_id: result.public_id,
     url: result.cloudinaryUrl,
   }));
 
-  let colorIds = productData.colors;
-
-  if (!Array.isArray(colorIds)) {
-    colorIds = [colorIds];
+  let colors = productData.colors;
+  if (!Array.isArray(colors)) {
+    colors = [colors];
   }
 
-  const existingColors = await Color.find({
-    _id: { $in: colorIds },
-  }).select("_id");
-
-  const existingColorIds = existingColors.map((color) => color._id.toString());
-
-  const notFoundColors = colorIds.filter(
-    (id) => !existingColorIds.includes(id)
-  );
-
-  if (notFoundColors.length > 0) {
-    throw new Error(
-      `One or more colors do not exist: ${notFoundColors.join(", ")}`
-    );
-  } else {
-    console.log("All color IDs are valid.");
-  }
+  const validColors = colors.map((color) => {
+    if (!color.name || typeof color.quantity !== "number") {
+      throw new Error(`Invalid color format: ${JSON.stringify(color)}`);
+    }
+    return {
+      name: color.name,
+      quantity: color.quantity,
+    };
+  });
 
   const newProduct = new Product({
     images: uploadedImages,
@@ -47,13 +37,13 @@ const createProduct = asyncHandler(async (productData, files) => {
     category: productData.category,
     brand: productData.brand,
     quantity: productData.quantity,
-    colors: colorIds,
+    colors: validColors,
     tags: productData.tags,
   });
 
   await newProduct.save();
 
-  return newProduct.populate("colors category brand");
+  return newProduct.populate("category brand");
 });
 
 const getAProduct = asyncHandler(async (id) => {

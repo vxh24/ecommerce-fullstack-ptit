@@ -14,25 +14,59 @@ const {
 const { deleteToCloudinary } = require("../utils/cloudinary");
 
 const createProductController = asyncHandler(async (req, res) => {
-  const { name, description, price, category, brand, quantity, colors, tags } =
-    req.body;
+  try {
+    const {
+      name,
+      description,
+      price,
+      category,
+      brand,
+      quantity,
+      colors,
+      tags,
+    } = req.body;
 
-  const files = req.files.images;
+    const files = req.files.images;
+    if (!files || files.length === 0) {
+      throw new Error("No images uploaded");
+    }
 
-  if (!files || files.length === 0) {
-    throw new Error("No images uploaded");
+    let parsedColors = [];
+    if (typeof colors === "string") {
+      try {
+        parsedColors = JSON.parse(colors);
+      } catch (error) {
+        return res.status(400).json({
+          EC: 1,
+          message: "Invalid colors format",
+        });
+      }
+    } else {
+      parsedColors = colors;
+    }
+
+    const newProduct = await createProduct(
+      {
+        name,
+        description,
+        price,
+        category,
+        brand,
+        quantity,
+        colors: parsedColors,
+        tags,
+      },
+      files
+    );
+
+    res.status(200).json({
+      EC: 0,
+      message: "Product added successfully",
+      data: newProduct,
+    });
+  } catch (error) {
+    throw new Error(error);
   }
-
-  const newProduct = await createProduct(
-    { name, description, price, category, brand, quantity, colors, tags },
-    files
-  );
-
-  res.status(200).json({
-    EC: 0,
-    message: "Product added successfully",
-    data: newProduct,
-  });
 });
 
 const getProductByIdController = asyncHandler(async (req, res) => {

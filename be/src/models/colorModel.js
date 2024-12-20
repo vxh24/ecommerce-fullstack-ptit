@@ -8,10 +8,6 @@ const colorSchema = new mongoose.Schema(
       unique: true,
       index: true,
     },
-    quantity: {
-      type: Number,
-      required: true,
-    },
   },
   { timestamps: true }
 );
