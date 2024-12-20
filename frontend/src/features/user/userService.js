@@ -135,10 +135,10 @@ const removePfromCart = async ({ productId, color }) => {
     return response.data;
   }
 };
-const updateCountProduct = async ({ productId, colorId, newQuantity }) => {
+const updateCountProduct = async ({ productId, color, newQuantity }) => {
   const response = await axios.put(
     `${base_url}user/cart/update-product`,
-    { productId, colorId, newQuantity },
+    { productId, color, newQuantity },
     config
   );
   if (response.data) {

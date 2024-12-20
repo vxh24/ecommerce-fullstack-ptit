@@ -29,10 +29,11 @@ const Cart = () => {
     }, 600);
   };
   const updatecount = (id, color, newquantity) => {
+    console.log(color);
     dispatch(
       updatecountCart({
         productId: id,
-        colorId: color._id,
+        color: color,
         newQuantity: newquantity,
       })
     );
@@ -70,8 +71,9 @@ const Cart = () => {
               {userCartState?.products &&
                 userCartState?.products?.map((item, index) => {
                   const product = productState?.find(
-                    (productItem) => productItem?._id === item?.product
+                    (productItem) => productItem?._id === item?.product._id
                   );
+                  const quantity = product?.colors.find((quan) => quan.name === item.color);
                   return (
                     <div
                       key={index}
@@ -114,13 +116,13 @@ const Cart = () => {
                             value={item?.count}
                             onChange={(e) => {
                               const newQuantity = parseInt(e.target.value);
-                              if (newQuantity > product.quantity) {
+                              if (newQuantity > quantity.quantity) {
                                 toast.info(
                                   "Số lượng vượt quá số lượng hàng có sẵn!"
                                 );
                               } else {
                                 updatecount(
-                                  item.product,
+                                  item.product._id,
                                   item.color,
                                   newQuantity
                                 );
@@ -131,7 +133,7 @@ const Cart = () => {
                         <div>
                           <MdDelete
                             onClick={(e) => {
-                              deleteproduct(item?.product, item?.color?._id);
+                              deleteproduct(item?.product._id, item?.color);
                             }}
                             className="text-danger fs-4"
                           />

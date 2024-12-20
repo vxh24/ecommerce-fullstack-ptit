@@ -151,11 +151,11 @@ export const deleteProductfromCart = createAsyncThunk(
 );
 export const updatecountCart = createAsyncThunk(
   "user/updatecart",
-  async ({ productId, colorId, newQuantity }, thunkAPI) => {
+  async ({ productId, color, newQuantity }, thunkAPI) => {
     try {
       return await authService.updateCountProduct({
         productId,
-        colorId,
+        color,
         newQuantity,
       });
     } catch (error) {
