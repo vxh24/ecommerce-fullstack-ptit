@@ -38,7 +38,6 @@ const generateQRCode = async (productId) => {
     getConfig
   );
 
-  // console.log("QR code response: ", response.data.data);
   return response.data;
 };
 
