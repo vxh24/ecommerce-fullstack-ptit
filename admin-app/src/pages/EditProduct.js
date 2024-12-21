@@ -78,25 +78,21 @@ const EditProduct = () => {
         : [],
     },
     validationSchema: schema,
-    onSubmit: (values) => {
+    onSubmit: () => {
       const formData = new FormData();
-      formData.append("name", values.name);
-      formData.append("description", values.description);
-      formData.append("price", values.price);
-      formData.append("category", values.category);
-      formData.append("brand", values.brand);
-      formData.append("colors", JSON.stringify(values.colors));
-      formData.append("tags", JSON.stringify(values.tags));
+      formData.append("name", formik.values.name);
+      formData.append("description", formik.values.description);
+      formData.append("price", formik.values.price);
+      formData.append("category", formik.values.category);
+      formData.append("brand", formik.values.brand);
+      formData.append("colors", formik.values.colors);
+      formData.append("tags", JSON.stringify(formik.values.tags));
 
       images.forEach((image) => {
         formData.append("images", image);
       });
 
-      for (const [key, value] of formData.entries()) {
-        console.log(`${key}: ${value}`);
-      }
-
-      dispatch(updateProduct(id, formData));
+      dispatch(updateProduct({ id, productData: formData }));
     },
   });
 
