@@ -46,7 +46,29 @@ const createOrderByCOD = asyncHandler(
       return {
         updateOne: {
           filter: { _id: item.product._id },
-          update: { $inc: { quantity: -item.count, sold: +item.count } },
+          update: {
+            $inc: { sold: +item.count },
+            $set: {
+              colors: {
+                $map: {
+                  input: "$colors",
+                  as: "color",
+                  in: {
+                    $cond: [
+                      { $eq: ["$$color.name", item.color] },
+                      {
+                        name: "$$color.name",
+                        quantity: {
+                          $subtract: ["$$color.quantity", item.count],
+                        },
+                      },
+                      "$$color",
+                    ],
+                  },
+                },
+              },
+            },
+          },
         },
       };
     });
@@ -216,7 +238,29 @@ const handlePaymentCallback = asyncHandler(async (userId, callbackData) => {
       return {
         updateOne: {
           filter: { _id: item.product._id },
-          update: { $inc: { quantity: -item.count, sold: +item.count } },
+          update: {
+            $inc: { sold: +item.count },
+            $set: {
+              colors: {
+                $map: {
+                  input: "$colors",
+                  as: "color",
+                  in: {
+                    $cond: [
+                      { $eq: ["$$color.name", item.color] },
+                      {
+                        name: "$$color.name",
+                        quantity: {
+                          $subtract: ["$$color.quantity", item.count],
+                        },
+                      },
+                      "$$color",
+                    ],
+                  },
+                },
+              },
+            },
+          },
         },
       };
     });
