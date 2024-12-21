@@ -200,10 +200,10 @@ const ProductDetail = () => {
     setIsLightboxOpen(true);
   };
 
-  // Đóng Lightbox
   const closeLightbox = () => {
     setIsLightboxOpen(false);
   };
+  const [quantity, setQuantity] = useState(null);
   return (
     <>
       <Meta title={"Product Name"} />
@@ -213,7 +213,7 @@ const ProductDetail = () => {
           <div className="row">
             <div className="col-6">
               <div className="main-product-image">
-                <div className="abc" onClick={() => openLightbox(currentIndex)}>
+                <div className="image-main" onClick={() => openLightbox(currentIndex)}>
                   <img src={productState?.images?.[currentIndex]?.url} alt="" />
                 </div>
               </div>
@@ -307,19 +307,6 @@ const ProductDetail = () => {
                         );
                       })}
                   </div>
-                  <div className="d-flex align-items-center gap-10 my-2">
-                    <h3
-                      className="product-heading"
-                      style={{ fontWeight: "bold" }}
-                    >
-                      Còn lại:
-                    </h3>
-                    {productState?.quantity <= 0 ? (
-                      <p className="product-data">Hết hàng</p>
-                    ) : (
-                      <p className="product-data">{productState?.quantity}</p>
-                    )}
-                  </div>
 
                   <div className="d-flex flex-column gap-10 mt-2 mb-3">
                     <h3
@@ -333,7 +320,7 @@ const ProductDetail = () => {
                       {productState?.colors?.map((item) => {
                         return (
                           <div className={`${color === item.name ? "color-fix-active" : "color-fix"} `}
-                            onClick={() => setColor(item.name)}
+                            onClick={() => { setColor(item.name); setQuantity(item.quantity) }}
                           >
 
                             {item.name}
@@ -344,8 +331,24 @@ const ProductDetail = () => {
                       })}
                     </div>
                   </div>
-
-
+                  {quantity ? (
+                    <div className="d-flex align-items-center gap-10 my-2">
+                      <h3
+                        className="product-heading"
+                        style={{ fontWeight: "bold" }}
+                      >
+                        Còn lại:
+                      </h3>
+                      {quantity <= 0 ? (
+                        <p className="product-data mb-0"></p>
+                      ) : (
+                        <p className="product-data mb-0">{quantity}</p>
+                      )}
+                    </div>
+                  ) : (
+                    <div></div>
+                  )
+                  }
                   <div className="d-flex flex-row gap-10 mt-2 mb-3 align-items-center">
 
                     <h3
@@ -359,7 +362,7 @@ const ProductDetail = () => {
                         type="number"
                         name=""
                         min={1}
-                        max={productState?.quantity}
+                        max={quantity}
                         className="form-control"
                         style={{ width: "70px" }}
                         id=""

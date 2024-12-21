@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllBlog } from "../features/blogs/blogSlice";
 import moment from "moment";
 import { getAllProducts } from "../features/products/productSlice";
+import { getCategories } from "../features/category/categorySlice";
 const Home = () => {
   const blogState = useSelector((state) => state?.blog?.blogs?.data);
   const firstFourBlogs = blogState?.slice(0, 4) || [];
@@ -18,7 +19,7 @@ const Home = () => {
     getProducts();
     dispatch(getCategories());
   }, []);
-  // const categoriesState=useSelector((state)=> state?.category?.)
+  const categoriesState = useSelector((state) => state?.category?.data)
   const getBlogs = () => {
     dispatch(getAllBlog());
   };

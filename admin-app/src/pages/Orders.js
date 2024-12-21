@@ -168,16 +168,6 @@ const columns1 = [
   {
     title: "Màu sắc",
     dataIndex: "color",
-    render: (color) => (
-      <div
-        style={{
-          width: "20px",
-          height: "20px",
-          backgroundColor: color?.title,
-          borderRadius: "50%",
-        }}
-      ></div>
-    ),
   },
   {
     title: "Giá",
@@ -214,18 +204,14 @@ const ViewOrder = (orderState) => {
       dispatch(getOrderById(order._id));
     }, 300);
   };
-  const colorData = useSelector((state) => state.color.colors.data);
   if (order.products && order.products.length) {
     for (let i = 0; i < order.products.length; i++) {
-      const color = colorData?.find(
-        (productItem) => productItem?._id === order.products[i].color
-      );
       data1.push({
         key: order.products[i].product._id,
         name: order.products[i].product.name,
         brand: order.products[i].product.brand,
         count: order.products[i].count,
-        color: color,
+        color: order.products[i].color,
         price: formattedPrice(
           order.products[i].product.price * order.products[i].count
         ),
