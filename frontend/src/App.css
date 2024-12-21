@@ -1205,7 +1205,10 @@ footer .input-group-text {
 .cart-data h5.price {
   color: var(--color-1c1c1b);
 }
-
+.cart-title p{
+  font-size: 15px;
+  color: black;
+}
 /* cart end */
 /* shipping */
 .total {
@@ -2276,8 +2279,8 @@ input[type="checkbox"] {
   background: #fff;
   border-radius: 8px;
   overflow: hidden;
-  max-width: 80%;
-  max-height: 90%;
+  width: 80%;
+  height: 90%;
 }
 
 /* Ảnh lớn */
@@ -2288,11 +2291,11 @@ input[type="checkbox"] {
   align-items: center;
   justify-content: center;
   background: #000;
+  width: 100%;
 }
 
 .image-detail-main-image img {
-  max-width: 100%;
-  max-height: 100%;
+  width: 100%;
   object-fit: contain;
 }
 

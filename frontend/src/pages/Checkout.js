@@ -81,6 +81,7 @@ const Checkout = () => {
     let Address = addressState?.find((item) => item.isDefault === true);
     setAddress(Address);
   }, [addressState, address]);
+  console.log(addressState);
   useEffect(() => {
     // setTimeout(() => {
     //   dispatch(getUserCart())
@@ -158,7 +159,7 @@ const Checkout = () => {
                       onClick={() => setIsModalOpen(true)}
                       className="button-checkout"
                     >
-                      +Thêm địa chỉ mới
+                      Thêm địa chỉ mới
                     </button>
                     {isModalOpen && (
                       <AddAddressForm onClose={() => setIsModalOpen(false)} />
@@ -171,59 +172,70 @@ const Checkout = () => {
                     </button>
                   </div>
                 </div>
-                {addressSelect ? (
-                  <div className="d-flex flex-column gap-15 mb-3">
-                    <div className="address-item" key={addressSelect?._id}>
-                      <div className="address-details">
-                        <strong className="address-name">
-                          {addressSelect?.name &&
-                            addressSelect?.name.charAt(0).toUpperCase() +
-                            addressSelect?.name.slice(1)}
-                        </strong>
-                        <span className="address-phone">
-                          - {addressSelect?.phone}
-                        </span>
-                        <p className="address">
-                          {addressSelect?.specificAddress}
-                          <br />
-                          {addressSelect?.commune}, {addressSelect?.district},{" "}
-                          {addressSelect?.city}
-                        </p>
-                        <div className="d-flex align-items-center">
-                          {addressSelect?.isDefault && (
-                            <p className="isdefault text-center">Mặc định</p>
-                          )}
+                {
+                  addressState?.length > 0 ? (
+                    addressSelect ? (
+                      <div className="d-flex flex-column gap-15 mb-3">
+                        <div className="address-item" key={addressSelect?._id}>
+                          <div className="address-details">
+                            <strong className="address-name">
+                              {addressSelect?.name &&
+                                addressSelect?.name.charAt(0).toUpperCase() +
+                                addressSelect?.name.slice(1)}
+                            </strong>
+                            <span className="address-phone">- {addressSelect?.phone}</span>
+                            <p className="address">
+                              {addressSelect?.specificAddress}
+                              <br />
+                              {addressSelect?.commune}, {addressSelect?.district}, {addressSelect?.city}
+                            </p>
+                            <div className="d-flex align-items-center">
+                              {addressSelect?.isDefault && (
+                                <p className="isdefault text-center">Mặc định</p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="d-flex flex-column gap-15 mb-3">
+                        <div className="address-item" key={address?._id}>
+                          <div className="address-details">
+                            <strong className="address-name">
+                              {address?.name &&
+                                address?.name.charAt(0).toUpperCase() + address?.name.slice(1)}
+                            </strong>
+                            <span className="address-phone">- {address?.phone}</span>
+                            <p className="address">
+                              {address?.specificAddress}
+                              <br />
+                              {address?.commune}, {address?.district}, {address?.city}
+                            </p>
+                            <div className="d-flex align-items-center">
+                              {address?.isDefault && (
+                                <p className="isdefault text-center">Mặc định</p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  ) : (
+                    <div className="d-flex flex-column gap-15 mb-3">
+                      <div className="address-item" >
+                        <div className="address-details">
+                          <strong className="address-name">
+                            <div>Thêm địa chỉ để đặt hàng</div>
+                          </strong>
+
                         </div>
                       </div>
                     </div>
-                  </div>
-                ) : (
-                  <div className="d-flex flex-column gap-15 mb-3">
-                    <div className="address-item" key={address?._id}>
-                      <div className="address-details">
-                        <strong className="address-name">
-                          {address?.name &&
-                            address?.name.charAt(0).toUpperCase() +
-                            address?.name.slice(1)}
-                        </strong>
-                        <span className="address-phone">
-                          - {address?.phone}
-                        </span>
-                        <p className="address">
-                          {address?.specificAddress}
-                          <br />
-                          {address?.commune}, {address?.district},{" "}
-                          {address?.city}
-                        </p>
-                        <div className="d-flex align-items-center">
-                          {address?.isDefault && (
-                            <p className="isdefault text-center">Mặc định</p>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
+
+                  )
+                }
+
+
 
                 {click && (
                   <div className="d-flex flex-column gap-15 py-3 ps-3 bg-white mb-4">
