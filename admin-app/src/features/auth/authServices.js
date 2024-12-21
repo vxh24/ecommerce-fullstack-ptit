@@ -23,8 +23,6 @@ const getOrderById = async (id) => {
 };
 
 const updateOrderStatus = async ({ id, status }) => {
-  console.log(status);
-  console.log(id);
   const response = await axios.put(
     `${base_url}order/update-order/${id}`,
     { status },

@@ -15,11 +15,11 @@ export const AddProdToCart = createAsyncThunk(
 
 export const updatecountCart = createAsyncThunk(
   "user/updatecart",
-  async ({ productId, colorId, newQuantity }, thunkAPI) => {
+  async ({ productId, color, newQuantity }, thunkAPI) => {
     try {
       return await CartService.updateCountProduct({
         productId,
-        colorId,
+        color,
         newQuantity,
       });
     } catch (error) {

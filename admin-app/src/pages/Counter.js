@@ -51,10 +51,10 @@ const Counter = () => {
       if (product._id === productId) {
         if (product.selectedColor) {
           const co = product.colors.find(
-            (item) => item.title === product.selectedColor
+            (item) => item.name === product.selectedColor
           );
           dispatch(
-            deleteProductfromCart({ productId: product._id, color: co._id })
+            deleteProductfromCart({ productId: product._id, color: co.name })
           );
         }
       }
@@ -173,13 +173,14 @@ const Counter = () => {
         if (product.selectedColor) {
           product["count"] = newCount;
           const co = product.colors.find(
-            (item) => item.title === product.selectedColor
+            (item) => item.name === product.selectedColor
           );
+          console.log(co);
           dispatch(
             updatecountCart({
               productId: product._id,
               newQuantity: newCount,
-              colorId: co._id,
+              color: co.name,
             })
           );
         } else {
@@ -500,7 +501,7 @@ const Counter = () => {
                       <td>{product._id}</td>
                       <td>
                         <div className="counter-product-image">
-                          <img src={product.images[0].url} alt="" />
+                          <img src={product?.images[0]?.url} alt="" />
                         </div>
                       </td>
                       <td>{product.name}</td>

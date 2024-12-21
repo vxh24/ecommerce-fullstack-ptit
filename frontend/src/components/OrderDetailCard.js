@@ -31,6 +31,7 @@ const OrderDetailCard = ({ order }) => {
       maximumFractionDigits: 0,
     }).format(amount);
   };
+  console.log(order);
   return (
     <div>
       <h4 className="mb-4">Chi tiết đơn hàng</h4>
@@ -63,9 +64,6 @@ const OrderDetailCard = ({ order }) => {
         </div>
         {order?.products &&
           order?.products?.map((item, index) => {
-            const color = colorState?.find(
-              (productItem) => productItem?._id === item?.color
-            );
             return (
               <div
                 key={index}
@@ -79,13 +77,13 @@ const OrderDetailCard = ({ order }) => {
                       alt=""
                     />
                   </div>
-                  <div className="w-75">
-                    <p>{item?.product?.name}</p>
+                  <div className="w-75 d-flex flex-column gap-10">
+                    <p className="mb-0">{item?.product?.name}</p>
                     <p className="d-flex gap-15">
                       Màu:
-                      <ul className="colors ps-0">
-                        <li style={{ backgroundColor: color?.title }}></li>
-                      </ul>
+                      <div className="colors ps-0">
+                        {item?.color}
+                      </div>
                     </p>
                   </div>
                 </div>

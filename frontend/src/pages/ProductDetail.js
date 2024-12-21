@@ -270,10 +270,6 @@ const ProductDetail = () => {
                   {/* <a href='#review' className='review-btn'>Viết một đánh giá</a> */}
                 </div>
                 <div className="border-bottom py-3">
-                  {/* <div className="d-flex align-items-center gap-10 my-2">
-                    <h3 className="product-heading">Loại:</h3>
-                    <p className="product-data">iphone</p>
-                  </div> */}
                   <div className="d-flex align-items-center gap-10 my-2">
                     <h3
                       className="product-heading"
@@ -324,71 +320,64 @@ const ProductDetail = () => {
                       <p className="product-data">{productState?.quantity}</p>
                     )}
                   </div>
-                  {alreadyAdded === false && (
-                    <>
-                      <div className="d-flex flex-column gap-10 mt-2 mb-3">
-                        <h3
-                          className="product-heading"
-                          style={{ fontWeight: "bold" }}
-                        >
-                          Màu sắc:
-                        </h3>
-                        <div className="d-flex align-items-center flex-wrap gap-10">
 
-                          {productState?.colors?.map((item) => {
-                            return (
-                              <div className={`${color === item.name ? "color-fix-active" : "color-fix"} `}
-                                onClick={() => setColor(item.name)}
-                              >
+                  <div className="d-flex flex-column gap-10 mt-2 mb-3">
+                    <h3
+                      className="product-heading"
+                      style={{ fontWeight: "bold" }}
+                    >
+                      Màu sắc:
+                    </h3>
+                    <div className="d-flex align-items-center flex-wrap gap-10">
 
-                                {item.name}
+                      {productState?.colors?.map((item) => {
+                        return (
+                          <div className={`${color === item.name ? "color-fix-active" : "color-fix"} `}
+                            onClick={() => setColor(item.name)}
+                          >
+
+                            {item.name}
 
 
-                              </div>
-                            )
-                          })}
-                        </div>
-                      </div>
-                    </>
-                  )}
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+
+
                   <div className="d-flex flex-row gap-10 mt-2 mb-3 align-items-center">
-                    {alreadyAdded === false && (
-                      <>
-                        <h3
-                          className="product-heading"
-                          style={{ fontWeight: "bold" }}
-                        >
-                          Số lượng:
-                        </h3>
-                        <div className="">
-                          <input
-                            type="number"
-                            name=""
-                            min={1}
-                            max={productState?.quantity}
-                            className="form-control"
-                            style={{ width: "70px" }}
-                            id=""
-                            onChange={(e) => setCount(e.target.value)}
-                            value={count}
-                          />
-                        </div>
-                      </>
-                    )}
+
+                    <h3
+                      className="product-heading"
+                      style={{ fontWeight: "bold" }}
+                    >
+                      Số lượng:
+                    </h3>
+                    <div className="">
+                      <input
+                        type="number"
+                        name=""
+                        min={1}
+                        max={productState?.quantity}
+                        className="form-control"
+                        style={{ width: "70px" }}
+                        id=""
+                        onChange={(e) => setCount(e.target.value)}
+                        value={count}
+                      />
+                    </div>
+
                     <div
-                      className={
-                        alreadyAdded
-                          ? "d-flex align-items-center gap-30 ms-0"
-                          : "d-flex align-items-center gap-30 ms-5"
-                      }
+                      className="d-flex align-items-center gap-30 ms-5"
                     >
                       <button
                         className="button border-0"
                         onClick={() => {
-                          alreadyAdded ? navigate("/cart") : uploadCart();
+                          uploadCart();
                         }}
                       >
-                        {alreadyAdded ? "Đi đến giỏ hàng" : "Thêm vào giỏ hàng"}
+                        Thêm vào giỏ hàng
                       </button>
                       <button className="button signup">Mua ngay</button>
                     </div>
