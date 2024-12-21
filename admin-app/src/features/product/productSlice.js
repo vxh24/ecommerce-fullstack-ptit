@@ -47,9 +47,9 @@ export const deleteAProduct = createAsyncThunk(
 
 export const updateProduct = createAsyncThunk(
   "product/update-product",
-  async (id, productData, thunkAPI) => {
+  async ({ productId, productData }, thunkAPI) => {
     try {
-      return await productService.updateProduct(id, productData);
+      return await productService.updateProduct({ productId, productData });
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -153,10 +153,7 @@ export const productSlice = createSlice({
       .addCase(updateProduct.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        const updatedProduct = action.payload;
-        state.products = state.products.map((product) =>
-          product.id === updatedProduct.id ? updatedProduct : product
-        );
+        state.updatedProduct = action.payload;
       })
       .addCase(updateProduct.rejected, (state, action) => {
         state.isLoading = false;

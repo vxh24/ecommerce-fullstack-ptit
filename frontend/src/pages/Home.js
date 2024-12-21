@@ -16,7 +16,9 @@ const Home = () => {
   useEffect(() => {
     getBlogs();
     getProducts();
+    dispatch(getCategories());
   }, []);
+  // const categoriesState=useSelector((state)=> state?.category?.)
   const getBlogs = () => {
     dispatch(getAllBlog());
   };

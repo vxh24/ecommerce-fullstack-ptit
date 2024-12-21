@@ -10,6 +10,8 @@ import { googleLogout } from "@react-oauth/google";
 import { getCategories } from "../features/category/categorySlice";
 import { getProfileSlice, getUserCart } from "../features/user/userSlice";
 const Header = () => {
+  const dispatch = useDispatch();
+  const location = useLocation();
   const profileState = useSelector((state) => state?.auth?.profile?.data);
   const categoryState = useSelector(
     (state) => state?.category?.Categories?.data
@@ -19,14 +21,17 @@ const Header = () => {
     dispatch(getUserCart());
     dispatch(getCategories());
   }, []);
+  useEffect(() => {
+    if (!profileState) {
+      dispatch(getProfileSlice());
+    }
+  }, [dispatch, profileState]);
   const handleLogout = () => {
     googleLogout();
     localStorage.clear();
     window.location.reload();
   };
   const authState = useSelector((state) => state?.auth);
-  const dispatch = useDispatch();
-  const location = useLocation();
   const productState = useSelector((state) => state?.product?.products?.data);
   const userCartState = useSelector((state) => state?.auth?.cartUser?.cart);
   const [cartlengt, setCartlengt] = useState();
@@ -253,8 +258,9 @@ const Header = () => {
                                     className="cart-item-image"
                                   />
                                   <div className="cart-item-info">
-                                    <p className="cart-item-name">
-                                      {item?.product?.name}
+                                    <p className="cart-item-name"
+                                      dangerouslySetInnerHTML={{ __html: item?.product?.name?.substr(0, 15) + "...", }}
+                                    >
                                     </p>
                                     <p className="cart-item-quantity">
                                       Số lượng: {item?.count}

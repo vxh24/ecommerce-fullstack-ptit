@@ -87,7 +87,7 @@ const Cart = () => {
                             alt=""
                           />
                         </div>
-                        <div className="w-75">
+                        <div className="w-75 cart-title">
                           <p >{item.product?.name}</p>
                           <p className="d-flex gap-15 mb-0">
                             Màu sắc:

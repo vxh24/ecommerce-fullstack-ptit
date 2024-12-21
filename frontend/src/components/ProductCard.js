@@ -73,12 +73,15 @@ const ProductCard = (props) => {
               <div className="product-image">
                 <img
                   src={item?.images[0]?.url}
-                  className="img-fluid mx-auto"
+
+                  className={` ${grid === 12 ? "" : "img-fluid mx-auto"
+                    }`}
                   alt="product image"
                 />
                 <img
-                  src={item?.images[0]?.url}
-                  className="img-fluid"
+                  src={item?.images[1]?.url}
+                  className={` ${grid === 12 ? "" : "img-fluid"
+                    }`}
                   alt="product image"
                 />
               </div>
@@ -95,8 +98,9 @@ const ProductCard = (props) => {
                 <p
                   className={`description ${grid === 12 ? "d-block" : "d-none"
                     }`}
+                  dangerouslySetInnerHTML={{ __html: item?.description?.substr(0, 500) + "...", }}
                 >
-                  {item?.description}
+                  {/* {item?.description } */}
                 </p>
                 <p className="price">{formatPrice(item.price)}</p>
               </div>

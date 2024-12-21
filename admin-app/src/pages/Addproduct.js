@@ -103,6 +103,9 @@ const AddProduct = () => {
       images.forEach((image) => {
         formData.append("images", image);
       });
+      for (const [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+      }
       dispatch(createProducts(formData));
 
       formik.resetForm();
@@ -113,7 +116,6 @@ const AddProduct = () => {
       }, 3000);
     },
   });
-
   const [images, setImages] = useState([]);
   const [fileInputKey, setFileInputKey] = useState(0);
 

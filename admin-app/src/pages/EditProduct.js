@@ -29,6 +29,18 @@ let schema = yup.object().shape({
     .min(1, "Ít nhất một thẻ là bắt buộc")
     .of(yup.string().required("Mỗi thẻ phải là một chuỗi"))
     .required("Thẻ là bắt buộc"),
+  colors: yup
+    .array()
+    .of(
+      yup.object().shape({
+        name: yup.string().required("Màu là bắt buộc"),
+        quantity: yup
+          .number()
+          .required("Số lượng là bắt buộc")
+          .min(1, "Số lượng phải lớn hơn 0"),
+      })
+    )
+    .required("Colors must be an array."),
 });
 
 const EditProduct = () => {
@@ -66,10 +78,7 @@ const EditProduct = () => {
       category: productState?.category._id || "",
       brand: productState?.brand?._id || "",
       colors: Array.isArray(productState?.colors)
-        ? productState?.colors.map((color) => ({
-            name: color.name,
-            quantity: color.quantity,
-          }))
+        ? productState.colors
         : [],
       tags: productState?.tags
         ? Array.isArray(productState?.tags)
@@ -78,28 +87,24 @@ const EditProduct = () => {
         : [],
     },
     validationSchema: schema,
-    onSubmit: (values) => {
+    onSubmit: () => {
       const formData = new FormData();
-      formData.append("name", values.name);
-      formData.append("description", values.description);
-      formData.append("price", values.price);
-      formData.append("category", values.category);
-      formData.append("brand", values.brand);
-      formData.append("colors", JSON.stringify(values.colors));
-      formData.append("tags", JSON.stringify(values.tags));
+      formData.append("name", formik.values.name);
+      formData.append("description", formik.values.description);
+      formData.append("price", formik.values.price);
+      formData.append("category", formik.values.category);
+      formData.append("brand", formik.values.brand);
+      formData.append("colors", JSON.stringify(formik.values.colors));
+      formData.append("tags", JSON.stringify(formik.values.tags));
 
       images.forEach((image) => {
         formData.append("images", image);
       });
 
-      for (const [key, value] of formData.entries()) {
-        console.log(`${key}: ${value}`);
-      }
-
-      dispatch(updateProduct(id, formData));
+      dispatch(updateProduct({ productId: id, productData: formData }));
+      toast.success("Cập nhật thành công");
     },
   });
-
   const onFileUploadHandler = (e) => {
     const newImages = [...e.target.files];
     if (images.length + newImages.length > 5) {
@@ -381,12 +386,14 @@ const EditProduct = () => {
                   <input
                     type="number"
                     placeholder="Nhập số lượng"
-                    value={color.quantity}
-                    onChange={(e) =>
+                    value={color.quantity || ""}
+                    onChange={(e) => {
+                      const newQuantity = e.target.value === "" ? "" : Number(e.target.value);  // Chuyển đổi thành số
                       formik.setFieldValue(
                         `colors[${index}].quantity`,
-                        e.target.value
+                        newQuantity
                       )
+                    }
                     }
                     style={{
                       marginRight: "10px",
@@ -454,8 +461,8 @@ const EditProduct = () => {
               images[(photoIndex + images.length - 1) % images.length].url
                 ? images[(photoIndex + images.length - 1) % images.length].url
                 : URL.createObjectURL(
-                    images[(photoIndex + images.length - 1) % images.length]
-                  )
+                  images[(photoIndex + images.length - 1) % images.length]
+                )
             }
             onCloseRequest={() => setLightboxOpen(false)}
             onMovePrevRequest={() =>
