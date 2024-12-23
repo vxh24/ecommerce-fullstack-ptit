@@ -8,7 +8,6 @@ import {
   updateOrderStatusSlice,
 } from "../features/auth/authSlice";
 import { FaEye } from "react-icons/fa";
-import { getColors } from "../features/color/colorSlice";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 import moment from "moment";
 import { toast } from "react-toastify";
@@ -187,14 +186,15 @@ const ViewOrder = (orderState) => {
   const orderStatus1 = useSelector((state) => state?.auth?.orderbyuser?.data);
   const data1 = [];
   useEffect(() => {
-    dispatch(getColors());
     dispatch(getOrderById(order._id));
   }, []);
   const [selectedStatus, setSelectedStatus] = useState(order.orderStatus);
   const handleStatusChange = (event) => {
     const newStatus = event.target.value;
     if (statusPriority[newStatus] < statusPriority[selectedStatus]) {
-      toast.error("Không thể chuyển trạng thái đơn hàng về mức thấp hơn trạng thái hiện tại.");
+      toast.error(
+        "Không thể chuyển trạng thái đơn hàng về mức thấp hơn trạng thái hiện tại."
+      );
       return;
     }
     setSelectedStatus(newStatus);

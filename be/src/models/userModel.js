@@ -52,9 +52,6 @@ var userSchema = new mongoose.Schema(
     refresh_token: {
       type: String,
     },
-    passwordChangedAt: {
-      type: Date,
-    },
     passwordResetToken: {
       type: String,
     },
@@ -62,7 +59,9 @@ var userSchema = new mongoose.Schema(
       type: Date,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
 userSchema.pre("save", async function (next) {

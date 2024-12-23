@@ -13,7 +13,7 @@ import {
 } from "../features/brand/brandSlice";
 
 let schema = yup.object().shape({
-  title: yup.string().required("Brand Name is Required"),
+  title: yup.string().required("Vui lòng nhập tên thương hiệu"),
 });
 
 const AddBrand = () => {

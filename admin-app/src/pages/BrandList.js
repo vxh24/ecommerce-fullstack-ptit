@@ -20,7 +20,7 @@ import {
 import CustomModal from "../components/CustomModal";
 import AddBrand from "./AddBrand";
 let schema = yup.object().shape({
-  title: yup.string().required("Brand Name is Required"),
+  title: yup.string().required("Vui lòng nhập tên thương hiệu"),
 });
 const columns = [
   {
@@ -175,7 +175,12 @@ const Brandlist = () => {
             <button className="close-model" onClick={() => setClick(false)}>
               ✖
             </button>
-            <h3 className="mb-3 title">Thêm thương hiệu</h3>
+            <h3
+              className="mb-3 title"
+              style={{ fontSize: "20px", fontWeight: "bold" }}
+            >
+              Thêm thương hiệu
+            </h3>
             <AddBrand1 />
           </div>
         </div>
@@ -186,7 +191,12 @@ const Brandlist = () => {
             <button className="close-model" onClick={() => setClick1(false)}>
               ✖
             </button>
-            <h3 className="mb-3 title">Cập nhật thương hiệu</h3>
+            <h3
+              className="mb-3 title"
+              style={{ fontSize: "20px", fontWeight: "bold" }}
+            >
+              Cập nhật thương hiệu
+            </h3>
             <UpdateBrand brand={brand} />
           </div>
         </div>

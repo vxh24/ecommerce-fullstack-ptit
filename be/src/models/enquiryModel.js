@@ -21,10 +21,12 @@ const enquirySchema = new mongoose.Schema(
     status: {
       type: String,
       default: "Đã gửi",
-      enum: ["Đã gửi", "Đã liên hệ", "Đang xử lý", "Đã giải quyết", "Hủy"],
+      enum: ["Đã gửi", "Đã liên hệ", "Đang xử lý", "Đã giải quyết"],
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
 const Enquiry = mongoose.model("Enquiry", enquirySchema);

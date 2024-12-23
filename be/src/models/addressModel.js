@@ -31,7 +31,9 @@ const addressSchema = new mongoose.Schema(
       default: false,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
 const Address = mongoose.model("Address", addressSchema);

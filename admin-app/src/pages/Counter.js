@@ -315,19 +315,22 @@ const Counter = () => {
                 </tr>
                 <!-- Bạn có thể lặp qua danh sách sản phẩm của bạn ở đây -->
                 ${printState.items
-            ?.map(
-              (product) => `
+                  ?.map(
+                    (product) => `
                   <tr>
-                    <td style="border:1px solid black; padding:5px;">${product.product.name
-                }</td>
-                    <td style="border:1px solid black; padding:5px;">${product.count
-                }</td>
-                    <td style="border:1px solid black; padding:5px;">${product.product.price * product.count
-                }</td>
+                    <td style="border:1px solid black; padding:5px;">${
+                      product.product.name
+                    }</td>
+                    <td style="border:1px solid black; padding:5px;">${
+                      product.count
+                    }</td>
+                    <td style="border:1px solid black; padding:5px;">${
+                      product.product.price * product.count
+                    }</td>
                   </tr>
                 `
-            )
-            .join("")}
+                  )
+                  .join("")}
               </table>
               <hr />
             </body>
@@ -381,9 +384,7 @@ const Counter = () => {
       let selectedProducts =
         JSON.parse(localStorage.getItem("selectedProducts")) || [];
 
-      if (
-        !selectedProducts.find((product) => product._id === prod._id)
-      ) {
+      if (!selectedProducts.find((product) => product._id === prod._id)) {
         const updatedProduct = {
           ...prod,
           selectedColor: "",
@@ -398,7 +399,7 @@ const Counter = () => {
       }
     }
     setQrData("");
-  }, [productState, qrData])
+  }, [productState, qrData]);
   const handleError = (err) => {
     console.error("QR Scan Error:", err);
   };
@@ -514,13 +515,10 @@ const Counter = () => {
                               handleColorChange(product._id, e.target.value)
                             }
                           >
+                            <option>Chọn màu</option>
                             {product.colors.map((item, index) => {
                               return (
-                                <option
-                                  value={item.name}
-                                >
-                                  {item.name}
-                                </option>
+                                <option value={item.name}>{item.name}</option>
                               );
                             })}
                           </select>

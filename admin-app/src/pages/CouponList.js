@@ -25,11 +25,11 @@ let schema = yup.object().shape({
 });
 const columns = [
   {
-    title: "Mã giảm giá",
+    title: "STT",
     dataIndex: "key",
   },
   {
-    title: "Tên",
+    title: "Mã giảm giá",
     dataIndex: "name",
   },
   {
