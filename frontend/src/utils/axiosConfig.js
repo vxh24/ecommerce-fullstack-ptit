@@ -1,4 +1,5 @@
 export const base_url = "http://localhost:5000/v1/api/";
+
 export const getTokenFromLocalStorage = localStorage.getItem("customer")
   ? JSON.parse(localStorage.getItem("customer"))
   : null;
