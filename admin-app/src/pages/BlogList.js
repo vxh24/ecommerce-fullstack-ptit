@@ -348,7 +348,7 @@ const AddBlog = () => {
         {Array.isArray(bCatState) &&
           bCatState.map((i, j) => {
             return (
-              <option key={j} value={i.title}>
+              <option key={j} value={i._id}>
                 {i.title}
               </option>
             );

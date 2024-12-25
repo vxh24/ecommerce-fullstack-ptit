@@ -124,7 +124,7 @@ const EditProduct = () => {
   };
 
   const getImages = () =>
-    images.map((image, index) => (
+    images?.map((image, index) => (
       <div key={index} className="position-relative">
         <img
           alt="Preview"

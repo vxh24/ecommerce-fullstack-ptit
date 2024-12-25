@@ -106,7 +106,7 @@ const updateProduct = asyncHandler(async (id, productData, files) => {
     }));
   }
 
-  let colors = productData.colors;
+  let colors = productData.colors || [];
   if (typeof colors === "string") {
     try {
       colors = JSON.parse(colors);
@@ -302,8 +302,8 @@ const calculateProductSimilarity = (productA, productB) => {
 // API để gợi ý sản phẩm dựa trên độ tương đồng
 const recommendProducts = async (productId) => {
   validateMongodbId(productId);
-  const product = await Product.findById(productId);
-  const allProducts = await Product.find();
+  const product = await Product.findById(productId).populate("category brand");
+  const allProducts = await Product.find().populate("category brand");
 
   // Tính toán độ tương đồng cho tất cả các sản phẩm và sắp xếp theo độ tương đồng
   const recommendedProducts = allProducts
@@ -316,7 +316,7 @@ const recommendProducts = async (productId) => {
     })
     .sort((a, b) => b.similarity - a.similarity); // Sắp xếp theo độ tương đồng giảm dần
 
-  return recommendedProducts.slice(0, 4); // Trả về top 5 sản phẩm gợi ý
+  return recommendedProducts.slice(0, 4); // Trả về top 4 sản phẩm gợi ý
 };
 
 const searchProductsByName = asyncHandler(async (name) => {

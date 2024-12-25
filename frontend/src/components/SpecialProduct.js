@@ -38,9 +38,9 @@ const SpecialProduct = (props) => {
                 <b> 5 </b>days
               </p>
               <div className="d-flex gap-10 align-items-center">
-                <span className="bagde rounded-circle p-3 bg-danger">1</span>:
-                <span className="bagde rounded-circle p-3 bg-danger">1</span>:
-                <span className="bagde rounded-circle p-3 bg-danger">1</span>
+                <span className="bagde rounded-circle p-3 bg-danger">11</span>:
+                <span className="bagde rounded-circle p-3 bg-danger">22</span>:
+                <span className="bagde rounded-circle p-3 bg-danger">53</span>
               </div>
             </div>
             <div className="prod-count my-3">
@@ -57,7 +57,7 @@ const SpecialProduct = (props) => {
               </div>
             </div>
             <Link className="button" to={"/product/" + id}>
-              View
+              Xem
             </Link>
           </div>
         </div>

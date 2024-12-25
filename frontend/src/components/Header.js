@@ -245,7 +245,7 @@ const Header = () => {
                       {userCartState?.products?.length > 0 ? (
                         <>
                           <ul className="cart-items">
-                            {userCartState.products.map((item, index) => {
+                            {userCartState?.products?.map((item, index) => {
                               const product = productState?.find(
                                 (productItem) =>
                                   productItem?._id === item?.product

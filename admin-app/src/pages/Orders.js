@@ -63,7 +63,7 @@ const Orders = () => {
     name: order.orderBy?.name,
     status: order.orderStatus,
     amount: order.paymentIndent.amount,
-    date: new Date(order.createdAt).toLocaleString(),
+    date: moment(order.createdAt).format("DD-MM-YYYY"),
     action: (
       <>
         <div className="d-flex align-items-center">
@@ -86,7 +86,7 @@ const Orders = () => {
         key: orderState[i]._id,
         name: orderState[i].orderBy?.name,
         status: orderState[i].orderStatus,
-        date: new Date(orderState[i].createdAt).toLocaleString(),
+        date: moment(orderState[i].createdAt).format("DD-MM-YYYY"),
         action: (
           <>
             <div className="d-flex align-items-center">
@@ -158,10 +158,6 @@ const columns1 = [
     dataIndex: "name",
   },
   {
-    title: "Thương hiệu",
-    dataIndex: "brand",
-  },
-  {
     title: "Số lượng",
     dataIndex: "count",
   },
@@ -193,23 +189,27 @@ const ViewOrder = (orderState) => {
   const [selectedStatus, setSelectedStatus] = useState(order.orderStatus);
   const handleStatusChange = (event) => {
     const newStatus = event.target.value;
+    if (newStatus === "Đã hủy" && selectedStatus !== "Chờ xác nhận") {
+      toast.error("Chỉ có thể hủy đơn hàng ở trạng thái 'Chờ xác nhận'");
+      return;
+    }
     if (statusPriority[newStatus] < statusPriority[selectedStatus]) {
-      toast.error("Không thể chuyển trạng thái đơn hàng về mức thấp hơn trạng thái hiện tại.");
+      toast.error("Không thể chuyển trạng thái");
       return;
     }
     setSelectedStatus(newStatus);
     dispatch(updateOrderStatusSlice({ id: order._id, status: newStatus }));
+    toast.success("Thay đổi thành công")
     setTimeout(() => {
       dispatch(getOrders());
       dispatch(getOrderById(order._id));
     }, 300);
   };
-  if (order.products && order.products.length) {
+  if (order?.products && order?.products.length) {
     for (let i = 0; i < order.products.length; i++) {
       data1.push({
-        key: order.products[i].product._id,
+        key: order.products[i]?.product?._id,
         name: order.products[i].product.name,
-        brand: order.products[i].product.brand,
         count: order.products[i].count,
         color: order.products[i].color,
         price: formattedPrice(
@@ -242,6 +242,9 @@ const ViewOrder = (orderState) => {
         </li>
         <li>
           <strong>Địa chỉ giao hàng:</strong> {order.orderAddress}
+        </li>
+        <li>
+          <strong>Số điện thoại:</strong> {order.orderBy?.phone}
         </li>
         <div className="d-flex align-items-center gap-10">
           <li>

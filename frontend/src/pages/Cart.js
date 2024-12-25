@@ -130,7 +130,7 @@ const Cart = () => {
                             }}
                           />
                         </div>
-                        <div>
+                        <div className="cursor-pointer">
                           <MdDelete
                             onClick={(e) => {
                               deleteproduct(item?.product._id, item?.color);

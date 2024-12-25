@@ -580,6 +580,7 @@ export const authSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
+        toast.error("Mật khẩu hiện tại chưa đúng")
       })
       .addCase(logoutSlice.pending, (state) => {
         state.isLoading = true;

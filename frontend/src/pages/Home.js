@@ -10,23 +10,16 @@ import moment from "moment";
 import { getAllProducts } from "../features/products/productSlice";
 import { getCategories } from "../features/category/categorySlice";
 const Home = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getCategories());
+    dispatch(getAllBlog());
+    dispatch(getAllProducts());
+  }, []);
   const blogState = useSelector((state) => state?.blog?.blogs?.data);
   const firstFourBlogs = blogState?.slice(0, 4) || [];
   const productState = useSelector((state) => state?.product?.products?.data);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    getBlogs();
-    getProducts();
-    dispatch(getCategories());
-  }, []);
-  const categoriesState = useSelector((state) => state?.category?.data)
-  const getBlogs = () => {
-    dispatch(getAllBlog());
-  };
-  const getProducts = () => {
-    dispatch(getAllProducts());
-  };
-
+  const categoriesState = useSelector(state => state?.category?.Categories?.data)
   const formatPrice = (amount) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -194,59 +187,39 @@ const Home = () => {
               <div className="categories d-flex align-items-center justify-content-between flex-wrap">
                 <div className="d-flex gap align-items-center">
                   <div>
-                    <h6>Cameras</h6>
-                    <p>10 items</p>
+                    <h6>{categoriesState ? categoriesState[0]?.title : ""}</h6>
                   </div>
-                  <img src="images/camera.jpg" alt="camera" />
+                  <img src="https://www.techone.vn/wp-content/uploads/2024/09/vang.jpg" alt="camera" className="category-img" />
                 </div>
                 <div className="d-flex gap align-items-center">
                   <div>
-                    <h6>Smart TV</h6>
-                    <p>10 items</p>
+                    <h6>{categoriesState ? categoriesState[1]?.title : ""}</h6>
                   </div>
-                  <img src="images/tv.jpg" alt="camera" />
+                  <img src="https://soundpeatsvietnam.com/wp-content/uploads/2023/05/gofree.jpg" alt="camera" className="category-img" />
                 </div>
                 <div className="d-flex gap align-items-center">
                   <div>
-                    <h6>Smart Watch</h6>
-                    <p>10 items</p>
+                    <h6>{categoriesState ? categoriesState[2]?.title : ""}</h6>
                   </div>
-                  <img src="images/headphone.jpg" alt="camera" />
+                  <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/v/e/venu3s_of_5000-01.png" alt="camera" className="category-img" />
                 </div>
                 <div className="d-flex gap align-items-center">
                   <div>
-                    <h6>Cameras</h6>
-                    <p>10 items</p>
+                    <h6>{categoriesState ? categoriesState[3]?.title : ""}</h6>
                   </div>
-                  <img src="images/camera.jpg" alt="camera" />
+                  <img src="https://surfaceviet.vn/wp-content/uploads/2024/05/Surface-Laptop-7-Platinum-13.8-inch.jpg" alt="camera" className="category-img" />
                 </div>
                 <div className="d-flex gap align-items-center">
                   <div>
-                    <h6>Cameras</h6>
-                    <p>10 items</p>
+                    <h6>{categoriesState ? categoriesState[4]?.title : ""}</h6>
                   </div>
-                  <img src="images/camera.jpg" alt="camera" />
+                  <img src="https://benhvienlaptop.com/wp-content/uploads/2024/06/Sac-Macbook-USB-C-510x510-3.jpg" alt="camera" className="category-img" />
                 </div>
                 <div className="d-flex gap align-items-center">
                   <div>
-                    <h6>Smart TV</h6>
-                    <p>10 items</p>
+                    <h6>{categoriesState ? categoriesState[5]?.title : ""}</h6>
                   </div>
-                  <img src="images/tv.jpg" alt="camera" />
-                </div>
-                <div className="d-flex gap align-items-center">
-                  <div>
-                    <h6>Smart Watch</h6>
-                    <p>10 items</p>
-                  </div>
-                  <img src="images/headphone.jpg" alt="camera" />
-                </div>
-                <div className="d-flex gap align-items-center">
-                  <div>
-                    <h6>Cameras</h6>
-                    <p>10 items</p>
-                  </div>
-                  <img src="images/camera.jpg" alt="camera" />
+                  <img src="https://imagedelivery.net/ZeGtsGSjuQe1P3UP_zk3fQ/c06fd9d1-bc40-49ab-76c0-3a282e806400/storedata" alt="camera" className="category-img" />
                 </div>
               </div>
             </div>
@@ -405,8 +378,8 @@ const Home = () => {
                     title={item?.title}
                     description={item?.description}
                     image={item?.image}
-                    date={moment(item?.created_at).format(
-                      "MMMM Do YYYY, h:mm:ss a"
+                    createdAt={moment(item?.createdAt).format(
+                      "DD-MM-YYYY"
                     )}
                   />
                 </div>

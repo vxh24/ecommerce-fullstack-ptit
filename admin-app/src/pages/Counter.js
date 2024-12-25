@@ -514,6 +514,11 @@ const Counter = () => {
                               handleColorChange(product._id, e.target.value)
                             }
                           >
+                            <option
+
+                            >
+                              Chọn màu
+                            </option>
                             {product.colors.map((item, index) => {
                               return (
                                 <option
@@ -686,24 +691,6 @@ const Counter = () => {
                 <strong style={{ color: "blue" }}>0</strong>
               )}
             </div>
-            <div className="total">
-              <p>Tiền khách đưa:</p>
-              <input
-                type="text"
-                id="numberInput"
-                value={formatDisplay(value)}
-                onChange={handleChange}
-                placeholder="VNĐ"
-              />
-            </div>
-            <div className="total">
-              <p>Tiền thừa trả khách:</p>
-              {value && change ? (
-                <strong>{change?.toLocaleString()} đ</strong>
-              ) : (
-                <strong>0</strong>
-              )}
-            </div>
             <div className="counter-payment-method d-flex justify-content-between">
               <div class="form-check">
                 <input
@@ -732,6 +719,30 @@ const Counter = () => {
                 </label>
               </div>
             </div>
+            {
+              payment !== null && payment === "off" && (
+                <div>
+                  <div className="total">
+                    <p>Tiền khách đưa:</p>
+                    <input
+                      type="text"
+                      id="numberInput"
+                      value={formatDisplay(value)}
+                      onChange={handleChange}
+                      placeholder="VNĐ"
+                    />
+                  </div>
+                  <div className="total">
+                    <p>Tiền thừa trả khách:</p>
+                    {value && change ? (
+                      <strong>{change?.toLocaleString()} đ</strong>
+                    ) : (
+                      <strong>0</strong>
+                    )}
+                  </div>
+                </div>
+              )
+            }
             <button className="counter-pay-btn" onClick={createOrder}>
               THANH TOÁN
             </button>

@@ -81,7 +81,7 @@ const OurStore = () => {
   const [error, setError] = useState(null);
   const [click, setClick] = useState(false);
   const [totalItems, setTotalItems] = useState(0);
-  const [pagination, setPagination] = useState({ page: 1, limit: 8 });
+  const [pagination, setPagination] = useState({ page: 1, limit: 9 });
   const [filters, setFilters] = useState({ sort: "", fields: "" });
   const indexOfLastProduct = currentPage * pagination.limit;
   const indexOfFirstProduct = indexOfLastProduct - pagination.limit;
@@ -347,6 +347,8 @@ const OurStore = () => {
                         <option value="name-desc">Tên Z-A</option>
                         <option value="price-asc">Giá tăng dần</option>
                         <option value="price-desc">Giá giảm dần</option>
+                        <option value="date-asc">Sản phẩm mới nhất</option>
+                        <option value="date-desc">Giá giảm cũ nhất</option>
                       </select>
                     </div>
                   </div>

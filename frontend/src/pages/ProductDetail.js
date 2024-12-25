@@ -603,13 +603,13 @@ const ProductDetail = () => {
                             alt="product image"
                           />
                           <img
-                            src={item.product?.images[0]?.url}
+                            src={item.product?.images[1]?.url}
                             className="img-fluid"
                             alt="product image"
                           />
                         </div>
                         <div className="product-details">
-                          <h6 className="brand">{item.product.brand}</h6>
+                          <h6 className="brand">{item.product.brand.title}</h6>
                           <h5 className="product-title">
                             {item.product.title}
                           </h5>

@@ -188,7 +188,7 @@ const VoucherPage = () => {
     dispatch(getAllCoupon());
   }, []);
   // Danh sách các danh mục (tabs)
-  const categories = ["Tất cả", "Shopee", "Shop", "Nạp thẻ & Dịch vụ"];
+  const categories = ["Tất cả", "Shop", "Nạp thẻ & Dịch vụ"];
   const [activeTab, setActiveTab] = useState(0); // Tab đang chọn
   // const [vouchers, setVouchers] = useState([]); // Danh sách voucher
   const [filteredVouchers, setFilteredVouchers] = useState([]); // Voucher hiển thị
@@ -394,9 +394,8 @@ const Address = () => {
 
                 <button
                   value={address._id}
-                  className={`default-button ${
-                    address.isDefault ? "active" : ""
-                  }`}
+                  className={`default-button ${address.isDefault ? "active" : ""
+                    }`}
                   onClick={(e) => {
                     setFormData((prevFormData) => ({
                       ...prevFormData,
