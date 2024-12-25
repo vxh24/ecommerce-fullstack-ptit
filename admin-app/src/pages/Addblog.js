@@ -16,9 +16,9 @@ import {
 import { getCategories } from "../features/bcategory/bcategorySlice";
 
 let schema = yup.object().shape({
-  title: yup.string().required("Title is Required"),
-  description: yup.string().required("Description is Required"),
-  category: yup.string().required("Category is Required"),
+  title: yup.string().required("Vui lòng nhập tên chủ đề bài viết"),
+  description: yup.string().required("Vui lòng nhập mô tả bài viết"),
+  category: yup.string().required("Vui lòng chọn danh mục bài viết"),
 });
 const AddBlog = () => {
   const dispatch = useDispatch();

@@ -1,4 +1,3 @@
-const { required } = require("joi");
 const mongoose = require("mongoose");
 
 const cartSchema = new mongoose.Schema(
@@ -18,7 +17,9 @@ const cartSchema = new mongoose.Schema(
       },
     ],
     cartTotal: Number,
-    totalAfterDiscount: Number,
+    totalAfterDiscount: {
+      totalAfterDiscount: Number,
+    },
     orderBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

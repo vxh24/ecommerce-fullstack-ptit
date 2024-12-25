@@ -49,10 +49,10 @@ const ViewEnquiry = ({ enquiry }) => {
             id=""
             onChange={(e) => setEnquiryStatus(e.target.value, enquiry._id)}
           >
-            <option value="Submitted">Submitted</option>
-            <option value="Contacted">Contacted</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Resolved">Resolved</option>
+            <option value="Đã gửi">Đã gửi</option>
+            <option value="Đã liên hệ">Đã liên hệ</option>
+            <option value="Đang xử lý">Đang xử lý</option>
+            <option value="Đã giải quyết">Đã giải quyết</option>
           </select>
         </div>
       </div>

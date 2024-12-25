@@ -106,7 +106,7 @@ const updateProduct = asyncHandler(async (id, productData, files) => {
     }));
   }
 
-  let colors = productData.colors || [];
+  let colors = productData.colors || product.colors;
   if (typeof colors === "string") {
     try {
       colors = JSON.parse(colors);

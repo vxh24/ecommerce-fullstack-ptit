@@ -14,6 +14,7 @@ import "../assets/style.css";
 import { useNavigate } from "react-router-dom";
 import ReactImageLightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 let schema = yup.object().shape({
   name: yup.string().required("Tên là bắt buộc"),
@@ -26,6 +27,15 @@ let schema = yup.object().shape({
     .min(1, "Ít nhất một thẻ là bắt buộc")
     .of(yup.string().required("Mỗi thẻ phải là một chuỗi"))
     .required("Thẻ là bắt buộc"),
+  colors: yup.array().of(
+    yup.object().shape({
+      name: yup.string().required("Màu là bắt buộc"),
+      quantity: yup
+        .number()
+        .required("Số lượng là bắt buộc")
+        .min(1, "Số lượng phải lớn hơn 0"),
+    })
+  ),
 });
 
 const AddProduct = () => {
@@ -89,7 +99,7 @@ const AddProduct = () => {
       tags: [],
     },
     validationSchema: schema,
-    onSubmit: () => {
+    onSubmit: async () => {
       const formData = new FormData();
 
       formData.append("name", formik.values.name);
@@ -103,16 +113,14 @@ const AddProduct = () => {
       images.forEach((image) => {
         formData.append("images", image);
       });
-      for (const [key, value] of formData.entries()) {
-        console.log(`${key}: ${value}`);
-      }
-      dispatch(createProducts(formData));
+
+      await dispatch(createProducts(formData));
 
       formik.resetForm();
       setImages([]);
+      setAttributes([]);
       setTimeout(() => {
         dispatch(resetState());
-        setAttributes([]);
       }, 3000);
     },
   });
@@ -135,6 +143,16 @@ const AddProduct = () => {
       return updatedImages;
     });
     setFileInputKey((prevKey) => prevKey + 1);
+  };
+
+  const handleDragEnd = (result) => {
+    if (!result.destination) return;
+
+    const reorderedImages = [...images];
+    const [removed] = reorderedImages.splice(result.source.index, 1);
+    reorderedImages.splice(result.destination.index, 0, removed);
+
+    setImages(reorderedImages);
   };
 
   const getImages = () =>
@@ -184,6 +202,65 @@ const AddProduct = () => {
           Quay lại
         </button>
       </div>
+
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <Droppable droppableId="images" direction="horizontal">
+          {(provided) => (
+            <div
+              className="d-flex flex-wrap gap-3"
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+            >
+              {images.map((image, index) => (
+                <Draggable
+                  key={index}
+                  draggableId={`image-${index}`}
+                  index={index}
+                >
+                  {(provided) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      style={{
+                        ...provided.draggableProps.style,
+                        width: "100px",
+                        height: "100px",
+                      }}
+                    >
+                      <img
+                        alt="Preview"
+                        src={URL.createObjectURL(image)}
+                        width="100px"
+                        height="100px"
+                        style={{ objectFit: "cover", cursor: "pointer" }}
+                      />
+                      <button
+                        onClick={() => removeImage(index)}
+                        style={{
+                          position: "relative",
+                          top: "-110px",
+                          right: "-90px",
+                          background: "red",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "50%",
+                          cursor: "pointer",
+                          width: "20px",
+                          height: "20px",
+                        }}
+                      >
+                        X
+                      </button>
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
 
       <div className="row justify-content-between">
         <div className="col-lg-8">
@@ -457,11 +534,11 @@ const AddProduct = () => {
           </form>
         </div>
 
-        <div className="col-lg-4">
-          <div className="d-flex flex-wrap justify-content-center gap-3">
-            {getImages()}
-          </div>
-        </div>
+        {/* <div className="col-lg-4"> */}
+        {/* <div className="d-flex flex-wrap justify-content-center gap-3"> */}
+
+        {/* </div> */}
+        {/* </div> */}
 
         {lightboxOpen && (
           <ReactImageLightbox

@@ -381,9 +381,7 @@ const Counter = () => {
       let selectedProducts =
         JSON.parse(localStorage.getItem("selectedProducts")) || [];
 
-      if (
-        !selectedProducts.find((product) => product._id === prod._id)
-      ) {
+      if (!selectedProducts.find((product) => product._id === prod._id)) {
         const updatedProduct = {
           ...prod,
           selectedColor: "",
@@ -398,7 +396,7 @@ const Counter = () => {
       }
     }
     setQrData("");
-  }, [productState, qrData])
+  }, [productState, qrData]);
   const handleError = (err) => {
     console.error("QR Scan Error:", err);
   };
@@ -514,18 +512,10 @@ const Counter = () => {
                               handleColorChange(product._id, e.target.value)
                             }
                           >
-                            <option
-
-                            >
-                              Chọn màu
-                            </option>
+                            <option>Chọn màu</option>
                             {product.colors.map((item, index) => {
                               return (
-                                <option
-                                  value={item.name}
-                                >
-                                  {item.name}
-                                </option>
+                                <option value={item.name}>{item.name}</option>
                               );
                             })}
                           </select>

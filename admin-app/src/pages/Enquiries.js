@@ -80,23 +80,7 @@ const Enquiries = () => {
     name: enq.name,
     email: enq.email,
     phone: enq.phone,
-    status: (
-      <>
-        <select
-          value={enq.status}
-          name=""
-          defaultValue={enq.status ? enq.status : "Submitted"}
-          className="form-control form-select"
-          id=""
-          onChange={(e) => setEnquiryStatus(e.target.value, enq._id)}
-        >
-          <option value="Submitted">Submitted</option>
-          <option value="Contacted">Contacted</option>
-          <option value="In Progress">In Progress</option>
-          <option value="Resolved">Resolved</option>
-        </select>
-      </>
-    ),
+    status: enq.status,
     action: (
       <>
         <button
@@ -124,28 +108,7 @@ const Enquiries = () => {
         name: enqState[i].name,
         email: enqState[i].email,
         phone: enqState[i].phone,
-        status: (
-          <>
-            <select
-              value={enqState[i].status}
-              name=""
-              defaultValue={
-                enqState[i].status ? enqState[i].status : "Submitted"
-              }
-              className="form-control form-select"
-              id=""
-              onChange={(e) =>
-                setEnquiryStatus(e.target.value, enqState[i]._id)
-              }
-            >
-              <option value="Submitted">Submitted</option>
-              <option value="Contacted">Contacted</option>
-              <option value="In Progress">In Progress</option>
-              <option value="Resolved">Resolved</option>
-            </select>
-          </>
-        ),
-
+        status: enqState[i].status,
         action: (
           <>
             <button
