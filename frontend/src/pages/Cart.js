@@ -29,7 +29,6 @@ const Cart = () => {
     }, 600);
   };
   const updatecount = (id, color, newquantity) => {
-    console.log(color);
     dispatch(
       updatecountCart({
         productId: id,
@@ -46,7 +45,6 @@ const Cart = () => {
       navigate("/login");
     }
   }, [authState]);
-  console.log(userCartState);
   const formatPrice = (amount) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -73,7 +71,9 @@ const Cart = () => {
                   const product = productState?.find(
                     (productItem) => productItem?._id === item?.product._id
                   );
-                  const quantity = product?.colors.find((quan) => quan.name === item.color);
+                  const quantity = product?.colors.find(
+                    (quan) => quan.name === item.color
+                  );
                   return (
                     <div
                       key={index}
@@ -88,14 +88,11 @@ const Cart = () => {
                           />
                         </div>
                         <div className="w-75 cart-title">
-                          <p >{item.product?.name}</p>
+                          <p>{item.product?.name}</p>
                           <p className="d-flex gap-15 mb-0">
                             Màu sắc:
                             <ul className="colors ps-0">
-                              <li
-                              >
-                                {item.color}
-                              </li>
+                              <li>{item.color}</li>
                             </ul>
                           </p>
                         </div>

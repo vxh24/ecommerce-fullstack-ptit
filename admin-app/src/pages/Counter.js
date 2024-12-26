@@ -175,7 +175,6 @@ const Counter = () => {
           const co = product.colors.find(
             (item) => item.name === product.selectedColor
           );
-          console.log(co);
           dispatch(
             updatecountCart({
               productId: product._id,
@@ -315,19 +314,22 @@ const Counter = () => {
                 </tr>
                 <!-- Bạn có thể lặp qua danh sách sản phẩm của bạn ở đây -->
                 ${printState.items
-            ?.map(
-              (product) => `
+                  ?.map(
+                    (product) => `
                   <tr>
-                    <td style="border:1px solid black; padding:5px;">${product.product.name
-                }</td>
-                    <td style="border:1px solid black; padding:5px;">${product.count
-                }</td>
-                    <td style="border:1px solid black; padding:5px;">${product.product.price * product.count
-                }</td>
+                    <td style="border:1px solid black; padding:5px;">${
+                      product.product.name
+                    }</td>
+                    <td style="border:1px solid black; padding:5px;">${
+                      product.count
+                    }</td>
+                    <td style="border:1px solid black; padding:5px;">${
+                      product.product.price * product.count
+                    }</td>
                   </tr>
                 `
-            )
-            .join("")}
+                  )
+                  .join("")}
               </table>
               <hr />
             </body>
@@ -347,8 +349,6 @@ const Counter = () => {
     }
     setPayurl(cartState?.momo?.data?.payUrl);
   }, [cartState, payurl]);
-
-  // console.log(message.message);
 
   useEffect(() => {
     if (message.message === "false") {
@@ -377,7 +377,6 @@ const Counter = () => {
   useEffect(() => {
     if (qrData) {
       const prod = productState.find((item) => item._id === qrData);
-      console.log(prod);
       let selectedProducts =
         JSON.parse(localStorage.getItem("selectedProducts")) || [];
 
@@ -709,30 +708,28 @@ const Counter = () => {
                 </label>
               </div>
             </div>
-            {
-              payment !== null && payment === "off" && (
-                <div>
-                  <div className="total">
-                    <p>Tiền khách đưa:</p>
-                    <input
-                      type="text"
-                      id="numberInput"
-                      value={formatDisplay(value)}
-                      onChange={handleChange}
-                      placeholder="VNĐ"
-                    />
-                  </div>
-                  <div className="total">
-                    <p>Tiền thừa trả khách:</p>
-                    {value && change ? (
-                      <strong>{change?.toLocaleString()} đ</strong>
-                    ) : (
-                      <strong>0</strong>
-                    )}
-                  </div>
+            {payment !== null && payment === "off" && (
+              <div>
+                <div className="total">
+                  <p>Tiền khách đưa:</p>
+                  <input
+                    type="text"
+                    id="numberInput"
+                    value={formatDisplay(value)}
+                    onChange={handleChange}
+                    placeholder="VNĐ"
+                  />
                 </div>
-              )
-            }
+                <div className="total">
+                  <p>Tiền thừa trả khách:</p>
+                  {value && change ? (
+                    <strong>{change?.toLocaleString()} đ</strong>
+                  ) : (
+                    <strong>0</strong>
+                  )}
+                </div>
+              </div>
+            )}
             <button className="counter-pay-btn" onClick={createOrder}>
               THANH TOÁN
             </button>

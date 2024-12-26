@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToWishlist } from "../features/products/productSlice";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { getUserProductWishlist } from "../features/user/userSlice";
-import { toast } from "react-toastify";
 const ProductCard = (props) => {
   const navigate = useNavigate();
   const authState = useSelector((state) => state?.auth);
@@ -47,8 +46,9 @@ const ProductCard = (props) => {
         return (
           <div
             key={index}
-            className={`${location.pathname === "/product" ? `gr-${grid}` : "col-3"
-              }`}
+            className={`${
+              location.pathname === "/product" ? `gr-${grid}` : "col-3"
+            }`}
           >
             <Link className="product-card position-relative">
               <div className="wishlis-icon position-absolute">
@@ -73,15 +73,12 @@ const ProductCard = (props) => {
               <div className="product-image">
                 <img
                   src={item?.images[0]?.url}
-
-                  className={` ${grid === 12 ? "" : "img-fluid mx-auto"
-                    }`}
+                  className={` ${grid === 12 ? "" : "img-fluid mx-auto"}`}
                   alt="product image"
                 />
                 <img
-                  src={item?.images[1]?.url}
-                  className={` ${grid === 12 ? "" : "img-fluid"
-                    }`}
+                  src={item?.images[0]?.url}
+                  className={` ${grid === 12 ? "" : "img-fluid"}`}
                   alt="product image"
                 />
               </div>
@@ -96,12 +93,13 @@ const ProductCard = (props) => {
                   activeColor="#ffd700"
                 />
                 <p
-                  className={`description ${grid === 12 ? "d-block" : "d-none"
-                    }`}
-                  dangerouslySetInnerHTML={{ __html: item?.description?.substr(0, 500) + "...", }}
-                >
-                  {/* {item?.description } */}
-                </p>
+                  className={`description ${
+                    grid === 12 ? "d-block" : "d-none"
+                  }`}
+                  dangerouslySetInnerHTML={{
+                    __html: item?.description?.substr(0, 500) + "...",
+                  }}
+                ></p>
                 <p className="price">{formatPrice(item.price)}</p>
               </div>
               <div className="action-bar position-absolute">

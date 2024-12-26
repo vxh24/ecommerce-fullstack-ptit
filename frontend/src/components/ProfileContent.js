@@ -54,7 +54,6 @@ const ProfileContent = ({ active }) => {
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("phone", values.phone);
-      // console.log(images);
       formData.append("image", images);
 
       dispatch(updateProfleSlice({ id: profileState._id, data: formData }));
@@ -66,7 +65,6 @@ const ProfileContent = ({ active }) => {
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    console.log(file);
     if (file) {
       setImages(file);
       setImagePreview(URL.createObjectURL(file));
@@ -392,8 +390,9 @@ const Address = () => {
 
                 <button
                   value={address._id}
-                  className={`default-button ${address.isDefault ? "active" : ""
-                    }`}
+                  className={`default-button ${
+                    address.isDefault ? "active" : ""
+                  }`}
                   onClick={(e) => {
                     setFormData((prevFormData) => ({
                       ...prevFormData,

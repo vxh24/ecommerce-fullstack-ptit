@@ -19,7 +19,6 @@ const OurStore = () => {
   const categoryState = useSelector(
     (state) => state?.category?.Categories?.data
   );
-  console.log(message);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
@@ -105,8 +104,8 @@ const OurStore = () => {
         ...(maxPrice && { "price[lte]": maxPrice }),
         ...(selectedBrand &&
           selectedBrand.length > 0 && {
-          brand: selectedBrand.join("&brand="),
-        }),
+            brand: selectedBrand.join("&brand="),
+          }),
         ...(selectedCategory && { category: selectedCategory }),
       }).toString();
       const finalQuery = query.replace(/%26/g, "&").replace(/%3D/g, "=");
@@ -131,8 +130,7 @@ const OurStore = () => {
   useEffect(() => {
     if (message.message) {
       dispatch(searchProductSlice(message.message));
-    }
-    else {
+    } else {
       if (click === true) {
         fetchProducts();
         setClick(false);
@@ -178,6 +176,14 @@ const OurStore = () => {
     );
   }
   if (error) return <div>{error}</div>;
+
+  const formatPrice = (amount) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
   return (
     <>
       <Meta title={"Cửa hàng"} />
@@ -310,10 +316,7 @@ const OurStore = () => {
                               edit={false}
                               activeColor="#ffd700"
                             />
-                            <h5 className="price">
-                              {item.price}
-                              <span className="currency">đ</span>
-                            </h5>
+                            <h5 className="price">{formatPrice(item.price)}</h5>
                           </div>
                         </div>
                       );

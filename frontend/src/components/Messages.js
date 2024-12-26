@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { useState } from 'react';
+import { useState } from "react";
 import Message from "./Message";
 import { useDispatch, useSelector } from "react-redux";
 import { getMessages } from "../features/messages/messageSlice";
@@ -34,7 +34,6 @@ const Messages = () => {
       dispatch(getMessages(ADMIN_ID))
         .unwrap()
         .then((data) => {
-          console.log(data);
           setMessage1(data);
         })
         .catch((error) => toast.error(`Lỗi: ${error}`));
@@ -48,11 +47,14 @@ const Messages = () => {
           message1.map((message) => {
             return (
               <div ref={lastMessageRef}>
-                <Message key={message._id}
+                <Message
+                  key={message._id}
                   ref={lastMessageRef}
-                  message={message} avatar={profileState.avatar} />
+                  message={message}
+                  avatar={profileState.avatar}
+                />
               </div>
-            )
+            );
           })}
         {message1?.length === 0 && (
           <p className="tw-text-center">

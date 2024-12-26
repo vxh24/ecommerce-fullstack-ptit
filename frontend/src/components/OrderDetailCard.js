@@ -31,7 +31,6 @@ const OrderDetailCard = ({ order }) => {
       maximumFractionDigits: 0,
     }).format(amount);
   };
-  console.log(order);
   return (
     <div>
       <h4 className="mb-4">Chi tiết đơn hàng</h4>
@@ -81,9 +80,7 @@ const OrderDetailCard = ({ order }) => {
                     <p className="mb-0">{item?.product?.name}</p>
                     <p className="d-flex gap-15">
                       Màu:
-                      <div className="colors ps-0">
-                        {item?.color}
-                      </div>
+                      <div className="colors ps-0">{item?.color}</div>
                     </p>
                   </div>
                 </div>

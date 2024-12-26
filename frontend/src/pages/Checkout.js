@@ -6,11 +6,9 @@ import { RiCoupon3Line } from "react-icons/ri";
 import { FcShipped } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  applyCouponSlice,
   cashOrderUser,
   getAddressSlice,
   getUserCart,
-  momoOrderUser,
   paymentMoMoSlice,
 } from "../features/user/userSlice";
 import { FaMapMarkerAlt } from "react-icons/fa";
@@ -81,11 +79,7 @@ const Checkout = () => {
     let Address = addressState?.find((item) => item.isDefault === true);
     setAddress(Address);
   }, [addressState, address]);
-  console.log(addressState);
   useEffect(() => {
-    // setTimeout(() => {
-    //   dispatch(getUserCart())
-    // }, 200)
     dispatch(getUserCart());
   }, []);
   useEffect(() => {
@@ -94,7 +88,7 @@ const Checkout = () => {
       sum =
         sum +
         Number(userCartState.products[index].count) *
-        userCartState.products[index].price;
+          userCartState.products[index].price;
       setTotalAmount(sum);
     }
   }, [userCartState]);
@@ -102,13 +96,17 @@ const Checkout = () => {
   const createOrder = () => {
     if (payment === 1) {
       dispatch(
-        cashOrderUser({ userId: user.user.id, totalAmount: totalpayment, orderAddress: getAddress })
+        cashOrderUser({
+          userId: user.user.id,
+          totalAmount: totalpayment,
+          orderAddress: getAddress,
+        })
       );
       setTimeout(() => {
         dispatch(getUserCart());
         navigate("/my-orders");
-        toast.success("Đơn hàng đã được tạo")
-      }, 1000)
+        toast.success("Đơn hàng đã được tạo");
+      }, 1000);
     }
     if (payment === 2) {
       dispatch(
@@ -172,70 +170,71 @@ const Checkout = () => {
                     </button>
                   </div>
                 </div>
-                {
-                  addressState?.length > 0 ? (
-                    addressSelect ? (
-                      <div className="d-flex flex-column gap-15 mb-3">
-                        <div className="address-item" key={addressSelect?._id}>
-                          <div className="address-details">
-                            <strong className="address-name">
-                              {addressSelect?.name &&
-                                addressSelect?.name.charAt(0).toUpperCase() +
-                                addressSelect?.name.slice(1)}
-                            </strong>
-                            <span className="address-phone">- {addressSelect?.phone}</span>
-                            <p className="address">
-                              {addressSelect?.specificAddress}
-                              <br />
-                              {addressSelect?.commune}, {addressSelect?.district}, {addressSelect?.city}
-                            </p>
-                            <div className="d-flex align-items-center">
-                              {addressSelect?.isDefault && (
-                                <p className="isdefault text-center">Mặc định</p>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="d-flex flex-column gap-15 mb-3">
-                        <div className="address-item" key={address?._id}>
-                          <div className="address-details">
-                            <strong className="address-name">
-                              {address?.name &&
-                                address?.name.charAt(0).toUpperCase() + address?.name.slice(1)}
-                            </strong>
-                            <span className="address-phone">- {address?.phone}</span>
-                            <p className="address">
-                              {address?.specificAddress}
-                              <br />
-                              {address?.commune}, {address?.district}, {address?.city}
-                            </p>
-                            <div className="d-flex align-items-center">
-                              {address?.isDefault && (
-                                <p className="isdefault text-center">Mặc định</p>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )
-                  ) : (
+                {addressState?.length > 0 ? (
+                  addressSelect ? (
                     <div className="d-flex flex-column gap-15 mb-3">
-                      <div className="address-item" >
+                      <div className="address-item" key={addressSelect?._id}>
                         <div className="address-details">
                           <strong className="address-name">
-                            <div>Thêm địa chỉ để đặt hàng</div>
+                            {addressSelect?.name &&
+                              addressSelect?.name.charAt(0).toUpperCase() +
+                                addressSelect?.name.slice(1)}
                           </strong>
-
+                          <span className="address-phone">
+                            - {addressSelect?.phone}
+                          </span>
+                          <p className="address">
+                            {addressSelect?.specificAddress}
+                            <br />
+                            {addressSelect?.commune}, {addressSelect?.district},{" "}
+                            {addressSelect?.city}
+                          </p>
+                          <div className="d-flex align-items-center">
+                            {addressSelect?.isDefault && (
+                              <p className="isdefault text-center">Mặc định</p>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
-
+                  ) : (
+                    <div className="d-flex flex-column gap-15 mb-3">
+                      <div className="address-item" key={address?._id}>
+                        <div className="address-details">
+                          <strong className="address-name">
+                            {address?.name &&
+                              address?.name.charAt(0).toUpperCase() +
+                                address?.name.slice(1)}
+                          </strong>
+                          <span className="address-phone">
+                            - {address?.phone}
+                          </span>
+                          <p className="address">
+                            {address?.specificAddress}
+                            <br />
+                            {address?.commune}, {address?.district},{" "}
+                            {address?.city}
+                          </p>
+                          <div className="d-flex align-items-center">
+                            {address?.isDefault && (
+                              <p className="isdefault text-center">Mặc định</p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   )
-                }
-
-
+                ) : (
+                  <div className="d-flex flex-column gap-15 mb-3">
+                    <div className="address-item">
+                      <div className="address-details">
+                        <strong className="address-name">
+                          <div>Thêm địa chỉ để đặt hàng</div>
+                        </strong>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {click && (
                   <div className="d-flex flex-column gap-15 py-3 ps-3 bg-white mb-4">
@@ -259,7 +258,7 @@ const Checkout = () => {
                           >
                             {address?.name &&
                               address?.name.charAt(0).toUpperCase() +
-                              address?.name.slice(1)}
+                                address?.name.slice(1)}
                             - {address.phone}, {address.specificAddress},{" "}
                             {address.commune}, {address.district},{" "}
                             {address.city}
@@ -395,10 +394,7 @@ const Checkout = () => {
                             <p className="d-flex gap-15">
                               Màu sắc:
                               <ul className="colors ps-0">
-                                <li
-                                >
-                                  {item.color}
-                                </li>
+                                <li>{item.color}</li>
                               </ul>
                             </p>
                           </div>

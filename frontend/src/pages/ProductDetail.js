@@ -2,15 +2,10 @@ import React, { useState } from "react";
 import Meta from "../components/Meta";
 import BreadCrumb from "../components/BreadCrumb";
 import ReactStars from "react-rating-stars-component";
-import Color from "../components/Color";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import {
-  getAProducts,
-  RatingProduct,
-  resetState,
-} from "../features/products/productSlice";
+import { getAProducts, resetState } from "../features/products/productSlice";
 import { addToWishlist } from "../features/products/productSlice";
 import { getAllColors } from "../features/color/colorSlice";
 import { toast } from "react-toastify";
@@ -21,7 +16,6 @@ import { getUserProductWishlist } from "../features/user/userSlice";
 import { FaFacebookSquare } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { FcNext, FcPrevious } from "react-icons/fc";
-import ReactImageZoom from "react-image-zoom";
 import ImageDetails from "../components/ImageDetails";
 const ProductDetail = () => {
   const dispatch = useDispatch();
@@ -33,7 +27,6 @@ const ProductDetail = () => {
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
   };
-  console.log(productState);
   useEffect(() => {
     return () => {
       dispatch(resetState());
@@ -54,9 +47,7 @@ const ProductDetail = () => {
     );
   };
   const [color, setColor] = useState(null);
-  console.log(color);
   const [count, setCount] = useState(1);
-  const [orderProduct, setorderProduct] = useState(true);
   const [alreadyAdded, setAlreadyAdded] = useState(false);
   const navigate = useNavigate();
   const copyToClipboard = (text) => {
@@ -69,13 +60,6 @@ const ProductDetail = () => {
     toast.success("Copied");
   };
   const getProductId = location.pathname.split("/")[2];
-  const colorIds = useSelector(
-    (state) => state?.product?.product?.data?.colors
-  );
-  const colors = useSelector((state) => state?.color?.colors?.data);
-  const matchedColors = colors?.filter((color) =>
-    colorIds?.includes(color?._id)
-  );
   const [currentIndex, setCurrentIndex] = useState(0);
   const wishlist = useSelector(
     (state) => state?.auth?.wishlist?.data?.wishlist
@@ -120,7 +104,9 @@ const ProductDetail = () => {
   };
   const uploadCart = () => {
     if (getToken?.access_token === undefined) {
-      navigate("/login", { state: { message: `product/${productState?._id}` } });
+      navigate("/login", {
+        state: { message: `product/${productState?._id}` },
+      });
       return;
     }
     if (productState.quantity <= 0) {
@@ -130,11 +116,8 @@ const ProductDetail = () => {
       toast.info("Bạn chưa chọn màu");
       return false;
     } else {
-      dispatch(
-        AddProdToCart({ _id: productState?._id, count, color: color })
-      );
+      dispatch(AddProdToCart({ _id: productState?._id, count, color: color }));
       setTimeout(() => {
-        // navigate("/cart");
         dispatch(getUserCart());
       }, 700);
     }
@@ -144,25 +127,6 @@ const ProductDetail = () => {
   };
   const getProducts = () => {
     dispatch(getAllProducts());
-  };
-  const [star, setStar] = useState(null);
-  const [comment, SetComment] = useState(null);
-  const addToRatingProduct = () => {
-    if (star === null) {
-      toast.info("Vui lòng chọn số sao");
-      return false;
-    } else if (comment === null) {
-      toast.info("No comment?");
-      return false;
-    } else {
-      dispatch(
-        RatingProduct({ star: star, comment: comment, productId: getProductId })
-      );
-      setTimeout(() => {
-        dispatch(getAProducts(getProductId));
-      }, 100);
-    }
-    return false;
   };
 
   const shareOnFacebook = (productUrl) => {
@@ -206,14 +170,17 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(null);
   return (
     <>
-      <Meta title={"Product Name"} />
+      <Meta title={productState?.name} />
       <BreadCrumb title={productState?.name} />
       <div className="main-product-wrapper py-5 home-wrapper-2">
         <div className="container-xxl">
           <div className="row">
             <div className="col-6">
               <div className="main-product-image">
-                <div className="image-main" onClick={() => openLightbox(currentIndex)}>
+                <div
+                  className="image-main"
+                  onClick={() => openLightbox(currentIndex)}
+                >
                   <img src={productState?.images?.[currentIndex]?.url} alt="" />
                 </div>
               </div>
@@ -222,14 +189,14 @@ const ProductDetail = () => {
                   <FcPrevious />
                 </button>
                 {productState?.images?.map((image, index) => (
-
                   <div className="image-d">
                     <img
                       key={index}
                       src={image.url}
                       alt={`Thumbnail ${index}`}
-                      className={`image-detail ${currentIndex === index ? "active" : ""
-                        }`}
+                      className={`image-detail ${
+                        currentIndex === index ? "active" : ""
+                      }`}
                       // className="image-d"
                       onClick={() => setCurrentIndex(index)}
                     />
@@ -267,7 +234,6 @@ const ProductDetail = () => {
                       ({productState?.ratings?.length} reviews)
                     </p>
                   </div>
-                  {/* <a href='#review' className='review-btn'>Viết một đánh giá</a> */}
                 </div>
                 <div className="border-bottom py-3">
                   <div className="d-flex align-items-center gap-10 my-2">
@@ -286,7 +252,9 @@ const ProductDetail = () => {
                     >
                       Danh mục:
                     </h3>
-                    <p className="product-data">{productState?.category.title}</p>
+                    <p className="product-data">
+                      {productState?.category.title}
+                    </p>
                   </div>
                   <div className="d-flex align-items-center gap-10 my-2">
                     <h3
@@ -316,18 +284,22 @@ const ProductDetail = () => {
                       Màu sắc:
                     </h3>
                     <div className="d-flex align-items-center flex-wrap gap-10">
-
                       {productState?.colors?.map((item) => {
                         return (
-                          <div className={`${color === item.name ? "color-fix-active" : "color-fix"} `}
-                            onClick={() => { setColor(item.name); setQuantity(item.quantity) }}
+                          <div
+                            className={`${
+                              color === item.name
+                                ? "color-fix-active"
+                                : "color-fix"
+                            } `}
+                            onClick={() => {
+                              setColor(item.name);
+                              setQuantity(item.quantity);
+                            }}
                           >
-
                             {item.name}
-
-
                           </div>
-                        )
+                        );
                       })}
                     </div>
                   </div>
@@ -347,10 +319,8 @@ const ProductDetail = () => {
                     </div>
                   ) : (
                     <div></div>
-                  )
-                  }
+                  )}
                   <div className="d-flex flex-row gap-10 mt-2 mb-3 align-items-center">
-
                     <h3
                       className="product-heading"
                       style={{ fontWeight: "bold" }}
@@ -371,9 +341,7 @@ const ProductDetail = () => {
                       />
                     </div>
 
-                    <div
-                      className="d-flex align-items-center gap-30 ms-5"
-                    >
+                    <div className="d-flex align-items-center gap-30 ms-5">
                       <button
                         className="button border-0"
                         onClick={() => {
@@ -412,7 +380,7 @@ const ProductDetail = () => {
                       className="product-heading"
                       style={{ fontWeight: "bold" }}
                     >
-                      Shipping and Refund
+                      Giao hàng và trả hàng
                     </h3>
                     <p className="product-data">
                       Shipping nhanh chóng và đảm bảo an toàn, giúp sản phẩm đến
@@ -427,7 +395,7 @@ const ProductDetail = () => {
                       className="product-heading"
                       style={{ fontWeight: "bold" }}
                     >
-                      Copy Product Link:
+                      Sao chép đường dẫn sản phẩm:
                     </h3>
                     <Link
                       to="javascrip:void(0);"
@@ -466,9 +434,7 @@ const ProductDetail = () => {
                   dangerouslySetInnerHTML={{
                     __html: productState?.description,
                   }}
-                >
-                  {/* {productState?.description} */}
-                </p>
+                ></p>
               </div>
             </div>
           </div>
@@ -496,44 +462,7 @@ const ProductDetail = () => {
                       </p>
                     </div>
                   </div>
-                  {orderProduct && (
-                    <div>
-                      <a
-                        href=""
-                        className="text-dark text-decoration-underline"
-                      >
-                        Viết một đánh giá
-                      </a>
-                    </div>
-                  )}
                 </div>
-                {/* <div className="review-form py-4">
-                  <h4>Viết một đánh giá</h4>
-
-                  <div>
-                    <ReactStars
-                      count={5}
-                      size={24}
-                      value={3}
-                      edit={true}
-                      activeColor="#ffd700"
-                      onChange={(e) => {
-                        setStar(e);
-                      }}
-                    />
-                  </div>
-                  <div id="target-section">
-                    <textarea name="" id="" className="w-100 form-control" cols="30" rows="4" placeholder='Viết đánh giá ở đây'
-                      onChange={(e) => {
-                        SetComment(e.target.value);
-                      }}
-                    ></textarea>
-                  </div>
-                  <div className='d-flex justify-content-end mt-3'>
-                    <button onClick={addToRatingProduct} className='button border-0' type='button'>Đánh giá</button>
-                  </div>
-
-                </div> */}
                 <div className="reviews mt-4">
                   {productState &&
                     productState?.ratings?.map((item, index) => {

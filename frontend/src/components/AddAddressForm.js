@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { createAdd, getAddressSlice } from "../features/user/userSlice";
 const AddAddressForm = ({ onClose }) => {
   const dispatch = useDispatch();
@@ -19,7 +19,6 @@ const AddAddressForm = ({ onClose }) => {
     specificAddress: "",
     isDefault: false,
   });
-  // console.log(formData);
   useEffect(() => {
     axios
       .get("https://esgoo.net/api-tinhthanh/1/0.htm")

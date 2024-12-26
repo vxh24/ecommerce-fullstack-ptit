@@ -17,8 +17,6 @@ export const SocketContextProvider = ({ children }) => {
     ? JSON.parse(localStorage.getItem("user"))
     : null;
 
-  // console.log(getCustomerfromLocalStorage);
-
   useEffect(() => {
     if (getCustomerfromLocalStorage) {
       const socket = io("http://localhost:5000", {
@@ -32,10 +30,7 @@ export const SocketContextProvider = ({ children }) => {
       socket.on("getOnlineUsers", (users) => {
         setOnlineUsers(users);
       });
-      // socket.on("new-order-notification", (orderData) => {
-      //   console.log("New order received:", orderData);
-      //   setNewOrder(orderData);
-      // });
+
       return () => {
         socket.close();
       };

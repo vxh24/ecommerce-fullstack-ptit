@@ -82,7 +82,9 @@ const ProductList = () => {
     //   setFilteredProducts(productState || []);
     // }
     if (selectedCategory) {
-      results = results.filter((pro) => pro.category.title === selectedCategory);
+      results = results.filter(
+        (pro) => pro.category.title === selectedCategory
+      );
     }
 
     if (selectedBrand) {
@@ -101,7 +103,6 @@ const ProductList = () => {
     try {
       const results = await dispatch(generateQRCode(productId));
 
-      console.log(results.payload);
       if (results.payload) {
         const response = await fetch(results.payload);
         const blob = await response.blob();
@@ -114,8 +115,6 @@ const ProductList = () => {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-
-        console.log("QR Code đã được tải xuống");
       } else {
         console.error("Không thể tải QR Code");
       }
@@ -224,7 +223,9 @@ const ProductList = () => {
               >
                 <option value="">Tất cả danh mục</option>
                 {[
-                  ...new Set(productState?.map((pro) => pro.category.title) || []),
+                  ...new Set(
+                    productState?.map((pro) => pro.category.title) || []
+                  ),
                 ].map((category, index) => (
                   <option key={index} value={category}>
                     {category}
