@@ -4,7 +4,12 @@ import BreadCrumb from "../components/BreadCrumb";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { IoMdArrowBack } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
-import { dislikeSlice, getAllBlog, getBlog, likeSlice } from "../features/blogs/blogSlice";
+import {
+  dislikeSlice,
+  getAllBlog,
+  getBlog,
+  likeSlice,
+} from "../features/blogs/blogSlice";
 import moment from "moment";
 import { AiFillLike, AiFillDislike } from "react-icons/ai";
 const BlogDetail = () => {
@@ -26,7 +31,7 @@ const BlogDetail = () => {
     dispatch(dislikeSlice({ blogId: id }));
     setTimeout(() => {
       dispatch(getBlog(getBlogId));
-    }, 200)
+    }, 200);
   };
   useEffect(() => {
     getblog();
@@ -50,11 +55,27 @@ const BlogDetail = () => {
                   alt="blog"
                 />
                 <div className="like-dislike-container">
-                  <div className="like-button" onClick={() => { handleLike(blogState?._id) }}>
-                    <AiFillLike className={`icon ${blogState?.isLiked ? "active" : ""}`} />
+                  <div
+                    className="like-button"
+                    onClick={() => {
+                      handleLike(blogState?._id);
+                    }}
+                  >
+                    <AiFillLike
+                      className={`icon ${blogState?.isLiked ? "active" : ""}`}
+                    />
                   </div>
-                  <div className="dislike-button" onClick={() => { handleDislike(blogState?._id) }}>
-                    <AiFillDislike className={`icon ${blogState?.isDisliked ? "active" : ""}`} />
+                  <div
+                    className="dislike-button"
+                    onClick={() => {
+                      handleDislike(blogState?._id);
+                    }}
+                  >
+                    <AiFillDislike
+                      className={`icon ${
+                        blogState?.isDisliked ? "active" : ""
+                      }`}
+                    />
                   </div>
                 </div>
                 <h3 className="title">{blogState?.title}</h3>
@@ -90,7 +111,9 @@ const BlogDetail = () => {
                           />
                         </div>
                         <div className="w-50">
-                          <h5 className="mt-2">{item.title}</h5>
+                          <h5 className="mt-2" style={{ cursor: "pointer" }}>
+                            {item.title}
+                          </h5>
 
                           <p>{moment(item?.createdAt).format("DD-MM-YYYY")}</p>
                         </div>

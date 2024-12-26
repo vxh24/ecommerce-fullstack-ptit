@@ -64,7 +64,7 @@ const Cart = () => {
                 <h4 className="cart-col-1">Sản phẩm</h4>
                 <h4 className="cart-col-2">Giá</h4>
                 <h4 className="cart-col-3">Số lượng</h4>
-                <h4 className="cart-col-4">Tổng</h4>
+                <h4 className="cart-col-4">Thành tiền</h4>
               </div>
               {userCartState?.products &&
                 userCartState?.products?.map((item, index) => {
@@ -146,12 +146,10 @@ const Cart = () => {
                 })}
             </div>
             <div className="col-12 py-2 mt-4">
-              {/* {(totalAmount !== null || totalAmount !== 0) && (
-                <> */}
               <div className="d-flex justify-content-end mb-3">
                 <div>
                   <h4 className="price">
-                    Tổng tiền:
+                    Tổng tiền:{" "}
                     {userCartState?.cartTotal
                       ? formatPrice(userCartState?.cartTotal)
                       : formatPrice(0)}
@@ -171,8 +169,6 @@ const Cart = () => {
                   <div></div>
                 )}
               </div>
-              {/* </>
-              )} */}
             </div>
           </div>
         </div>

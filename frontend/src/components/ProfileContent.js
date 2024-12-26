@@ -39,7 +39,6 @@ const ProfileContent = ({ active }) => {
     dispatch(getProfileSlice());
   }, []);
   const profileState = useSelector((state) => state?.auth?.profile?.data);
-  const userState = useSelector((state) => state?.auth?.user?.user);
   const [imagePreview, setImagePreview] = useState(null);
   const [images, setImages] = useState(null);
   const formik = useFormik({
@@ -59,7 +58,7 @@ const ProfileContent = ({ active }) => {
       dispatch(updateProfleSlice({ id: profileState._id, data: formData }));
       setTimeout(() => {
         dispatch(getProfileSlice());
-      }, 200);
+      }, 500);
     },
   });
 
@@ -72,7 +71,6 @@ const ProfileContent = ({ active }) => {
   };
 
   return (
-    // <div className='w-100'>
     <>
       {active === 1 && (
         <>
@@ -157,14 +155,12 @@ const ProfileContent = ({ active }) => {
           </div>
         </>
       )}
-      {/* </div> */}
-      {/* Change Password */}
+
       {active === 2 && (
         <div>
           <ChangePassword />
         </div>
       )}
-      {/* Change Password */}
       {active === 3 && (
         <div>
           <Address />
@@ -187,8 +183,10 @@ const VoucherPage = () => {
   }, []);
   const categories = ["Tất cả", "Shop", "Nạp thẻ & Dịch vụ"];
   const [activeTab, setActiveTab] = useState(0);
-  const [filteredVouchers, setFilteredVouchers] = useState(couponState);
-
+  const [filteredVouchers, setFilteredVouchers] = useState([]);
+  useEffect(() => {
+    setFilteredVouchers(couponState);
+  }, [couponState])
   // Xử lý khi đổi tab
   const handleTabChange = (index) => {
     setActiveTab(index);
@@ -238,11 +236,13 @@ const ChangePassword = () => {
   const formik = useFormik({
     initialValues: {
       password: "",
+      newpassword: "",
       confpassword: "",
     },
     validationSchema: ChangeSchema,
-    onSubmit: (values) => {
+    onSubmit: (values, { resetForm }) => {
       dispatch(changePassSlice({ password: values.confpassword }));
+      resetForm();
     },
   });
   return (

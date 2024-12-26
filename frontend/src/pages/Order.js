@@ -18,7 +18,7 @@ const Order = () => {
     if (getToken?.access_token === undefined) {
       navigate("/login", { state: { message: "my-orders" } });
     }
-  }, [getToken])
+  }, [getToken]);
   useEffect(() => {
     dispatch(getOrderUser());
   }, []);
@@ -51,7 +51,6 @@ const Order = () => {
         acc[order.orderStatus] = (acc[order.orderStatus] || 0) + 1;
         return acc;
       }, {});
-      // counts['Tất cả'] = orderState.length;
       setStatusCounts(counts);
 
       setStatus(orderState);
@@ -143,37 +142,41 @@ const Order = () => {
                     </tr>
                   </thead>
 
-                  <tbody >
-
+                  <tbody>
                     {filterstatus?.length > 0 ? (
-                      filterstatus.map((item, index) => (
-                        <tr key={index}>
-                          <th scope="row">{item?._id}</th>
-                          <td className="price">
-                            {formatPrice(item?.paymentIndent?.amount)}
-                          </td>
-                          <td>{moment(item?.createdAt).format("DD/MM/YYYY")}</td>
-                          <td>{item?.orderStatus}</td>
-                          <td>
-                            <div className="d-flex gap-10 align-items-center">
-                              <AiOutlineEye
-                                size={22}
-                                className="cursor-pointer ms-2"
-                                onClick={() => handleOpenOrderDetail(item)}
-                                title="Quick view"
-                              />
-                              {item?.orderStatus === "Chờ xác nhận" && (
-                                <button
-                                  onClick={() => handleCancel(item?._id)}
-                                  className="btn btn-primary btn-sm"
-                                >
-                                  Hủy đơn
-                                </button>
-                              )}
-                            </div>
-                          </td>
-                        </tr>
-                      ))
+                      filterstatus
+                        .slice()
+                        .reverse()
+                        .map((item, index) => (
+                          <tr key={index}>
+                            <th scope="row">{item?._id}</th>
+                            <td className="price">
+                              {formatPrice(item?.paymentIndent?.amount)}
+                            </td>
+                            <td>
+                              {moment(item?.createdAt).format("DD/MM/YYYY")}
+                            </td>
+                            <td>{item?.orderStatus}</td>
+                            <td>
+                              <div className="d-flex gap-10 align-items-center">
+                                <AiOutlineEye
+                                  size={22}
+                                  className="cursor-pointer ms-2"
+                                  onClick={() => handleOpenOrderDetail(item)}
+                                  title="Quick view"
+                                />
+                                {item?.orderStatus === "Chờ xác nhận" && (
+                                  <button
+                                    onClick={() => handleCancel(item?._id)}
+                                    className="btn btn-primary btn-sm"
+                                  >
+                                    Hủy đơn
+                                  </button>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        ))
                     ) : (
                       <tr>
                         <td colSpan="5" className="text-center">
@@ -181,7 +184,6 @@ const Order = () => {
                         </td>
                       </tr>
                     )}
-
                   </tbody>
                 </table>
               </div>

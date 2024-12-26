@@ -38,25 +38,19 @@ const Header = () => {
   const [cartlengt, setCartlengt] = useState();
   const [showCartDropdown, setShowCartDropdown] = useState(false);
   const navigate = useNavigate();
-  const [products, setProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [totalItems, setTotalItems] = useState(0);
-  const [error, setError] = useState(null);
+
   useEffect(() => {
     if (selectedCategory) {
-      // fetchProducts();
-      // navigate('/product')
       navigate(location.pathname, { replace: true, state: null });
       navigate("/product", { state: { category: selectedCategory } });
     }
-    // fetchProducts();
   }, [selectedCategory]);
   useEffect(() => {
     setCartlengt(userCartState?.products?.length);
   }, [userCartState]);
   const [searchTerm, setSearchTerm] = useState("");
   const handleSearch = async () => {
-    // dispatch(searchProductSlice(searchTerm));
     navigate(location?.pathname, { replace: true, state: null });
     navigate("/product", { state: { message: searchTerm } });
   };
@@ -152,7 +146,6 @@ const Header = () => {
                         alt=""
                       />
                     )}
-                    {/* <CgProfile className="fs-2" /> */}
                     {authState?.user === null ? (
                       <p className="mb-0">Đăng nhập</p>
                     ) : (
@@ -335,16 +328,16 @@ const Header = () => {
                 </div>
                 <div className="menu-links">
                   <div className="d-flex align-items-center gap-30">
-                    <NavLink to="/" style={{ fontWeight: "500" }}>
+                    <NavLink to="/" style={{ fontWeight: "500" }} onChange={() => setSearchTerm("")}>
                       Trang chủ
                     </NavLink>
-                    <NavLink to="/product" style={{ fontWeight: "500" }}>
+                    <NavLink to="/product" style={{ fontWeight: "500" }} onChange={() => setSearchTerm("")}>
                       Cửa hàng
                     </NavLink>
-                    <NavLink to="/blog" style={{ fontWeight: "500" }}>
+                    <NavLink to="/blog" style={{ fontWeight: "500" }} onChange={() => setSearchTerm("")}>
                       Blog
                     </NavLink>
-                    <NavLink to="/contact" style={{ fontWeight: "500" }}>
+                    <NavLink to="/contact" style={{ fontWeight: "500" }} onChange={() => setSearchTerm("")}>
                       Liên hệ
                     </NavLink>
                   </div>
