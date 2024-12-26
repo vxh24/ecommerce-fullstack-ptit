@@ -314,7 +314,7 @@ const Header = () => {
                           <li key={index} className="mt-0">
                             <button
                               className="dropdown-item text-dark bold-text"
-                              onClick={() => setSelectedCategory(item.title)}
+                              onClick={() => setSelectedCategory(item._id)}
                             >
                               {item.title}
                             </button>

@@ -187,11 +187,9 @@ const VoucherPage = () => {
   useEffect(() => {
     dispatch(getAllCoupon());
   }, []);
-  // Danh sách các danh mục (tabs)
   const categories = ["Tất cả", "Shop", "Nạp thẻ & Dịch vụ"];
-  const [activeTab, setActiveTab] = useState(0); // Tab đang chọn
-  // const [vouchers, setVouchers] = useState([]); // Danh sách voucher
-  const [filteredVouchers, setFilteredVouchers] = useState([]); // Voucher hiển thị
+  const [activeTab, setActiveTab] = useState(0);
+  const [filteredVouchers, setFilteredVouchers] = useState(couponState);
 
   // Xử lý khi đổi tab
   const handleTabChange = (index) => {

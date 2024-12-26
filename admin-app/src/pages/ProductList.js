@@ -52,6 +52,8 @@ const ProductList = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedBrand, setSelectedBrand] = useState("");
   const showModal = (e) => {
     setOpen(true);
     setProductId(e);
@@ -69,15 +71,25 @@ const ProductList = () => {
   const qrCodeURL = useSelector((state) => state.product.qrCodeURL);
 
   useEffect(() => {
+    let results = productState || [];
     if (searchTerm) {
-      const results = productState?.filter((pro) =>
+      results = results.filter((pro) =>
         pro.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      setFilteredProducts(results || []);
-    } else {
-      setFilteredProducts(productState || []);
+      // setFilteredProducts(results || []);
     }
-  }, [searchTerm, productState]);
+    //  else {
+    //   setFilteredProducts(productState || []);
+    // }
+    if (selectedCategory) {
+      results = results.filter((pro) => pro.category.title === selectedCategory);
+    }
+
+    if (selectedBrand) {
+      results = results.filter((pro) => pro.brand.title === selectedBrand);
+    }
+    setFilteredProducts(results);
+  }, [searchTerm, selectedCategory, selectedBrand, productState]);
 
   const formattedPrice = (price) =>
     new Intl.NumberFormat("vi-VN", {
@@ -172,21 +184,55 @@ const ProductList = () => {
           </button>
         </div>
         <div>
-          <Typeahead
-            id="search-orders"
-            onChange={(selected) => {
-              if (selected.length > 0) {
-                setSearchTerm(selected[0]);
-              } else {
-                setSearchTerm("");
-              }
-            }}
-            options={productState?.map((pro) => pro.name) || []}
-            placeholder="Tìm kiếm theo tên..."
-            selected={searchResults}
-            onInputChange={(text) => setSearchTerm(text)}
-            className="mt-3"
-          />
+          <div className="d-flex align-items-center gap-10">
+            <Typeahead
+              id="search-orders"
+              onChange={(selected) => {
+                if (selected.length > 0) {
+                  setSearchTerm(selected[0]);
+                } else {
+                  setSearchTerm("");
+                }
+              }}
+              options={productState?.map((pro) => pro.name) || []}
+              placeholder="Tìm kiếm theo tên..."
+              selected={searchResults}
+              onInputChange={(text) => setSearchTerm(text)}
+              className="mt-3"
+              style={{ width: "50%" }}
+            />
+            <div className="filters d-flex gap-3 mt-3 w-50">
+              <select
+                className="form-select"
+                value={selectedBrand}
+                onChange={(e) => setSelectedBrand(e.target.value)}
+              >
+                <option value="">Tất cả thương hiệu</option>
+                {[
+                  ...new Set(productState?.map((pro) => pro.brand.title) || []),
+                ].map((brand, index) => (
+                  <option key={index} value={brand}>
+                    {brand}
+                  </option>
+                ))}
+              </select>
+              <select
+                className="form-select"
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                style={{ width: "100%" }}
+              >
+                <option value="">Tất cả danh mục</option>
+                {[
+                  ...new Set(productState?.map((pro) => pro.category.title) || []),
+                ].map((category, index) => (
+                  <option key={index} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
           <Table columns={columns} dataSource={data2} />
         </div>
         <CustomModal

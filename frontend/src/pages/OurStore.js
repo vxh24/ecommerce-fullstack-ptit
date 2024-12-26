@@ -19,7 +19,7 @@ const OurStore = () => {
   const categoryState = useSelector(
     (state) => state?.category?.Categories?.data
   );
-  console.log(productState);
+  console.log(message);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
@@ -129,33 +129,26 @@ const OurStore = () => {
     }, 100);
   }, [message.category]);
   useEffect(() => {
-    setTimeout(() => {
-      if (message.message) {
-        setSelectedCategory("");
-        dispatch(searchProductSlice(message.message));
-      }
-    }, 100);
-    setTimeout(() => {
-      navigate(location.pathname, { replace: true, state: null });
-    }, 800);
-  }, [message.message, selectedCategory]);
-  useEffect(() => {
-    if (click === true) {
-      fetchProducts();
-      setClick(false);
-      return;
-    } else if (selectedBrand) {
-      fetchProducts();
-      return;
-    } else if (filters) {
-      fetchProducts();
-      return;
-    } else if (selectedCategory) {
-      fetchProducts();
-      return;
+    if (message.message) {
+      dispatch(searchProductSlice(message.message));
     }
-  }, [filters, click, selectedBrand, selectedCategory]);
-  console.log(selectedCategory);
+    else {
+      if (click === true) {
+        fetchProducts();
+        setClick(false);
+        return;
+      } else if (selectedBrand) {
+        fetchProducts();
+        return;
+      } else if (filters) {
+        fetchProducts();
+        return;
+      } else if (selectedCategory) {
+        fetchProducts();
+        return;
+      }
+    }
+  }, [message.message, filters, click, selectedBrand, selectedCategory]);
   const clearAll = () => {
     setMinPrice(null);
     setMaxPrice(null);
@@ -185,7 +178,6 @@ const OurStore = () => {
     );
   }
   if (error) return <div>{error}</div>;
-  console.log(currentProducts);
   return (
     <>
       <Meta title={"Cửa hàng"} />
