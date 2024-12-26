@@ -21,7 +21,6 @@ import { getUserProductWishlist } from "../features/user/userSlice";
 import { FaFacebookSquare } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { FcNext, FcPrevious } from "react-icons/fc";
-import ReactImageZoom from "react-image-zoom";
 import ImageDetails from "../components/ImageDetails";
 const ProductDetail = () => {
   const dispatch = useDispatch();
@@ -467,7 +466,6 @@ const ProductDetail = () => {
                     __html: productState?.description,
                   }}
                 >
-                  {/* {productState?.description} */}
                 </p>
               </div>
             </div>
@@ -496,44 +494,7 @@ const ProductDetail = () => {
                       </p>
                     </div>
                   </div>
-                  {orderProduct && (
-                    <div>
-                      <a
-                        href=""
-                        className="text-dark text-decoration-underline"
-                      >
-                        Viết một đánh giá
-                      </a>
-                    </div>
-                  )}
                 </div>
-                {/* <div className="review-form py-4">
-                  <h4>Viết một đánh giá</h4>
-
-                  <div>
-                    <ReactStars
-                      count={5}
-                      size={24}
-                      value={3}
-                      edit={true}
-                      activeColor="#ffd700"
-                      onChange={(e) => {
-                        setStar(e);
-                      }}
-                    />
-                  </div>
-                  <div id="target-section">
-                    <textarea name="" id="" className="w-100 form-control" cols="30" rows="4" placeholder='Viết đánh giá ở đây'
-                      onChange={(e) => {
-                        SetComment(e.target.value);
-                      }}
-                    ></textarea>
-                  </div>
-                  <div className='d-flex justify-content-end mt-3'>
-                    <button onClick={addToRatingProduct} className='button border-0' type='button'>Đánh giá</button>
-                  </div>
-
-                </div> */}
                 <div className="reviews mt-4">
                   {productState &&
                     productState?.ratings?.map((item, index) => {

@@ -9,6 +9,7 @@ import { BiCategory } from "react-icons/bi";
 import { googleLogout } from "@react-oauth/google";
 import { getCategories } from "../features/category/categorySlice";
 import { getProfileSlice, getUserCart } from "../features/user/userSlice";
+import { MdOutlineCategory } from "react-icons/md";
 const Header = () => {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -312,12 +313,15 @@ const Header = () => {
                       categoryState?.map((item, index) => {
                         return (
                           <li key={index} className="mt-0">
-                            <button
-                              className="dropdown-item text-dark bold-text"
-                              onClick={() => setSelectedCategory(item._id)}
-                            >
-                              {item.title}
-                            </button>
+                            <div className="d-flex align-items-center">
+                              <MdOutlineCategory className="ms-3 text-dark bold-text" />
+                              <button
+                                className="dropdown-item text-dark bold-text"
+                                onClick={() => setSelectedCategory(item._id)}
+                              >
+                                {item.title}
+                              </button>
+                            </div>
                           </li>
                         );
                       })}
