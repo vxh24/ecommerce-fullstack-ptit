@@ -316,6 +316,7 @@ const Header = () => {
                               <MdOutlineCategory className="ms-3 text-dark bold-text" />
                               <button
                                 className="dropdown-item text-dark bold-text"
+                                style={{ fontWeight: "500" }}
                                 onClick={() => setSelectedCategory(item._id)}
                               >
                                 {item.title}
@@ -328,16 +329,32 @@ const Header = () => {
                 </div>
                 <div className="menu-links">
                   <div className="d-flex align-items-center gap-30">
-                    <NavLink to="/" style={{ fontWeight: "500" }} onChange={() => setSearchTerm("")}>
+                    <NavLink
+                      to="/"
+                      style={{ fontWeight: "500" }}
+                      onChange={() => setSearchTerm("")}
+                    >
                       Trang chủ
                     </NavLink>
-                    <NavLink to="/product" style={{ fontWeight: "500" }} onChange={() => setSearchTerm("")}>
+                    <NavLink
+                      to="/product"
+                      style={{ fontWeight: "500" }}
+                      onChange={() => setSearchTerm("")}
+                    >
                       Cửa hàng
                     </NavLink>
-                    <NavLink to="/blog" style={{ fontWeight: "500" }} onChange={() => setSearchTerm("")}>
+                    <NavLink
+                      to="/blog"
+                      style={{ fontWeight: "500" }}
+                      onChange={() => setSearchTerm("")}
+                    >
                       Blog
                     </NavLink>
-                    <NavLink to="/contact" style={{ fontWeight: "500" }} onChange={() => setSearchTerm("")}>
+                    <NavLink
+                      to="/contact"
+                      style={{ fontWeight: "500" }}
+                      onChange={() => setSearchTerm("")}
+                    >
                       Liên hệ
                     </NavLink>
                   </div>

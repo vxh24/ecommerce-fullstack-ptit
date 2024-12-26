@@ -14,6 +14,7 @@ import {
   updateProfleSlice,
 } from "../features/user/userSlice";
 import AddAddressForm from "./AddAddressForm";
+import { useNavigate } from "react-router-dom";
 const profileSchema = yup.object({
   name: yup.string().required("Name is Require"),
   phone: yup.string().required("Mobie no is Required"),
@@ -186,7 +187,7 @@ const VoucherPage = () => {
   const [filteredVouchers, setFilteredVouchers] = useState([]);
   useEffect(() => {
     setFilteredVouchers(couponState);
-  }, [couponState])
+  }, [couponState]);
   // Xử lý khi đổi tab
   const handleTabChange = (index) => {
     setActiveTab(index);
@@ -198,6 +199,8 @@ const VoucherPage = () => {
       );
     }
   };
+
+  const navigate = useNavigate();
 
   return (
     <div>
@@ -218,12 +221,16 @@ const VoucherPage = () => {
           <div key={voucher?.id} className="voucher-card">
             <div className="voucher-header">
               <span className="voucher-title">{voucher?.name}</span>
-              <span className="voucher-discount">Giảm {voucher?.discount}%</span>
+              <span className="voucher-discount">
+                Giảm {voucher?.discount}%
+              </span>
             </div>
             <p>
               Có hiệu lực đến: {moment(voucher?.expiry).format("DD/MM/YYYY")}
             </p>
-            <button className="use-later">Dùng Sau</button>
+            <button onClick={() => navigate("/product")} className="use-later">
+              Sử dụng
+            </button>
           </div>
         ))}
       </div>
@@ -390,8 +397,9 @@ const Address = () => {
 
                 <button
                   value={address._id}
-                  className={`default-button ${address.isDefault ? "active" : ""
-                    }`}
+                  className={`default-button ${
+                    address.isDefault ? "active" : ""
+                  }`}
                   onClick={(e) => {
                     setFormData((prevFormData) => ({
                       ...prevFormData,
