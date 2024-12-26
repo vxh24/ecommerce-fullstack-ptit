@@ -37,25 +37,19 @@ const Header = () => {
   const [cartlengt, setCartlengt] = useState();
   const [showCartDropdown, setShowCartDropdown] = useState(false);
   const navigate = useNavigate();
-  const [products, setProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [totalItems, setTotalItems] = useState(0);
-  const [error, setError] = useState(null);
+
   useEffect(() => {
     if (selectedCategory) {
-      // fetchProducts();
-      // navigate('/product')
       navigate(location.pathname, { replace: true, state: null });
       navigate("/product", { state: { category: selectedCategory } });
     }
-    // fetchProducts();
   }, [selectedCategory]);
   useEffect(() => {
     setCartlengt(userCartState?.products?.length);
   }, [userCartState]);
   const [searchTerm, setSearchTerm] = useState("");
   const handleSearch = async () => {
-    // dispatch(searchProductSlice(searchTerm));
     navigate(location?.pathname, { replace: true, state: null });
     navigate("/product", { state: { message: searchTerm } });
   };
@@ -151,7 +145,6 @@ const Header = () => {
                         alt=""
                       />
                     )}
-                    {/* <CgProfile className="fs-2" /> */}
                     {authState?.user === null ? (
                       <p className="mb-0">Đăng nhập</p>
                     ) : (
@@ -320,6 +313,7 @@ const Header = () => {
                           <li key={index} className="mt-0">
                             <button
                               className="dropdown-item text-dark bold-text"
+                              style={{ fontWeight: "500" }}
                               onClick={() => setSelectedCategory(item._id)}
                             >
                               {item.title}

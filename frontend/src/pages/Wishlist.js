@@ -29,10 +29,18 @@ const Wishlist = () => {
       navigate("/login");
     }
   }, [authState]);
+
+  const formatPrice = (amount) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
   return (
     <>
-      <Meta title={"Wishlist"} />
-      <BreadCrumb title="Wishlist" />
+      <Meta title={"Sản phẩm yêu thích"} />
+      <BreadCrumb title="Sản phẩm yêu thích" />
       <div className="wishlist-wrapper py-5 home-wrapper-2">
         <div className="container-xxl">
           <div className="row">
@@ -69,8 +77,7 @@ const Wishlist = () => {
                         </h5>
                         <span className="hover-detail">Xem chi tiết</span>
                         <h4 className="price mb-3 mt-3">
-                          {item?.price}
-                          <span className="currency">đ</span>
+                          {formatPrice(item?.price)}
                         </h4>
                       </div>
                     </div>

@@ -49,10 +49,10 @@ const SpecialProduct = (props) => {
                 <div
                   className="progress-bar"
                   role="progressbar"
-                  style={{ width: `${(sold / (sold + quantity)) * 100}%` }}
-                  aria-valuenow={sold}
-                  aria-valuemin={quantity}
-                  aria-valuemax={sold + quantity}
+                  style={{ width: `${(20 / (20 + 100)) * 100}%` }}
+                  aria-valuenow={20}
+                  aria-valuemin={100}
+                  aria-valuemax={105}
                 ></div>
               </div>
             </div>
