@@ -66,7 +66,6 @@ const PaymentResult = () => {
     setError(null);
     try {
       const result = await dispatch(momoOrderUser(paymentData));
-      console.log("Payment success:", result);
 
       toast.success("Tạo đơn hàng thành công!!!");
     } catch (err) {

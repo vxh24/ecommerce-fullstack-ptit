@@ -54,19 +54,17 @@ const ProfileContent = ({ active }) => {
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("phone", values.phone);
-      // console.log(images);
       formData.append("image", images);
 
       dispatch(updateProfleSlice({ id: profileState._id, data: formData }));
       setTimeout(() => {
         dispatch(getProfileSlice());
-      });
+      }, 200);
     },
   });
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    console.log(file);
     if (file) {
       setImages(file);
       setImagePreview(URL.createObjectURL(file));
@@ -218,14 +216,14 @@ const VoucherPage = () => {
         ))}
       </div>
       <div className="voucher-list">
-        {filteredVouchers.map((voucher) => (
-          <div key={voucher.id} className="voucher-card">
+        {filteredVouchers?.map((voucher) => (
+          <div key={voucher?.id} className="voucher-card">
             <div className="voucher-header">
-              <span className="voucher-title">{voucher.name}</span>
-              <span className="voucher-discount">Giảm {voucher.discount}%</span>
+              <span className="voucher-title">{voucher?.name}</span>
+              <span className="voucher-discount">Giảm {voucher?.discount}%</span>
             </div>
             <p>
-              Có hiệu lực đến: {moment(voucher.expiry).format("DD/MM/YYYY")}
+              Có hiệu lực đến: {moment(voucher?.expiry).format("DD/MM/YYYY")}
             </p>
             <button className="use-later">Dùng Sau</button>
           </div>

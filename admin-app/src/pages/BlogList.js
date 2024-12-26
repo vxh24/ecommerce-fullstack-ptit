@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Table } from "antd";
-import { BiEdit, BiLogo500Px } from "react-icons/bi";
+import { BiEdit } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";

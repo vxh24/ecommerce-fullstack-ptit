@@ -61,7 +61,6 @@ export const generateQRCode = createAsyncThunk(
   async (productId, thunkAPI) => {
     try {
       const response = await productService.generateQRCode(productId);
-      console.log("API Response:", response);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);

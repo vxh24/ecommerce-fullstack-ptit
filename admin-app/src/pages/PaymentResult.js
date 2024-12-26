@@ -16,7 +16,6 @@ const PaymentResult = () => {
   const [error, setError] = useState(null);
   const returnCounter = async () => {
     navigate("/counter", { state: { message: "false" } });
-    console.log("ok");
   };
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -68,7 +67,6 @@ const PaymentResult = () => {
     setError(null);
     try {
       const result = await dispatch(momoOrderUser(paymentData));
-      console.log("Payment success:", result);
       localStorage.setItem("orderId", result.payload.data._id);
       toast.success("Tạo đơn hàng thành công!!!");
     } catch (err) {

@@ -25,8 +25,6 @@ const Chat = () => {
     ? JSON.parse(localStorage.getItem("customer"))
     : null;
 
-  console.log(customer);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!message.trim()) {
@@ -47,7 +45,7 @@ const Chat = () => {
     )
       .unwrap()
       .then((data) => {
-        setMessage1([...message1, data])
+        setMessage1([...message1, data]);
         setMessage("");
       })
       .catch((error) => toast.error(error));

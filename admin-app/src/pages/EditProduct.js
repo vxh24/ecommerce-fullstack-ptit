@@ -97,10 +97,6 @@ const EditProduct = () => {
         formData.append("images", image);
       });
 
-      for (const [key, value] of formData.entries()) {
-        console.log(`${key}: ${value}`);
-      }
-
       await dispatch(updateProduct({ productId: id, productData: formData }));
       toast.success("Cập nhật thành công");
       navigate("/admin/list-product");

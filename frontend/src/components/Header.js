@@ -259,16 +259,22 @@ const Header = () => {
                                     className="cart-item-image"
                                   />
                                   <div className="cart-item-info">
-                                    <p className="cart-item-name"
-                                      dangerouslySetInnerHTML={{ __html: item?.product?.name?.substr(0, 15) + "...", }}
-                                    >
-                                    </p>
+                                    <p
+                                      className="cart-item-name"
+                                      dangerouslySetInnerHTML={{
+                                        __html:
+                                          item?.product?.name?.substr(0, 15) +
+                                          "...",
+                                      }}
+                                    ></p>
                                     <p className="cart-item-quantity">
                                       Số lượng: {item?.count}
                                     </p>
                                   </div>
                                   <p className="cart-item-price">
-                                    {formatPrice(item?.product?.price * item?.count)}
+                                    {formatPrice(
+                                      item?.product?.price * item?.count
+                                    )}
                                   </p>
                                 </li>
                               );
@@ -304,7 +310,7 @@ const Header = () => {
                     aria-expanded="false"
                   >
                     <BiCategory className="fs-3" />
-                    <span style={{ fontWeight: "bold", fontSize: "17px" }}>
+                    <span style={{ fontWeight: "500", fontSize: "17px" }}>
                       Danh mục sản phẩm
                     </span>
                   </button>
@@ -329,16 +335,16 @@ const Header = () => {
                 </div>
                 <div className="menu-links">
                   <div className="d-flex align-items-center gap-30">
-                    <NavLink to="/" style={{ fontWeight: "bold" }}>
+                    <NavLink to="/" style={{ fontWeight: "500" }}>
                       Trang chủ
                     </NavLink>
-                    <NavLink to="/product" style={{ fontWeight: "bold" }}>
+                    <NavLink to="/product" style={{ fontWeight: "500" }}>
                       Cửa hàng
                     </NavLink>
-                    <NavLink to="/blog" style={{ fontWeight: "bold" }}>
+                    <NavLink to="/blog" style={{ fontWeight: "500" }}>
                       Blog
                     </NavLink>
-                    <NavLink to="/contact" style={{ fontWeight: "bold" }}>
+                    <NavLink to="/contact" style={{ fontWeight: "500" }}>
                       Liên hệ
                     </NavLink>
                   </div>

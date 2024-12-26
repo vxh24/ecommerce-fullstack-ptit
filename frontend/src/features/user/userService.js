@@ -210,7 +210,6 @@ const createPayment = async ({ userId, totalAmount, orderAddress }) => {
   }
 };
 const updateProfileUser = async ({ id, data }) => {
-  // console.log(data);
   const response = await axios.put(`${base_url}user/${id}`, data, config);
   if (response.data) {
     return response.data;

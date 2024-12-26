@@ -27,7 +27,6 @@ const { Header, Sider, Content } = Layout;
 const MainLayout = () => {
   useListenOrder();
   const { selectedOrder } = useConversation();
-  // console.log(selectedOrder)
   const [collapsed, setCollapsed] = useState(false);
   const [selectedKey, setSelectedKey] = useState("");
   const [click, setClick] = useState(false);
