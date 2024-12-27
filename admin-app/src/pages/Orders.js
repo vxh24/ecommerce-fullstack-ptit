@@ -107,7 +107,7 @@ const Orders = () => {
         >
           Danh sách đơn hàng
         </h3>
-        <div className="d-flex align-items-center">
+        <div className="d-flex align-items-center gap-10">
           <Typeahead
             id="search-orders"
             onChange={(selected) => {

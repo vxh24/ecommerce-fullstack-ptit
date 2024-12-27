@@ -316,6 +316,7 @@ const Header = () => {
                               <MdOutlineCategory className="ms-3 text-dark bold-text" />
                               <button
                                 className="dropdown-item text-dark bold-text"
+                                style={{ fontWeight: "500" }}
                                 onClick={() => setSelectedCategory(item._id)}
                               >
                                 {item.title}

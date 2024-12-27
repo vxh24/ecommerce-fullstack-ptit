@@ -30,10 +30,10 @@ const deleteProductCategory = async (id) => {
   return response.data;
 };
 
-const updateProductCategory = async (category) => {
+const updateProductCategory = async ({ id, data }) => {
   const response = await axios.put(
-    `${base_url}category/${category.id}`,
-    { title: category.pCatData.title },
+    `${base_url}category/${id}`,
+    data,
     getConfig
   );
 

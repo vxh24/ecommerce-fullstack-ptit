@@ -612,3 +612,31 @@ ul.b {
 .add-colorquan{
   font-size: 16px;
 }
+
+.cat-img{
+  width: 30%;
+}
+.cat-img img {
+  width: 150px;
+  height: 150px; 
+  object-fit: cover;
+  border-radius: 8px;
+}
+.file-input {
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.file-input::-webkit-file-upload-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #1677FF;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.file-input::-webkit-file-upload-button:hover {
+  background-color: #135db4;
+}

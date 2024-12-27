@@ -1,19 +1,29 @@
 const ProductCategory = require("../models/productCategoryModel");
 const asyncHandler = require("express-async-handler");
 const validateMongodbId = require("../utils/validateMongodbId");
+const { uploadSingleFile } = require("./fileService");
 
 const createCategory = asyncHandler(async (categoryData) => {
   const newCategory = await ProductCategory.create(categoryData);
   return newCategory;
 });
 
-const updateCategory = asyncHandler(async (id, categoryData) => {
+const updateCategory = asyncHandler(async (id, categoryData, file) => {
   validateMongodbId(id);
-  const updatedCategory = await ProductCategory.updateOne(
-    { _id: id },
-    categoryData
-  );
-  return updatedCategory;
+
+  const updateData = {};
+  if (categoryData.title) updateData.title = categoryData.title;
+
+  if (file) {
+    const uploadResult = await uploadSingleFile(file, "categories");
+    updateData.image = uploadResult.cloudinaryUrl;
+  }
+
+  const result = await ProductCategory.findByIdAndUpdate(id, updateData, {
+    new: true,
+  });
+
+  return result;
 });
 
 const deleteCategory = asyncHandler(async (id) => {

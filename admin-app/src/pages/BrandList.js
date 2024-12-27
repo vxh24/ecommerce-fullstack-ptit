@@ -28,6 +28,17 @@ const columns = [
     dataIndex: "key",
   },
   {
+    title: "Ảnh",
+    dataIndex: "image",
+    render: (image) => (
+      <img
+        src={image || "default-image-path.jpg"}
+        alt="category"
+        style={{ width: 100, height: 60, objectFit: "cover" }}
+      />
+    ),
+  },
+  {
     title: "Tên",
     dataIndex: "name",
   },
@@ -74,6 +85,7 @@ const Brandlist = () => {
   const data1 = [];
   const data2 = filteredBrands?.map((brand) => ({
     key: brand._id,
+    image: brand.image,
     name: brand.title,
     action: (
       <>
@@ -95,33 +107,6 @@ const Brandlist = () => {
       </>
     ),
   }));
-  if (brandState && brandState.length) {
-    for (let i = 0; i < brandState.length; i++) {
-      data1.push({
-        key: i + 1,
-        name: brandState[i].title,
-        action: (
-          <>
-            <button
-              onClick={() => {
-                setClick1(true);
-                setBrand(brandState[i]);
-              }}
-              className=" fs-3 text-danger border-0 bg-transparent "
-            >
-              <BiEdit />
-            </button>
-            <button
-              className="ms-3 fs-3 text-danger bg-transparent border-0"
-              onClick={() => showModal(brandState[i]._id)}
-            >
-              <AiFillDelete />
-            </button>
-          </>
-        ),
-      });
-    }
-  }
   const deleteBrand = (e) => {
     dispatch(deleteABrand(e));
 
@@ -251,36 +236,70 @@ const AddBrand1 = () => {
 };
 const UpdateBrand = ({ brand }) => {
   const dispatch = useDispatch();
-
+  const [imagePreview, setImagePreview] = useState(null);
+  const [images, setImages] = useState(null);
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
       title: brand.title || "",
+      image: [],
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      const data = { id: brand._id, brandData: values };
-      dispatch(updateABrand(data));
+      const formData = new FormData();
+      formData.append("title", values.title)
+      formData.append("image", images)
+      // const data = { id: brand._id, brandData: values };
+      dispatch(updateABrand({ id: brand._id, data: formData }));
       setTimeout(() => {
         dispatch(getBrands());
-      }, 100);
+      }, 200);
     },
   });
-
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setImages(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
   return (
     <>
       <form action="" onSubmit={formik.handleSubmit}>
-        <CustomInput
-          type="text"
-          name="title"
-          onChng={formik.handleChange("title")}
-          onBlr={formik.handleBlur("title")}
-          val={formik.values.title}
-          label="Nhập tên thương hiệu"
-          id="brand"
-        />
-        <div className="error">
-          {formik.touched.title && formik.errors.title}
+        <div className="mb-3">
+          <CustomInput
+            type="text"
+            name="title"
+            onChng={formik.handleChange("title")}
+            onBlr={formik.handleBlur("title")}
+            val={formik.values.title}
+            label="Nhập tên thương hiệu"
+            id="brand"
+          />
+          <div className="error">
+            {formik.touched.title && formik.errors.title}
+          </div>
+        </div>
+        <div className="d-flex align-items-center gap-10">
+          <div className="cat-img">
+            <img
+              src={imagePreview || brand?.image}
+              alt="Avatar"
+            />
+          </div>
+          <div className="upload-data">
+            <input
+              type="file"
+              id="avatar"
+              name="image"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="file-input"
+            />
+            {formik.touched.image && formik.errors.image && (
+              <div className="error">{formik.errors.image}</div>
+            )}
+          </div>
         </div>
         <div className="d-flex justify-content-between align-items-center">
           <button

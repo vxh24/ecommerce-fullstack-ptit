@@ -36,9 +36,9 @@ export const createBrand = createAsyncThunk(
 
 export const updateABrand = createAsyncThunk(
   "brand/update-brand",
-  async (brand, thunkAPI) => {
+  async ({ id, data }, thunkAPI) => {
     try {
-      return await brandService.updateBrand(brand);
+      return await brandService.updateBrand({ id, data });
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }

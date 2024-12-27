@@ -1,16 +1,29 @@
 const Brand = require("../models/brandModel");
 const asyncHandler = require("express-async-handler");
 const validateMongodbId = require("../utils/validateMongodbId");
+const { uploadSingleFile } = require("./fileService");
 
 const createBrand = asyncHandler(async (brandData) => {
   const newBrand = await Brand.create(brandData);
   return newBrand;
 });
 
-const updateBrand = asyncHandler(async (id, brandData) => {
+const updateBrand = asyncHandler(async (id, brandData, file) => {
   validateMongodbId(id);
-  const updatedBrand = await Brand.updateOne({ _id: id }, brandData);
-  return updatedBrand;
+
+  const updateData = {};
+  if (brandData.title) updateData.title = brandData.title;
+
+  if (file) {
+    const uploadResult = await uploadSingleFile(file, "brands");
+    updateData.image = uploadResult.cloudinaryUrl;
+  }
+
+  const result = await Brand.findByIdAndUpdate(id, updateData, {
+    new: true,
+  });
+
+  return result;
 });
 
 const deleteBrand = asyncHandler(async (id) => {
