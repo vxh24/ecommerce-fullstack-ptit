@@ -328,16 +328,16 @@ const Header = () => {
                 </div>
                 <div className="menu-links">
                   <div className="d-flex align-items-center gap-30">
-                    <NavLink to="/" style={{ fontWeight: "500" }} onChange={() => setSearchTerm("")}>
+                    <NavLink to="/" style={{ fontWeight: "500" }} onClick={() => setSearchTerm("")}>
                       Trang chủ
                     </NavLink>
-                    <NavLink to="/product" style={{ fontWeight: "500" }} onChange={() => setSearchTerm("")}>
+                    <NavLink to="/product" style={{ fontWeight: "500" }} onClick={() => setSearchTerm("")}>
                       Cửa hàng
                     </NavLink>
-                    <NavLink to="/blog" style={{ fontWeight: "500" }} onChange={() => setSearchTerm("")}>
+                    <NavLink to="/blog" style={{ fontWeight: "500" }} onClick={() => setSearchTerm("")}>
                       Blog
                     </NavLink>
-                    <NavLink to="/contact" style={{ fontWeight: "500" }} onChange={() => setSearchTerm("")}>
+                    <NavLink to="/contact" style={{ fontWeight: "500" }} onClick={() => setSearchTerm("")}>
                       Liên hệ
                     </NavLink>
                   </div>

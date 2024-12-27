@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table } from "antd";
+import { Table, DatePicker } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { Typeahead } from "react-bootstrap-typeahead";
 import {
@@ -11,6 +11,7 @@ import { FaEye } from "react-icons/fa";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 import moment from "moment";
 import { toast } from "react-toastify";
+const { RangePicker } = DatePicker;
 const columns = [
   {
     title: "Mã đơn hàng",
@@ -39,29 +40,46 @@ const Orders = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [order, setOrder] = useState([]);
-  const [searchResults, setSearchResults] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
+  const [dateRange, setDateRange] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
   useEffect(() => {
     dispatch(getOrders());
   }, []);
+
   const orderState = useSelector((state) => state.auth.orders.data);
+
   useEffect(() => {
+    let results = orderState || [];
+
+    if (selectedStatus) {
+      results = results.filter((order) => order.orderStatus === selectedStatus);
+    }
+
+    if (dateRange.length === 2) {
+      results = results?.filter((order) => {
+        const orderDate = new Date(order.createdAt);
+        const startDate = new Date(dateRange[0]);
+        const endDate = new Date(dateRange[1]);
+        endDate.setHours(23, 59, 59, 999);
+        return orderDate >= startDate && orderDate <= endDate;
+      });
+    }
+
     if (searchTerm) {
-      const results = orderState?.filter((order) =>
+      results = results.filter((order) =>
         order.orderBy?.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      setFilteredOrders(results || []);
-    } else {
-      setFilteredOrders(orderState || []);
     }
-  }, [searchTerm, orderState]);
-  const data = [];
-  const data2 = filteredOrders?.map((order) => ({
+
+    setFilteredOrders(results);
+  }, [searchTerm, selectedStatus, dateRange, orderState]);
+
+  const data = filteredOrders?.map((order) => ({
     key: order._id,
     name: order.orderBy?.name,
     status: order.orderStatus,
-    amount: order.paymentIndent.amount,
     date: moment(order.createdAt).format("DD-MM-YYYY"),
     action: (
       <>
@@ -79,31 +97,6 @@ const Orders = () => {
       </>
     ),
   }));
-  if (orderState && orderState.length) {
-    for (let i = 0; i < orderState.length; i++) {
-      data.push({
-        key: orderState[i]._id,
-        name: orderState[i].orderBy?.name,
-        status: orderState[i].orderStatus,
-        date: moment(orderState[i].createdAt).format("DD-MM-YYYY"),
-        action: (
-          <>
-            <div className="d-flex align-items-center">
-              <button
-                className="ms-3 fs-3 text-info"
-                onClick={() => {
-                  setOpen(true);
-                  setOrder(orderState[i]);
-                }}
-              >
-                <FaEye />
-              </button>
-            </div>
-          </>
-        ),
-      });
-    }
-  }
 
   return (
     <>
@@ -114,22 +107,38 @@ const Orders = () => {
         >
           Danh sách đơn hàng
         </h3>
-        {/* Search Input */}
-        <Typeahead
-          id="search-orders"
-          onChange={(selected) => {
-            if (selected.length > 0) {
-              setSearchTerm(selected[0]);
-            } else {
-              setSearchTerm("");
-            }
-          }}
-          options={orderState?.map((order) => order.orderBy?.name) || []}
-          placeholder="Tìm kiếm theo tên người mua..."
-          selected={searchResults}
-          onInputChange={(text) => setSearchTerm(text)}
-        />
-        <div>{<Table columns={columns} dataSource={data2} />}</div>
+        <div className="d-flex align-items-center">
+          <Typeahead
+            id="search-orders"
+            onChange={(selected) => {
+              if (selected.length > 0) {
+                setSearchTerm(selected[0]);
+              } else {
+                setSearchTerm("");
+              }
+            }}
+            options={orderState?.map((order) => order.orderBy?.name) || []}
+            placeholder="Tìm kiếm theo tên người mua..."
+            onInputChange={(text) => setSearchTerm(text)}
+            className="w-100"
+          />
+          <select
+            className="form-select w-25"
+            placeholder="Chọn trạng thái"
+            onChange={(e) => setSelectedStatus(e.target.value)}
+            allowClear
+          >
+            <option value="Chờ xác nhận">Chờ xác nhận</option>
+            <option value="Chờ giao hàng">Chờ giao hàng</option>
+            <option value="Hoàn thành">Hoàn thành</option>
+            <option value="Đã hủy">Đã hủy</option>
+          </select>
+          <RangePicker
+            className="w-75"
+            onChange={(dates) => setDateRange(dates)}
+          />
+        </div>
+        <div>{<Table columns={columns} dataSource={data} />}</div>
       </div>
       {open && (
         <div className="modal-order">
