@@ -27,7 +27,7 @@ const updateAUser = asyncHandler(async (id, userData, file) => {
   if (userData.phone) updateData.phone = userData.phone;
 
   if (file) {
-    const uploadResult = await uploadSingleFile(file);
+    const uploadResult = await uploadSingleFile(file, "avatar");
     updateData.avatar = uploadResult.cloudinaryUrl;
   }
 

@@ -21,10 +21,13 @@ const createCategoryController = asyncHandler(async (req, res) => {
 
 const updateCategoryController = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  const { title } = req.body;
+  const file = req.files?.image;
   try {
-    const result = await updateCategory(id, req.body);
+    const result = await updateCategory(id, { title }, file);
     res.status(200).json({
       EC: 0,
+      message: "Update category successfull",
       data: result,
     });
   } catch (error) {

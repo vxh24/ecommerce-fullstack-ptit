@@ -1,9 +1,9 @@
 const path = require("path");
 const { uploadToCloudinary } = require("../utils/cloudinary");
 
-const uploadSingleFile = async (fileObject) => {
+const uploadSingleFile = async (fileObject, fileName) => {
   // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-  let uploadPath = path.resolve(__dirname, "../public/images/avatar");
+  let uploadPath = path.resolve(__dirname, `../public/images/${fileName}`);
 
   //get image extension
   let extName = path.extname(fileObject.name);
@@ -19,7 +19,7 @@ const uploadSingleFile = async (fileObject) => {
   try {
     await fileObject.mv(finalPath);
 
-    const cloudinaryResult = await uploadToCloudinary(finalPath, "avatar");
+    const cloudinaryResult = await uploadToCloudinary(finalPath, fileName);
 
     return {
       status: "success",

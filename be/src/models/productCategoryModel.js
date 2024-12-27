@@ -1,7 +1,12 @@
+const { required } = require("joi");
 const mongoose = require("mongoose");
 
 const productCategorySchema = new mongoose.Schema(
   {
+    image: {
+      type: String,
+      required: false,
+    },
     title: {
       type: String,
       required: true,

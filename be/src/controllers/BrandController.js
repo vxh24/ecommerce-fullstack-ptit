@@ -21,10 +21,13 @@ const createBrandController = asyncHandler(async (req, res) => {
 
 const updateBrandController = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  const { title } = req.body;
+  const file = req.files?.image;
   try {
-    const result = await updateBrand(id, req.body);
+    const result = await updateBrand(id, { title }, file);
     res.status(200).json({
       EC: 0,
+      message: "Update brand successfull",
       data: result,
     });
   } catch (error) {
