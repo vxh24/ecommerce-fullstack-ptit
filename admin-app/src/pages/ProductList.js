@@ -13,14 +13,17 @@ import CustomModal from "../components/CustomModal";
 import { Typeahead } from "react-bootstrap-typeahead";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 import { BsCloudDownload } from "react-icons/bs";
+
 const columns = [
   {
     title: "STT",
     dataIndex: "key",
+    width: 250,
   },
   {
     title: "Tên sản phẩm",
     dataIndex: "name",
+    width: 600,
   },
   {
     title: "Thương hiệu",

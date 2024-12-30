@@ -85,6 +85,7 @@ const removeProductFromCart = asyncHandler(async (userId, productId, color) => {
 
   if (cart.products.length === 0) {
     await emptyCart(userId);
+    return null;
   }
 
   cart.cartTotal = cart.products.reduce(

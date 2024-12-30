@@ -12,6 +12,7 @@ const {
   cancelOrder,
   handleRevenueCalculation,
   printInvoice,
+  getMonthlyStatistics,
 } = require("../services/orderService");
 
 const createOrderByCODController = asyncHandler(async (req, res) => {
@@ -172,6 +173,27 @@ const handlePrintInvoiceController = asyncHandler(async (req, res) => {
   }
 });
 
+const getStatisticsController = async (req, res) => {
+  const { year } = req.query;
+
+  console.log("year: ", year);
+
+  if (!year || isNaN(year)) {
+    throw new Error("Please provide a valid year");
+  }
+
+  try {
+    const statistics = await getMonthlyStatistics(year);
+    res.status(200).json({
+      EC: 0,
+      success: true,
+      data: statistics,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 module.exports = {
   createOrderByCODController,
   getAllOrdersController,
@@ -183,4 +205,5 @@ module.exports = {
   cancelOrderController,
   handleRevenueCalculationController,
   handlePrintInvoiceController,
+  getStatisticsController,
 };

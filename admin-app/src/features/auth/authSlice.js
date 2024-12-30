@@ -69,6 +69,17 @@ export const getRevenue = createAsyncThunk(
   }
 );
 
+export const getStatistic = createAsyncThunk(
+  "order/statistic",
+  async (year, thunkAPI) => {
+    try {
+      return await authService.getStatistic(year);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 export const authSlice = createSlice({
   name: "auth",
   initialState: initialState,
@@ -150,6 +161,22 @@ export const authSlice = createSlice({
         state.message = "success";
       })
       .addCase(getRevenue.rejected, (state, action) => {
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+        state.isLoading = false;
+      })
+      .addCase(getStatistic.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getStatistic.fulfilled, (state, action) => {
+        state.isError = false;
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.statistic = action.payload;
+        state.message = "success";
+      })
+      .addCase(getStatistic.rejected, (state, action) => {
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;

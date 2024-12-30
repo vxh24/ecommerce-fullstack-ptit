@@ -38,12 +38,22 @@ const getRevenue = async () => {
   return response.data;
 };
 
+const getStatistic = async (year) => {
+  const response = await axios.get(
+    `${base_url}order/statistic?year=${year}`,
+    getConfig
+  );
+
+  return response.data;
+};
+
 const authService = {
   login,
   getOrders,
   getOrderById,
   updateOrderStatus,
   getRevenue,
+  getStatistic,
 };
 
 export default authService;
