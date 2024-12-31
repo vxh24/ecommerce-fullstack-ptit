@@ -10,7 +10,6 @@ import Pagination from "../components/Pagination";
 import { getBrands } from "../features/brand/brandSlice";
 import { getCategories } from "../features/category/categorySlice";
 import { useLocation, useNavigate } from "react-router-dom";
-import { TbCategoryPlus } from "react-icons/tb";
 const OurStore = () => {
   const location = useLocation();
   const message = location.state || {};
@@ -204,10 +203,11 @@ const OurStore = () => {
                     {categoryState &&
                       categoryState?.map((item, index) => {
                         return (
-                          <div className="d-flex align-items-center">
-                            <TbCategoryPlus className={selectedCategory === item._id
-                              ? "text-red fs-4"
-                              : "fs-4"} />
+                          <div className="d-flex align-items-center gap-10">
+                            <img src={item.image} alt=""
+                              style={{ width: "35px" }}
+                              className="ms-3"
+                            />
                             <li
                               onClick={() => {
                                 setSelectedCategory(item._id);
@@ -219,7 +219,6 @@ const OurStore = () => {
                                   });
                                 }
                               }}
-                              // className='mb-2'
                               className={
                                 selectedCategory === item._id
                                   ? "mb-2 text-red"

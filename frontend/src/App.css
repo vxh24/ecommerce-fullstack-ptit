@@ -1022,7 +1022,17 @@ footer .input-group-text {
   border-color: var(--brand-primary-color, #ee4d2d);
   color: var(--brand-primary-color, #ee4d2d);
 }
+.color-fix-disabled {
+  background: #f5f5f5;
+  color: rgba(0, 0, 0, 0.5); 
+  cursor: not-allowed; 
+  border: 1px solid rgba(0, 0, 0, 0.1); 
+}
 
+.color-fix-disabled:hover {
+  border-color: rgba(0, 0, 0, 0.1); 
+  color: rgba(0, 0, 0, 0.5); 
+}
 .main-product-image {
   background-color: white;
   padding: 20px;

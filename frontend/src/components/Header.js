@@ -313,7 +313,10 @@ const Header = () => {
                         return (
                           <li key={index} className="mt-0">
                             <div className="d-flex align-items-center">
-                              <MdOutlineCategory className="ms-3 text-dark bold-text" />
+                              <img src={item.image} alt=""
+                                style={{ width: "30px" }}
+                                className="ms-3"
+                              />
                               <button
                                 className="dropdown-item text-dark bold-text"
                                 style={{ fontWeight: "500" }}

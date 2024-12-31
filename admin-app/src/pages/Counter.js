@@ -131,25 +131,31 @@ const Counter = () => {
   };
 
   const handleColorChange = (productId, color) => {
+    const selectedColor1 = JSON.parse(color);
+    console.log(productId, selectedColor1.name, selectedColor1.quantity);
     const storedProducts =
       JSON.parse(localStorage.getItem("selectedProducts")) || [];
 
     const updatedProducts1 = storedProducts.map((product) => {
-      if (product._id === productId && product.selectedColor) {
+      if (product._id === productId && product.selectedColor !== "") {
         const co = product.colors.find(
           (item) => item.name === product.selectedColor
         );
+
         dispatch(
           deleteProductfromCart({ productId: product._id, color: co.name })
         );
       }
       return product;
     });
-
-    const updatedProducts = storedProducts.map((product) => {
+    localStorage.setItem("selectedProducts", JSON.stringify(updatedProducts1));
+    const storedProducts1 =
+      JSON.parse(localStorage.getItem("selectedProducts")) || [];
+    const updatedProducts = storedProducts1.map((product) => {
       if (product._id === productId) {
-        product["selectedColor"] = color;
-        const co = product.colors.find((item) => item.name === color);
+        product["selectedColor"] = selectedColor1.name;
+        const co = product.colors.find((item) => item.name === selectedColor1.name);
+        product["quantity"] = co.quantity;
         dispatch(
           AddProdToCart({
             _id: product._id,
@@ -314,22 +320,19 @@ const Counter = () => {
                 </tr>
                 <!-- Bạn có thể lặp qua danh sách sản phẩm của bạn ở đây -->
                 ${printState.items
-                  ?.map(
-                    (product) => `
+            ?.map(
+              (product) => `
                   <tr>
-                    <td style="border:1px solid black; padding:5px;">${
-                      product.product.name
-                    }</td>
-                    <td style="border:1px solid black; padding:5px;">${
-                      product.count
-                    }</td>
-                    <td style="border:1px solid black; padding:5px;">${
-                      product.product.price * product.count
-                    }</td>
+                    <td style="border:1px solid black; padding:5px;">${product.product.name
+                }</td>
+                    <td style="border:1px solid black; padding:5px;">${product.count
+                }</td>
+                    <td style="border:1px solid black; padding:5px;">${product.product.price * product.count
+                }</td>
                   </tr>
                 `
-                  )
-                  .join("")}
+            )
+            .join("")}
               </table>
               <hr />
             </body>
@@ -399,7 +402,7 @@ const Counter = () => {
   const handleError = (err) => {
     console.error("QR Scan Error:", err);
   };
-
+  console.log(products)
   return (
     <>
       <ToastContainer
@@ -514,7 +517,9 @@ const Counter = () => {
                             <option>Chọn màu</option>
                             {product.colors.map((item, index) => {
                               return (
-                                <option value={item.name}>{item.name}</option>
+                                <option value={JSON.stringify(item)}
+                                  disabled={item.quantity <= 0}
+                                >{item.name} - {item.quantity}</option>
                               );
                             })}
                           </select>
@@ -525,8 +530,19 @@ const Counter = () => {
                         <input
                           type="number"
                           value={product.count}
-                          onChange={(e) =>
-                            handleCountChange(product._id, e.target.value)
+                          onChange={(e) => {
+                            const value = parseInt(e.target.value, 10);
+                            if (value > product.quantity) {
+                              toast.info("Số lượng vượt quá số lượng hàng có sẵn!");
+                              e.target.value = product.quantity;
+                            } else if (value < 1) {
+                              toast.info("Số lượng không được nhỏ hơn 1!");
+                              e.target.value = 1;
+                            } else {
+                              handleCountChange(product._id, value)
+                            }
+
+                          }
                           }
                         />
                       </td>

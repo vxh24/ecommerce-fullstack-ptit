@@ -54,7 +54,12 @@ const Orders = () => {
     let results = orderState || [];
 
     if (selectedStatus) {
-      results = results.filter((order) => order.orderStatus === selectedStatus);
+      if (selectedStatus === "Tất cả") {
+        results = orderState;
+      }
+      else {
+        results = results.filter((order) => order.orderStatus === selectedStatus);
+      }
     }
 
     if (dateRange.length === 2) {
@@ -128,6 +133,7 @@ const Orders = () => {
             onChange={(e) => setSelectedStatus(e.target.value)}
             allowClear
           >
+            <option value="Tất cả">Tất cả</option>
             <option value="Chờ xác nhận">Chờ xác nhận</option>
             <option value="Chờ giao hàng">Chờ giao hàng</option>
             <option value="Hoàn thành">Hoàn thành</option>

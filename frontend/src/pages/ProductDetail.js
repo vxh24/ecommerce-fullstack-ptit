@@ -168,6 +168,7 @@ const ProductDetail = () => {
     setIsLightboxOpen(false);
   };
   const [quantity, setQuantity] = useState(null);
+  console.log(count);
   return (
     <>
       <Meta title={productState?.name} />
@@ -285,23 +286,25 @@ const ProductDetail = () => {
                     <div className="d-flex align-items-center flex-wrap gap-10">
                       {productState?.colors?.map((item) => {
                         return (
-                          <div
-                            className={`${color === item.name
-                              ? "color-fix-active"
-                              : "color-fix"
-                              } `}
+                          <button
+                            className={`${color === item.name ? "color-fix-active" : "color-fix"} ${item.quantity <= 0 ? "color-fix-disabled" : ""
+                              }`}
                             onClick={() => {
                               setColor(item.name);
                               setQuantity(item.quantity);
                             }}
+                            style={{
+                              cursor: item.quantity <= 0 ? "not-allowed" : "",
+                            }}
+                            disabled={item.quantity <= 0}
                           >
                             {item.name}
-                          </div>
+                          </button>
                         );
                       })}
                     </div>
                   </div>
-                  {quantity ? (
+                  {quantity > 0 &&
                     <div className="d-flex align-items-center gap-10 my-2">
                       <h3
                         className="product-heading"
@@ -309,15 +312,10 @@ const ProductDetail = () => {
                       >
                         Còn lại:
                       </h3>
-                      {quantity <= 0 ? (
-                        <p className="product-data mb-0"></p>
-                      ) : (
-                        <p className="product-data mb-0">{quantity}</p>
-                      )}
+
+                      <p className="product-data mb-0">{quantity}</p>
                     </div>
-                  ) : (
-                    <div></div>
-                  )}
+                  }
                   <div className="d-flex flex-row gap-10 mt-2 mb-3 align-items-center">
                     <h3
                       className="product-heading"
@@ -330,11 +328,21 @@ const ProductDetail = () => {
                         type="number"
                         name=""
                         min={1}
-                        max={quantity}
                         className="form-control"
                         style={{ width: "70px" }}
                         id=""
-                        onChange={(e) => setCount(e.target.value)}
+                        onChange={(e) => {
+                          const value = parseInt(e.target.value, 10);
+                          if (value > quantity) {
+                            toast.info("Số lượng vượt quá số lượng hàng có sẵn!");
+                            e.target.value = quantity;
+                          } else if (value < 1) {
+                            toast.info("Số lượng không được nhỏ hơn 1!");
+                            e.target.value = 1;
+                          } else {
+                            setCount(value);
+                          }
+                        }}
                         value={count}
                       />
                     </div>
