@@ -457,7 +457,6 @@ const Counter = () => {
                   <div className="d-flex gap-10">
                     <div style={{ fontWeight: "bold" }}>{option.name}</div>
                     <div style={{ color: "green" }}>{option.price} VNĐ</div>
-                    <div> Còn lại: {option.quantity}</div>
                   </div>
                 </div>
               )}
