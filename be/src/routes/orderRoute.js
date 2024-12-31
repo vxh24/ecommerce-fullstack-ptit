@@ -13,6 +13,7 @@ const {
   cancelOrderController,
   handleRevenueCalculationController,
   handlePrintInvoiceController,
+  getStatisticsController,
 } = require("../controllers/orderController");
 
 const router = express.Router();
@@ -28,6 +29,7 @@ router.get(
   isAdmin,
   handleRevenueCalculationController
 );
+router.get("/statistic", authMiddleware, isAdmin, getStatisticsController);
 router.post("/complete", authMiddleware, isAdmin, handlePrintInvoiceController);
 router.get("/:id", authMiddleware, isAdmin, getOrderByIdController);
 router.put(

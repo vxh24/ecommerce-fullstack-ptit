@@ -1,8 +1,22 @@
 import React, { useEffect } from "react";
 import { Column } from "@ant-design/plots";
-import { Table } from "antd";
+import { Select, Table } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { getOrders, getRevenue } from "../features/auth/authSlice";
+import {
+  getOrders,
+  getRevenue,
+  getStatistic,
+} from "../features/auth/authSlice";
+
+const { Option } = Select;
+const years = [2020, 2021, 2022, 2023, 2024];
+
+const statusColors = {
+  "Chờ xác nhận": "orange",
+  "Chờ giao hàng": "blue",
+  "Hoàn thành": "green",
+  "Đã hủy": "red",
+};
 
 const columns = [
   {
@@ -20,27 +34,67 @@ const columns = [
   {
     title: "Trạng thái",
     dataIndex: "status",
+    render: (status) => (
+      <span style={{ color: statusColors[status], fontWeight: "bold" }}>
+        {status}
+      </span>
+    ),
   },
 ];
-const Dashboard = () => {
-  const data = [
-    { type: "Tháng 1", sales: 38, revenue: 50 },
-    { type: "Tháng 2", sales: 52, revenue: 60 },
-    { type: "Tháng 3", sales: 61, revenue: 70 },
-    { type: "Tháng 4", sales: 145, revenue: 160 },
-    { type: "Tháng 5", sales: 48, revenue: 55 },
-    { type: "Tháng 6", sales: 38, revenue: 40 },
-    { type: "Tháng 7", sales: 38, revenue: 45 },
-    { type: "Tháng 8", sales: 38, revenue: 42 },
-    { type: "Tháng 9", sales: 38, revenue: 50 },
-    { type: "Tháng 10", sales: 38, revenue: 53 },
-    { type: "Tháng 11", sales: 38, revenue: 55 },
-    { type: "Tháng 12", sales: 38, revenue: 60 },
-  ];
 
-  const transformedData = data.flatMap((item) => [
-    { type: item.type, value: item.sales, category: "Đã bán" },
-    { type: item.type, value: item.revenue, category: "Doanh số" },
+const Dashboard = () => {
+  const dispatch = useDispatch();
+  const [selectedYear, setSelectedYear] = React.useState(
+    new Date().getFullYear()
+  );
+
+  useEffect(() => {
+    dispatch(getOrders());
+    dispatch(getRevenue());
+    dispatch(getStatistic(Number(selectedYear)));
+  }, [selectedYear]);
+
+  const handleYearChange = (value) => {
+    setSelectedYear(value);
+  };
+
+  const orderState = useSelector((state) => state?.auth?.orders?.data);
+  const totalRevenue =
+    useSelector((state) => state?.auth?.totalRevenue?.data) || 0;
+
+  const pendingOrdersCount = orderState
+    ? orderState.filter((order) => order.orderStatus === "Chờ xác nhận").length
+    : 0;
+
+  const statisticData =
+    useSelector((state) => state?.auth?.statistic?.data) || [];
+
+  const formattedPrice = (price) =>
+    new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(price);
+
+  const allMonths = Array.from({ length: 12 }, (_, i) => ({
+    month: i + 1,
+    sales: 0,
+    revenue: 0,
+  }));
+
+  const mergedData = allMonths.map((month) => {
+    const existingMonth = statisticData?.find(
+      (data) => data.month === month.month
+    );
+    return existingMonth || month;
+  });
+
+  const transformedData = mergedData.flatMap((item) => [
+    { type: `Tháng ${item.month}`, value: item.sales, category: "Đã bán" },
+    {
+      type: `Tháng ${item.month}`,
+      value: item.revenue / 1000000,
+      category: `Doanh số (x${formattedPrice(1000000)})`,
+    },
   ]);
 
   const config = {
@@ -63,34 +117,30 @@ const Dashboard = () => {
         autoRotate: false,
       },
     },
+    yAxis: {
+      sales: {
+        alias: "Số lượng đã bán",
+        min: 0,
+      },
+      revenue: {
+        alias: "Doanh thu (VND)",
+        min: 0,
+      },
+    },
     meta: {
       type: {
-        alias: "Month",
+        alias: "Tháng",
       },
       sales: {
-        alias: "Amount",
+        alias: "Số lượng",
+      },
+      revenue: {
+        alias: "Doanh thu",
       },
     },
   };
 
-  const formattedPrice = (price) =>
-    new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(price);
-
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(getOrders());
-    dispatch(getRevenue());
-  }, []);
-
-  const orderState = useSelector((state) => state?.auth?.orders?.data);
-  const totalRevenue =
-    useSelector((state) => state?.auth?.totalRevenue?.data) || 0;
-
   const data1 = [];
-
   if (orderState && orderState.length) {
     for (let i = 0; i < orderState.length; i++) {
       data1.push({
@@ -101,10 +151,6 @@ const Dashboard = () => {
       });
     }
   }
-
-  const pendingOrdersCount = orderState
-    ? orderState.filter((order) => order.orderStatus === "Chờ xác nhận").length
-    : 0;
 
   return (
     <div>
@@ -150,14 +196,31 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="mt-4">
-        <h3
-          className="mb-5 title"
-          style={{ fontSize: "18px", fontWeight: "bold" }}
-        >
-          Thống kê thu nhập
-        </h3>
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <h3
+            className="mb-5 title"
+            style={{ fontSize: "18px", fontWeight: "bold" }}
+          >
+            Thống kê thu nhập
+          </h3>
+          <Select
+            defaultValue={selectedYear}
+            style={{ width: 120 }}
+            onChange={handleYearChange}
+          >
+            {years.map((year) => (
+              <Option key={year} value={year}>
+                {year}
+              </Option>
+            ))}
+          </Select>
+        </div>
         <div>
-          <Column {...config} />
+          {transformedData.length === 0 ? (
+            <p>Không có dữ liệu thống kê cho năm {selectedYear}.</p>
+          ) : (
+            <Column {...config} />
+          )}
         </div>
       </div>
       <div className="mt-4">

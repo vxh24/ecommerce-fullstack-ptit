@@ -12,7 +12,6 @@ import { Select } from "antd";
 import { createProducts, resetState } from "../features/product/productSlice";
 import "../assets/style.css";
 import { useNavigate } from "react-router-dom";
-import ReactImageLightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
@@ -40,12 +39,15 @@ let schema = yup.object().shape({
 
 const AddProduct = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [click, setClick] = useState(false);
   const [mau, setMau] = useState("");
   const [sol, setSol] = useState();
   const [attributes, setAttributes] = useState([]);
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [photoIndex, setPhotoIndex] = useState(0);
+  const [images, setImages] = useState([]);
+  const [fileInputKey, setFileInputKey] = useState(0);
+
   const handleAddAttribute = () => {
     if (mau && sol) {
       const capitalizedMau = mau.charAt(0).toUpperCase() + mau.slice(1);
@@ -57,11 +59,11 @@ const AddProduct = () => {
       alert("Vui lòng nhập đầy đủ thông tin màu và số lượng!");
     }
   };
+
   const handleDeleteAttribute = (index) => {
     const updatedAttributes = attributes.filter((_, i) => i !== index);
     setAttributes(updatedAttributes);
   };
-  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(getBrands());
@@ -114,6 +116,10 @@ const AddProduct = () => {
         formData.append("images", image);
       });
 
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
+
       await dispatch(createProducts(formData));
 
       formik.resetForm();
@@ -124,8 +130,6 @@ const AddProduct = () => {
       }, 3000);
     },
   });
-  const [images, setImages] = useState([]);
-  const [fileInputKey, setFileInputKey] = useState(0);
 
   const onFileUploadHandler = (e) => {
     const newImages = [...e.target.files];
@@ -154,40 +158,6 @@ const AddProduct = () => {
 
     setImages(reorderedImages);
   };
-
-  const getImages = () =>
-    images.map((image, index) => (
-      <div key={index} className="position-relative">
-        <img
-          alt="Preview"
-          src={URL.createObjectURL(image)}
-          width="200px"
-          height="200px"
-          style={{ cursor: "pointer" }}
-          onClick={() => {
-            setLightboxOpen(true);
-            setPhotoIndex(index);
-          }}
-        />
-        <button
-          onClick={() => removeImage(index)}
-          style={{
-            position: "absolute",
-            top: "0",
-            right: "0",
-            background: "red",
-            color: "white",
-            border: "none",
-            borderRadius: "50%",
-            cursor: "pointer",
-            width: "20px",
-            height: "20px",
-          }}
-        >
-          X
-        </button>
-      </div>
-    ));
 
   return (
     <div className="container mt-4">
@@ -224,16 +194,19 @@ const AddProduct = () => {
                       {...provided.dragHandleProps}
                       style={{
                         ...provided.draggableProps.style,
-                        width: "100px",
-                        height: "100px",
+                        width: "120px",
+                        height: "120px",
                       }}
                     >
                       <img
                         alt="Preview"
                         src={URL.createObjectURL(image)}
-                        width="100px"
-                        height="100px"
-                        style={{ objectFit: "cover", cursor: "pointer" }}
+                        style={{
+                          objectFit: "cover",
+                          cursor: "pointer",
+                          width: "100px",
+                          height: "100px",
+                        }}
                       />
                       <button
                         onClick={() => removeImage(index)}
@@ -533,31 +506,6 @@ const AddProduct = () => {
             </button>
           </form>
         </div>
-
-        {/* <div className="col-lg-4"> */}
-        {/* <div className="d-flex flex-wrap justify-content-center gap-3"> */}
-
-        {/* </div> */}
-        {/* </div> */}
-
-        {lightboxOpen && (
-          <ReactImageLightbox
-            mainSrc={URL.createObjectURL(images[photoIndex])}
-            nextSrc={URL.createObjectURL(
-              images[(photoIndex + 1) % images.length]
-            )}
-            prevSrc={URL.createObjectURL(
-              images[(photoIndex + images.length - 1) % images.length]
-            )}
-            onCloseRequest={() => setLightboxOpen(false)}
-            onMovePrevRequest={() =>
-              setPhotoIndex((photoIndex + images.length - 1) % images.length)
-            }
-            onMoveNextRequest={() =>
-              setPhotoIndex((photoIndex + 1) % images.length)
-            }
-          />
-        )}
       </div>
     </div>
   );

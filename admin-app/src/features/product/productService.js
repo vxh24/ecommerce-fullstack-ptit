@@ -22,7 +22,7 @@ const deleteAProduct = async (id) => {
   return response.data;
 };
 
-const updateProduct = async ({ productId, productData, files }) => {
+const updateProduct = async ({ productId, productData }) => {
   const response = await axios.put(
     `${base_url}product/${productId}`,
     productData,

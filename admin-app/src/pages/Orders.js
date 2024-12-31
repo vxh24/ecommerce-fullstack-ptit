@@ -12,6 +12,14 @@ import "react-bootstrap-typeahead/css/Typeahead.css";
 import moment from "moment";
 import { toast } from "react-toastify";
 const { RangePicker } = DatePicker;
+
+const statusColors = {
+  "Chờ xác nhận": "orange",
+  "Chờ giao hàng": "blue",
+  "Hoàn thành": "green",
+  "Đã hủy": "red",
+};
+
 const columns = [
   {
     title: "Mã đơn hàng",
@@ -24,6 +32,11 @@ const columns = [
   {
     title: "Trạng thái",
     dataIndex: "status",
+    render: (status) => (
+      <span style={{ color: statusColors[status], fontWeight: "bold" }}>
+        {status}
+      </span>
+    ),
   },
   {
     title: "Ngày đặt hàng",
@@ -214,7 +227,7 @@ const ViewOrder = (orderState) => {
     }
     setSelectedStatus(newStatus);
     dispatch(updateOrderStatusSlice({ id: order._id, status: newStatus }));
-    toast.success("Thay đổi thành công")
+    toast.success("Thay đổi thành công");
     setTimeout(() => {
       dispatch(getOrders());
       dispatch(getOrderById(order._id));

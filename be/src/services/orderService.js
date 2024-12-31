@@ -209,8 +209,9 @@ const handlePaymentCallback = asyncHandler(async (userId, callbackData) => {
   const timestamp = Number(responseTime);
   const date = new Date(timestamp);
 
-  const formattedDate = `${date.getDate()}/${date.getMonth() + 1
-    }/${date.getFullYear()}`;
+  const formattedDate = `${date.getDate()}/${
+    date.getMonth() + 1
+  }/${date.getFullYear()}`;
 
   const { orderAddress } = JSON.parse(extraData || "{}");
 
@@ -373,6 +374,58 @@ const printInvoice = asyncHandler(async (orderId, customerName, phone) => {
   return receiptData;
 });
 
+const getMonthlyStatistics = asyncHandler(async (year) => {
+  const statistics = await Order.aggregate([
+    {
+      $match: {
+        orderStatus: "Hoàn thành",
+        createdAt: {
+          $gte: new Date(`${year}-01-01`),
+          $lte: new Date(`${year}-12-31`),
+        },
+      },
+    },
+    {
+      $unwind: "$products",
+    },
+    {
+      $lookup: {
+        from: "products",
+        localField: "products.product",
+        foreignField: "_id",
+        as: "productDetails",
+      },
+    },
+    {
+      $unwind: "$productDetails",
+    },
+    {
+      $group: {
+        _id: {
+          year: { $year: "$createdAt" },
+          month: { $month: "$createdAt" },
+        },
+        totalRevenue: {
+          $sum: { $multiply: ["$products.count", "$productDetails.price"] },
+        },
+        totalProductsSold: {
+          $sum: "$products.count",
+        },
+      },
+    },
+    {
+      $sort: { "_id.month": 1 },
+    },
+  ]);
+
+  return statistics.map((stat) => ({
+    year: stat._id.year,
+    month: stat._id.month,
+    revenue: stat.totalRevenue,
+    sales: stat.totalProductsSold,
+  }));
+});
+
 module.exports = {
   createOrderByCOD,
   getAllOrders,
@@ -384,4 +437,5 @@ module.exports = {
   cancelOrder,
   handleRevenueCalculation,
   printInvoice,
+  getMonthlyStatistics,
 };
