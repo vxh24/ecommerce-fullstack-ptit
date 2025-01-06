@@ -104,8 +104,8 @@ const OurStore = () => {
         ...(maxPrice && { "price[lte]": maxPrice }),
         ...(selectedBrand &&
           selectedBrand.length > 0 && {
-          brand: selectedBrand.join("&brand="),
-        }),
+            brand: selectedBrand.join("&brand="),
+          }),
         ...(selectedCategory && { category: selectedCategory }),
       }).toString();
       const finalQuery = query.replace(/%26/g, "&").replace(/%3D/g, "=");
@@ -204,7 +204,9 @@ const OurStore = () => {
                       categoryState?.map((item, index) => {
                         return (
                           <div className="d-flex align-items-center gap-10">
-                            <img src={item.image} alt=""
+                            <img
+                              src={item.image}
+                              alt=""
                               style={{ width: "35px" }}
                               className="ms-3"
                             />
@@ -247,7 +249,7 @@ const OurStore = () => {
                         placeholder="from"
                         onChange={(e) => setMinPrice(e.target.value)}
                       />
-                      <label htmlFor="floatingInput">From</label>
+                      <label htmlFor="floatingInput">Từ</label>
                     </div>
                     <div className="form-floating">
                       <input
@@ -257,7 +259,7 @@ const OurStore = () => {
                         placeholder="to"
                         onChange={(e) => setMaxPrice(e.target.value)}
                       />
-                      <label htmlFor="floatingInput1">To</label>
+                      <label htmlFor="floatingInput1">Đến</label>
                     </div>
                   </div>
                   <div className="d-flex align-items-center mt-3 justify-content-center">
@@ -338,7 +340,7 @@ const OurStore = () => {
                 <div className="d-flex justify-content-between align-items-center">
                   <div className="d-flex align-items-center gap-10">
                     <p className="mb-0 d-block" style={{ width: "100px" }}>
-                      Sort By:
+                      Sắp xếp:
                     </p>
                     <div>
                       <select
@@ -407,7 +409,7 @@ const OurStore = () => {
                   ) : productSearch1 && productSearch1.length > 0 ? (
                     <ProductCard data={productSearch1} grid={grid} />
                   ) : (
-                    <p>No product</p>
+                    <p>Không có sản phẩm nào</p>
                   )}
                 </div>
               </div>

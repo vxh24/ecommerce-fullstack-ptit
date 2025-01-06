@@ -23,7 +23,7 @@ const columns = [
   {
     title: "Tên sản phẩm",
     dataIndex: "name",
-    width: 600,
+    width: 500,
   },
   {
     title: "Thương hiệu",
