@@ -32,7 +32,7 @@ const Checkout = () => {
   const [click2, setClick2] = useState(false);
   const [payment, setpayment] = useState(1);
   const [totalcoupon, setTotalcoupoon] = useState(false);
-  const [shipping, setShipping] = useState(50000);
+  const [shipping, setShipping] = useState("50000");
   const [coupon, setCoupon] = useState();
   const [couponN, setCouponN] = useState();
   const [totalpayment, setTotalpayment] = useState(false);
