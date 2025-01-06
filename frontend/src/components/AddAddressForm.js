@@ -17,7 +17,7 @@ const AddAddressForm = ({ onClose }) => {
     district: "",
     commune: "",
     specificAddress: "",
-    isDefault: false,
+    isDefault: true,
   });
   useEffect(() => {
     axios

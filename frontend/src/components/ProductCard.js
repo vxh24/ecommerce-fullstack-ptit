@@ -46,9 +46,8 @@ const ProductCard = (props) => {
         return (
           <div
             key={index}
-            className={`${
-              location.pathname === "/product" ? `gr-${grid}` : "col-3"
-            }`}
+            className={`${location.pathname === "/product" ? `gr-${grid}` : "col-3"
+              }`}
           >
             <Link className="product-card position-relative">
               <div className="wishlis-icon position-absolute">
@@ -88,14 +87,13 @@ const ProductCard = (props) => {
                 <ReactStars
                   count={5}
                   size={24}
-                  value={parseInt(item.totalRatings, 10)}
+                  value={item.totalRatings}
                   edit={false}
                   activeColor="#ffd700"
                 />
                 <p
-                  className={`description ${
-                    grid === 12 ? "d-block" : "d-none"
-                  }`}
+                  className={`description ${grid === 12 ? "d-block" : "d-none"
+                    }`}
                   dangerouslySetInnerHTML={{
                     __html: item?.description?.substr(0, 500) + "...",
                   }}

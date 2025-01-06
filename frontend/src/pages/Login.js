@@ -8,6 +8,7 @@ import { useFormik } from "formik";
 import { googlelogin, handleLogin, resetState1 } from "../features/user/userSlice";
 import { GoogleLogin } from "@react-oauth/google";
 import { resetState } from "../features/products/productSlice";
+import { toast } from "react-toastify";
 
 const LoginSchema = yup.object({
   email: yup
@@ -50,10 +51,7 @@ const Login = () => {
   const handleSuccess = async (credentialResponse) => {
     try {
       dispatch(googlelogin({ token: credentialResponse.credential }));
-      navigate("/");
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+      toast.success("Đăng nhập thành công");
     } catch (error) {
       console.error("Google login failed:", error);
     }

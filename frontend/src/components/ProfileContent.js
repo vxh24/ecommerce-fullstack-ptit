@@ -186,18 +186,24 @@ const VoucherPage = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [filteredVouchers, setFilteredVouchers] = useState([]);
   useEffect(() => {
-    setFilteredVouchers(couponState);
+    const validVouchers = couponState.filter((voucher) =>
+      moment(voucher?.expiry).isAfter(moment())
+    );
+    setFilteredVouchers(validVouchers);
   }, [couponState]);
   // Xử lý khi đổi tab
   const handleTabChange = (index) => {
     setActiveTab(index);
-    if (categories[index] === "Tất cả") {
-      setFilteredVouchers(couponState);
-    } else {
-      setFilteredVouchers(
-        couponState.filter((voucher) => voucher.category === categories[index])
+    const filteredByCategory = couponState.filter((voucher) => {
+      if (categories[index] === "Tất cả") {
+        return moment(voucher?.expiry).isAfter(moment());
+      }
+      return (
+        voucher.category === categories[index] &&
+        moment(voucher?.expiry).isAfter(moment())
       );
-    }
+    });
+    setFilteredVouchers(filteredByCategory);
   };
 
   const navigate = useNavigate();
@@ -357,62 +363,67 @@ const Address = () => {
           <AddAddressForm onClose={() => setIsModalOpen(false)} />
         )}
       </div>
-      <div className="d-flex flex-column gap-15">
-        {addressState
-          ?.slice() // Tạo một bản sao
-          .sort((a, b) => b.isDefault - a.isDefault)
-          ?.map((address) => (
-            <div className="address-item" key={address._id}>
-              <div className="address-details">
-                <strong className="address-name">{address.name}</strong>
-                <span className="address-phone">- {address.phone}</span>
-                <p className="address">
-                  {address.specificAddress}
-                  <br />
-                  {address.commune}, {address.district}, {address.city}
-                </p>
-                {address.isDefault && (
-                  <p className="isdefault text-center">Mặc định</p>
-                )}
-              </div>
-              <div className="address-actions">
-                <button
-                  onClick={() => {
-                    setIsModalUpdate(true);
-                    setAddress(address);
-                  }}
-                  className="update-button"
-                >
-                  Cập nhật
-                </button>
-
-                {!address.isDefault && (
+      {addressState?.length <= 0 ? (
+        <p> (Bạn chưa có địa chỉ vui lòng thêm địa chỉ mới)</p>
+      ) : (
+        <div className="d-flex flex-column gap-15">
+          {addressState
+            ?.slice() // Tạo một bản sao
+            .sort((a, b) => b.isDefault - a.isDefault)
+            ?.map((address) => (
+              <div className="address-item" key={address._id}>
+                <div className="address-details">
+                  <strong className="address-name">{address.name}</strong>
+                  <span className="address-phone">- {address.phone}</span>
+                  <p className="address">
+                    {address.specificAddress}
+                    <br />
+                    {address.commune}, {address.district}, {address.city}
+                  </p>
+                  {address.isDefault && (
+                    <p className="isdefault text-center">Mặc định</p>
+                  )}
+                </div>
+                <div className="address-actions">
                   <button
-                    className="delete-button"
-                    onClick={() => handleDelete(address._id)}
+                    onClick={() => {
+                      setIsModalUpdate(true);
+                      setAddress(address);
+                    }}
+                    className="update-button"
                   >
-                    Xóa
+                    Cập nhật
                   </button>
-                )}
 
-                <button
-                  value={address._id}
-                  className={`default-button ${address.isDefault ? "active" : ""
-                    }`}
-                  onClick={(e) => {
-                    setFormData((prevFormData) => ({
-                      ...prevFormData,
-                      id: e.target.value,
-                    }));
-                    handleSetDefault(address._id);
-                  }}
-                >
-                  Thiết lập mặc định
-                </button>
+                  {!address.isDefault && (
+                    <button
+                      className="delete-button"
+                      onClick={() => handleDelete(address._id)}
+                    >
+                      Xóa
+                    </button>
+                  )}
+
+                  <button
+                    value={address._id}
+                    className={`default-button ${address.isDefault ? "active" : ""
+                      }`}
+                    onClick={(e) => {
+                      setFormData((prevFormData) => ({
+                        ...prevFormData,
+                        id: e.target.value,
+                      }));
+                      handleSetDefault(address._id);
+                    }}
+                  >
+                    Thiết lập mặc định
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
-      </div>
+            ))}
+        </div>
+      )}
+
       {isModalUpdate && (
         <UpdateAddressForm
           onClose={() => setIsModalUpdate(false)}

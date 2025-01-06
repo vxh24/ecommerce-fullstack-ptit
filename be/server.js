@@ -34,6 +34,11 @@ app.use(cookieParser());
 
 //config file upload
 app.use(fileUpload());
+app.use((req, res, next) => {
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+  res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+  next();
+});
 
 //config req.body
 app.use(bodyParser.json()); // for json
