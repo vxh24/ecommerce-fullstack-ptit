@@ -89,8 +89,8 @@ const PaymentResult = () => {
 
   return (
     <>
-      <Meta title={"Payment Result"} />
-      <BreadCrumb title="Payment Result" />
+      <Meta title={"Kết quả thanh toán"} />
+      <BreadCrumb title="Kết quả thanh toán" />
       <div className="main-payment-result">
         <div className="container-xxl">
           <div className="row">

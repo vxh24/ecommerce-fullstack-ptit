@@ -120,7 +120,7 @@ const MainLayout = () => {
               className="lag-logo"
               style={{ fontSize: "25px", fontWeight: "bold" }}
             >
-              DEV PTIT
+              PTIT SHOP
             </span>
           </h2>
         </div>

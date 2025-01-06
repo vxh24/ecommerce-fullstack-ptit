@@ -88,6 +88,18 @@ const Order = () => {
     }).format(amount);
   };
 
+  const statusColors = {
+    "Chờ xác nhận": "orange",
+    "Chờ giao hàng": "blue",
+    "Hoàn thành": "green",
+    "Đã hủy": "red",
+    "Tất cả": "grey",
+  };
+
+  const getStatusColor = (status) => {
+    return statusColors[status] || "grey";
+  };
+
   return (
     <>
       <Meta title={"Đơn hàng"} />
@@ -156,7 +168,17 @@ const Order = () => {
                             <td>
                               {moment(item?.createdAt).format("DD/MM/YYYY")}
                             </td>
-                            <td>{item?.orderStatus}</td>
+                            <td>
+                              {" "}
+                              <span
+                                style={{
+                                  color: getStatusColor(item?.orderStatus),
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                {item?.orderStatus}
+                              </span>
+                            </td>
                             <td>
                               <div className="d-flex gap-10 align-items-center">
                                 <AiOutlineEye
