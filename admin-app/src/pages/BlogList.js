@@ -236,7 +236,7 @@ const EditBlog = ({ blog }) => {
     initialValues: {
       title: blog.title,
       description: blog.description,
-      category: blog.category,
+      category: blog.category.title,
     },
     validationSchema: schema,
     onSubmit: (values) => {

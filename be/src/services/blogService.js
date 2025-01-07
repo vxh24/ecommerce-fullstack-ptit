@@ -34,7 +34,7 @@ const getABlog = asyncHandler(async (id) => {
 });
 
 const getAllBlogs = asyncHandler(async () => {
-  const result = await Blog.find({});
+  const result = await Blog.find({}).populate("category");
   return result;
 });
 
