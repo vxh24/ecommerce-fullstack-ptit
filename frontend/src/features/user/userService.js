@@ -40,6 +40,7 @@ const AddToCart = async (product) => {
     { cart: [product] },
     config
   );
+  console.log(response.data);
   if (response.data) {
     return response.data;
   }

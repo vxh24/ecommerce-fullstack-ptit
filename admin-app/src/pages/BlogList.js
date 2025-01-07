@@ -221,6 +221,7 @@ const BlogList = () => {
     </>
   );
 };
+
 const EditBlog = ({ blog }) => {
   const dispatch = useDispatch();
 

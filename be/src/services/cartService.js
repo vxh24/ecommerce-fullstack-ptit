@@ -29,9 +29,27 @@ const addToCart = asyncHandler(async (id, cart) => {
       throw new Error(`Color "${color}" does not exist for this product`);
     }
 
+    const colorInStock = product.colors.find(
+      (productColor) => productColor.name === color
+    );
+    // console.log(colorInStock);
+    // console.log(colorInStock.quantity);
+    // console.log(count);
+
     const productIndex = existingCart.products.findIndex(
       (item) => item.product.toString() === _id && item.color === color
     );
+
+    let totalCountInCart = 0;
+    if (productIndex >= 0) {
+      totalCountInCart = existingCart.products[productIndex].count;
+    }
+
+    if (colorInStock.quantity < totalCountInCart + count) {
+      throw new Error(
+        `Not enough stock for color "${color}". Only ${colorInStock.quantity} items left.`
+      );
+    }
 
     if (productIndex >= 0) {
       existingCart.products[productIndex].count += count;
@@ -44,6 +62,7 @@ const addToCart = asyncHandler(async (id, cart) => {
       });
     }
   }
+
   existingCart.cartTotal = existingCart.products.reduce(
     (total, item) => total + item.price * item.count,
     0

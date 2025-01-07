@@ -23,7 +23,10 @@ const createOrderByCOD = asyncHandler(
       throw new Error("User not found");
     }
 
-    let userCart = await Cart.findOne({ orderBy: user._id });
+    let userCart = await Cart.findOne({ orderBy: user._id }).populate(
+      "products.product",
+      "name price colors"
+    );
 
     if (!userCart) {
       throw new Error("Cart not found");
@@ -45,35 +48,20 @@ const createOrderByCOD = asyncHandler(
     let update = userCart.products.map((item) => {
       return {
         updateOne: {
-          filter: { _id: item.product._id },
+          filter: { _id: item.product._id, "colors.name": item.color },
           update: {
-            $inc: { sold: +item.count },
+            $inc: { sold: item.count },
             $set: {
-              colors: {
-                $map: {
-                  input: "$colors",
-                  as: "color",
-                  in: {
-                    $cond: [
-                      { $eq: ["$$color.name", item.color] },
-                      {
-                        name: "$$color.name",
-                        quantity: {
-                          $subtract: ["$$color.quantity", item.count],
-                        },
-                      },
-                      "$$color",
-                    ],
-                  },
-                },
-              },
+              "colors.$.quantity":
+                item.product.colors.find((color) => color.name === item.color)
+                  .quantity - item.count,
             },
           },
         },
       };
     });
 
-    await Product.bulkWrite(update, {});
+    await Product.bulkWrite(update);
 
     await Cart.findByIdAndDelete(userCart._id);
     if (user.role === "user") {
@@ -237,35 +225,20 @@ const handlePaymentCallback = asyncHandler(async (userId, callbackData) => {
     let update = userCart.products.map((item) => {
       return {
         updateOne: {
-          filter: { _id: item.product._id },
+          filter: { _id: item.product._id, "colors.name": item.color },
           update: {
-            $inc: { sold: +item.count },
+            $inc: { sold: item.count },
             $set: {
-              colors: {
-                $map: {
-                  input: "$colors",
-                  as: "color",
-                  in: {
-                    $cond: [
-                      { $eq: ["$$color.name", item.color] },
-                      {
-                        name: "$$color.name",
-                        quantity: {
-                          $subtract: ["$$color.quantity", item.count],
-                        },
-                      },
-                      "$$color",
-                    ],
-                  },
-                },
-              },
+              "colors.$.quantity":
+                item.product.colors.find((color) => color.name === item.color)
+                  .quantity - item.count,
             },
           },
         },
       };
     });
 
-    await Product.bulkWrite(update, {});
+    await Product.bulkWrite(update);
 
     await Cart.findByIdAndDelete(userCart._id);
     if (user.role === "user") {
