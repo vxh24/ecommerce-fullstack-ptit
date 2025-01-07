@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
 import blogService from "./blogService";
-import { toast } from "react-toastify"
+import { toast } from "react-toastify";
 export const getBlogs = createAsyncThunk("blog/get-blogs", async (thunkAPI) => {
   try {
     return await blogService.getBlogs();
@@ -33,9 +33,9 @@ export const getABlog = createAsyncThunk(
 
 export const updateABlog = createAsyncThunk(
   "blog/update-blog",
-  async (brand, thunkAPI) => {
+  async (id, blogData, thunkAPI) => {
     try {
-      return await blogService.updateBlog(brand);
+      return await blogService.updateBlog(id, { blogData });
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }

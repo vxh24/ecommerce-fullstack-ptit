@@ -199,7 +199,10 @@ const rating = asyncHandler(async (star, comment, productId, userId) => {
         ratings: { $elemMatch: alreadyRated },
       },
       {
-        $set: { "ratings.$.star": star, "ratings.$.comment": comment },
+        $set: {
+          "ratings.$.star": star,
+          "ratings.$.comment": comment,
+        },
       },
       { new: true }
     );
@@ -220,20 +223,22 @@ const rating = asyncHandler(async (star, comment, productId, userId) => {
       }
     );
   }
-  const getAllRatings = await Product.findById(productId).populate(
-    "ratings.postedBy"
-  );
-  let totalRating = getAllRatings.ratings.length;
-  let ratingSum = getAllRatings.ratings
+  let totalRating = product.ratings.length;
+  let ratingSum = product.ratings
     .map((item) => item.star)
     .reduce((prev, cur) => prev + cur, 0);
   let actualRating = Math.round(ratingSum / totalRating);
-  let findProduct = await Product.findByIdAndUpdate(
+  let updatedProduct = await Product.findByIdAndUpdate(
     productId,
     { totalRatings: actualRating },
     { new: true }
   );
-  return findProduct;
+
+  updatedProduct = await Product.findById(productId).populate(
+    "ratings.postedBy"
+  );
+
+  return updatedProduct;
 });
 
 // Tính toán độ tương đồng giữa các mô tả sử dụng TF-IDF

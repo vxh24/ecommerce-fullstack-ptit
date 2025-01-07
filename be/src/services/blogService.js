@@ -1,15 +1,27 @@
 const Blog = require("../models/blogModel");
 const asyncHandler = require("express-async-handler");
 const validateMongodbId = require("../utils/validateMongodbId");
+const BlogCategory = require("../models/blogCategoryModel");
 
-const createBlog = asyncHandler(async (blogData) => {
-  const newBlog = await Blog.create(blogData);
+const createBlog = asyncHandler(async (title, category, description) => {
+  const categoryExists = await BlogCategory.findById(category);
+  if (!categoryExists) {
+    throw new Error("Category not found");
+  }
+  const newBlog = await Blog.create({ title, category, description });
   return newBlog;
 });
 
 const updateBlog = asyncHandler(async (id, blogData) => {
   validateMongodbId(id);
-  const result = await Blog.findByIdAndUpdate(id, blogData);
+
+  if (blogData.category) {
+    const categoryExists = await BlogCategory.findById(blogData.category);
+    if (!categoryExists) {
+      throw new Error("Category not found");
+    }
+  }
+  const result = await Blog.findByIdAndUpdate(id, blogData, { new: true });
   return result;
 });
 
@@ -29,13 +41,15 @@ const getABlog = asyncHandler(async (id) => {
     .populate({
       path: "dislikes",
       select: "_id name",
-    });
+    })
+    .populate("category");
   return updatedBlog;
 });
 
-const getAllBlogs = asyncHandler(async () => {
-  const result = await Blog.find({});
-  return result;
+const getAllBlogs = asyncHandler(async (queryObj) => {
+  const query = await Blog.find(queryObj).populate("category");
+  const blogs = await query;
+  return blogs;
 });
 
 const deleteABlog = asyncHandler(async (id) => {

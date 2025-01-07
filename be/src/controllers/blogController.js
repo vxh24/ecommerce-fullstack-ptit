@@ -8,13 +8,20 @@ const {
   likeBlog,
   dislikeBlog,
 } = require("../services/blogService");
-const Blog = require("../models/blogModel");
-const cloudinaryUploadImage = require("../utils/cloudinary");
-const { uploadMultipleFiles } = require("../services/fileService");
+const BlogCategory = require("../models/blogCategoryModel");
 
 const createBlogController = asyncHandler(async (req, res) => {
   try {
-    const newBlog = await createBlog(req.body);
+    const { title, category, description } = req.body;
+
+    if (!title || !description || !category) {
+      throw new Error(
+        "Please provide all required fields: title, category, description"
+      );
+    }
+
+    const newBlog = await createBlog(title, category, description);
+
     res.json({
       EC: 0,
       data: newBlog,
@@ -52,7 +59,20 @@ const getABlogController = asyncHandler(async (req, res) => {
 
 const getAllBlogsController = asyncHandler(async (req, res) => {
   try {
-    const result = await getAllBlogs();
+    const queryObj = req.query;
+    if (queryObj.category) {
+      const category = await BlogCategory.findOne({ title: queryObj.category });
+      if (category) {
+        queryObj.category = category._id;
+      } else {
+        return res.status(400).json({
+          EC: 1,
+          message: "Category not found",
+        });
+      }
+    }
+    let queryStr = JSON.stringify(queryObj);
+    const result = await getAllBlogs(JSON.parse(queryStr));
     res.status(200).json({
       EC: 0,
       data: result,
