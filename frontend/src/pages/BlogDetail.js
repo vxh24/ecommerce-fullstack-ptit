@@ -73,6 +73,9 @@ const BlogDetail = () => {
                   className="img-fluid w-100 my-4"
                   alt="blog"
                 />
+                <div>
+                  <p style={{ fontWeight: "bold" }}>Người đăng: {blogState?.author}</p>
+                </div>
                 <div className="like-dislike-container">
                   <div
                     className="like-button"
@@ -94,6 +97,9 @@ const BlogDetail = () => {
                       className={`icon ${dislike === true ? "active" : ""
                         }`}
                     />
+                  </div>
+                  <div>
+                    <p className="mb-0">Lượt xem: {blogState?.numViews}</p>
                   </div>
                 </div>
                 <h3 className="title">{blogState?.title}</h3>

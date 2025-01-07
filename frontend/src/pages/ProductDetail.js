@@ -34,6 +34,7 @@ const ProductDetail = () => {
   }, [location.pathname, dispatch]);
 
   const [rating, setRating] = useState(productState1?.rating?.data);
+  const [totalRating, setTotalRating] = useState(null);
   useEffect(() => {
     const targetSection = document.getElementById("target-section");
     if (targetSection && rating !== undefined) {
@@ -162,7 +163,6 @@ const ProductDetail = () => {
     setIsLightboxOpen(false);
   };
   const [quantity, setQuantity] = useState(null);
-  // console.log(count);
   return (
     <>
       <Meta title={productState?.name} />
@@ -189,9 +189,8 @@ const ProductDetail = () => {
                       key={index}
                       src={image.url}
                       alt={`Thumbnail ${index}`}
-                      className={`image-detail ${
-                        currentIndex === index ? "active" : ""
-                      }`}
+                      className={`image-detail ${currentIndex === index ? "active" : ""
+                        }`}
                       // className="image-d"
                       onClick={() => setCurrentIndex(index)}
                     />
@@ -218,13 +217,16 @@ const ProductDetail = () => {
                 <div className="border-bottom py-3">
                   <p className="price">{formatPrice(productState?.price)}</p>
                   <div className="d-flex align-items-center gap-10">
-                    <ReactStars
-                      count={5}
-                      size={24}
-                      value={productState?.totalRatings}
-                      edit={false}
-                      activeColor="#ffd700"
-                    />
+                    {productState?.totalRatings && (
+                      <ReactStars
+                        count={5}
+                        size={24}
+                        value={productState?.totalRatings}
+                        edit={false}
+                        activeColor="#ffd700"
+                      />
+                    )}
+
                     <p className="mb-0 t-review">
                       ({productState?.ratings?.length} reviews)
                     </p>
@@ -293,13 +295,11 @@ const ProductDetail = () => {
                       {productState?.colors?.map((item) => {
                         return (
                           <button
-                            className={`${
-                              color === item.name
-                                ? "color-fix-active"
-                                : "color-fix"
-                            } ${
-                              item.quantity <= 0 ? "color-fix-disabled" : ""
-                            }`}
+                            className={`${color === item.name
+                              ? "color-fix-active"
+                              : "color-fix"
+                              } ${item.quantity <= 0 ? "color-fix-disabled" : ""
+                              }`}
                             onClick={() => {
                               setColor(item.name);
                               setQuantity(item.quantity);
@@ -469,13 +469,15 @@ const ProductDetail = () => {
                   <div>
                     <h4>Đánh giá của khách hàng</h4>
                     <div className="d-flex gap-10 align-items-center">
-                      <ReactStars
-                        count={5}
-                        size={24}
-                        value="3"
-                        edit={false}
-                        activeColor="#ffd700"
-                      />
+                      {productState?.totalRatings && (
+                        <ReactStars
+                          count={5}
+                          size={24}
+                          value={productState?.totalRatings}
+                          edit={false}
+                          activeColor="#ffd700"
+                        />
+                      )}
                       <p className="mb-0">
                         ({productState?.ratings?.length} đánh giá)
                       </p>
@@ -487,7 +489,10 @@ const ProductDetail = () => {
                     productState?.ratings?.map((item, index) => {
                       return (
                         <div key={index} className="review ">
-                          <div className="d-flex gap-10 align-items-center">
+                          <div className="d-flex gap-10 align-items-center ">
+                            <p className="mb-0"
+                              style={{ fontWeight: "bold" }}
+                            > {item.postedBy.name}</p>
                             <ReactStars
                               count={5}
                               size={24}

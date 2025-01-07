@@ -288,6 +288,7 @@ const EditBlog = ({ blog }) => {
         {formik.touched.category && formik.errors.category}
       </div>
       <div className="react-quill-container mt-3"
+        style={{ height: "300px" }}
       >
         <ReactQuill
           theme="snow"
@@ -295,7 +296,6 @@ const EditBlog = ({ blog }) => {
           name="description"
           onChange={formik.handleChange("description")}
           value={formik.values.description}
-        // style={{ height: "100%" }}
         />
         <div className="error">
           {formik.touched.description && formik.errors.description}
