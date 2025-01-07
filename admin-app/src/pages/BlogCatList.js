@@ -108,10 +108,11 @@ const BlogCatList = () => {
   return (
     <>
       <div>
-        <div className="product-list d-flex justify-content-between align-items-center">
+        <div className="product-list d-flex justify-content-between align-items-center tw-cursor-pointer">
           <h3
             className="mb-4 title"
             style={{ fontSize: "18px", fontWeight: "bold" }}
+            onClick={() => setSearchTerm("")}
           >
             Danh mục bài viết
           </h3>

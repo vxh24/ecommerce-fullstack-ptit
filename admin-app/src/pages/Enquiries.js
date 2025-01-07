@@ -152,8 +152,9 @@ const Enquiries = () => {
     <>
       <div>
         <h3
-          className="mb-4 title"
+          className="mb-4 title tw-cursor-pointer"
           style={{ fontSize: "18px", fontWeight: "bold" }}
+          onClick={() => setSearchTerm("")}
         >
           Danh sách khảo sát
         </h3>

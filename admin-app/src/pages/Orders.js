@@ -120,8 +120,9 @@ const Orders = () => {
     <>
       <div>
         <h3
-          className="mb-4 title"
+          className="mb-4 title tw-cursor-pointer"
           style={{ fontSize: "18px", fontWeight: "bold" }}
+          onClick={() => setSearchTerm("")}
         >
           Danh sách đơn hàng
         </h3>

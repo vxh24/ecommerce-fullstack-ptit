@@ -51,15 +51,17 @@ const Customers = () => {
   const customerState = useSelector((state) => state.customer.customers?.data);
   useEffect(() => {
     if (searchTerm) {
-      const results = customerState?.filter((cus) =>
-        cus.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      const results = customerState
+        ?.filter((cus) => cus.role !== "admin")
+        .filter((cus) =>
+          cus.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
       setFilteredCustomers(results || []);
     } else {
-      setFilteredCustomers(customerState || []);
+      const results = customerState?.filter((cus) => cus.role !== "admin");
+      setFilteredCustomers(results || []);
     }
   }, [searchTerm, customerState]);
-  const data1 = [];
   const data2 = filteredCustomers?.map((cus) => ({
     key: cus._id,
     name: cus.name,
@@ -101,61 +103,13 @@ const Customers = () => {
         </>
       ),
   }));
-  if (customerState && customerState.length) {
-    for (let i = 0; i < customerState.length; i++) {
-      if (customerState[i].role !== "admin") {
-        data1.push({
-          key: i + 1,
-          name: customerState[i]?.name,
-          email: customerState[i]?.email,
-          status:
-            customerState[i]?.isBlock === false ? (
-              <>
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  Hoạt động
-                </span>
-              </>
-            ) : (
-              <>
-                <span style={{ color: "red", fontWeight: "bold" }}>
-                  Tài khoản bị khóa
-                </span>
-              </>
-            ),
-          action:
-            customerState[i]?.isBlock === false ? (
-              <>
-                <button
-                  type="button"
-                  className="btn btn-danger"
-                  style={{ width: "100px" }}
-                  onClick={() => handleBlock(customerState[i]._id)}
-                >
-                  Khóa
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  type="button"
-                  className="btn btn-success"
-                  style={{ width: "100px" }}
-                  onClick={() => handleUnblock(customerState[i]._id)}
-                >
-                  Mở khóa
-                </button>
-              </>
-            ),
-        });
-      }
-    }
-  }
 
   return (
     <div>
       <h3
-        className="mb-4 title"
+        className="mb-4 title tw-cursor-pointer"
         style={{ fontSize: "18px", fontWeight: "bold" }}
+        onClick={() => setSearchTerm("")}
       >
         Danh sách người dùng
       </h3>
@@ -169,7 +123,7 @@ const Customers = () => {
               setSearchTerm("");
             }
           }}
-          options={customerState?.map((cus) => cus.name) || []}
+          options={customerState?.filter((cus) => cus.role !== "admin")?.map((cus) => cus.name) || []}
           placeholder="Tìm kiếm theo tên..."
           selected={searchResults}
           onInputChange={(text) => setSearchTerm(text)}

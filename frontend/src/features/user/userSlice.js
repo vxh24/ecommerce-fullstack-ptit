@@ -334,11 +334,6 @@ export const authSlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         state.user = action.payload;
-
-        // if (state.isSuccess === true) {
-        //   localStorage.setItem("token", action.payload.access_token);
-        //   toast.success("Đăng nhập thành công");
-        // }
       })
       .addCase(googlelogin.rejected, (state, action) => {
         state.isLoading = false;

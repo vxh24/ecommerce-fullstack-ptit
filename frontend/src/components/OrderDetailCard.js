@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { FaMapMarkerAlt } from "react-icons/fa";
 const OrderDetailCard = ({ order }) => {
   const [open, setOpen] = useState(false);
+  const [phone, setPhone] = useState(false);
+  const [address, setAddress] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -13,7 +15,14 @@ const OrderDetailCard = ({ order }) => {
     setSelectedOrder(product);
     setOpen(true);
   };
+  useEffect(() => {
+    const parts = order.orderAddress.split(",");
+    const address1 = parts.slice(0, -1).join(",").trim();
+    setAddress(address1);
+    const phoneNumber = parts[parts.length - 1].trim();
+    setPhone(phoneNumber);
 
+  }, [order])
   const handleCloseReviewProduct = () => {
     setOpen(false);
     setSelectedOrder(null);
@@ -30,7 +39,10 @@ const OrderDetailCard = ({ order }) => {
     <div>
       <h4 className="mb-4">Chi tiết đơn hàng</h4>
       <p>
-        <strong>Địa chỉ: </strong> {order.orderAddress}
+        <strong>Địa chỉ: </strong> {address}
+      </p>
+      <p>
+        <strong>Số điện thoại: </strong> {phone}
       </p>
       <p>
         <strong>Mã đơn hàng:</strong> {order._id}
