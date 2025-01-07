@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import useConversation from "../zustand/useConversation";
-
+import moment from "moment";
 const VoucherModal = ({ show, handleClose, data, setCoupon }) => {
   const [voucher, setVoucher] = useState(null);
   const { voucherChecked, setVoucherChecked } = useConversation();
@@ -44,21 +44,27 @@ const VoucherModal = ({ show, handleClose, data, setCoupon }) => {
                         <h6 className="mb-1">
                           Giảm tối đa {item.discount}% Đơn Tối Thiểu 0₫
                         </h6>
-                        <p className="text-muted mb-1">Dành riêng cho bạn</p>
-                        <p className="text-muted">Sắp hết hạn: Còn 2 ngày</p>
+                        <p className="text-muted mb-1">Tên: {item.name}</p>
+                        <p className="text-muted">Ngày hết hạn: {moment(item.expiry).format("DD-MM-YYYY")}</p>
                       </div>
                     </div>
-                    <input
-                      value={item}
-                      type="radio"
-                      checked={voucherChecked === item.name}
-                      name="voucher"
-                      onChange={() => {
-                        setVoucher(item.discount);
-                        setVoucherChecked(item.name);
-                      }}
-                      className="form-radio"
-                    />
+                    {
+                      moment(item?.expiry).isAfter(moment()) ?
+                        (<input
+                          value={item}
+                          type="radio"
+                          checked={voucherChecked === item.name}
+                          name="voucher"
+                          onChange={() => {
+                            setVoucher(item.discount);
+                            setVoucherChecked(item.name);
+                          }}
+                          className="form-radio"
+                        />)
+                        :
+                        (<p style={{ color: "red" }}>Hết hạn</p>)
+                    }
+
                   </div>
                 </div>
               );

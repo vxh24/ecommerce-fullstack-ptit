@@ -88,9 +88,9 @@ const sendEquiryEmail = async (newEnquiry) => {
   const adminEmail = "vuxuanhoa2403@gmail.com";
   const mailData = {
     to: adminEmail,
-    subject: "[THÔNG BÁO] Bạn vừa nhận được một yêu cầu tư vấn mới",
+    subject: "[THÔNG BÁO] Bạn vừa nhận được một khảo sát mới từ khách hàng",
     text: `Xin chào Quản trị viên,
-  Bạn vừa nhận được một yêu cầu tư vấn mới từ khách hàng. Dưới đây là thông tin chi tiết:
+  Bạn vừa nhận được một khảo sát mới từ khách hàng. Dưới đây là thông tin chi tiết:
 
   - Họ và tên: ${newEnquiry.name}
   - Email: ${newEnquiry.email}

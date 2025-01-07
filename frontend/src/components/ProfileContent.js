@@ -186,21 +186,17 @@ const VoucherPage = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [filteredVouchers, setFilteredVouchers] = useState([]);
   useEffect(() => {
-    const validVouchers = couponState.filter((voucher) =>
-      moment(voucher?.expiry).isAfter(moment())
-    );
-    setFilteredVouchers(validVouchers);
+    setFilteredVouchers(couponState);
   }, [couponState]);
   // Xử lý khi đổi tab
   const handleTabChange = (index) => {
     setActiveTab(index);
     const filteredByCategory = couponState.filter((voucher) => {
       if (categories[index] === "Tất cả") {
-        return moment(voucher?.expiry).isAfter(moment());
+        return couponState
       }
       return (
-        voucher.category === categories[index] &&
-        moment(voucher?.expiry).isAfter(moment())
+        voucher.category === categories[index]
       );
     });
     setFilteredVouchers(filteredByCategory);
@@ -234,9 +230,19 @@ const VoucherPage = () => {
             <p>
               Có hiệu lực đến: {moment(voucher?.expiry).format("DD/MM/YYYY")}
             </p>
-            <button onClick={() => navigate("/product")} className="use-later">
-              Sử dụng
-            </button>
+            {
+              moment(voucher?.expiry).isAfter(moment()) ?
+                (
+                  <button onClick={() => navigate("/product")} className="use-later">
+                    Sử dụng
+                  </button>
+                ) : (
+                  <button className="use-later">
+                    Hết hạn
+                  </button>
+                )
+            }
+
           </div>
         ))}
       </div>

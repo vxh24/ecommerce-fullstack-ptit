@@ -52,6 +52,15 @@ const Login = () => {
     try {
       dispatch(googlelogin({ token: credentialResponse.credential }));
       toast.success("Đăng nhập thành công");
+      if (message.message) {
+        navigate(`/${message.message}`);
+      }
+      else {
+        navigate("/");
+      }
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     } catch (error) {
       console.error("Google login failed:", error);
     }

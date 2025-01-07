@@ -1,11 +1,11 @@
 const Enquiry = require("../models/enquiryModel");
 const asyncHandler = require("express-async-handler");
-const sendEquiryEmail = require("./emailService");
+const { sendEquiryEmail } = require("./emailService");
 const validateMongodbId = require("../utils/validateMongodbId");
 
 const createEnquiry = asyncHandler(async (enquiryData) => {
   const newEnquiry = await Enquiry.create(enquiryData);
-  // await sendEquiryEmail(newEnquiry);
+  await sendEquiryEmail(newEnquiry);
   return newEnquiry;
 });
 

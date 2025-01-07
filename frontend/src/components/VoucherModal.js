@@ -48,10 +48,6 @@ const VoucherModal = ({ show, handleClose, data, setCoupon, setCouponN }) => {
                         :
                         (<p style={{ color: "red" }}>Hết hạn</p>)
                     }
-                    {/* <input value={item}
-                      type="radio"
-                      checked={voucherChecked === item.name}
-                      name="voucher" onChange={() => { setVoucherN(item.name); setVoucher(item.discount); setVoucherChecked(item.name); }} /> */}
                   </div>
                 </div>
               )
