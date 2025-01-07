@@ -52,11 +52,7 @@ const getCart = async () => {
   }
 };
 const forgotPassword = async (data) => {
-  const response = await axios.post(
-    `${base_url}user/forgot-password`,
-    { data },
-    config
-  );
+  const response = await axios.post(`${base_url}user/forgot-password`, data);
   if (response.data) {
     return response.data;
   }
@@ -64,8 +60,7 @@ const forgotPassword = async (data) => {
 const resetPass = async (data) => {
   const response = await axios.put(
     `${base_url}user/reset-password/${data.token}`,
-    { password: data?.password },
-    config
+    { password: data?.password }
   );
   if (response.data) {
     return response.data;

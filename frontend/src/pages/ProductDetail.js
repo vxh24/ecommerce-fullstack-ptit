@@ -189,8 +189,9 @@ const ProductDetail = () => {
                       key={index}
                       src={image.url}
                       alt={`Thumbnail ${index}`}
-                      className={`image-detail ${currentIndex === index ? "active" : ""
-                        }`}
+                      className={`image-detail ${
+                        currentIndex === index ? "active" : ""
+                      }`}
                       // className="image-d"
                       onClick={() => setCurrentIndex(index)}
                     />
@@ -279,9 +280,7 @@ const ProductDetail = () => {
                     >
                       Đã bán:
                     </h3>
-                    <p className="mb-0 product-heading"
-                    >{productState?.sold}</p>
-
+                    <p className="mb-0 product-heading">{productState?.sold}</p>
                   </div>
 
                   <div className="d-flex flex-column gap-10 mt-2 mb-3">
@@ -295,11 +294,13 @@ const ProductDetail = () => {
                       {productState?.colors?.map((item) => {
                         return (
                           <button
-                            className={`${color === item.name
-                              ? "color-fix-active"
-                              : "color-fix"
-                              } ${item.quantity <= 0 ? "color-fix-disabled" : ""
-                              }`}
+                            className={`${
+                              color === item.name
+                                ? "color-fix-active"
+                                : "color-fix"
+                            } ${
+                              item.quantity <= 0 ? "color-fix-disabled" : ""
+                            }`}
                             onClick={() => {
                               setColor(item.name);
                               setQuantity(item.quantity);
@@ -490,9 +491,10 @@ const ProductDetail = () => {
                       return (
                         <div key={index} className="review ">
                           <div className="d-flex gap-10 align-items-center ">
-                            <p className="mb-0"
-                              style={{ fontWeight: "bold" }}
-                            > {item.postedBy.name}</p>
+                            <p className="mb-0" style={{ fontWeight: "bold" }}>
+                              {" "}
+                              {item.postedBy?.name}
+                            </p>
                             <ReactStars
                               count={5}
                               size={24}

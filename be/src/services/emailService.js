@@ -71,6 +71,7 @@ const sendOrderConfirmationEmail = async (user, order, userCart, method) => {
         <thead>
           <tr>
             <th style="padding: 10px; border: 1px solid #ddd;">Sản phẩm</th>
+            <th style="padding: 10px; border: 1px solid #ddd;">Màu sắc</th>
             <th style="padding: 10px; border: 1px solid #ddd;">Số lượng</th>
             <th style="padding: 10px; border: 1px solid #ddd;">Giá</th>
           </tr>

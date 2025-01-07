@@ -5,7 +5,7 @@ import { IoIosCheckmarkCircle } from "react-icons/io";
 import { useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import moment from "moment";
-import { momoOrderUser } from "../features/user/userSlice";
+import { getUserCart, momoOrderUser } from "../features/user/userSlice";
 import { toast } from "react-toastify";
 
 const PaymentResult = () => {
@@ -66,7 +66,7 @@ const PaymentResult = () => {
     setError(null);
     try {
       const result = await dispatch(momoOrderUser(paymentData));
-
+      dispatch(getUserCart());
       toast.success("Tạo đơn hàng thành công!!!");
     } catch (err) {
       setError("Payment failed: " + err.message);
@@ -126,12 +126,6 @@ const PaymentResult = () => {
                         </td>
                         <td>{formatDate(paymentDetails.responseTime)}</td>
                       </tr>
-                      {/* <tr>
-                        <td>
-                          <strong>Địa chỉ</strong>
-                        </td>
-                        <td>{paymentDetails.extraData.slice(17, paymentDetails.extraData.length - 2)}</td>
-                      </tr> */}
                     </tbody>
                   </table>
                 </div>
