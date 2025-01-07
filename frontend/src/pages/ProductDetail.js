@@ -69,11 +69,11 @@ const ProductDetail = () => {
   );
   useEffect(() => {
     dispatch(getAProducts(getProductId));
-    getColors();
     dispatch(getUserCart());
-    getProducts();
+    dispatch(getAllProducts());
     getWishlist();
   }, []);
+
   const cartState = useSelector(
     (state) => state?.auth?.cartUser?.cart?.products
   );
@@ -122,12 +122,6 @@ const ProductDetail = () => {
       }, 700);
     }
   };
-  const getColors = () => {
-    dispatch(getAllColors());
-  };
-  const getProducts = () => {
-    dispatch(getAllProducts());
-  };
 
   const shareOnFacebook = (productUrl) => {
     const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
@@ -168,7 +162,7 @@ const ProductDetail = () => {
     setIsLightboxOpen(false);
   };
   const [quantity, setQuantity] = useState(null);
-  console.log(count);
+  // console.log(count);
   return (
     <>
       <Meta title={productState?.name} />
@@ -195,8 +189,9 @@ const ProductDetail = () => {
                       key={index}
                       src={image.url}
                       alt={`Thumbnail ${index}`}
-                      className={`image-detail ${currentIndex === index ? "active" : ""
-                        }`}
+                      className={`image-detail ${
+                        currentIndex === index ? "active" : ""
+                      }`}
                       // className="image-d"
                       onClick={() => setCurrentIndex(index)}
                     />
@@ -298,8 +293,13 @@ const ProductDetail = () => {
                       {productState?.colors?.map((item) => {
                         return (
                           <button
-                            className={`${color === item.name ? "color-fix-active" : "color-fix"} ${item.quantity <= 0 ? "color-fix-disabled" : ""
-                              }`}
+                            className={`${
+                              color === item.name
+                                ? "color-fix-active"
+                                : "color-fix"
+                            } ${
+                              item.quantity <= 0 ? "color-fix-disabled" : ""
+                            }`}
                             onClick={() => {
                               setColor(item.name);
                               setQuantity(item.quantity);
@@ -315,7 +315,7 @@ const ProductDetail = () => {
                       })}
                     </div>
                   </div>
-                  {quantity > 0 &&
+                  {quantity > 0 && (
                     <div className="d-flex align-items-center gap-10 my-2">
                       <h3
                         className="product-heading"
@@ -326,7 +326,7 @@ const ProductDetail = () => {
 
                       <p className="product-data mb-0">{quantity}</p>
                     </div>
-                  }
+                  )}
                   <div className="d-flex flex-row gap-10 mt-2 mb-3 align-items-center">
                     <h3
                       className="product-heading"
@@ -345,7 +345,9 @@ const ProductDetail = () => {
                         onChange={(e) => {
                           const value = parseInt(e.target.value, 10);
                           if (value > quantity) {
-                            toast.info("Số lượng vượt quá số lượng hàng có sẵn!");
+                            toast.info(
+                              "Số lượng vượt quá số lượng hàng có sẵn!"
+                            );
                             e.target.value = quantity;
                           } else if (value < 1) {
                             toast.info("Số lượng không được nhỏ hơn 1!");

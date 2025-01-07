@@ -109,7 +109,7 @@ export const momoOrderUser = createAsyncThunk(
       transId,
       partnerCode,
       responseTime,
-      extraData
+      extraData,
     },
     thunkAPI
   ) => {
@@ -237,7 +237,11 @@ export const paymentMoMoSlice = createAsyncThunk(
   "order/paymentmomo",
   async ({ userId, totalAmount, orderAddress }, thunkAPI) => {
     try {
-      return await authService.createPayment({ userId, totalAmount, orderAddress });
+      return await authService.createPayment({
+        userId,
+        totalAmount,
+        orderAddress,
+      });
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -580,7 +584,7 @@ export const authSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
-        toast.error("Mật khẩu hiện tại chưa đúng")
+        toast.error("Mật khẩu hiện tại chưa đúng");
       })
       .addCase(logoutSlice.pending, (state) => {
         state.isLoading = true;

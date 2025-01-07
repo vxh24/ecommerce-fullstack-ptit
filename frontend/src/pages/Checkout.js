@@ -90,7 +90,7 @@ const Checkout = () => {
       sum =
         sum +
         Number(userCartState.products[index].count) *
-        userCartState.products[index].price;
+          userCartState.products[index].price;
       setTotalAmount(sum);
     }
   }, [userCartState]);
@@ -184,7 +184,7 @@ const Checkout = () => {
                           <strong className="address-name">
                             {addressSelect?.name &&
                               addressSelect?.name.charAt(0).toUpperCase() +
-                              addressSelect?.name.slice(1)}
+                                addressSelect?.name.slice(1)}
                           </strong>
                           <span className="address-phone">
                             - {addressSelect?.phone}
@@ -210,7 +210,7 @@ const Checkout = () => {
                           <strong className="address-name">
                             {address?.name &&
                               address?.name.charAt(0).toUpperCase() +
-                              address?.name.slice(1)}
+                                address?.name.slice(1)}
                           </strong>
                           <span className="address-phone">
                             - {address?.phone}
@@ -264,7 +264,7 @@ const Checkout = () => {
                           >
                             {address?.name &&
                               address?.name.charAt(0).toUpperCase() +
-                              address?.name.slice(1)}
+                                address?.name.slice(1)}
                             - {address.phone}, {address.specificAddress},{" "}
                             {address.commune}, {address.district},{" "}
                             {address.city}
@@ -297,7 +297,7 @@ const Checkout = () => {
                         type="radio"
                         name="shippingMethod"
                         id="flexRadioDefault2"
-                        checked={shipping === "50000"}
+                        checked={shipping === 50000}
                       />
                       <label
                         className="form-check-label"
