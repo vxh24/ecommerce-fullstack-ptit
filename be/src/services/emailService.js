@@ -84,6 +84,9 @@ const sendOrderConfirmationEmail = async (user, order, userCart, method) => {
                   item.product.name
                 }</td>
                 <td style="padding: 10px; border: 1px solid #ddd;">${
+                  item.color
+                }</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">${
                   item.count
                 }</td>
                 <td style="padding: 10px; border: 1px solid #ddd;">${
