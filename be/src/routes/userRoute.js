@@ -63,7 +63,7 @@ router.post("/cart/cash-order", authMiddleware, createOrderByCODController); //C
 router.get("/orders", authMiddleware, getOrderByUIDController);
 router.get("/get-all-orders", authMiddleware, isAdmin, getAllOrdersController);
 router.put("/update-password", authMiddleware, updatePasswordController);
-router.post("/forgot-password", authMiddleware, forgotPasswordTokenController);
+router.post("/forgot-password", forgotPasswordTokenController);
 router.get("/address", authMiddleware, getAddressController);
 router.put("/address/:id", authMiddleware, updateAddressController);
 router.delete("/address/:id", authMiddleware, removeAddressController);

@@ -16,8 +16,8 @@ import {
 import AddAddressForm from "./AddAddressForm";
 import { useNavigate } from "react-router-dom";
 const profileSchema = yup.object({
-  name: yup.string().required("Name is Require"),
-  phone: yup.string().required("Mobie no is Required"),
+  name: yup.string().required("Vui lòng nhập tên"),
+  phone: yup.string().required("Vui lòng nhập số điện thoại"),
 });
 const ChangeSchema = yup.object({
   password: yup.string().required("Mật khẩu hiện tại là bắt buộc"),
@@ -412,8 +412,9 @@ const Address = () => {
 
                   <button
                     value={address._id}
-                    className={`default-button ${address.isDefault ? "active" : ""
-                      }`}
+                    className={`default-button ${
+                      address.isDefault ? "active" : ""
+                    }`}
                     onClick={(e) => {
                       setFormData((prevFormData) => ({
                         ...prevFormData,

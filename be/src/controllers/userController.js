@@ -102,7 +102,7 @@ const updatePasswordController = asyncHandler(async (req, res) => {
 });
 
 const forgotPasswordTokenController = asyncHandler(async (req, res) => {
-  const { email } = req.user;
+  const { email } = req.body;
   try {
     const token = await generateResetPasswordToken(email);
     res.json({ reset_token: token });

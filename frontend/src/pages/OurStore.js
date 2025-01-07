@@ -354,7 +354,6 @@ const OurStore = () => {
                         <option value="price-asc">Giá tăng dần</option>
                         <option value="price-desc">Giá giảm dần</option>
                         <option value="date-asc">Sản phẩm mới nhất</option>
-                        <option value="date-desc">Giá giảm cũ nhất</option>
                       </select>
                     </div>
                   </div>

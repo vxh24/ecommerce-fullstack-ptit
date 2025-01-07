@@ -7,17 +7,16 @@ import {
   IoMdInformationCircleOutline,
   IoIosMail,
 } from "react-icons/io";
-import { Link } from "react-router-dom";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { useDispatch } from "react-redux";
 import { createQuery } from "../features/contact/contactSlice";
 import { toast } from "react-toastify";
 const contactSchema = yup.object({
-  name: yup.string().required("Name is Require"),
-  email: yup.string().nullable().email("Email should be valid"),
-  phone: yup.string().required("Mobie no is Required"),
-  comment: yup.string().required("Comment is Required"),
+  name: yup.string().required("Vui lòng nhập tên"),
+  email: yup.string().nullable().email("Vui lòng nhập email hợp lệ"),
+  phone: yup.string().required("Vui lòng nhập số điện thoại"),
+  comment: yup.string().required("Vui lòng nhập thông tin"),
 });
 
 const Contact = () => {
@@ -80,7 +79,7 @@ const Contact = () => {
                       <input
                         type="email"
                         className="form-control"
-                        placeholder="Emai"
+                        placeholder="Email"
                         name="email"
                         onChange={formik.handleChange("email")}
                         onBlur={formik.handleBlur("email")}

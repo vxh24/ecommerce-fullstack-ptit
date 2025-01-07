@@ -6,7 +6,7 @@ const sendEmail = asyncHandler(async (data, req, res) => {
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,
-    secure: false, // true for port 465, false for other ports
+    secure: false,
     auth: {
       user: process.env.MAIL_NAME,
       pass: process.env.MAIL_PASSWORD,
@@ -23,15 +23,19 @@ const sendEmail = asyncHandler(async (data, req, res) => {
 
   console.log("Message sent: %s", info.messageId);
 });
+
 const sendOrderConfirmationEmail = async (user, order, userCart, method) => {
   const mailData = {
     // to: user.email,
-    to: "vuxuanhoa2403@gmail.com",
+    to: process.env.MAIL_NAME,
     subject: "[Thông báo] Đặt hàng thành công",
     text: `Xin chào ${user.name},
       Đơn hàng của bạn đã được đặt thành công với phương thức thanh toán ${method}. Dưới đây là thông tin chi tiết đơn hàng:
       - Mã đơn hàng: ${order.paymentIndent.orderId}
-      - Ngày tạo: ${method === "COD" ? new Date(order.paymentIndent.created).toLocaleString() : order.paymentIndent.created}
+      - Ngày tạo: ${method === "COD"
+        ? new Date(order.paymentIndent.created).toLocaleString()
+        : order.paymentIndent.created
+      }
       - Tổng số tiền: ${order.paymentIndent.amount} VNĐ
       - Địa chỉ giao hàng: ${order.orderAddress}
       - Trạng thái đơn hàng: ${order.orderStatus}
@@ -50,8 +54,12 @@ const sendOrderConfirmationEmail = async (user, order, userCart, method) => {
       <p>Đơn hàng của bạn đã được đặt thành công với phương thức thanh toán <strong>${method}</strong>. Dưới đây là thông tin chi tiết đơn hàng:</p>
       <ul>
         <li><strong>Mã đơn hàng:</strong> ${order.paymentIndent.orderId}</li>
-        <li><strong>Ngày tạo:</strong>${method === "COD" ? new Date(order.paymentIndent.created).toLocaleString() : order.paymentIndent.created}</li>
-        <li><strong>Tổng số tiền:</strong> ${order.paymentIndent.amount} VNĐ</li>
+        <li><strong>Ngày tạo:</strong>${method === "COD"
+        ? new Date(order.paymentIndent.created).toLocaleString()
+        : order.paymentIndent.created
+      }</li>
+        <li><strong>Tổng số tiền:</strong> ${order.paymentIndent.amount
+      } VNĐ</li>
         <li><strong>Địa chỉ giao hàng:</strong> ${order.orderAddress}</li>
         <li><strong>Trạng thái đơn hàng:</strong> ${order.orderStatus}</li>
       </ul>
@@ -69,9 +77,12 @@ const sendOrderConfirmationEmail = async (user, order, userCart, method) => {
         .map(
           (item) =>
             `<tr>
-                <td style="padding: 10px; border: 1px solid #ddd;">${item.product.name}</td>
-                <td style="padding: 10px; border: 1px solid #ddd;">${item.count}</td>
-                <td style="padding: 10px; border: 1px solid #ddd;">${item.price * item.count} VNĐ</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">${item.product.name
+            }</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">${item.count
+            }</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">${item.price * item.count
+            } VNĐ</td>
               </tr>`
         )
         .join("")}
@@ -84,10 +95,10 @@ const sendOrderConfirmationEmail = async (user, order, userCart, method) => {
 
   await sendEmail(mailData);
 };
+
 const sendEquiryEmail = async (newEnquiry) => {
-  const adminEmail = "vuxuanhoa2403@gmail.com";
   const mailData = {
-    to: adminEmail,
+    to: process.env.MAIL_NAME,
     subject: "[THÔNG BÁO] Bạn vừa nhận được một khảo sát mới từ khách hàng",
     text: `Xin chào Quản trị viên,
   Bạn vừa nhận được một khảo sát mới từ khách hàng. Dưới đây là thông tin chi tiết:
