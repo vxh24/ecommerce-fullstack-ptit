@@ -177,7 +177,10 @@ const handlePaymentCallback = asyncHandler(async (userId, callbackData) => {
     throw new Error("User not found");
   }
 
-  let userCart = await Cart.findOne({ orderBy: user._id });
+  let userCart = await Cart.findOne({ orderBy: user._id }).populate(
+    "products.product",
+    "name price colors"
+  );
 
   if (!userCart) {
     throw new Error("Cart not found");

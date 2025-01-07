@@ -31,6 +31,7 @@ export const googlelogin = createAsyncThunk(
     }
   }
 );
+
 export const forgotPass = createAsyncThunk(
   "auth/forgot",
   async (data, thunkAPI) => {

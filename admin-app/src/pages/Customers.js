@@ -16,7 +16,6 @@ const columns = [
   {
     title: "Tên",
     dataIndex: "name",
-    sorter: (a, b) => a.name.length - b.name.length,
   },
   {
     title: "Email",

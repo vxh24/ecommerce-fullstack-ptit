@@ -100,7 +100,9 @@ const generateResetPasswordToken = asyncHandler(async (email) => {
     subject: "Forgot Password Link",
     html: resetURL,
   };
+
   await sendEmail(data);
+
   return token;
 });
 

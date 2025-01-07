@@ -261,7 +261,8 @@ const Header = () => {
                                       }}
                                     ></p>
                                     <p className="cart-item-quantity">
-                                      Số lượng: {item?.count}
+                                      Số lượng: {item?.count}, Màu:{" "}
+                                      {item?.color}
                                     </p>
                                   </div>
                                   <p className="cart-item-price">
@@ -313,7 +314,9 @@ const Header = () => {
                         return (
                           <li key={index} className="mt-0">
                             <div className="d-flex align-items-center">
-                              <img src={item.image} alt=""
+                              <img
+                                src={item.image}
+                                alt=""
                                 style={{ width: "30px" }}
                                 className="ms-3"
                               />
@@ -332,16 +335,32 @@ const Header = () => {
                 </div>
                 <div className="menu-links">
                   <div className="d-flex align-items-center gap-30">
-                    <NavLink to="/" style={{ fontWeight: "500" }} onClick={() => setSearchTerm("")}>
+                    <NavLink
+                      to="/"
+                      style={{ fontWeight: "500" }}
+                      onClick={() => setSearchTerm("")}
+                    >
                       Trang chủ
                     </NavLink>
-                    <NavLink to="/product" style={{ fontWeight: "500" }} onClick={() => setSearchTerm("")}>
+                    <NavLink
+                      to="/product"
+                      style={{ fontWeight: "500" }}
+                      onClick={() => setSearchTerm("")}
+                    >
                       Cửa hàng
                     </NavLink>
-                    <NavLink to="/blog" style={{ fontWeight: "500" }} onClick={() => setSearchTerm("")}>
+                    <NavLink
+                      to="/blog"
+                      style={{ fontWeight: "500" }}
+                      onClick={() => setSearchTerm("")}
+                    >
                       Blog
                     </NavLink>
-                    <NavLink to="/contact" style={{ fontWeight: "500" }} onClick={() => setSearchTerm("")}>
+                    <NavLink
+                      to="/contact"
+                      style={{ fontWeight: "500" }}
+                      onClick={() => setSearchTerm("")}
+                    >
                       Liên hệ
                     </NavLink>
                   </div>

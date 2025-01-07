@@ -14,12 +14,17 @@ const createEnquiryController = asyncHandler(async (req, res) => {
     const adminSocketId = getReceiverSocketId("6749f2c34151afc711fc4a8c");
     if (adminSocketId) {
       const currentTime = new Date();
-      const formattedTime = `${currentTime.getDate().toString().padStart(2, '0')}/${(currentTime.getMonth() + 1).toString().padStart(2, '0')}/${currentTime.getFullYear()}`;
+      const formattedTime = `${currentTime
+        .getDate()
+        .toString()
+        .padStart(2, "0")}/${(currentTime.getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}/${currentTime.getFullYear()}`;
       io.emit("new-order-notification", {
         title: "Khảo sát mới của khách hàng đã được tạo",
         message: `Người dùng với tên là ${result.name} đã gửi phản hồi.`,
         userId: result.name,
-        timestamp: formattedTime
+        timestamp: formattedTime,
       });
     }
     res.status(200).json({
