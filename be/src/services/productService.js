@@ -215,7 +215,9 @@ const rating = asyncHandler(async (star, comment, productId, userId) => {
       }
     );
   }
-  const getAllRatings = await Product.findById(productId);
+  const getAllRatings = await Product.findById(productId).populate(
+    "ratings.postedBy"
+  );
   let totalRating = getAllRatings.ratings.length;
   let ratingSum = getAllRatings.ratings
     .map((item) => item.star)
