@@ -11,7 +11,7 @@
 * Google OAuth API Authentication
 * Google Map API
 * Mailer
-* Socket (if more time)
+* Socket
 ## 3. Thực hiện:
 + Thiều Ngọc Tuấn: B20DCCN618
 + Vũ Xuân Hòa: B20DCCN267
