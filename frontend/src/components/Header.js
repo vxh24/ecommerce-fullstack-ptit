@@ -35,7 +35,7 @@ const Header = () => {
   const authState = useSelector((state) => state?.auth);
   const productState = useSelector((state) => state?.product?.products?.data);
   const userCartState = useSelector((state) => state?.auth?.cartUser?.cart);
-  const [cartlengt, setCartlengt] = useState();
+  const [cartlengt, setCartlengt] = useState("");
   const [showCartDropdown, setShowCartDropdown] = useState(false);
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState("");

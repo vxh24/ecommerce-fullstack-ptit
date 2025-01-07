@@ -75,6 +75,8 @@
   padding: 20px;
   border-radius: 8px;
   width: 600px;
+  max-height: 90vh; 
+  /* overflow-y: auto;  */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
@@ -87,7 +89,12 @@
   font-size: 18px;
   cursor: pointer;
 }
-
+.react-quill-container {
+  height: 700px; /* Chiều cao cố định cho ReactQuill */
+  overflow-y: auto; /* Kích hoạt cuộn dọc */
+  border: 1px solid #ddd; /* Tùy chọn, để thêm viền */
+  border-radius: 8px;
+}
 .modal-order {
   position: fixed;
   top: 0;

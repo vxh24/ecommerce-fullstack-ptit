@@ -270,6 +270,17 @@ const ProductDetail = () => {
                         );
                       })}
                   </div>
+                  <div className="d-flex align-items-center gap-10 my-2">
+                    <h3
+                      className="product-heading"
+                      style={{ fontWeight: "bold" }}
+                    >
+                      Đã bán:
+                    </h3>
+                    <p className="mb-0 product-heading"
+                    >{productState?.sold}</p>
+
+                  </div>
 
                   <div className="d-flex flex-column gap-10 mt-2 mb-3">
                     <h3

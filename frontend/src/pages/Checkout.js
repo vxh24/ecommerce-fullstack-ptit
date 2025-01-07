@@ -32,7 +32,7 @@ const Checkout = () => {
   const [click2, setClick2] = useState(false);
   const [payment, setpayment] = useState(1);
   const [totalcoupon, setTotalcoupoon] = useState(false);
-  const [shipping, setShipping] = useState(50000);
+  const [shipping, setShipping] = useState("50000");
   const [coupon, setCoupon] = useState();
   const [couponN, setCouponN] = useState();
   const [totalpayment, setTotalpayment] = useState(false);
@@ -46,14 +46,20 @@ const Checkout = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [payurl, setPayurl] = useState(authState?.momo?.data?.payUrl);
   useEffect(() => {
-    if (addressSelect !== null) {
-      const fullAddress = `${addressSelect.specificAddress}, ${addressSelect.commune}, ${addressSelect.district}, ${addressSelect.city}`;
+    if (addressState?.length > 0) {
+      let Address = addressState?.find((item) => item.isDefault === true);
+      setAddress(Address);
+    }
+  }, [addressState, address]);
+  useEffect(() => {
+    if (addressSelect !== null && addressState?.length > 0) {
+      const fullAddress = `${addressSelect.specificAddress}, ${addressSelect.commune}, ${addressSelect.district}, ${addressSelect.city}, ${addressSelect.phone}`;
       setGetAddress(fullAddress);
     } else {
-      const fullAddress = `${address?.specificAddress}, ${address?.commune}, ${address?.district}, ${address?.city}`;
+      const fullAddress = `${address?.specificAddress}, ${address?.commune}, ${address?.district}, ${address?.city}, ${address?.phone}`;
       setGetAddress(fullAddress);
     }
-  }, [addressSelect, address]);
+  }, [addressSelect, address, addressState]);
   useEffect(() => {
     let sum = (Number(totalAmount) * Number(coupon)) / 100;
     setTotalcoupoon(sum);
@@ -76,10 +82,6 @@ const Checkout = () => {
     dispatch(getUserCart());
   }, []);
   useEffect(() => {
-    let Address = addressState?.find((item) => item.isDefault === true);
-    setAddress(Address);
-  }, [addressState, address]);
-  useEffect(() => {
     dispatch(getUserCart());
   }, []);
   useEffect(() => {
@@ -94,6 +96,10 @@ const Checkout = () => {
   }, [userCartState]);
   const user = JSON.parse(localStorage.getItem("customer"));
   const createOrder = () => {
+    if (addressState?.length <= 0) {
+      toast.info("Vui lòng thêm địa chỉ");
+      return;
+    }
     if (payment === 1) {
       dispatch(
         cashOrderUser({
