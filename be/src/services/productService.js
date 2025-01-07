@@ -47,7 +47,12 @@ const createProduct = asyncHandler(async (productData, files) => {
 
 const getAProduct = asyncHandler(async (id) => {
   validateMongodbId(id);
-  const result = await Product.findById(id).populate("category brand");
+  const result = await Product.findById(id)
+    .populate({
+      path: "ratings.postedBy",
+      select: "name",
+    })
+    .populate("category brand");
   return result;
 });
 

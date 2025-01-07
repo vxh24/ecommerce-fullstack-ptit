@@ -32,6 +32,7 @@ const columns = [
   {
     title: "Chủ đề",
     dataIndex: "name",
+    width: 450,
   },
   {
     title: "Danh mục",
@@ -83,7 +84,7 @@ const BlogList = () => {
   const data2 = filteredBlogs?.map((blog) => ({
     key: blog._id,
     name: blog.title,
-    category: blog.category,
+    category: blog.category.title,
     action: (
       <>
         <div className="d-flex align-items-center gap-10">
@@ -111,7 +112,7 @@ const BlogList = () => {
       data1.push({
         key: i + 1,
         name: getBlogState[i].title,
-        category: getBlogState[i].category,
+        category: getBlogState[i].category.title,
 
         action: (
           <>
@@ -215,7 +216,6 @@ const BlogList = () => {
               </h3>
 
               <EditBlog blog={blog} />
-
             </div>
           </div>
         )}
@@ -237,8 +237,8 @@ const EditBlog = ({ blog }) => {
     enableReinitialize: true,
     initialValues: {
       title: blog.title,
+      category: blog.category._id,
       description: blog.description,
-      category: blog.category.title,
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -252,9 +252,6 @@ const EditBlog = ({ blog }) => {
 
   return (
     <form action="" onSubmit={formik.handleSubmit}>
-
-
-
       <div className="mt-4">
         <CustomInput
           type="text"
@@ -276,32 +273,28 @@ const EditBlog = ({ blog }) => {
       >
         <option value="">Chọn danh mục</option>
         {Array.isArray(bCatState) &&
-          bCatState.map((i, j) => {
-            return (
-              <option key={j} value={i.title}>
-                {i.title}
-              </option>
-            );
-          })}
+          bCatState.map((category) => (
+            <option key={category._id} value={category._id}>
+              {" "}
+              {category.title}
+            </option>
+          ))}
       </select>
       <div className="error">
         {formik.touched.category && formik.errors.category}
       </div>
-      <div className="react-quill-container mt-3"
-      >
+      <div className="react-quill-container mt-3" style={{ height: "300px" }}>
         <ReactQuill
           theme="snow"
           className="mt-3"
           name="description"
           onChange={formik.handleChange("description")}
           value={formik.values.description}
-        // style={{ height: "100%" }}
         />
         <div className="error">
           {formik.touched.description && formik.errors.description}
         </div>
       </div>
-
 
       <button className="btn btn-success border-0 rounded-3 my-5" type="submit">
         Cập nhật
@@ -368,8 +361,7 @@ const AddBlog = () => {
       <div className="error">
         {formik.touched.category && formik.errors.category}
       </div>
-      <div className="react-quill-container mt-3"
-      >
+      <div className="react-quill-container mt-3" style={{ height: "300px" }}>
         <ReactQuill
           theme="snow"
           className="mt-3"

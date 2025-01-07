@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+
 const blogCategorySchema = new mongoose.Schema(
   {
     title: {
@@ -13,6 +14,6 @@ const blogCategorySchema = new mongoose.Schema(
   }
 );
 
-const blogCategory = mongoose.model("BlogCategory", blogCategorySchema);
+const BlogCategory = mongoose.model("BlogCategory", blogCategorySchema);
 
-module.exports = blogCategory;
+module.exports = BlogCategory;

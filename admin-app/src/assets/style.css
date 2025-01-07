@@ -35,7 +35,7 @@
   border: none;
   padding-left: 10px;
   padding-right: 10px;
-  background-color: #1677FF;
+  background-color: #1677ff;
 }
 
 .product-list button:hover {
@@ -52,7 +52,6 @@
   align-items: center;
   justify-content: space-between;
 }
-
 
 /* product list end */
 
@@ -75,7 +74,7 @@
   padding: 20px;
   border-radius: 8px;
   width: 600px;
-  max-height: 90vh; 
+  max-height: 90vh;
   /* overflow-y: auto;  */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
@@ -177,7 +176,6 @@ ul.b {
   top: 20px;
   right: 200px;
   z-index: 1000;
-
 }
 
 .notification-header {
@@ -242,7 +240,7 @@ ul.b {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #FFFFFFA6;
+  color: #ffffffa6;
   font-size: 16px;
   padding: 0 16px 0 24px;
   margin: 4px;
@@ -398,19 +396,16 @@ ul.b {
   font-size: 18px;
   border-bottom: 1px solid #ddd;
 }
-.total input{
+.total input {
   background-color: white;
   border: 1px solid #ddd;
 }
 .select {
   background-color: white;
   padding: 10px;
-
 }
 
 /* Counter end */
-
-
 
 /* voucher */
 /* Modal Overlay */
@@ -436,7 +431,6 @@ ul.b {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 15px;
 }
 
 /* Modal Header */
@@ -532,14 +526,14 @@ ul.b {
   width: 20px;
   height: 20px;
   -webkit-appearance: none;
-  appearance: none;   
+  appearance: none;
   border: 2px solid #000;
-  border-radius: 50%;    
-  background-color: #fff; 
+  border-radius: 50%;
+  background-color: #fff;
 }
 .voucher-item input[type="radio"]:checked {
-  background-color: #007bff; 
-  border-color: #007bff;    
+  background-color: #007bff;
+  border-color: #007bff;
 }
 /* Modal Footer */
 .modal-footer {
@@ -567,7 +561,7 @@ ul.b {
 .btn-danger:hover {
   background-color: #c82333;
 }
-.add-customer{
+.add-customer {
   right: 4%;
   margin-bottom: 9px;
   font-size: 24px;
@@ -575,7 +569,7 @@ ul.b {
 /* voucher end*/
 
 .loading-container {
-  position: absolute; 
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -583,9 +577,9 @@ ul.b {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(255, 255, 255, 0.5); 
+  background-color: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(3px);
-  z-index: 999; 
+  z-index: 999;
 }
 
 .loading-text {
@@ -595,18 +589,18 @@ ul.b {
   animation: fadeInOut 1.5s infinite;
 }
 
-.qrscan{
+.qrscan {
   position: absolute;
   top: 50%;
   left: 40%;
   transform: translate(-50%, -50%);
-  background-color: #f4f4f4; 
+  background-color: #f4f4f4;
   padding: 20px;
   border: 1px solid #ccc;
   width: 30%;
   z-index: 1000;
 }
-.qrscan button{
+.qrscan button {
   width: 100%;
   padding: 10px;
   background: #007bff;
@@ -616,16 +610,16 @@ ul.b {
   cursor: pointer;
   border-radius: 4px;
 }
-.add-colorquan{
+.add-colorquan {
   font-size: 16px;
 }
 
-.cat-img{
+.cat-img {
   width: 30%;
 }
 .cat-img img {
   width: 150px;
-  height: 150px; 
+  height: 150px;
   object-fit: cover;
   border-radius: 8px;
 }
@@ -637,7 +631,7 @@ ul.b {
 .file-input::-webkit-file-upload-button {
   padding: 10px 20px;
   font-size: 16px;
-  background-color: #1677FF;
+  background-color: #1677ff;
   color: white;
   border-radius: 5px;
   cursor: pointer;
