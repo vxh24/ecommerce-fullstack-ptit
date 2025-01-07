@@ -5,6 +5,8 @@ import * as yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllCoupon } from "../features/counpons/couponSlice";
 import moment from "moment";
+import bcrypt from "bcryptjs";
+import { toast } from "react-toastify";
 import {
   changePassSlice,
   getAddressSlice,
@@ -252,6 +254,7 @@ const VoucherPage = () => {
 
 const ChangePassword = () => {
   const dispatch = useDispatch();
+  const curpassword = useSelector(state => state?.auth?.profile?.data?.password)
   const formik = useFormik({
     initialValues: {
       password: "",
@@ -259,9 +262,19 @@ const ChangePassword = () => {
       confpassword: "",
     },
     validationSchema: ChangeSchema,
-    onSubmit: (values, { resetForm }) => {
-      dispatch(changePassSlice({ password: values.confpassword }));
-      resetForm();
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        const isMatch = await bcrypt.compare(values.password, curpassword);
+        if (isMatch) {
+          dispatch(changePassSlice({ password: values.newpassword }));
+          resetForm();
+        } else {
+          toast.error("Mật khẩu hiện tại không đúng");
+        }
+      } catch (error) {
+        console.error("Error comparing passwords:", error);
+        toast.error("Đã xảy ra lỗi. Vui lòng thử lại sau.");
+      }
     },
   });
   return (
@@ -412,9 +425,8 @@ const Address = () => {
 
                   <button
                     value={address._id}
-                    className={`default-button ${
-                      address.isDefault ? "active" : ""
-                    }`}
+                    className={`default-button ${address.isDefault ? "active" : ""
+                      }`}
                     onClick={(e) => {
                       setFormData((prevFormData) => ({
                         ...prevFormData,

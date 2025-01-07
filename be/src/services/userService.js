@@ -14,7 +14,6 @@ const getAllUsers = asyncHandler(async () => {
 const getUserById = asyncHandler(async (id) => {
   validateMongodbId(id);
   const result = await User.findById(id)
-    .select("-password")
     .populate("address");
   return result;
 });
