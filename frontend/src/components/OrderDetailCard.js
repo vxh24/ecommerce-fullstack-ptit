@@ -3,17 +3,12 @@ import moment from "moment";
 import ProductReview from "../components/ProductReview";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllColors } from "../features/color/colorSlice";
 import { FaMapMarkerAlt } from "react-icons/fa";
 const OrderDetailCard = ({ order }) => {
   const [open, setOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const colorState = useSelector((state) => state?.color?.colors?.data);
-  useEffect(() => {
-    dispatch(getAllColors());
-  }, []);
   const handleOpenReviewProduct = (product) => {
     setSelectedOrder(product);
     setOpen(true);

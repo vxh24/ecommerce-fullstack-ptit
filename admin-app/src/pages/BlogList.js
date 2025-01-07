@@ -185,39 +185,41 @@ const BlogList = () => {
           }}
           title="Bạn chắc chắn muốn xóa bài viết này không?"
         />
+        {click && (
+          <div className="modal">
+            <div className="modal-content">
+              <button className="close-model" onClick={() => setClick(false)}>
+                ✖
+              </button>
+              <h3
+                className="mb-3 title"
+                style={{ fontSize: "18px", fontWeight: "bold" }}
+              >
+                Thêm bài viết
+              </h3>
+              <AddBlog />
+            </div>
+          </div>
+        )}
+        {click1 && (
+          <div className="modal">
+            <div className="modal-content">
+              <button className="close-model" onClick={() => setClick1(false)}>
+                ✖
+              </button>
+              <h3
+                className="mb-3 title"
+                style={{ fontSize: "18px", fontWeight: "bold" }}
+              >
+                Cập nhật bài viết
+              </h3>
+
+              <EditBlog blog={blog} />
+
+            </div>
+          </div>
+        )}
       </div>
-      {click && (
-        <div className="modal">
-          <div className="modal-content">
-            <button className="close-model" onClick={() => setClick(false)}>
-              ✖
-            </button>
-            <h3
-              className="mb-3 title"
-              style={{ fontSize: "18px", fontWeight: "bold" }}
-            >
-              Thêm bài viết
-            </h3>
-            <AddBlog />
-          </div>
-        </div>
-      )}
-      {click1 && (
-        <div className="modal">
-          <div className="modal-content">
-            <button className="close-model" onClick={() => setClick1(false)}>
-              ✖
-            </button>
-            <h3
-              className="mb-3 title"
-              style={{ fontSize: "18px", fontWeight: "bold" }}
-            >
-              Cập nhật bài viết
-            </h3>
-            <EditBlog blog={blog} />
-          </div>
-        </div>
-      )}
     </>
   );
 };
@@ -249,6 +251,9 @@ const EditBlog = ({ blog }) => {
 
   return (
     <form action="" onSubmit={formik.handleSubmit}>
+
+
+
       <div className="mt-4">
         <CustomInput
           type="text"
@@ -281,16 +286,21 @@ const EditBlog = ({ blog }) => {
       <div className="error">
         {formik.touched.category && formik.errors.category}
       </div>
-      <ReactQuill
-        theme="snow"
-        className="mt-3"
-        name="description"
-        onChange={formik.handleChange("description")}
-        value={formik.values.description}
-      />
-      <div className="error">
-        {formik.touched.description && formik.errors.description}
+      <div className="react-quill-container mt-3"
+      >
+        <ReactQuill
+          theme="snow"
+          className="mt-3"
+          name="description"
+          onChange={formik.handleChange("description")}
+          value={formik.values.description}
+        // style={{ height: "100%" }}
+        />
+        <div className="error">
+          {formik.touched.description && formik.errors.description}
+        </div>
       </div>
+
 
       <button className="btn btn-success border-0 rounded-3 my-5" type="submit">
         Cập nhật
@@ -357,17 +367,19 @@ const AddBlog = () => {
       <div className="error">
         {formik.touched.category && formik.errors.category}
       </div>
-      <ReactQuill
-        theme="snow"
-        className="mt-3"
-        name="description"
-        onChange={formik.handleChange("description")}
-        value={formik.values.description}
-      />
-      <div className="error">
-        {formik.touched.description && formik.errors.description}
+      <div className="react-quill-container mt-3"
+      >
+        <ReactQuill
+          theme="snow"
+          className="mt-3"
+          name="description"
+          onChange={formik.handleChange("description")}
+          value={formik.values.description}
+        />
+        <div className="error">
+          {formik.touched.description && formik.errors.description}
+        </div>
       </div>
-
       <button className="btn btn-success border-0 rounded-3 my-5" type="submit">
         Thêm
       </button>
