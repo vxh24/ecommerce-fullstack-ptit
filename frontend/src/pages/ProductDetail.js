@@ -492,7 +492,7 @@ const ProductDetail = () => {
                           <div className="d-flex gap-10 align-items-center ">
                             <p className="mb-0"
                               style={{ fontWeight: "bold" }}
-                            > {item.postedBy.name}</p>
+                            > {item?.postedBy?.name}</p>
                             <ReactStars
                               count={5}
                               size={24}

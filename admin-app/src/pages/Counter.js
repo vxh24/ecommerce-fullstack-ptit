@@ -283,24 +283,16 @@ const Counter = () => {
 
   const printInvoice = () => {
     const orderId = localStorage.getItem("orderId");
+    console.log(orderId);
+    // if (isDisabled === false) {
+
     dispatch(
       printOrderSlice({ orderId: orderId, customerName: name, phone: phone })
     );
-    localStorage.removeItem("orderId");
-    localStorage.removeItem("selectedProducts");
-    setProducts([]);
-    setIsDisabled(true);
-    setValue("");
-    setChange(null);
-  };
+    const newWindow = window.open("", "_blank", "width=1000,height=1200");
 
-  const [isDisabled, setIsDisabled] = useState(true);
-  useEffect(() => {
-    if (printState?.orderId && printState?.date && isDisabled === false) {
-      const newWindow = window.open("", "_blank", "width=1000,height=1200");
-
-      if (newWindow) {
-        newWindow.document.write(`
+    if (newWindow) {
+      newWindow.document.write(`
           <html>
             <head>
               <title>Hóa Đơn</title>
@@ -320,31 +312,89 @@ const Counter = () => {
                 </tr>
                 <!-- Bạn có thể lặp qua danh sách sản phẩm của bạn ở đây -->
                 ${printState.items
-            ?.map(
-              (product) => `
+          ?.map(
+            (product) => `
                   <tr>
                     <td style="border:1px solid black; padding:5px;">${product.product.name
-                }</td>
+              }</td>
                     <td style="border:1px solid black; padding:5px;">${product.count
-                }</td>
+              }</td>
                     <td style="border:1px solid black; padding:5px;">${product.product.price * product.count
-                }</td>
+              }</td>
                   </tr>
                 `
-            )
-            .join("")}
+          )
+          .join("")}
               </table>
               <hr />
             </body>
           </html>
         `);
-        newWindow.document.close();
-        newWindow.print();
-      }
-    } else {
-      console.error("Dữ liệu không hợp lệ: printState");
+      newWindow.document.close();
+      newWindow.print();
     }
-  }, [printState, isDisabled]);
+    // } else {
+    //   console.error("Dữ liệu không hợp lệ: printState");
+    // }
+    localStorage.removeItem("orderId");
+    localStorage.removeItem("selectedProducts");
+    setProducts([]);
+    setIsDisabled(true);
+    setValue("");
+    setChange(null);
+  };
+
+  const [isDisabled, setIsDisabled] = useState(true);
+  // useEffect(() => {
+  //   if (isDisabled === false) {
+  //     const newWindow = window.open("", "_blank", "width=1000,height=1200");
+
+  //     if (newWindow) {
+  //       newWindow.document.write(`
+  //         <html>
+  //           <head>
+  //             <title>Hóa Đơn</title>
+  //           </head>
+  //           <body>
+  //             <h2 style="text-align:center;">Hóa Đơn Thanh Toán</h2>
+  //             <p><strong>Mã đơn hàng:</strong> ${printState.orderId}</p>
+  //             <p><strong>Ngày:</strong> ${printState.date}</p>
+  //             <p><strong>Tên:</strong> ${printState.customerName}</p>
+  //             <p><strong>Số điện thoại:</strong> ${printState.phone}</p>
+  //             <hr />
+  //             <table style="width:100%; border-collapse:collapse;">
+  //               <tr>
+  //                 <th style="border:1px solid black; padding:5px;">Tên sản phẩm</th>
+  //                 <th style="border:1px solid black; padding:5px;">Số lượng</th>
+  //                 <th style="border:1px solid black; padding:5px;">Giá</th>
+  //               </tr>
+  //               <!-- Bạn có thể lặp qua danh sách sản phẩm của bạn ở đây -->
+  //               ${printState.items
+  //           ?.map(
+  //             (product) => `
+  //                 <tr>
+  //                   <td style="border:1px solid black; padding:5px;">${product.product.name
+  //               }</td>
+  //                   <td style="border:1px solid black; padding:5px;">${product.count
+  //               }</td>
+  //                   <td style="border:1px solid black; padding:5px;">${product.product.price * product.count
+  //               }</td>
+  //                 </tr>
+  //               `
+  //           )
+  //           .join("")}
+  //             </table>
+  //             <hr />
+  //           </body>
+  //         </html>
+  //       `);
+  //       newWindow.document.close();
+  //       newWindow.print();
+  //     }
+  //   } else {
+  //     console.error("Dữ liệu không hợp lệ: printState");
+  //   }
+  // }, [isDisabled]);
 
   useEffect(() => {
     if (payurl !== undefined) {
@@ -756,7 +806,7 @@ const Counter = () => {
                 opacity: isDisabled ? 0.5 : 1,
                 cursor: isDisabled ? "not-allowed" : "",
               }}
-              disabled={isDisabled}
+              // disabled={isDisabled}
               onClick={printInvoice}
             >
               HOÀN THÀNH

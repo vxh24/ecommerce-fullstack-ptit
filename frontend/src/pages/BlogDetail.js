@@ -13,7 +13,7 @@ import {
 import moment from "moment";
 import { AiFillLike, AiFillDislike } from "react-icons/ai";
 const BlogDetail = () => {
-  const userId = JSON.parse(localStorage.getItem("customer")) || [];
+  const userId = JSON.parse(localStorage?.getItem("customer")) || [];
   const blogState = useSelector((state) => state?.blog?.singleblog?.data);
   const blogState1 = useSelector((state) => state?.blog?.blogs?.data);
   const firstFourBlogs = blogState1?.slice(0, 3) || [];
@@ -32,14 +32,14 @@ const BlogDetail = () => {
   };
   useEffect(() => {
     for (let index = 0; index < blogState?.likes?.length; index++) {
-      if (userId.user.id === blogState.likes[index]._id) {
+      if (userId?.user?.id === blogState?.likes[index]._id) {
         setLike(true)
         setDislike(false)
         return;
       }
     }
     for (let index = 0; index < blogState?.dislikes?.length; index++) {
-      if (userId.user.id === blogState.dislikes[index]._id) {
+      if (userId?.user?.id === blogState?.dislikes[index]._id) {
         setDislike(true)
         setLike(false);
         return;

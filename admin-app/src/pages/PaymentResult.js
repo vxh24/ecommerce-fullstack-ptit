@@ -68,7 +68,6 @@ const PaymentResult = () => {
     try {
       const result = await dispatch(momoOrderUser(paymentData));
       localStorage.setItem("orderId", result.payload.data._id);
-      toast.success("Tạo đơn hàng thành công!!!");
     } catch (err) {
       setError("Payment failed: " + err.message);
     } finally {
