@@ -207,6 +207,7 @@ const formattedPrice = (price) =>
 
 const ViewOrder = (orderState) => {
   const order = orderState.orderState;
+  console.log(order);
   const dispatch = useDispatch();
   const orderStatus1 = useSelector((state) => state?.auth?.orderbyuser?.data);
   const data1 = [];
@@ -253,7 +254,16 @@ const ViewOrder = (orderState) => {
     "Hoàn thành": 3,
     "Đã hủy": 4,
   };
+  const [phone, setPhone] = useState(false);
+  const [address, setAddress] = useState(false);
+  useEffect(() => {
+    const parts = order.orderAddress.split(",");
+    const address1 = parts.slice(0, -1).join(",").trim();
+    setAddress(address1);
+    const phoneNumber = parts[parts.length - 1].trim();
+    setPhone(phoneNumber);
 
+  }, [order])
   return (
     <div className="order-detail">
       <h4 className="mb-4 title">Chi tiết đơn hàng</h4>
@@ -269,12 +279,21 @@ const ViewOrder = (orderState) => {
           <strong>Tổng số tiền:</strong>{" "}
           {formattedPrice(order.paymentIndent.amount)}
         </li>
-        <li>
-          <strong>Địa chỉ giao hàng:</strong> {order.orderAddress}
-        </li>
-        <li>
-          <strong>Số điện thoại:</strong> {order.orderBy?.phone}
-        </li>
+        {order.orderBy.name === "Admin" ? (
+          <li>
+            <strong>Thông tin khách hàng:</strong> {order.orderAddress}
+          </li>
+        ) : (
+          <>
+            <li>
+              <strong>Địa chỉ giao hàng:</strong> {address}
+            </li>
+            <li>
+              <strong>Số điện thoại:</strong> {phone}
+            </li>
+          </>
+        )}
+
         <div className="d-flex align-items-center gap-10">
           <li>
             <strong>Trạng thái đơn hàng:</strong> {orderStatus1?.orderStatus}

@@ -49,9 +49,9 @@ export const cashOrderUser = createAsyncThunk(
 );
 export const printOrderSlice = createAsyncThunk(
   "user/print/order",
-  async ({ orderId, customerName, phone }, thunkAPI) => {
+  async (orderId, thunkAPI) => {
     try {
-      return await CartService.creatPrint({ orderId, customerName, phone });
+      return await CartService.creatPrint(orderId);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }

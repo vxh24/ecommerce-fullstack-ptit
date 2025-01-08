@@ -51,10 +51,10 @@ const createPayment = async ({ userId, totalAmount, orderAddress }) => {
     return response.data;
   }
 };
-const creatPrint = async ({ orderId, customerName, phone }) => {
+const creatPrint = async (orderId) => {
   const response = await axios.post(
     `${base_url}order/complete`,
-    { orderId, customerName, phone },
+    orderId,
     getConfig1
   );
   if (response.data) {

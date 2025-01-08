@@ -4,6 +4,7 @@ import moment from "moment";
 const VoucherModal = ({ show, handleClose, data, setCoupon }) => {
   const [voucher, setVoucher] = useState(null);
   const { voucherChecked, setVoucherChecked } = useConversation();
+  console.log(voucherChecked);
   const handleOk = () => {
     setCoupon(voucher);
     handleClose();
@@ -56,8 +57,13 @@ const VoucherModal = ({ show, handleClose, data, setCoupon }) => {
                           checked={voucherChecked === item.name}
                           name="voucher"
                           onChange={() => {
-                            setVoucher(item.discount);
-                            setVoucherChecked(item.name);
+                            if (voucherChecked === item.name) {
+                              setVoucher(null);
+                              setVoucherChecked(null);
+                            } else {
+                              setVoucher(item.discount);
+                              setVoucherChecked(item.name);
+                            }
                           }}
                           className="form-radio"
                         />)

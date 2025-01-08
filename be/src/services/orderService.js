@@ -200,9 +200,8 @@ const handlePaymentCallback = asyncHandler(async (userId, callbackData) => {
   const timestamp = Number(responseTime);
   const date = new Date(timestamp);
 
-  const formattedDate = `${date.getDate()}/${
-    date.getMonth() + 1
-  }/${date.getFullYear()}`;
+  const formattedDate = `${date.getDate()}/${date.getMonth() + 1
+    }/${date.getFullYear()}`;
 
   const { orderAddress } = JSON.parse(extraData || "{}");
 
@@ -332,13 +331,13 @@ const handleRevenueCalculation = asyncHandler(async () => {
   return totalRevenue;
 });
 
-const printInvoice = asyncHandler(async (orderId, customerName, phone) => {
+const printInvoice = asyncHandler(async (orderId) => {
   validateMongodbId(orderId);
 
   const order = await Order.findOne({ _id: orderId }).populate(
     "products.product"
   );
-
+  const [customerName, phone] = order.orderAddress.split(" - ");
   const receiptData = {
     orderId: orderId,
     date: new Date().toLocaleString(),

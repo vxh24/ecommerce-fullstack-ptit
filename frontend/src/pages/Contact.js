@@ -1,6 +1,7 @@
 import React from "react";
 import Meta from "../components/Meta";
 import BreadCrumb from "../components/BreadCrumb";
+import { useDispatch, useSelector } from "react-redux";
 import { IoHomeOutline } from "react-icons/io5";
 import {
   IoMdCall,
@@ -9,7 +10,6 @@ import {
 } from "react-icons/io";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { useDispatch } from "react-redux";
 import { createQuery } from "../features/contact/contactSlice";
 import { toast } from "react-toastify";
 const contactSchema = yup.object({
@@ -20,6 +20,7 @@ const contactSchema = yup.object({
 });
 
 const Contact = () => {
+  const authState = useSelector((state) => state?.auth);
   const dispatch = useDispatch();
   const formik = useFormik({
     initialValues: {
@@ -30,8 +31,14 @@ const Contact = () => {
     },
     validationSchema: contactSchema,
     onSubmit: (values) => {
-      dispatch(createQuery(values));
-      toast.success("Gửi phản hồi thành công");
+      if (authState.user === null && authState.isSuccess !== true) {
+        toast.info("Bạn phải đăng nhập");
+        return;
+      }
+      else {
+        dispatch(createQuery(values));
+        toast.success("Gửi phản hồi thành công");
+      }
     },
   });
   return (
@@ -91,7 +98,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <input
-                        type="tel"
+                        type="number"
                         className="form-control"
                         placeholder="Số điện thoại"
                         name="phone"
