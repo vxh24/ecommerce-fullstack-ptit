@@ -9,7 +9,7 @@ import {
 } from "../features/auth/authSlice";
 
 const { Option } = Select;
-const years = [2020, 2021, 2022, 2023, 2024];
+const years = [2020, 2021, 2022, 2023, 2024, 2025];
 
 const statusColors = {
   "Chờ xác nhận": "orange",

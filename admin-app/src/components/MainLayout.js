@@ -169,7 +169,7 @@ const MainLayout = () => {
                 setClick(!click);
               }}
             >
-              <IoIosNotifications className="fs-4" />
+              <IoIosNotifications className="fs-4 tw-cursor-pointer" />
               <span
                 className="badge rounded-circle p-1 position-absolute"
                 style={{ backgroundColor: "#1677ff" }}

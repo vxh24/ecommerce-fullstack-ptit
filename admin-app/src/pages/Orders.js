@@ -75,7 +75,7 @@ const Orders = () => {
       }
     }
 
-    if (dateRange.length === 2) {
+    if (dateRange?.length === 2) {
       results = results?.filter((order) => {
         const orderDate = new Date(order.createdAt);
         const startDate = new Date(dateRange[0]);
@@ -122,7 +122,7 @@ const Orders = () => {
         <h3
           className="mb-4 title tw-cursor-pointer"
           style={{ fontSize: "18px", fontWeight: "bold" }}
-          onClick={() => setSearchTerm("")}
+          onClick={() => { setSearchTerm(""); setDateRange([]) }}
         >
           Danh sách đơn hàng
         </h3>
@@ -131,16 +131,21 @@ const Orders = () => {
             id="search-orders"
             onChange={(selected) => {
               if (selected.length > 0) {
-                setSearchTerm(selected[0]);
+                setSearchTerm(selected[0].label);
               } else {
                 setSearchTerm("");
               }
             }}
-            options={orderState?.map((order) => order.orderBy?.name) || []}
+            options={
+              orderState?.map((order) => ({
+                label: order?.orderBy?.name || "Không xác định",
+              })) || []
+            }
             placeholder="Tìm kiếm theo tên người mua..."
             onInputChange={(text) => setSearchTerm(text)}
             className="w-100"
           />
+
           <select
             className="form-select w-25"
             placeholder="Chọn trạng thái"
