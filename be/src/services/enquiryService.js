@@ -3,8 +3,18 @@ const asyncHandler = require("express-async-handler");
 const { sendEquiryEmail } = require("./emailService");
 const validateMongodbId = require("../utils/validateMongodbId");
 
-const createEnquiry = asyncHandler(async (enquiryData) => {
-  const newEnquiry = await Enquiry.create(enquiryData);
+const createEnquiry = asyncHandler(async (enquiryData, userId) => {
+  const { name, email, phone, comment, responsedBy } = enquiryData;
+
+  const newEnquiryData = {
+    name,
+    email,
+    phone,
+    comment,
+    responsedBy: userId,
+  };
+
+  const newEnquiry = await Enquiry.create(newEnquiryData);
   await sendEquiryEmail(newEnquiry);
   return newEnquiry;
 });
@@ -25,7 +35,7 @@ const deleteEnquiry = asyncHandler(async (id) => {
 
 const getAEnquiry = asyncHandler(async (id) => {
   validateMongodbId(id);
-  const getAEnquiry = await Enquiry.findById(id);
+  const getAEnquiry = await Enquiry.findById(id).populate("responsedBy");
   return getAEnquiry;
 });
 

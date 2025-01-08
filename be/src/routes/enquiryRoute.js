@@ -12,7 +12,7 @@ const {
 
 const router = express.Router();
 
-router.post("/", createEnquiryController);
+router.post("/", authMiddleware, createEnquiryController);
 router.get("/", authMiddleware, isAdmin, getAllEnquiriesController);
 router.put("/:id", authMiddleware, isAdmin, updateEnquiryController);
 router.get("/:id", authMiddleware, isAdmin, getAEnquiryController);

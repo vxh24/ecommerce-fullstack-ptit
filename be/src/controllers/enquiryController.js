@@ -10,7 +10,8 @@ const {
 
 const createEnquiryController = asyncHandler(async (req, res) => {
   try {
-    const result = await createEnquiry(req.body);
+    const userId = req.user;
+    const result = await createEnquiry(req.body, userId);
     const adminSocketId = getReceiverSocketId("6749f2c34151afc711fc4a8c");
     if (adminSocketId) {
       const currentTime = new Date();

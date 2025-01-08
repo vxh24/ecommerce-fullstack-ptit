@@ -23,6 +23,10 @@ const enquirySchema = new mongoose.Schema(
       default: "Đã gửi",
       enum: ["Đã gửi", "Đã liên hệ", "Đang xử lý", "Đã giải quyết"],
     },
+    responsedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
   },
   {
     timestamps: true,
