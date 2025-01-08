@@ -32,9 +32,10 @@ const sendOrderConfirmationEmail = async (user, order, userCart, method) => {
     text: `Xin chào ${user.name},
       Đơn hàng của bạn đã được đặt thành công với phương thức thanh toán ${method}. Dưới đây là thông tin chi tiết đơn hàng:
       - Mã đơn hàng: ${order.paymentIndent.orderId}
-      - Ngày tạo: ${method === "COD"
-        ? new Date(order.paymentIndent.created).toLocaleString()
-        : order.paymentIndent.created
+      - Ngày tạo: ${
+        method === "COD"
+          ? new Date(order.paymentIndent.created).toLocaleString()
+          : order.paymentIndent.created
       }
       - Tổng số tiền: ${order.paymentIndent.amount} VNĐ
       - Địa chỉ giao hàng: ${order.orderAddress}
@@ -54,12 +55,14 @@ const sendOrderConfirmationEmail = async (user, order, userCart, method) => {
       <p>Đơn hàng của bạn đã được đặt thành công với phương thức thanh toán <strong>${method}</strong>. Dưới đây là thông tin chi tiết đơn hàng:</p>
       <ul>
         <li><strong>Mã đơn hàng:</strong> ${order.paymentIndent.orderId}</li>
-        <li><strong>Ngày tạo:</strong>${method === "COD"
-        ? new Date(order.paymentIndent.created).toLocaleString()
-        : order.paymentIndent.created
-      }</li>
-        <li><strong>Tổng số tiền:</strong> ${order.paymentIndent.amount
-      } VNĐ</li>
+        <li><strong>Ngày tạo:</strong>${
+          method === "COD"
+            ? new Date(order.paymentIndent.created).toLocaleString()
+            : order.paymentIndent.created
+        }</li>
+        <li><strong>Tổng số tiền:</strong> ${
+          order.paymentIndent.amount
+        } VNĐ</li>
         <li><strong>Địa chỉ giao hàng:</strong> ${order.orderAddress}</li>
         <li><strong>Trạng thái đơn hàng:</strong> ${order.orderStatus}</li>
       </ul>
@@ -68,24 +71,31 @@ const sendOrderConfirmationEmail = async (user, order, userCart, method) => {
         <thead>
           <tr>
             <th style="padding: 10px; border: 1px solid #ddd;">Sản phẩm</th>
+            <th style="padding: 10px; border: 1px solid #ddd;">Màu sắc</th>
             <th style="padding: 10px; border: 1px solid #ddd;">Số lượng</th>
             <th style="padding: 10px; border: 1px solid #ddd;">Giá</th>
           </tr>
         </thead>
         <tbody>
         ${userCart.products
-        .map(
-          (item) =>
-            `<tr>
-                <td style="padding: 10px; border: 1px solid #ddd;">${item.product.name
-            }</td>
-                <td style="padding: 10px; border: 1px solid #ddd;">${item.count
-            }</td>
-                <td style="padding: 10px; border: 1px solid #ddd;">${item.price * item.count
-            } VNĐ</td>
+          .map(
+            (item) =>
+              `<tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">${
+                  item.product.name
+                }</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">${
+                  item.color
+                }</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">${
+                  item.count
+                }</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">${
+                  item.price * item.count
+                } VNĐ</td>
               </tr>`
-        )
-        .join("")}
+          )
+          .join("")}
         </tbody>
       </table>
       <p style="margin-top: 20px;">Cảm ơn bạn đã mua sắm tại cửa hàng chúng tôi. Chúng tôi sẽ liên hệ bạn sớm nhất để xác nhận đơn hàng.</p>

@@ -67,7 +67,7 @@ router.post("/forgot-password", forgotPasswordTokenController);
 router.get("/address", authMiddleware, getAddressController);
 router.put("/address/:id", authMiddleware, updateAddressController);
 router.delete("/address/:id", authMiddleware, removeAddressController);
-router.put("/reset-password/:token", authMiddleware, resetPasswordController);
+router.put("/reset-password/:token", resetPasswordController);
 router.get("/order/:id", authMiddleware, isAdmin, getOrderByIdController);
 router.put(
   "/order/update-order/:id",

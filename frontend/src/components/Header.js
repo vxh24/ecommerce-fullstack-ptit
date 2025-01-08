@@ -236,7 +236,7 @@ const Header = () => {
                   </Link>
                   {showCartDropdown && (
                     <div className="cart-dropdown">
-                      {userCartState?.products?.length > 0 ? (
+                      {userCartState?.products.length > 0 ? (
                         <>
                           <ul className="cart-items">
                             {userCartState?.products?.map((item, index) => {

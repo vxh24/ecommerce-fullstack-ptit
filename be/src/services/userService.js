@@ -1,7 +1,7 @@
 const User = require("../models/userModel");
 const asyncHandler = require("express-async-handler");
 const validateMongodbId = require("../utils/validateMongodbId");
-const sendEmail = require("./emailService");
+const { sendEmail } = require("./emailService");
 const crypto = require("crypto");
 const Address = require("../models/addressModel");
 const { uploadSingleFile } = require("./fileService");
@@ -13,8 +13,7 @@ const getAllUsers = asyncHandler(async () => {
 
 const getUserById = asyncHandler(async (id) => {
   validateMongodbId(id);
-  const result = await User.findById(id)
-    .populate("address");
+  const result = await User.findById(id).populate("address");
   return result;
 });
 
@@ -85,7 +84,7 @@ const updatePassword = asyncHandler(async (email, newPassword) => {
 });
 
 const generateResetPasswordToken = asyncHandler(async (email) => {
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email: email });
   if (!user) throw new Error("User not found with this email");
 
   const token = await user.createPasswordResetToken();
